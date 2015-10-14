@@ -1,343 +1,226 @@
-*Part I*\
- *Foundations*\
- In which our heroes learn a great deal about the background of the\
- data munging beast in all its forms and habitats. Fortunately, they
-are\
-also told of the great power of the mystical Perl which can be used to\
-tame the savage beast.\
- Our heroes are then taught a number of techniques for fighting the\
- beast *without* using the Perl. These techniques are useful when
-fighting\
-with any weapon, and once learned, can be combined with the power of\
-the Perl to make them even more effective.\
- Later, our heroes are introduced to additional techniques for using\
- the Perl—all of which prove useful as their journey continues.\
+Part I - Foundations
+====================
 
-------------------------------------------------------------------------
+In which our heroes learn a great deal about the background of the
+data munging beast in all its forms and habitats. Fortunately, they
+are also told of the great power of the mystical Perl which can be used
+to tame the savage beast.
 
-------------------------------------------------------------------------
+Our heroes are then taught a number of techniques for fighting the
+beast *without* using the Perl. These techniques are useful when
+fighting with any weapon, and once learned, can be combined with the
+power of the Perl to make them even more effective.
 
-![](dmp-23_1.jpg)\
- *1*\
- *Data, data munging,*\
- *and Perl*\
- ***What this chapter covers:***\
- ■\
- The process of munging data\
- ■\
- Sources and sinks of data\
- ■\
- Forms data takes\
- ■\
- Perl and why it is perfect for data munging\
- *3*\
+Later, our heroes are introduced to additional techniques for using
+the Perl — all of which prove useful as their journey continues.
 
-------------------------------------------------------------------------
+Chapter 1: Data, data munging, and Perl
+=======================================
 
-**4**\
- CHAPTER\
- ***Data, data munging, and Perl***\
- ***1.1***\
- ***What is data munging?***\
- **munge** (muhnj) vt. **1.** [derogatory] To imperfectly transform
-information. **2.** A com-\
- prehensive rewrite of a routine, a data structure, or the whole
-program. **3.** To mod-\
-ify data in some way the speaker doesn’t need to go into right now or
-cannot\
-describe succinctly (compare mumble).\
- The Jargon File
-\<http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html\>\
- Data munging is all about taking data that is in one format and
-converting it into\
- another. You will often hear the term being used when the speaker
-doesn’t really\
-know exactly what needs to be done to the data.\
- “We’ll take the data that’s exported by this system, munge it around a
-bit, and\
- import it into that system.”\
- When you think about it, this is a fundamental part of what many (if
-not most)\
- computer systems do all day. Examples of data munging include:\
- ■\
- The payroll process that takes your pay rate and the hours you work and
-cre-\
-ates a monthly payslip\
- ■\
- The process that iterates across census returns to produce statistics
-about\
-the population\
- ■\
- A process that examines a database of sports scores and produces a
-league table\
- ■\
- A publisher who needs to convert manuscripts between many different
-text formats\
- ***1.1.1***\
- ***Data munging processes***\
- More specifically, data munging consists of a number of processes that
-are applied to\
-an initial data set to convert it into a different, but related data
-set. These processes will\
-fall into a number of categories: recognition, parsing, filtering, and
-transformation.\
- ***Example data: the CD file\
-***To discuss these processes, let’s assume that we have a text file
-containing a descrip-\
-tion of my CD collection. For each CD, we’ll list the artist, title,
-recording label,\
-and year of release. Additionally the file will contain information on
-the date on\
-which it was generated and the number of records in the file. Figure 1.1
-shows what\
-this file looks like with the various parts labeled.\
- Each row of data in the file (i.e., the information about one CD) is
-called a data\
- *record*. Each individual item of data (e.g., the CD title or year of
-release) is called a\
-data *field*. In addition to records and fields, the data file might
-contain additional\
-information that is held in headers or footers. In this example the
-header contains a\
+What this chapter covers:
 
-------------------------------------------------------------------------
+* The process of munging data
+* Sources and sinks of data
+* Forms data takes
+* Perl and why it is perfect for data munging
 
-***What is data munging?***\
- **5**\
- Dave's Record Collection\
- **Data header**\
- 16 Sep 1999\
- Artist\
- Title\
- Label\
- Released\
- Bragg, Billy\
- Worker's Playtime\
- Cooking Vinyl\
- 1987\
- Bragg, Billy\
- Mermaid Avenue\
- EMI\
- 1998\
- **One data record**\
- Black, Mary\
- The Holy Ground\
- Grapevine\
- 1993\
- Black, Mary\
- Circus\
- Grapevine\
- 1996\
- Bowie, David\
- Hunky Dory\
- RCA\
- 1971\
- Bowie, David\
- Earthling\
- EMI\
- 1997\
- **Data footer**\
- **One data field**\
- 6 Records\
- **Figure 1.1**\
- **Sample data file**\
- description of the data, followed by a header row which describes the
-meaning of\
-each individual data field. The footer contains the number of records in
-the file. This\
-can be useful to ensure that we have processed (or even received) the
-whole file.\
- We will return to this example throughout the book to demonstrate data
-mung-\
- ing techniques.\
- ***1.1.2***\
- ***Data recognition***\
- You won’t be able to do very much with this data unless you can
-recognize what\
-data you have. Data recognition is about examining your source data and
-working\
-out which parts of the data are of interest to you. More specifically,
-it is about a\
-computer program examining your source data and comparing what it finds
-against\
-pre-defined patterns which allow it to determine which parts of the data
-represent\
-the data items that are of interest.\
- In our CD example there is a lot of data and the format varies within
-different\
- parts of the file. Depending on what we need to do with the data, the
-header and\
-footer lines may be of no interest to us. On the other hand, if we just
-want to report\
-that on Sept. 16, 1999 I owned six CDs, then all the data we are
-interested in is in\
-the header and footer records and we don’t need to examine the actual
-data records\
-in any detail.\
- An important part of recognizing data is realizing what *context* the
-data is found\
- in. For example, data items that are in header and footer records will
-have to be\
-processed completely differently from data items which are in the body
-of the data.\
- It is therefore very important to understand what our input data looks
-like and\
- what we need to do with it.\
+What is data munging?
+---------------------
 
-------------------------------------------------------------------------
+> **munge** (muhnj) vt. **1.** [derogatory] To imperfectly transform
+> information. **2.** A comprehensive rewrite of a routine, a data
+> structure, or the whole program. **3.** To modify data in some way
+> the speaker doesn’t need to go into right now or cannot describe
+> succinctly (compare mumble).
+> The Jargon File
+http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html
 
-**6**\
- CHAPTER\
- ***Data, data munging, and Perl***\
- ***1.1.3***\
- ***Data parsing***\
- Having recognized your data you need to be able to do something with
-it. Data\
-parsing is about taking your source data and storing it in data
-structures that make\
-it easier for you to carry out the rest of the required processes.\
- If we are parsing our CD file, we will presumably be storing details of
-each CD in\
- a data structure. Each CD may well be an element in a list structure
-and perhaps the\
-header and footer information will be in other variables. Parsing will
-be the process\
-that takes the text file and puts the useful data into variables that
-are accessible from\
-within our program.\
- As with data recognition, it is far easier to parse data if you know
-what you are\
- going to do with it, as this will affect the kinds of data structures
-that you use.\
- In practice, many data munging programs are written so that the data
-recogni-\
- tion and data parsing phases are combined.\
- ***1.1.4***\
- ***Data filtering***\
- It is quite possible that your source data contains too much
-information. You will\
-therefore have to reduce the amount of data in the data set. This can be
-achieved in\
-a number of ways.\
- ■\
- *You can reduce the number of records returned.* For example, you could
-list\
-only CDs by David Bowie or only CDs that were released in the 1990s.\
- ■\
- *You can reduce the number of fields returned.* For example, you could
-list only\
-the artist, title, and year of release of all of the CDs.\
- ■\
- *You can summarize the data in a variety of ways.* For example, you
-could list\
-only the total number of CDs for each artist or list the number of CDs\
-released in a certain year.\
- ■\
- *You can perform a combination of these processes.* For example, you
-could list\
-the number of CDs by Billy Bragg.\
- ***1.1.5***\
- ***Data transformation***\
- Having recognized, parsed, and filtered our data, it is very likely
-that we need to\
-transform it before we have finished with it. This transformation can
-take a variety\
-of forms.\
- ■\
- *Changing the value of a data field*—For example, a customer number
-needs\
-to be converted to a different identifier in order for the data to be
-used in a\
-different system.\
+Data munging is all about taking data that is in one format and
+converting it into another. You will often hear the term being used
+when the speaker doesn’t really know exactly what needs to be done
+to the data.
 
-------------------------------------------------------------------------
+> We’ll take the data that’s exported by this system, munge it around a
+> bit, and  import it into that system.
 
-***Why is data munging important?***\
- **7**\
- ■\
- *Changing the format of the data record*—For example, in the input
-record, the\
-fields were separated by commas, but in the output record they need to
-be\
-separated by tab characters.\
- ■\
- *Combining data fields*—In our CD file example, perhaps we want to make
-the\
-name of the artist more accessible by taking the “surname, forename”
-format\
-that we have and converting it to “forename surname.”\
- ***1.2***\
- ***Why is data munging important?***\
- As I mentioned previously, data munging is at the heart of what most
-computer sys-\
-tems do. Just about any computer task can be seen as a number of data
-munging\
-tasks. Twenty years ago, before everyone had a PC on a desk, the
-computing\
-department of a company would have been known as the Data Processing
-depart-\
-ment as that was their role—they processed data. Now, of course, we all
-deal with\
-an Information Systems or Information Technology department and the job
-has\
-more to do with keeping our PCs working than actually doing any data
-processing.\
-All that has happened, however, is that the data processing is now being
-carried out\
-by everyone, rather than a small group of computer programmers and
-operators.\
- ***1.2.1***\
- ***Accessing corporate data repositories***\
- Large computer systems still exist. Not many larger companies run their
-payroll sys-\
-tem on a PC and most companies will have at least one database system
-which con-\
-tains details of clients, products, suppliers, and employees. A common
-task for many\
-office workers is to input data into these corporate data repositories
-or to extract\
-data from them. Often the data to be loaded onto the system comes in the
-form of\
+When you think about it, this is a fundamental part of what many (if
+not most) computer systems do all day. Examples of data munging include:
+
+* The payroll process that takes your pay rate and the hours you work and
+creates a monthly payslip
+
+* The process that iterates across census returns to produce statistics
+about the population
+
+* A process that examines a database of sports scores and produces a
+league table
+
+* A publisher who needs to convert manuscripts between many different
+text formats
+
+### Data munging processes
+
+More specifically, data munging consists of a number of processes that
+are applied to an initial data set to convert it into a different, but
+related data set. These processes will fall into a number of categories:
+recognition, parsing, filtering, and transformation.
+
+### Example data: the CD file
+
+To discuss these processes, let’s assume that we have a text file
+containing a description of my CD collection. For each CD, we’ll list
+the artist, title, recording label, and year of release. Additionally
+the file will contain information on the date on which it was generated
+and the number of records in the file. Figure 1.1 shows what this file
+looks like with the various parts labeled.
+
+Each row of data in the file (i.e., the information about one CD) is
+called a data *record*. Each individual item of data (e.g., the CD
+title or year of release) is called a data *field*. In addition to
+records and fields, the data file might contain additional information
+that is held in headers or footers. In this example the header contains
+a description of the data, followed by a header row which describes the
+meaning of each individual data field. The footer contains the number
+of records in the file. This can be useful to ensure that we have
+processed (or even received) the whole file.
+
+We will return to this example throughout the book to demonstrate data
+munging techniques.
+
+### Data recognition
+
+You won’t be able to do very much with this data unless you can
+recognize what data you have. Data recognition is about examining
+your source data and working out which parts of the data are of
+interest to you. More specifically, it is about a computer program
+examining your source data and comparing what it finds against
+pre-defined patterns which allow it to determine which parts of the
+data represent the data items that are of interest.
+
+In our CD example there is a lot of data and the format varies within
+different parts of the file. Depending on what we need to do with the
+data, the header and footer lines may be of no interest to us. On the
+other hand, if we just want to report that on Sept. 16, 1999 I owned
+six CDs, then all the data we are interested in is in the header and
+footer records and we don’t need to examine the actual data records
+in any detail.
+
+An important part of recognizing data is realizing what *context* the
+data is found in. For example, data items that are in header and
+footer records will have to be processed completely differently from
+data items which are in the body of the data.
+
+It is therefore very important to understand what our input data looks
+like and what we need to do with it.
+
+### Data parsing
+
+Having recognized your data you need to be able to do something with
+it. Data parsing is about taking your source data and storing it in data
+structures that make it easier for you to carry out the rest of the
+required processes.
+
+If we are parsing our CD file, we will presumably be storing details of
+each CD in a data structure. Each CD may well be an element in a list
+structure and perhaps the header and footer information will be in
+other variables. Parsing will be the process that takes the text file
+and puts the useful data into variables that are accessible from
+within our program.
+
+As with data recognition, it is far easier to parse data if you know
+what you are going to do with it, as this will affect the kinds of data
+structures that you use.
+
+In practice, many data munging programs are written so that the data
+recognition and data parsing phases are combined.
+
+### Data filtering
+
+It is quite possible that your source data contains too much information.
+You will therefore have to reduce the amount of data in the data set.
+This can be achieved in a number of ways.
+
+* *You can reduce the number of records returned.* For example, you could
+list only CDs by David Bowie or only CDs that were released in the 1990s.
+
+* *You can reduce the number of fields returned.* For example, you could
+list only the artist, title, and year of release of all of the CDs.
+
+* *You can summarize the data in a variety of ways.* For example, you
+could list only the total number of CDs for each artist or list the
+number of CDs released in a certain year.
+
+* *You can perform a combination of these processes.* For example, you
+could list the number of CDs by Billy Bragg.
+
+### Data transformation
+
+Having recognized, parsed, and filtered our data, it is very likely
+that we need to transform it before we have finished with it. This
+transformation can take a variety of forms.
+
+* *Changing the value of a data field* — For example, a customer number
+needs to be converted to a different identifier in order for the data to
+be used in a different system.
+
+* *Changing the format of the data record* — For example, in the input
+record, the fields were separated by commas, but in the output record they
+need to be separated by tab characters.
+
+* *Combining data fields* — In our CD file example, perhaps we want to make
+the name of the artist more accessible by taking the “surname, forename”
+format that we have and converting it to “forename surname.”
+
+### Why is data munging important?
+
+As I mentioned previously, data munging is at the heart of what most
+computer systems do. Just about any computer task can be seen as a
+number of data munging tasks. Twenty years ago, before everyone had
+a PC on a desk, the computing department of a company would have been
+known as the Data Processing department as that was their role — they
+processed data. Now, of course, we all deal with an Information Systems
+or Information Technology department and the job has more to do with
+keeping our PCs working than actually doing any data processing. All that
+has happened, however, is that the data processing is now being carried
+out by everyone, rather than a small group of computer programmers and
+operators.
+
+### Accessing corporate data repositories
+
+Large computer systems still exist. Not many larger companies run their
+payroll system on a PC and most companies will have at least one
+database system which contains details of clients, products, suppliers,
+and employees. A common task for many office workers is to input data
+into these corporate data repositories or to extract data from them.
+Often the data to be loaded onto the system comes in the form of
 a spreadsheet or a comma-separated text file. Often the data extracted
-will go into\
-another spreadsheet where it will be turned into tables of data or
-graphs.\
- ***1.2.2***\
- ***Transferring data between multiple systems***\
- It is obviously convenient for any organization if its data is held in
-one format in\
-one place. Every time you duplicate a data item, you increase the
-likelihood that the\
-two copies can get out of step with each other. As part of any database
-design\
-project, the designers will go through a process known as normalization
-which\
-ensures that data is held in the most efficient way possible.\
- It is equally obvious that if data is held in only one format, then it
-will not be in\
- the most appropriate format for all of the systems that need to access
-that data.\
-While this format may not be particularly convenient for any individual
-system, it\
-should be chosen to allow maximum flexibility and ease of processing to
-simplify\
-conversion into other formats. In order to be useful to all of the
-people who want\
+will go into another spreadsheet where it will be turned into tables
+of data or graphs.
 
-------------------------------------------------------------------------
+### Transferring data between multiple systems
 
-**8**\
- CHAPTER\
- ***Data, data munging, and Perl***\
- to make use of the data, it will need to be transformed in various ways
-as it moves\
-from one system to the next.\
- This is where data munging comes in. It lives in the interstices
-between compu-\
- ter systems, ensuring that data produced by one system can be used by
-another.\
- ***1.2.3***\
- ***Real-world data munging examples***\
+It is obviously convenient for any organization if its data is held in
+one format in one place. Every time you duplicate a data item, you
+increase the likelihood that the two copies can get out of step with
+each other. As part of any database design project, the designers will
+go through a process known as normalization which ensures that data is
+held in the most efficient way possible.
+
+It is equally obvious that if data is held in only one format, then it
+will not be in the most appropriate format for all of the systems that
+need to access that data. While this format may not be particularly
+convenient for any individual system, it should be chosen to allow
+maximum flexibility and ease of processing to simplify conversion into
+other formats. In order to be useful to all of the people who want 
+to make use of the data, it will need to be transformed in various ways
+as it moves from one system to the next.
+
+This is where data munging comes in. It lives in the interstices
+between computer systems, ensuring that data produced by one system can
+be used by another.
+
+### Real-world data munging examples
+
  Let’s look at a couple of simple examples where data munging can be
 used. These\
 are simplified accounts of tasks that I carried out for large investment
