@@ -1,1 +1,15 @@
 chapters/front-matter.md
+chapters/chapter01.md
+chapters/chapter02.md
+chapters/chapter03.md
+chapters/chapter04.md
+chapters/chapter05.md
+chapters/chapter06.md
+chapters/chapter07.md
+chapters/chapter08.md
+chapters/chapter09.md
+chapters/chapter10.md
+chapters/chapter11.md
+chapters/chapter12.md
+chapters/appendix-a.md
+chapters/appendix-b.md
