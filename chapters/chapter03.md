@@ -1,399 +1,339 @@
-![](dmp-59_1.jpg)\
- *3*\
- *Useful Perl idioms*\
- ***What this chapter covers:***\
- ■\
- Simple and complex sorts\
- ■\
- The Orcish manoeuvre and the Schwartzian\
-and Guttman-Rosler transforms\
- ■\
- Database Interface and database\
-driver modules\
- ■\
- Benchmarking\
- ■\
- Command line scripts\
- *39*\
+Chapter 3: Useful Perl idioms
+=============================
 
-------------------------------------------------------------------------
+What this chapter covers:
 
-**40**\
- CHAPTER\
- ***Useful Perl idioms***\
- There are a number of Perl idioms that will be useful in many data
-munging pro-\
-grams. Rather than introduce them in the text when they are first met,
-we will dis-\
-cuss them all here.\
- ***3.1***\
- ***Sorting***\
- Sorting is one of the most common tasks that you will carry out when
-data mung-\
-ing. As you would expect, Perl makes sorting very easy for you, but
-there are a few\
-niceties that we’ll come to later in this section.\
- ***3.1.1***\
- ***Simple sorts***\
- Perl has a built-in sort function which will handle simple sorts very
-easily. The syn-\
-tax for the sort function is as follows:\
- @out = sort @in;\
- This takes the elements of the list @in, sorts them lexically, and
-returns them in\
-array @out. This is the simplest scenario. Normally you will want
-something more\
-complex, so sort takes another argument which allows you to define the
-sort that\
-you want to perform. This argument is either the name of a subroutine or
-a block of\
-Perl code (enclosed in braces). For example, to sort data numerically1
-you would\
-write code like this:\
- @out = sort numerically @in;\
- and a subroutine called numerically which would look like this:\
- sub numerically {\
- return \$a \<=\> \$b;\
- }\
- There are a couple of things to notice in this subroutine. First, there
-are two special\
-variables, \$a and \$b, which are used in the subroutine. Each time Perl
-calls the sub-\
-routine, these variables are set to two of the values in the source
-array. Your subrou-\
-tine should compare these two values and return a value that indicates
-which of the\
-elements should come first in the sorted list. You should return –1 if
-\$a comes\
-before \$b, 1 if \$b comes before \$a, and 0 if they are the same. The
-other thing to\
-notice is the \<=\> operator which takes two values and returns –1, 0,
-or 1, depend-\
-ing on which value is numerically larger. This function, therefore,
-compares the two\
-values and returns the values required by sort. If you wanted to sort
-the list in\
- 1 Rather than lexically, where 100 comes before 2.\
+* Simple and complex sorts\
 
-------------------------------------------------------------------------
+* The Orcish manoeuvre and the Schwartzian and Guttman-Rosler transforms
 
-***Sorting***\
- **41**\
- descending numerical order, you would simply have to reverse the order
-of the\
-comparison of \$a and \$b like so:\
- sub desc\_numerically {\
- return \$b \<=\> \$a;\
- }\
- Another way of handling this is to sort the data in ascending order and
-reverse the\
-list using Perl’s built-in reverse function like this:\
- @out = reverse sort numerically @in;\
- There is also another operator, cmp, which returns the same values but
-orders the\
-elements lexically. The original default sort is therefore equivalent
-to:\
- @out = sort lexically @in;\
- sub lexically {\
- return \$a cmp \$b;\
- }\
- ***3.1.2***\
- ***Complex sorts***\
- Sorts as simple as the ones we’ve discussed so far are generally not
-written using the\
-subroutine syntax that we have used above. In these cases, the block
-syntax is used.\
-In the block syntax, Perl code is placed between the sort function and
-the input\
-list. This code must still work on \$a and \$b and must obey the same
-rules about\
-what it returns. The sorts that we have discussed above can therefore be
-rewritten\
-like this:\
- @out = sort { \$a \<=\> \$b } @in;\
- @out = sort { \$b \<=\> \$a } @in; \# or @out = reverse sort { \$a
-\<=\> \$b } @in\
- @out = sort { \$a cmp \$b } @in;\
- The subroutine syntax can, however, be used to produce quite complex
-sort crite-\
-ria. Imagine that you have an array of hashes where each hash has two
-keys, fore-\
-name and surname, and you want to sort the list like a telephone book
-(i.e.,\
-surname first and then forename). You could write code like this:\
- my @out = sort namesort @in;\
- sub namesort {\
- return \$a-\>{surname} cmp \$b-\>{surname}\
- || \$a-\>{forename} cmp \$b-\>{forename};\
- }\
- Note that we make good use of the “short circuit” functionality of the
-Perl || oper-\
-ator. Only if the surnames are the same and the first comparison returns
-0 is the sec-\
-ond comparison evaluated.\
+* Database Interface and database driver modules
 
-------------------------------------------------------------------------
+*  Benchmarking
 
-**42**\
- CHAPTER\
- ***Useful Perl idioms***\
- We can, of course, mix numeric comparisons with lexical comparisons and
-even\
- reverse the order on some comparisons. If our hash also contains a key
-for age, the\
-following code will resolve two identical names by putting the older
-person first.\
- my @out = sort namesort @in;\
- sub namesort {\
- return \$a-\>{surname} cmp \$b-\>{surname}\
- || \$a-\>{forename} cmp \$b-\>{forename}\
- || \$b-\>{age} \<=\> \$a-\>{age};\
- }\
- This default sort mechanism is implemented using a Quicksort algorithm.
-In this\
-type of sort, each element of the list is compared with at least one
-other element in\
-order to determine the correct sequence. This is an efficient method if
-each com-\
-parison is relatively cheap; however, there are circumstances where you
-are sorting\
-on a value which is calculated from the element. In these situations,
-recalculating\
-the value each time can have a detrimental effect on performance. There
-are a\
-number of methods available to minimize this effect and we will now
-discuss some\
-of the best ones.\
- ***3.1.3***\
- ***The Orcish Manoeuvre***\
- One simple way to minimize the effect of calculating the sort value
-multiple times is\
-to cache the results of each calculation so that we only have to carry
-out each calcu-\
-lation once. This is the basis of the *Orcish Manoeuvre* (a pun on “or
-cache”) devised\
-by Joseph Hall. In this method, the results of previous calculations are
-stored in a\
-hash. The basic code would look like this:\
- my %key\_cache;\
- my @out = sort orcish @in;\
- sub orcish {\
- return (\$key\_cache{\$a} ||= get\_sort\_key(\$a))\
- \<=\> (\$key\_cache{\$b} ||= get\_sort\_key(\$b));\
- }\
- sub get\_sort\_key {\
- \# Code that takes the list element and returns\
- \# the part that you want to sort on\
- }\
- There is a lot going on here so it’s worth looking at it in some
-detail.\
- The hash %key\_cache is used to store the precalculated sort keys.\
+* Command line scripts
+
+There are a number of Perl idioms that will be useful in many data
+munging programs. Rather than introduce them in the text when they are first
+met, we will discuss them all here.
+
+Sorting
+-------
+
+Sorting is one of the most common tasks that you will carry out when
+data munging. As you would expect, Perl makes sorting very easy for you, but
+there are a few niceties that we’ll come to later in this section.
+
+### Simple sorts
+
+Perl has a built-in sort function which will handle simple sorts very
+easily. The syntax for the sort function is as follows:
+
+    @out = sort @in;
+
+This takes the elements of the list `@in`, sorts them lexically[1 Rather than lexically, where 100 comes before 2.], and
+returns them in array `@out`. This is the simplest scenario. Normally you will want
+something more complex, so sort takes another argument which allows you to define the
+sort that you want to perform. This argument is either the name of a subroutine or
+a block of Perl code (enclosed in braces). For example, to sort data numerically
+you would write code like this:
+
+    @out = sort numerically @in;
+
+and a subroutine called `numerically` which would look like this:
+
+    sub numerically {
+      return $a <=> $b;
+    }
+
+There are a couple of things to notice in this subroutine. First, there
+are two special variables, `$a` and `$b`, which are used in the subroutine. Each time Perl
+calls the subroutine, these variables are set to two of the values in the source
+array. Your subroutine should compare these two values and return a value that indicates
+which of the elements should come first in the sorted list. You should return –1 if
+`$a` comes before `$b`, 1 if `$b` comes before `$a`, and 0 if they are the same. The
+other thing to notice is the `<=>` operator which takes two values and returns –1, 0,
+or 1, depending on which value is numerically larger. This function, therefore,
+compares the two values and returns the values required by sort. If you wanted to sort
+the list in descending numerical order, you would simply have to reverse the order
+of the comparison of `$a` and `$b` like so:
+
+    sub desc_numerically {
+      return $b <=> $a;
+    }
+
+Another way of handling this is to sort the data in ascending order and
+reverse the list using Perl’s built-in reverse function like this:
+
+    @out = reverse sort numerically @in;
+
+There is also another operator, `cmp`, which returns the same values but
+orders the elements lexically. The original default sort is therefore equivalent
+to:
+
+    @out = sort lexically @in;
+
+    sub lexically {
+      return $a cmp $b;
+    }
+
+### Complex sorts
+
+Sorts as simple as the ones we’ve discussed so far are generally not
+written using the subroutine syntax that we have used above. In these cases, the block
+syntax is used. In the block syntax, Perl code is placed between the sort function and
+the input list. This code must still work on `$a` and `$b` and must obey the same
+rules about what it returns. The sorts that we have discussed above can therefore be
+rewritten like this:
+
+    @out = sort { $a <=> $b } @in;
+    @out = sort { $b <=> $a } @in; # or @out = reverse sort { $a <=> $b } @in
+    @out = sort { $a cmp $b } @in;
+
+The subroutine syntax can, however, be used to produce quite complex sort
+criteria. Imagine that you have an array of hashes where each hash has two
+keys, forename and surname, and you want to sort the list like a telephone book
+(i.e., surname first and then forename). You could write code like this:
+
+    my @out = sort namesort @in;
+
+    sub namesort {
+      return $a->{surname} cmp $b->{surname}
+          || $a->{forename} cmp $b->{forename};
+    }
+
+Note that we make good use of the “short circuit” functionality of the
+Perl || operator. Only if the surnames are the same and the first comparison returns
+0 is the second comparison evaluated.
+
+We can, of course, mix numeric comparisons with lexical comparisons and
+even reverse the order on some comparisons. If our hash also contains a key
+for age, the following code will resolve two identical names by putting the older
+person first.
+
+    my @out = sort namesort @in;
+
+    sub namesort {
+      return $a->{surname} cmp $b->{surname}
+          || $a->{forename} cmp $b->{forename}
+          || $b->{age} <=> $a->{age};
+    }
+
+his default sort mechanism is implemented using a Quicksort algorithm.
+In this type of sort, each element of the list is compared with at least one
+other element in order to determine the correct sequence. This is an efficient method if
+each comparison is relatively cheap; however, there are circumstances where you
+are sorting on a value which is calculated from the element. In these situations,
+recalculating the value each time can have a detrimental effect on performance. There
+are a number of methods available to minimize this effect and we will now
+discuss some of the best ones.
+
+### The Orcish Manoeuvre
+
+One simple way to minimize the effect of calculating the sort value
+multiple times is to cache the results of each calculation so that we only have to carry
+out each calculation once. This is the basis of the *Orcish Manoeuvre* (a pun on “or
+cache”) devised by Joseph Hall. In this method, the results of previous calculations are
+stored in a hash. The basic code would look like this:
+
+    my %key_cache;
+
+    my @out = sort orcish @in;
+
+    sub orcish {
+      return ($key_cache{$a} ||= get_sort_key($a))
+         <=> ($key_cache{$b} ||= get_sort_key($b));
+    }
+
+    sub get_sort_key {
+      # Code that takes the list element and returns
+      # the part that you want to sort on
+    }
+
+There is a lot going on here so it’s worth looking at it in some
+detail. The hash %key\_cache is used to store the precalculated sort keys.
 The function orcish carries out the sort, but for each element, before
-calculat-\
- ing the sort key, it checks to see if the key has already been
-calculated, in which case\
+calculating the sort key, it checks to see if the key has already been
+calculated, in which case it will be stored in `%key_cache`. It makes use of
+Perl’s `||=` operator to make the code more streamlined. The code
 
-------------------------------------------------------------------------
+    $key_cache{$a} ||= get_sort_key($a)
 
-***Sorting***\
- **43**\
- it will be stored in %key\_cache. It makes use of Perl’s ||= operator
-to make the\
-code more streamlined. The code\
- \$key\_cache{\$a} ||= get\_sort\_key(\$a)\
- can be expanded to\
- \$key\_cache{\$a} = \$key\_cache{\$a} || get\_sort\_key(\$a)\
- The net effect of this code is that if \$key\_cache{\$a} doesn’t
-already exist then\
-get\_sort\_key is called to calculate it and the result is stored in
-\$key\_cache{\$a}.\
-The same procedure is carried out for \$b and the two results are then
-compared\
-using \<=\> (this could just as easily be cmp if you need a lexical
-comparison).\
- Depending on how expensive your get\_sort\_key function is, this method
-can\
- greatly increase your performance in sorting large lists.\
- ***3.1.4***\
- ***Schwartzian transform***\
- Another way of avoiding recalculating the sort keys a number of times
-is to use the\
-Schwartzian transform. This was named after Randal L. Schwartz, a
-well-known mem-\
-ber of the Perl community and author of a number of Perl books, who was
-the first per-\
-son to post a message using this technique to the comp.lang.perl.misc
-newsgroup.\
- In the Schwartzian transform we precalculate all of the sort keys
-before we begin\
- the actual sort.\
- As an example, let’s go back to our list of CDs. If you remember, we
-finally\
- decided that we would read the data file into an array of hashes, where
-each hash\
+can be expanded to
+
+    $key_cache{$a} = $key_cache{$a} || get_sort_key($a)
+
+The net effect of this code is that if `$key_cache{$a}` doesn’t
+already exist then `get_sort_key` is called to calculate it and the result is stored in
+`$key_cache{$a}`. The same procedure is carried out for `$b` and the two results are then
+compared using `<=>` (this could just as easily be cmp if you need a lexical
+comparison).
+
+Depending on how expensive your `get_sort_key` function is, this method
+can greatly increase your performance in sorting large lists.
+
+ ### Schwartzian transform
+
+Another way of avoiding recalculating the sort keys a number of times
+is to use the Schwartzian transform. This was named after Randal L. Schwartz, a
+well-known member of the Perl community and author of a number of Perl books, who was
+the first person to post a message using this technique to the comp.lang.perl.misc
+newsgroup.
+
+In the Schwartzian transform we precalculate all of the sort keys before we begin
+the actual sort.
+
+As an example, let’s go back to our list of CDs. If you remember, we finally
+decided that we would read the data file into an array of hashes, where each hash
 contained the details of each CD. Figure 3.1 is a slightly simplified
-diagram of the\
-@CDs array (each hash has only two fields).\
- 0\
- hashref\
- year\
- 1972\
- 1\
- hashref\
- title\
- Ziggy Stardust\
- year\
- 1971\
- title\
- Hunky Dory\
- **Figure 3.1\
-The unsorted array of CD hashes**\
- Suppose that now we want to produce a list of CDs arranged in order of
-release\
- date. The naïve way to write this using sort would be like this:\
- my @CDs\_sorted\_by\_year = sort { \$a-\>{year} \<=\> \$b-\>{year} }
-@CDs;\
- We could then iterate across the sorted array and print out whatever
-fields of the\
-hash were of interest to us.\
+diagram of the `@CDs` array (each hash has only two fields).
 
-------------------------------------------------------------------------
+ 0
+ hashref
+ year
+ 1972
+ 1
+ hashref
+ title
+ Ziggy Stardust
+ year
+ 1971
+ title
+ Hunky Dory
 
-**44**\
- CHAPTER\
- ***Useful Perl idioms***\
- As you can see, to get to the sort key (the release date) we have to go
-through a\
- hash reference to get to that hash itself. Hash lookup is a reasonably
-expensive oper-\
-ation in Perl and we’d be better off if we could avoid having to look up
-each ele-\
-ment a number of times.\
- Let’s introduce an intermediate array. Each element of the array will
-be a refer-\
- ence to a two-element array. The first element will be the year and the
-second ele-\
-ment will be a reference to the original hash. We can create this list
-very easily\
-using map.\
- my @CD\_and\_year = map { [\$\_-\>{year}, \$\_] } @CDs;\
- Figure 3.2 shows what this new array would look like.\
- 0\
- arrayref\
- 0\
- 1972\
- 1\
- arrayref\
- year\
- 1972\
- 1 hashref\
- title\
- Ziggy Stardust\
- 0\
- 1971\
- 1 hashref\
- year\
- 1971\
- title\
- Hunky Dory\
- **Figure 3.2**\
- **@CD\_and\_year contains references to a two element array**\
- The year field in each hash has been extracted only once, which will
-save us a lot of\
- time. We can now sort our new array on the first element of the array.
-Array lookup is\
-much faster than hash lookup. The code to carry out this sort looks like
-this:\
- my @sorted\_CD\_and\_year = sort { \$a-\>[0] \<=\> \$b-\>[0] }
-@CD\_and\_year;\
- Figure 3.3 shows this new array.\
- 0\
- arrayref\
- 0\
- 1971\
- 1\
- arrayref\
- year\
- 1971\
- 1 hashref\
- title\
- Hunky Dory\
- 0\
- 1972\
- 1 hashref\
- year\
- 1972\
- title\
- Ziggy Stardust\
- **Figure 3.3**\
- **@sorted\_CD\_and\_year is @CD\_and\_year sorted by the first**\
- **element of the array**\
+#### Figure 3.1: The unsorted array of CD hashes
 
-------------------------------------------------------------------------
+Suppose that now we want to produce a list of CDs arranged in order of
+release date. The naïve way to write this using sort would be like this:
 
-***Sorting***\
- **45**\
- Now in @sorted\_CD\_and\_year we have an array of references to arrays.
-The\
- important thing, however, is that the array is ordered by year. In
-fact, we only need\
-the second element of each of these arrays, because that is a reference
-to our origi-\
-nal hash. Using map it is simple to strip out the parts that we need.\
- my @CDs\_sorted\_by\_year = map { \$\_-\>[1] } @sorted\_CD\_and\_year;\
- Figure 3.4 shows what this array would look like.\
- 0\
- hashref\
- year\
- 1971\
- 1\
- hashref\
- title\
- Hunky Dory\
- **Figure 3.4**\
- year\
- 1972\
- **@CDs\_sorted\_by\_year contains**\
- title\
- Ziggy Stardust\
- **just the hash references from\
-@sorted\_CD\_and\_year**\
- Let’s put those three stages together.\
- my @CD\_and\_year = map { [\$\_, \$\_-\>{year}] } @CDs;\
- my @sorted\_CD\_and\_year = sort { \$a-\>[1] \<=\> \$b-\>[1] }
-@CD\_and\_year;\
- my @CDs\_sorted\_by\_year = map { \$\_-\>[0] } @sorted\_CD\_and\_year;\
- That, in a nutshell, is the Schwartzian transform—a sort surrounded by
-two maps.\
+    my @CDs_sorted_by_year = sort { $a->{year} <=> $b->{year} } @CDs;
+
+We could then iterate across the sorted array and print out whatever
+fields of the hash were of interest to us.
+
+As you can see, to get to the sort key (the release date) we have to go
+through a hash reference to get to that hash itself. Hash lookup is a reasonably
+expensive operation in Perl and we’d be better off if we could avoid having to look up
+each element a number of times.
+
+Let’s introduce an intermediate array. Each element of the array will
+be a reference to a two-element array. The first element will be the year and the
+second element will be a reference to the original hash. We can create this list
+very easily using map.
+
+    my @CD_and_year = map { [$_->{year}, $_] } @CDs;
+
+ Figure 3.2 shows what this new array would look like.
+
+ 0
+ arrayref
+ 0
+ 1972
+ 1
+ arrayref
+ year
+ 1972
+ 1 hashref
+ title
+ Ziggy Stardust
+ 0
+ 1971
+ 1 hashref
+ year
+ 1971
+ title
+ Hunky Dory
+
+#### Figure 3.2** `@CD_and_year` contains references to a two element array
+
+The year field in each hash has been extracted only once, which will
+save us a lot of time. We can now sort our new array on the first element of the array.
+Array lookup is much faster than hash lookup. The code to carry out this sort looks like
+this:
+
+    my @sorted_CD_and_year = sort { $a->[0] <=> $b->[0] } @CD_and_year;
+
+Figure 3.3 shows this new array.
+
+ 0
+ arrayref
+ 0
+ 1971
+ 1
+ arrayref
+ year
+ 1971
+ 1 hashref
+ title
+ Hunky Dory
+ 0
+ 1972
+ 1 hashref
+ year
+ 1972
+ title
+ Ziggy Stardust
+
+#### Figure 3.3** `@sorted_CD_and_year` is `@CD_and_year` sorted by the first element of the array
+
+Now in `@sorted_CD_and_year` we have an array of references to arrays.
+The important thing, however, is that the array is ordered by year. In
+fact, we only need the second element of each of these arrays, because that is a reference
+to our original hash. Using map it is simple to strip out the parts that we need.
+
+    my @CDs_sorted_by_year = map { $_->[1] } @sorted_CD_and_year;
+
+Figure 3.4 shows what this array would look like.
+
+ 0
+ hashref
+ year
+ 1971
+ 1
+ hashref
+ title
+ Hunky Dory
+ year
+ 1972
+ title
+ Ziggy Stardust
+
+#### Figure 3.4 `@CDs_sorted_by_year contains just the hash references from `@sorted_CD_and_year`
+
+Let’s put those three stages together.
+
+    my @CD_and_year = map { [$_, $_->{year}] } @CDs;
+    my @sorted_CD_and_year = sort { $a->[1] <=> \$b-\>[1] } @CD_and_year;
+    my @CDs_sorted_by_year = map { $_->[0] } @sorted_CD_and_year;
+
+That, in a nutshell, is the Schwartzian transform—a sort surrounded by
+two maps.
+
 There is one more piece of tidying up that we can do. As each of the
-maps and the\
-sort take an array as input and return an array we can chain all of
-these transforma-\
-tions together in one statement and lose both of the intermediate
-arrays.\
- my @CDs\_sorted\_by\_year = map { \$\_-\>[0] }\
- sort { \$a-\>[1] \<=\> \$b-\>[1] }\
- map { [\$\_, \$\_-\>{year}] } @CDs;\
- If this doesn’t look quite like what we had before, try tracing it
-through in reverse.\
-Our original array (@CDs) is passed in at the bottom. It goes through
-the map that\
-dereferences the hash, then the sort, and finally the last map.\
- The chaining together of multiple list processing functions, where the
-output of\
- the first map becomes the input to the sort and so on, is very similar
-to the I/O\
-pipes that we saw when looking at the UNIX filter model earlier.\
- The Schwartzian transform can be used anywhere that you want to sort a
-list of\
- data structures by one of the data values contained within it, but
-that’s not all it can\
-do. Here’s a three-line script that prints out our CD file (read in
-through STDIN),\
-sorted by the recording label.\
- print map { \$\_-\>[0] }\
- sort { \$a-\>[1] cmp \$b-\>[1] }\
- map { [\$\_, (split /\\t/)[2]] } \<STDIN\>;\
+maps and the sort take an array as input and return an array we can chain all of
+these transformations together in one statement and lose both of the intermediate
+arrays.
+
+    my @CDs_sorted_by_year = map { $_->[0] }
+      sort { $a->[1] <=> $b->[1] }
+      map { [$_, $_->{year}] } @CDs;
+
+If this doesn’t look quite like what we had before, try tracing it
+through in reverse. Our original array (@CDs) is passed in at the bottom. It goes through
+the map that dereferences the hash, then the sort, and finally the last map.
+
+The chaining together of multiple list processing functions, where the
+output of the first map becomes the input to the sort and so on, is very similar
+to the I/O pipes that we saw when looking at the UNIX filter model earlier.
+
+The Schwartzian transform can be used anywhere that you want to sort a
+list of data structures by one of the data values contained within it, but
+that’s not all it can do. Here’s a three-line script that prints out our CD file (read in
+through STDIN), sorted by the recording label.
+
+    print map { $_-\>[0] }
+        sort { $a->[1] cmp $b->[1] }
+        map { [$_, (split /\t/)[2]] } <STDIN>;
 
 ------------------------------------------------------------------------
 
