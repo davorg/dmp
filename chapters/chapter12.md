@@ -18,7 +18,7 @@ presentation, so in this chapter we’ll review what we’ve covered and
 discuss where you can go for more information.
 
 The usefulness of things
--------
+------------------------
 
 A brief reminder of why you munge data and, more importantly, why you
 should munge it using Perl.
@@ -89,7 +89,7 @@ If you are going to use Perl, I would certainly encourage you to become part of 
 *  Submit your code to the CPAN. If you have written code which could be of use to others, why not put it in a place where everyone can find it? Details on becoming a CPAN author can be found at www.cpan.org.
 
 Things to know
--------
+--------------
 
 A brief list of things that you should know to make your data munging
 work as easy as possible.
