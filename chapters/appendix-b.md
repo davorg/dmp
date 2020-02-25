@@ -1,11 +1,7 @@
-*B*\
- *Essential Perl*\
- *254*\
+Appendix B: Essential Perl
+==========================
 
-------------------------------------------------------------------------
 
-***Running Perl***\
- **255**\
  Throughout this book I have assumed that you have a certain level of
 knowledge of\
 Perl and have tried to explain everything that I have used beyond that
@@ -19,8 +15,11 @@ Christiansen\
 (O’Reilly); *Elements of Programming with Perl* by Andrew Johnson
 (Manning), or\
 *Perl: The Programmer’s Companion* by Nigel Chapman (Wiley).\
- ***B.1***\
- ***Running Perl***\
+
+Running Perl
+-----------
+
+
  There are a number of ways to achieve most things in Perl and running
 Perl scripts\
 is no exception. In most cases you will write your Perl code using a
@@ -61,11 +60,7 @@ useful include:\
 determine how to run it. Therefore, if\
  you’re developing Perl under Windows, you’ll need the .pl extension.\
 
-------------------------------------------------------------------------
 
-**256**\
- APPENDIX\
- ***Essential Perl***\
  ■\
  -w\
  Asks Perl to notify you when it comes across a number of unsafe pro-\
@@ -107,8 +102,11 @@ Details of these options are given in chapter 3.\
  All of the information that you could ever need about running Perl can
 be found\
  in the perlrun manual page.\
- ***B.2***\
- ***Variables and data types***\
+
+Variables and data types
+-----------
+
+
  Perl supports a number of different data types. Each data type can be
 stored in its\
 own type of variable. Unlike languages such as C or Pascal, Perl
@@ -130,8 +128,6 @@ a number or a\
 string (or a reference, but we’ll come to that later). Here are some
 examples of\
 assigning values to a scalar variable:\
-
-------------------------------------------------------------------------
 
 ***Variables and data types***\
  **257**\
@@ -191,11 +187,7 @@ this:\
  2 You can always turn a number into a string, but it’s harder to turn
 most strings into numbers.\
 
-------------------------------------------------------------------------
 
-**258**\
- APPENDIX\
- ***Essential Perl***\
  You can use this syntax to both get and set the value of an individual
 array element.\
  \$hero = \$hobbits[0];\
@@ -245,7 +237,6 @@ syntax:\
  \$\#array\
  There are a number of functions that can be used to process a list.\
 
-------------------------------------------------------------------------
 
 ***Variables and data types***\
  **259**\
@@ -311,11 +302,7 @@ thing\
  \$rings{men} = 9;\
  \$rings{great} = 1;\
 
-------------------------------------------------------------------------
 
-**260**\
- APPENDIX\
- ***Essential Perl***\
  Notice that using the arrow operator (=\>) has two advantages over the
 comma. It\
 makes the assignment easier to understand and it automatically quotes
@@ -375,7 +362,6 @@ of different types with the same\
 with the array @ring\_types in the\
 earlier example.\
 
-------------------------------------------------------------------------
 
 ***Operators***\
  **261**\
@@ -392,8 +378,11 @@ keys are numbers and the values are their squares.\
  ***More information***\
  For more information about Perl data types, see the perldata manual
 page.\
- ***B.3***\
- ***Operators***\
+
+Operators
+-----------
+
+
  Perl has all of the operators that you will be familiar with from other
 languages—\
 and a few more besides. You can get a complete list of all of Perl’s
@@ -433,11 +422,7 @@ returns a string made of its left operand repeated the number of times
 given by its\
 right operand. For example,\
 
-------------------------------------------------------------------------
 
-**262**\
- APPENDIX\
- ***Essential Perl***\
  \$y = 'hello' x 3;\
  results in \$y having the value “hellohellohello”.\
  In an array context, if the left operand is a list, then this operator
@@ -493,7 +478,6 @@ had written\
  open DATA, ('file.dat' || die "Can't open file\\n");\
  which doesn’t achieve the correct result.\
 
-------------------------------------------------------------------------
 
 ***Flow of control***\
  **263**\
@@ -535,8 +519,11 @@ There are also left (\<\<) and right (\>\>) shift operators for
 manipulating binary num-\
 bers. One use for these is to quickly multiply or divide numbers by a
 power of two.\
- ***B.4***\
- ***Flow of control***\
+
+Flow of control
+-----------
+
+
  Perl has all of the standard flow of control constructs that are
 familiar from other\
 languages, but many of them have interesting variations.\
@@ -552,11 +539,7 @@ true.\
  \$safety++;\
  } else {\
 
-------------------------------------------------------------------------
 
-**264**\
- APPENDIX\
- ***Essential Perl***\
  \$safety--;\
  }\
  And further extended with elsif clauses.\
@@ -597,7 +580,6 @@ that this loop is very rarely used in Perl, as the foreach loop
 discussed in the next\
 section is far more flexible.\
 
-------------------------------------------------------------------------
 
 ***Flow of control***\
  **265**\
@@ -644,11 +626,7 @@ executed.\
 For example, to ignore empty elements of an array you can write code
 like this:\
 
-------------------------------------------------------------------------
 
-**266**\
- APPENDIX\
- ***Essential Perl***\
  foreach my \$datum (@data) {\
  next unless \$datum;\
  process(\$datum);\
@@ -689,15 +667,17 @@ like this:\
  process(\$word);\
  }\
  }\
- ***B.5***\
- ***Subroutines***\
+
+Subroutines
+-----------
+
+
  Subroutines are defined using the keyword sub like this:\
  sub gollum {\
  print "We hatesss it forever!\\n";\
  }\
  and are called like this:\
 
-------------------------------------------------------------------------
 
 ***Subroutines***\
  **267**\
@@ -749,11 +729,7 @@ value.\
 working hypothesis. For the full gory details\
  see perldoc perlsub.\
 
-------------------------------------------------------------------------
 
-**268**\
- APPENDIX\
- ***Essential Perl***\
  it would work, as the assignment to \$x would pull one element off of
 @\_ leaving the\
 rest to go into @arr. An even better way, however, is to use references,
@@ -770,8 +746,11 @@ or array context so that you can adjust your return value accordingly.\
  More information about creating and calling subroutines can be found in
 the\
  perlsub manual page.\
- ***B.6***\
- ***References***\
+
+References
+-----------
+
+
  References are the key to building complex data structures in Perl and,
 as such, are\
 very important for data munging. They work somewhat like pointers in
@@ -803,7 +782,6 @@ or hash like this:\
 created from\
 variables, and can be dereferenced in exactly the same ways.\
 
-------------------------------------------------------------------------
 
 ***References***\
  **269**\
@@ -860,11 +838,6 @@ data structures in Perl. Let’s take a look at why this is.\
 values. If\
  you tried to create a two-dimensional array with code like this:\
 
-------------------------------------------------------------------------
-
-**270**\
- APPENDIX\
- ***Essential Perl***\
  \# NOTE: This code doesn't work\
  @array\_2d = ((1, 2, 3), (4, 5, 6), (7, ,8, 9));\
  the arrays would all be flattened and you would end up with a
@@ -916,7 +889,6 @@ tage and use\
  @{\$array\_2d[1]}\
  5 Or, at least, something that simulates one rather well.\
 
-------------------------------------------------------------------------
 
 ***References***\
  **271**\
@@ -976,12 +948,6 @@ indeed, any even more complex structures). Here are a few examples:\
  elves =\> ['Elrond', 'Galadriel', 'Legolas'],\
  wizards =\> ['Gandalf', 'Saruman', 'Radagast'] );\
  foreach (keys %races) {\
-
-------------------------------------------------------------------------
-
-**272**\
- APPENDIX\
- ***Essential Perl***\
  print "Here are some \$\_\\n";\
  print "@{\$races{\$\_}}\\n\\n";\
  }\
@@ -1001,8 +967,11 @@ information\
 about building other kinds of data structures. It comes complete with a
 substantial\
 number of detailed examples of creating and using such structures.\
- ***B.7***\
- ***More information on Perl***\
+
+More information on Perl
+-----------
+
+
  Chapter 12 contains details of other places to obtain useful
 information about Perl.\
 In general the best place to start is with the manual pages which come

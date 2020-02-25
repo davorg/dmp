@@ -15,32 +15,26 @@ for defeating this form.\
  At the end of this part of the tale, our heroes develop techniques\
  which let them build their own tools to tackle the beast whenever it\
 appears in forms of arbitrary complexity.\
-
 ------------------------------------------------------------------------
 
-------------------------------------------------------------------------
 
-![](dmp-169_1.jpg)\
- *8*\
- *Complex data formats*\
- ***What this chapter covers:***\
- ■\
- Using and processing more complex\
-data formats\
- ■\
- Limitations in data parsing\
- ■\
- What are parsers and why should I\
-use them?\
- ■\
- Parsers in Perl\
- *149*\
 
-------------------------------------------------------------------------
+Chapter 8: Complex data formats
+===============================
 
-**150**\
- CHAPTER\
- ***Complex data formats***\
+What this chapter covers:
+
+*  Using and processing more complex data formats
+
+*  Limitations in data parsing
+
+*  What are parsers and why should I use them?
+
+*  Parsers in Perl
+
+
+
+
  We have now completed our survey of the simple data formats that you
 will come\
 across. There is, however, a whole class of more complex data formats
@@ -52,8 +46,11 @@ take more time\
 to process. In this chapter we take a look at these types of data, how
 you discern\
 when to use them, and how you go about processing them.\
- ***8.1***\
- ***Complex data files***\
+
+Complex data files
+----------
+
+
  A lot of the data that we have seen up to now has used one line to
 represent each\
 record in the data set. There have been exceptions; some of the records
@@ -67,8 +64,10 @@ consisted largely of\
 a record-based middle section, but it also has header and footer records
 which\
 would have made processing it slightly more complex.\
- ***8.1.1***\
- ***Example: metadata in the CD file***\
+
+### Example: metadata in the CD file
+
+
  Let’s take another look at that first sample data file.\
  Dave's CD Collection\
  16 Sep 1999\
@@ -121,10 +120,8 @@ common solution is to store this kind\
 this data might be called something\
 like 19990916\_dave.txt.\
 
-------------------------------------------------------------------------
 
-***Complex data files***\
- **151**\
+\
  The information in the footer is a little different. In this case we
 are describing\
  the actual shape of the data rather than where (or when) it comes from.
@@ -146,8 +143,10 @@ easily tell if any went missing in transmission.2\
 data files.\
  They allow us to include *metadata*—data about the data we are dealing
 with.\
- ***Adding subrecords\
-***Another good reason for using more complex formats is that you are
+
+#### Adding subrecords\
+
+Another good reason for using more complex formats is that you are
 dealing with\
 data that doesn’t actually fit very well into a simpler format. Staying
 with the CD\
@@ -205,11 +204,7 @@ the number of records. In the exam-\
 ple of my CDs, we might have another file called 19990916\_dave.rec
 which contains only the number 6.\
 
-------------------------------------------------------------------------
 
-**152**\
- CHAPTER\
- ***Complex data formats***\
  +Oh You Pretty Things\
  Bowie, David\
  Earthling\
@@ -218,8 +213,10 @@ which contains only the number 6.\
  +Little Wonder\
  +Looking For Satellites\
  6 Records\
- ***8.1.2***\
- ***Example: reading the expanded CD file***\
+
+### Example: reading the expanded CD file
+
+
  This file is more complicated to process than just about any other that
 we have seen.\
 Here is one potential way to read the data into a data structure.\
@@ -273,10 +270,8 @@ Here is one potential way to read the data into a data structure.\
  scalar @{\$data{CDs}}, "\\n";\
  37: }\
 
-------------------------------------------------------------------------
 
-***Complex data files***\
- **153**\
+\
  This code is not the best way to achieve this. We’ll see a far better
 way when we\
 examine the module Parse::RecDescent in chapter 11, but in the meantime
@@ -340,11 +335,7 @@ processed and stored in \$data{CDs}.\
  Figure 8.1 shows the data structure that we store the album details
 in.\
 
-------------------------------------------------------------------------
 
-**154**\
- CHAPTER\
- ***Complex data formats***\
  title\
  Dave's CD collection\
  date\
@@ -386,8 +377,11 @@ elegant. A bet-\
 look at simple pars-\
 ers later in this chapter, but first let’s look at more limitations of
 our current methods.\
- ***8.2***\
- ***How not to parse HTML***\
+
+How not to parse HTML
+----------
+
+
  HTML and its more flexible sibling XML have become two of the most
 common\
 data formats over recent years, and there is every reason to believe
@@ -401,8 +395,10 @@ like to\
 give you some idea of why these modules are necessary by pointing out
 the limita-\
 tions in the data parsing methods that we have been using up to now.\
- ***8.2.1***\
- ***Removing tags from HTML***\
+
+### Removing tags from HTML
+
+
  A common requirement when processing HTML is to remove the HTML tags
 from\
 the input, leaving only the plain text. We will, therefore, use this as
@@ -418,10 +414,8 @@ Here is the sample HTML that we will use:\
  \<body\>\
  \<h1\>Sample HTML\</h1\>\
 
-------------------------------------------------------------------------
 
-***How not to parse HTML***\
- **155**\
+\
  \<p\>This is a sample piece of HTML.\</p\>\
  \<ul\>\
  \<li\>It\</li\>\
@@ -433,8 +427,10 @@ Here is the sample HTML that we will use:\
  \<a href="next.html"\>Next\</a\> pages.\</p\>\
  \</body\>\
  \</html\>\
- ***Example: a first attempt\
-***Here is a first attempt to write code that removes all of the HTML
+
+#### Example: a first attempt\
+
+Here is a first attempt to write code that removes all of the HTML
 tags. I should\
 reiterate here that all of this code is here to demonstrate the *wrong*
 way to do it, so\
@@ -452,11 +448,7 @@ output we get\
 when we run that against our sample file.\
  **and**\
 
-------------------------------------------------------------------------
 
-**156**\
- CHAPTER\
- ***Complex data formats***\
  That’s probably not quite what we were hoping for. So what has gone
 wrong? In\
 this case we have made a simple beginner’s mistake. By default, Perl
@@ -468,8 +460,10 @@ means is that where we have a line like:\
  our regular expression will consume all the data between the first \<
 and the last \>,\
 effectively removing the whole line.\
- ***Example: another attempt using nongreedy regular expressions\
-***We can, of course, correct this by making our regular expression
+
+#### Example: another attempt using nongreedy regular expressions\
+
+We can, of course, correct this by making our regular expression
 nongreedy. We do\
 this by placing a ? after the greedy part of the regular expression
 (.\*), meaning our\
@@ -490,8 +484,10 @@ code will now look like this:\
  **List\</li\>**\
  **And links to the \<a href="prev.html"\>Previous\</a\> and**\
  **Next\</a\> pages.\</p\>**\
- ***Example: adding the g modifier\
-***The preceding output is obviously an improvement, but instead of
+
+#### Example: adding the g modifier\
+
+The preceding output is obviously an improvement, but instead of
 removing too\
 much data we are now removing too little. We are removing only the first
 tag that\
@@ -501,10 +497,8 @@ replacement operator so that the code looks like this:\
  \# WARNING: This code works, but only on very simple HTML\
  use strict;\
 
-------------------------------------------------------------------------
 
-***How not to parse HTML***\
- **157**\
+\
  while (\<STDIN\>) {\
  s/\<.\*?\>//g;\
  print;\
@@ -520,8 +514,10 @@ replacement operator so that the code looks like this:\
  **And links to the Previous and**\
  **Next pages.**\
  That does look a lot better.\
- ***8.2.2***\
- ***Limitations of regular expressions***\
+
+### Limitations of regular expressions
+
+
  At this point you might be tempted to think that I was exaggerating
 when I said\
 that HTML parsing was difficult as we seem to have achieved it in four
@@ -552,11 +548,7 @@ approach is that,\
  3 We would have to add the s modifier to the operator, to get the . to
 match newline characters.\
 
-------------------------------------------------------------------------
 
-**158**\
- CHAPTER\
- ***Complex data formats***\
  while it is not a problem for a small file like our example, there may
 be good reasons\
 for not reading a larger document into memory all at once.\
@@ -602,15 +594,20 @@ HTML is to use\
 an HTML parser. We’ll see a lot more about parsing HTML (and also XML)
 in the\
 following chapters.\
- ***8.3***\
- ***Parsers***\
+
+Parsers
+----------
+
+
  We’ve seen in the previous section that for certain types of data, our
 usual regular\
 expression-based approach is not guaranteed to work. We must therefore
 find a new\
 approach. This will involve the use of parlance.\
- ***8.3.1***\
- ***An introduction to parsers***\
+
+### An introduction to parsers
+
+
  As I have hinted throughout this chapter, the solution to all of these
 problems is to\
 use a parser. A *parser* is a piece of software that takes a piece of
@@ -621,10 +618,8 @@ tines have been doing, but we are now looking at a far more
 mathematically rigor-\
 ous way of splitting up our input data.\
 
-------------------------------------------------------------------------
 
-***Parsers***\
- **159**\
+\
  Before I go into the details of parsing, I should point out that this
 is a very com-\
  plex field and there is a lot of very specific jargon which I cannot
@@ -632,8 +627,10 @@ address here in\
 detail. If you find your interest piqued by this high-level summary you
 might want\
 to look at the books recommended at the end of this chapter.\
- ***An introduction to parsing jargon\
-***I said that parsers look for recognizable patterns in the input data.
+
+#### An introduction to parsing jargon\
+
+I said that parsers look for recognizable patterns in the input data.
 The first ques-\
 tion, therefore, should be: how do parsers know what patterns to
 recognize? Any\
@@ -690,17 +687,15 @@ indicate alterna-\
 tives, i.e., a noun phrase rule can be matched by one of three different
 forms. Each\
 of these alternatives is called a *production*.\
- ***Matching the grammar against input data\
-***Having defined the grammar, the parser now has to match the input
+
+#### Matching the grammar against input data\
+
+Having defined the grammar, the parser now has to match the input
 data against\
 the grammar. First it will break up the input text into tokens. A
 separate process\
 
-------------------------------------------------------------------------
 
-**160**\
- CHAPTER\
- ***Complex data formats***\
  called a lexer often does this. The parser then examines the stream of
 tokens and\
 compares it with the grammar. There are two different ways that a parser
@@ -751,10 +746,8 @@ data and finds itself in a valid end state, then the parse has
 succeeded; if not it has\
 failed. This type of parser is also known as a *bottom-up* parser.\
 
-------------------------------------------------------------------------
 
-***Parsers***\
- **161**\
+\
  *Top-down parsers\
 *An LL (scan left, expand leftmost subrule) parser will start by trying
 to match the\
@@ -794,18 +787,16 @@ try before\
 matching the top-level rule, then the parse has failed. For obvious
 reasons, this type\
 of parser is also known as a *top-down* parser.\
- ***8.3.2***\
- ***Parsers in Perl***\
+
+### Parsers in Perl
+
+
  Parsers in Perl come in two types: prebuilt parsers such as
 HTML::Parser and\
 XML::Parser, which are designed to parse a particular type of data, and
 modules\
 
-------------------------------------------------------------------------
 
-**162**\
- CHAPTER\
- ***Complex data formats***\
  such as Parse::Yapp and Parse::RecDescent which allow you to create
 your\
 own parsers from a grammar which you have defined.\
@@ -815,8 +806,11 @@ and XML::\
 Parse::RecDescent,\
 in detail, which is the most flexible tool for creating your own parsers
 in Perl.\
- ***8.4***\
- ***Further information***\
+
+Further information
+----------
+
+
  More information about parsing HTML can be found in the next chapter of
 this book.\
  For additional information about parsing in general: *Compilers:
@@ -826,26 +820,29 @@ Principles, Tech-*\
 Wesley) is the definitive guide to the field; *The Art of Compiler
 Design* by Pittman\
 and Peters (Prentice Hall) is, however, a far gentler introduction.\
- ***8.5***\
- ***Summary***\
- ■\
- There are often very good reasons for having data that is not strictly
+
+Summary
+----------
+
+
+
+*  There are often very good reasons for having data that is not strictly
 in a\
 record-based format. These reasons can include:\
- ■\
- Including metadata about the data file.\
- ■\
- Including subsidiary records.\
- ■\
- When parsing hierarchical data such as HTML our usual regular
+
+*  Including metadata about the data file.\
+
+*  Including subsidiary records.\
+
+*  When parsing hierarchical data such as HTML our usual regular
 expression-based\
 approach can break down and we need to look for more powerful
 techniques.\
- ■\
- Parsers work by examining a string of tokens to see if they match the
+
+*  Parsers work by examining a string of tokens to see if they match the
 rules\
 defined in a grammar.\
- ■\
- Parsers can either be bottom-up (scan left, expand rightmost subrule)
+
+*  Parsers can either be bottom-up (scan left, expand rightmost subrule)
 or top-\
 down (scan left, expand leftmost subrule).\

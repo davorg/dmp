@@ -1,8 +1,5 @@
-*A*\
- *Modules reference*\
- *232*\
-
-------------------------------------------------------------------------
+Appendix A: Modules Reference
+=============================
 
 ***DBI***\
  **233**\
@@ -60,7 +57,6 @@ lents of setting the parameter to\
  DBI-\>data\_sources(\$driver)\
 Returns a list of data sources available for the given driver.\
 
-------------------------------------------------------------------------
 
 **234**\
  APPENDIX\
@@ -126,7 +122,6 @@ to\
 die rather than just returning error codes. The default for this
 attribute is off.\
 
-------------------------------------------------------------------------
 
 ***DBI***\
  **235**\
@@ -193,7 +188,6 @@ error. This is useful for executing statements that have no return sets,
 such as\
 updates or deletes.\
 
-------------------------------------------------------------------------
 
 **236**\
  APPENDIX\
@@ -260,7 +254,6 @@ results of\
 the statement. This function is often used when the SQL statement is a
 call to\
 
-------------------------------------------------------------------------
 
 ***DBI***\
  **237**\
@@ -327,7 +320,6 @@ is automatically updated to contain the value of the bound column in the
 newly\
 fetched row. See the code example under bind\_columns for more details.\
 
-------------------------------------------------------------------------
 
 **238**\
  APPENDIX\
@@ -383,7 +375,6 @@ The character which is inserted between groups of three digits. The
 default is\
 a comma.\
 
-------------------------------------------------------------------------
 
 ***Number::Format***\
  **239**\
@@ -445,7 +436,6 @@ zeroes if\
 \$trailing\_zeroes is true. If neither \$precision nor
 \$trailing\_zeroes\
 
-------------------------------------------------------------------------
 
 **240**\
  APPENDIX\
@@ -510,7 +500,6 @@ month.\
 Thus, Days\_in\_Year(2000, 1) returns 31, and Days\_in\_Year(2000, 2)\
 returns 60.\
 
-------------------------------------------------------------------------
 
 ***Date::Calc***\
  **241**\
@@ -573,7 +562,6 @@ given dates and times.\
  (\$year, \$month, \$day) = Add\_Delta\_Days(\$year, \$month,\
  \$day, \$days)\
 
-------------------------------------------------------------------------
 
 **242**\
  APPENDIX\
@@ -639,7 +627,6 @@ should\
 think about installing this module simply to get access to this
 functionality.\
 
-------------------------------------------------------------------------
 
 ***Date::Manip***\
  **243**\
@@ -711,7 +698,6 @@ earlier is\
 returned. If the optional parameter \$time is passed to the function,
 then the\
 
-------------------------------------------------------------------------
 
 **244**\
  APPENDIX\
@@ -773,7 +759,6 @@ given URL is requested. Returns an empty list if the request fails.\
  \$http\_code = getprint(\$url)\
 Gets the document from the given URL and prints it to STDOUT. If the\
 
-------------------------------------------------------------------------
 
 ***HTML::Parser***\
  **245**\
@@ -836,7 +821,6 @@ handling.\
  1 As I was completing the final edits of this book, there were some
 moves towards correcting this discrepancy.\
 
-------------------------------------------------------------------------
 
 **246**\
  APPENDIX\
@@ -900,7 +884,6 @@ have the\
 string \_h appended to it. In both examples the actual subroutine to be
 called is\
 
-------------------------------------------------------------------------
 
 ***HTML::LinkExtor***\
  **247**\
@@ -976,7 +959,6 @@ methods are available. Here is a list of extra methods together with
 methods that\
 have a different interface.\
 
-------------------------------------------------------------------------
 
 **248**\
  APPENDIX\
@@ -1050,7 +1032,6 @@ return it\
 to the token stack to be given to you again the next time you call
 get\_token.\
 
-------------------------------------------------------------------------
 
 ***HTML::TreeBuilder***\
  **249**\
@@ -1114,7 +1095,6 @@ of\
 storage space) if you are only interested in the structure of the
 document.\
 
-------------------------------------------------------------------------
 
 **250**\
  APPENDIX\
@@ -1177,7 +1157,6 @@ parameters passed to\
 these subroutines are the same as those passed to the Start and End
 handler routines.\
 
-------------------------------------------------------------------------
 
 ***XML::Parser***\
  **251**\
@@ -1256,7 +1235,6 @@ Name of the tag found\
 List of name/value pairs for\
 the attributes\
 
-------------------------------------------------------------------------
 
 **252**\
  APPENDIX\
@@ -1330,7 +1308,6 @@ The notation for the entity\
 Name of the Element\
 The Content Model\
 
-------------------------------------------------------------------------
 
 ***XML::Parser***\
  **253**\

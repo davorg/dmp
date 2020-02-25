@@ -3,13 +3,13 @@ Chapter 3: Useful Perl idioms
 
 What this chapter covers:
 
-* Simple and complex sorts\
+* Simple and complex sorts
 
 * The Orcish manoeuvre and the Schwartzian and Guttman-Rosler transforms
 
 * Database Interface and database driver modules
 
-*  Benchmarking
+* Benchmarking
 
 * Command line scripts
 

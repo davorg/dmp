@@ -1,26 +1,20 @@
-![](dmp-229_1.jpg)\
- *11*\
- *Building your*\
- *own parsers*\
- ***What this chapter covers:***\
- ■\
- Creating your own parser\
- ■\
- Returning parsed data\
- ■\
- Matching grammar rules\
- ■\
- Building a data structure to return\
- ■\
- Parsing complex file formats into complex\
-data structures\
- *209*\
+Chapter 11: Building your own parsers
+=====================================
 
-------------------------------------------------------------------------
+What this chapter covers:
 
-**210**\
- CHAPTER\
- ***Building your own parsers***\
+*  Creating your own parser
+
+*  Returning parsed data
+
+*  Matching grammar rules
+
+*  Building a data structure to return
+
+*  Parsing complex file formats into complex data structures
+
+
+
  The prebuilt parsers that we have looked at in the two previous
 chapters are, of\
 course, very useful, but there are many times when you need to parse
@@ -31,7 +25,11 @@ your own parser using a number of Perl modules. The most flexible of
 these is\
 Parse::RecDescent, and in this chapter we take a detailed look at its
 use.\
- ***11.1 Introduction to Parse::RecDescent***\
+
+Introduction to Parse::RecDescent
+-------
+
+
  Parse::RecDescent is a tool for building top-down parsers which was
 written by\
 Damian Conway. It doesn’t form a part of the standard Perl distribution,
@@ -57,7 +55,10 @@ programs will have a basic structure which looks like this:\
  );\
  \# top\_rule is the name of the top level rule in you grammar.\
  \$parser-\>top\_rule(\$text);\
- ***11.1.1 Example: parsing simple English sentences***\
+
+### Example: parsing simple English sentences
+
+
  For example, if we go back to the example of simple English sentences
 which we\
 used in chapter 8, we could write code like this in order to check for
@@ -73,10 +74,8 @@ valid sentences.\
  pronoun: 'it' | 'he'\
  proper\_noun: 'Perl' | 'Dave' | 'Larry'\
 
-------------------------------------------------------------------------
 
-***Introduction to Parse::RecDescent***\
- **211**\
+\
  noun: 'book' | 'cat'\
  );\
  my \$parser = Parse::RecDescent-\>new(\$grammar);\
@@ -128,11 +127,7 @@ we use the\
  1 By the rules of our grammar of course—not by the real rules of
 English.\
 
-------------------------------------------------------------------------
 
-**212**\
- CHAPTER\
- ***Building your own parsers***\
  method sentence to validate each sentence in turn. This method was
 created by\
 the Parse::RecDescent object as it read our grammar. The sentence
@@ -140,7 +135,11 @@ method\
 returns true or false depending on whether or not the parser object
 successfully\
 parsed the input data.\
- ***11.2 Returning parsed data***\
+
+Returning parsed data
+-------
+
+
  The previous example is all very well if you just want to know whether
 your data\
 meets the criteria of a given grammar, but it doesn’t actually produce
@@ -148,7 +147,10 @@ any useful\
 data structures which represent the parsed data. For that we have to
 look a little\
 deeper into Parse::RecDescent.\
- ***11.2.1 Example: parsing a Windows INI file***\
+
+### Example: parsing a Windows INI file
+
+
  Let’s look at parsing a Windows INI file.\
  **Section name**\
  [files]\
@@ -207,11 +209,12 @@ right-hand side. Figure 11.2 shows this data structure.\
 like:\
  \$input\_file = \$Config{files}{input};\
 
-------------------------------------------------------------------------
 
-***Returning parsed data***\
- **213**\
- ***11.2.2 Understanding the INI file grammar***\
+\
+
+### Understanding the INI file grammar
+
+
  Let’s take a look at a grammar that defines an INI file. We’ll use the
 syntax found\
 in Parse::RecDescent.\
@@ -220,16 +223,16 @@ in Parse::RecDescent.\
  header: '[' /\\w+/ ']'\
  assign: /\\w+/ '=' /\\w+/\
  The grammar can be explained in English like this:\
- ■\
- An INI file consists of one or more sections.\
- ■\
- Each section consists of a header followed by one or more assignments.\
- ■\
- The header consists of a [ character, one or more word characters, and
+
+*  An INI file consists of one or more sections.\
+
+*  Each section consists of a header followed by one or more assignments.\
+
+*  The header consists of a [ character, one or more word characters, and
 a ]\
 character.\
- ■\
- An assignment consists of a sequence of one or more word characters, an
+
+*  An assignment consists of a sequence of one or more word characters, an
 =\
 character, and another sequence of one or more word characters.\
  ***Using subrule suffixes\
@@ -264,11 +267,7 @@ contain one or more assignment statements.\
  (N..)\
  Repeating subgroup. Must appear at least *N* times.\
 
-------------------------------------------------------------------------
 
-**214**\
- CHAPTER\
- ***Building your own parsers***\
  ***Using regular expressions\
 ***The other thing to notice is that we are using regular expressions in
 many places to\
@@ -277,7 +276,10 @@ and the keys\
 and values in each section can be any valid word. In this example we are
 saying that\
 they must all be a string made up of Perl’s word characters.2\
- ***11.2.3 Parser actions and the @item array***\
+
+### Parser actions and the @item array
+
+
  0\
  header\
  In order to extract data, we can make use of parser actions. These are\
@@ -320,7 +322,10 @@ If you assign\
 a string containing code to the variable \$::RD\_AUTOACTION, then that
 code will be\
 assigned to every rule which doesn’t have an explicit action.\
- ***11.2.4 Example: displaying the contents of @item***\
+
+### Example: displaying the contents of @item
+
+
  Here is a sample program which reads an INI file and displays the
 contents of @item\
 for each matched rule.\
@@ -331,10 +336,8 @@ for each matched rule.\
 I’ll use @item in these examples. For\
  more details on %item see perldoc Parse::RecDescent.\
 
-------------------------------------------------------------------------
 
-***Returning parsed data***\
- **215**\
+\
  file: section(s)\
  section: header assign(s)\
  header: '[' /\\w+/ ']'\
@@ -389,15 +392,14 @@ true\
 value. By default this is the number 1, but you can change this in the
 associated\
 
-------------------------------------------------------------------------
 
-**216**\
- CHAPTER\
- ***Building your own parsers***\
  action code. Be sure that your code has a true return value, or else
 the parser will\
 think that the match has failed.\
- ***11.2.5 Returning a data structure***\
+
+### Returning a data structure
+
+
  The value that is returned from the top-level rule will be the value
 returned by the\
 top-level rule method when called by our script. We can use this fact to
@@ -438,10 +440,8 @@ will achieve this:\
  }\
  }\
 
-------------------------------------------------------------------------
 
-***Another example: the CD data file***\
- **217**\
+\
  The code that has been added to the previous script is in two places.
 First (and most\
 importantly) in the parser actions and, secondly, at the end of the
@@ -494,18 +494,18 @@ following result:\
  **output: data\_out**\
  which demonstrates that we have built up the data structure that we
 wanted.\
- ***11.3 Another example: the CD data file***\
+
+Another example: the CD data file
+-------
+
+
  Let’s take a look at another example of parsing a data file with
 Parse::RecDescent.\
 We’ll take a look at how we’d parse the CD data file that we discussed
 in chapter 8.\
 What follows is the data file we were discussing:\
 
-------------------------------------------------------------------------
 
-**218**\
- CHAPTER\
- ***Building your own parsers***\
  Dave's CD Collection\
  16 Sep 1999\
  Artist\
@@ -558,7 +558,10 @@ kit, we should be able to come up with something far more elegant.\
  As with the last example, the best approach is to start with a grammar
 for the\
  data file.\
- ***11.3.1 Understanding the CD grammar***\
+
+### Understanding the CD grammar
+
+
  Here is the grammar that I have designed for parsing the CD data file.\
  file: header body footer\
  header: /.+/ date\
@@ -573,49 +576,50 @@ for the\
  Let’s take a closer look at the individual rules. Like the parser,
 we’ll take a top-\
 down approach.\
- ■\
- A data file is made up of three sections—a header, a body, and a
+
+*  A data file is made up of three sections—a header, a body, and a
 footer.\
- ■\
- The file header is made up of a string of any characters followed by a
+
+*  The file header is made up of a string of any characters followed by a
 date.\
 
-------------------------------------------------------------------------
 
-***Another example: the CD data file***\
- **219**\
- ■\
- A date is one or two digits followed by at least one space, any number
+\
+
+*  A date is one or two digits followed by at least one space, any number
 of\
 word characters, at least one space and four digits. Note that we are
 assuming\
 that all dates will appear in the same format as the one in our sample
 file.\
- ■\
- The file body contains the column headers followed by a number of -
+
+*  The file body contains the column headers followed by a number of -
 charac-\
 ters and one or more CD records.\
- ■\
- The column headers are made up of one or more headers per individual
+
+*  The column headers are made up of one or more headers per individual
 column.\
- ■\
- A column header consists of a number of word characters.\
- ■\
- A CD record consists of a CD line followed by at least one track
+
+*  A column header consists of a number of word characters.\
+
+*  A CD record consists of a CD line followed by at least one track
 record.\
- ■\
- A CD line consists of a number of records, each of which is a
+
+*  A CD line consists of a number of records, each of which is a
 particular num-\
 ber of characters long. We have to match in this way, as the CD record
 is in\
 fixed width format.\
- ■\
- A track record contains a + character followed by at least one other
+
+*  A track record contains a + character followed by at least one other
 character.\
- ■\
- A footer record consists of at least one digit followed by the text
+
+*  A footer record consists of at least one digit followed by the text
 “CDs”.\
- ***11.3.2 Testing the CD file grammar***\
+
+### Testing the CD file grammar
+
+
  Having defined our grammar, one of the best ways to test it is to write
 a brief pro-\
 gram like the one that we used to test the English sentences. The
@@ -643,11 +647,7 @@ look like this:\
  }\
  print \$parser-\>file(\$text) ? "valid" : "invalid";\
 
-------------------------------------------------------------------------
 
-**220**\
- CHAPTER\
- ***Building your own parsers***\
  This program will print valid or invalid depending on whether or not
 the file\
 passed to it on STDIN parses correctly against the given grammar. In
@@ -668,7 +668,10 @@ how you\
 could fix the problems. Setting \$::RD\_AUTOACTION to a snippet of code
 which\
 prints out the values in @item can also be a useful debugging tool.\
- ***11.3.3 Adding parser actions***\
+
+### Adding parser actions
+
+
  Having established that our grammar does what we want, we can proceed
 with\
 writing the rest of the program. As previously, most of the interesting
@@ -701,10 +704,8 @@ parser actions. Here is the complete program:\
  );\
  my \$parser = Parse::RecDescent-\>new(\$grammar);\
 
-------------------------------------------------------------------------
 
-***Another example: the CD data file***\
- **221**\
+\
  my \$text;\
  {\
  local \$/ = undef;\
@@ -759,11 +760,7 @@ body, and\
 reference to\
 this hash.\
 
-------------------------------------------------------------------------
 
-**222**\
- CHAPTER\
- ***Building your own parsers***\
  ***Checking the output with Data::Dumper\
 ***The program uses the Data::Dumper module to print out a data dump of
 the data\
@@ -829,10 +826,8 @@ gram look like this:\
  'Artist' =\> 'Bowie, David\
  ',\
 
-------------------------------------------------------------------------
 
-***Other features of Parse::RecDescent***\
- **223**\
+\
  'Title' =\> 'Hunky Dory\
  ',\
  'Label' =\> 'RCA\
@@ -872,7 +867,11 @@ an array. Each element of that array contains the details of one CD in a
 hash. This\
 includes a reference to a further list that contains the tracks from
 each CD.\
- ***11.4 Other features of Parse::RecDescent***\
+
+Other features of Parse::RecDescent
+-------
+
+
  That completes our detailed look at using Parse::RecDescent. It should
 give\
 you enough information to parse some rather complex file formats into
@@ -882,57 +881,57 @@ what\
 Parse::RecDescent can do. Here is an overview of some of its other
 features.\
 For further details see the documentation that comes with the module.\
- ■\
- *Autotrees—*This is a method by which you can get the parser to
+
+*  *Autotrees—*This is a method by which you can get the parser to
 automatically\
 build a parse tree for your input data. If you don’t have a specific
 requirement\
 for your output data structure, then this functionality might be of use
 to you.\
- ■\
- *Lookahead rules—*Sometimes the data that you are parsing can be more
+
+*  *Lookahead rules—*Sometimes the data that you are parsing can be more
 complex\
 than the examples that we have covered. In particular, if a token can
 change its\
 meaning depending on what follows it, you should make use of lookahead\
 
-------------------------------------------------------------------------
 
-**224**\
- CHAPTER\
- ***Building your own parsers***\
  rules. These allow you to specify text in the rule which must be
 matched, but is\
 not consumed by the match. This is very similar to the (?= …) construct
 in Perl\
 regular expressions.\
- ■\
- *Error handling—*Parse::RecDescent has a powerful functionality to
+
+*  *Error handling—*Parse::RecDescent has a powerful functionality to
 allow\
 you to output error messages when a rule fails to match.\
- ■\
- *Dynamic rules—*Because terminals are either text strings or regular
+
+*  *Dynamic rules—*Because terminals are either text strings or regular
 expressions\
 and both of these can contain variables which are evaluated at run time,
 it is\
 possible to create rules which change their meaning as the parse
 progresses.\
- ■\
- *Subrule argument—*It is possible for a rule to pass arguments down
+
+*  *Subrule argument—*It is possible for a rule to pass arguments down
 into its\
 subrule and, therefore, alter the way that they work.\
- ■\
- *Incremental parsing—*It is possible to change the definition of a
+
+*  *Incremental parsing—*It is possible to change the definition of a
 grammar\
 which a program is running, using two methods called Extend and
 Replace.\
- ■\
- *Precompiling parsers—*Using the Precompile method it is possible to
+
+*  *Precompiling parsers—*Using the Precompile method it is possible to
 create\
 a new module that will parse a particular grammar. This new module can
 then\
 be used in programs without Parse::RecDescent being present.\
- ***11.5 Further information***\
+
+Further information
+-------
+
+
  The best place to get more information about Parse::RecDescent is in
 the man-\
 ual pages that come with the module. Typing perldoc Parse::RecDescent at
@@ -945,25 +944,29 @@ the Winter 1998 issue of *The Perl Journal* titled “The man of descent,”
 which is a\
 useful introduction to parsing in general and Parse::RecDescent in
 particular.\
- ***11.6 Summary***\
- ■\
- Parse::RecDescent is a Perl module for building recursive descent
+
+Summary
+-------
+
+
+
+*  Parse::RecDescent is a Perl module for building recursive descent
 parsers.\
- ■\
- Parsers are created by passing the new method the definition of a
+
+*  Parsers are created by passing the new method the definition of a
 grammar.\
- ■\
- The parser is run by passing the text to be parsed to a method named
+
+*  The parser is run by passing the text to be parsed to a method named
 after\
 the top-level rule in the grammar.\
- ■\
- Parser action code can be associated with grammar rules. The associated
+
+*  Parser action code can be associated with grammar rules. The associated
 code\
 is called when the rule matches.\
- ■\
- The @item array contains details of the tokens which have matched in a\
+
+*  The @item array contains details of the tokens which have matched in a\
 given rule.\
- ■\
- Parser actions can change the value that will be returned by a rule.
+
+*  Parser actions can change the value that will be returned by a rule.
 This is\
 how you can build up parse tree data structures.\

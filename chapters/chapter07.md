@@ -1,41 +1,41 @@
-![](dmp-147_1.jpg)\
- *7*\
- *Fixed-width and*\
- *binary data*\
- ***What this chapter covers:***\
- ■\
- Reading fixed-width data\
- ■\
- Using regular expressions with\
-fixed-width data\
- ■\
- Writing fixed-width data\
- ■\
- Graphics file formats\
- ■\
- Reading and writing MP3 files\
- *127*\
+Chapter 7: Fixed-width and binary data
+======================================
 
-------------------------------------------------------------------------
+What this chapter covers:
 
-**128**\
- CHAPTER\
- ***Fixed-width and binary data***\
+*  Reading fixed-width data
+
+*  Using regular expressions with fixed-width data
+
+*  Writing fixed-width data
+
+*  Graphics file formats
+
+*  Reading and writing MP3 files
+
+
+
+
  In this chapter we will complete our survey of simple data formats by
 examining\
 fixed-width and binary data. Many of the methods we have discussed in
 previous\
 chapters will still prove to be useful, but we will also look at some
 new tricks.\
- ***7.1***\
- ***Fixed-width data***\
+
+Fixed-width data
+----------
+
+
  Fixed-width data is becoming less common, but it is still possible that
 you will come\
 across it, particularly if you are exchanging data with an older
 computer system that\
 runs on a mainframe or is written in COBOL.\
- ***7.1.1***\
- ***Reading fixed-width data***\
+
+### Reading fixed-width data
+
+
  In a fixed-width data record, there is nothing to distinguish one data
 item from the\
 next one. Each data item is simply written immediately after the
@@ -63,28 +63,26 @@ until we\
 get a full definition of the data we can’t be sure even how many data
 fields there are.\
  Here is the definition of the data:\
- ■\
- *Columns 1 to 5*—Transaction number (numeric)\
- ■\
- *Columns 6 to 25*—Customer name (text)\
- ■\
- *Columns 26 to 33*—Date of transaction (YYYYMMDD)\
- ■\
- *Columns 34 to 39*—Customer’s transaction number (numeric)\
- ■\
- *Column 40*—Transaction direction (+/-)\
- ■\
- *Columns 41 to 48*—Amount of transaction (numeric with two implied
+
+*  *Columns 1 to 5*—Transaction number (numeric)\
+
+*  *Columns 6 to 25*—Customer name (text)\
+
+*  *Columns 26 to 33*—Date of transaction (YYYYMMDD)\
+
+*  *Columns 34 to 39*—Customer’s transaction number (numeric)\
+
+*  *Column 40*—Transaction direction (+/-)\
+
+*  *Columns 41 to 48*—Amount of transaction (numeric with two implied
 deci-\
 mal places)\
  1 Although it is most common to find numerical data prepadded with
 zeroes and text data postpadded\
  with spaces.\
 
-------------------------------------------------------------------------
 
-***Fixed-width data***\
- **129**\
+\
  Now we can start to make some sense of the data. We can see that on
 Novem-\
  ber 5, 1999, we received a check (number 100103) for \$150.00 from
@@ -92,8 +90,10 @@ Bloggs &\
 Co. and on November 6, 1999, we paid \$49.99 to Smith Brothers in
 response to\
 their invoice number 1234.\
- ***Example: extracting fixed-width data fields with substr\
-***So how do we go about extracting that information from the data?
+
+#### Example: extracting fixed-width data fields with substr\
+
+So how do we go about extracting that information from the data?
 Here’s a first\
 attempt using the substr function to do the work:\
  my @cols = qw(5 25 33 39 40 48);\
@@ -116,8 +116,10 @@ because the\
 column definitions that we were given start from column one, whereas
 Perl arrays\
 start from zero—all in all, not the most maintainable piece of code.\
- ***Example: extracting fixed-width data with regular expressions\
-***Perhaps we’d do better if we used regular expressions:\
+
+#### Example: extracting fixed-width data with regular expressions\
+
+Perhaps we’d do better if we used regular expressions:\
  my @widths = qw(5 20 8 6 1 8);\
  my \$regex;\
  \$regex .= "(.{\$\_})" foreach @widths;\
@@ -135,11 +137,7 @@ match against\
 each row of our data file in turn. The regular expression that we build
 looks like this:\
 
-------------------------------------------------------------------------
 
-**130**\
- CHAPTER\
- ***Fixed-width and binary data***\
  (.{5})(.{20})(.{8})(.{6})(.{1})(.{8})\
  which is really a very simple regular expression. For each column in
 the data record,\
@@ -153,8 +151,10 @@ result to an array will give us a list containing all of the \$1, \$2, …
 \$n variables in order.\
  This isn’t a very interesting use of regular expressions. There must be
 a better way.\
- ***Example: extracting fixed-width data with unpack\
-***In this case the best way is to use Perl’s unpack function. unpack
+
+#### Example: extracting fixed-width data with unpack\
+
+In this case the best way is to use Perl’s unpack function. unpack
 takes a scalar\
 expression and breaks it into a list of values according to a template
 that it is given.\
@@ -198,12 +198,12 @@ template\
 detail. For\
 ASCII data, only a and A are useful.\
 
-------------------------------------------------------------------------
 
-***Fixed-width data***\
- **131**\
- ***Multiple record types\
-***One slight variation of the fixed-width data record has different
+\
+
+#### Multiple record types\
+
+One slight variation of the fixed-width data record has different
 sets of data fields for\
 different types of data within the same file. Consider a system that
 maintains a prod-\
@@ -238,8 +238,10 @@ time we\
 have discontinued two older products, the Basic Widget (Product Code
 0050) and\
 the Cheap Widget (Product Code 0051).\
- ***Example: reading multiple fixed-width record types\
-***A program to read a file such as the previous example might look like
+
+#### Example: reading multiple fixed-width record types\
+
+A program to read a file such as the previous example might look like
 this:\
  my %templates = (ADD =\> 'a4A14a6a5a6',\
  DEL =\> 'a4A14');\
@@ -261,13 +263,11 @@ a field length to mean “use all characters to the end of the string.”
 This is very use-\
 ful when we don’t know how long our string will be.\
 
-------------------------------------------------------------------------
 
-**132**\
- CHAPTER\
- ***Fixed-width and binary data***\
- ***Data with no end-of-record marker\
-***Another difference that you may come across with fixed-width data is
+
+#### Data with no end-of-record marker\
+
+Another difference that you may come across with fixed-width data is
 that some-\
 times it comes without a defined end-of-record marker. As both the size
 of each field\
@@ -320,8 +320,10 @@ tell are often\
 unnecessary when handling ASCII fixed-width data files, as you usually
 just read the\
 file in sequential order.\
- ***Example: reading data with no end-of-record markers using read\
-***As an example, if our previous data file were written without
+
+#### Example: reading data with no end-of-record markers using read\
+
+As an example, if our previous data file were written without
 newlines, we could use\
 code like this to read it (obviously we could use any of the previously
 discussed\
@@ -331,10 +333,8 @@ techniques to split the record up once we have read it):\
  while (read STDIN, \$data, 48) {\
  my @rec = unpack(\$template, \$data);\
 
-------------------------------------------------------------------------
 
-***Fixed-width data***\
- **133**\
+\
  print join('¦', @rec);\
  print "\\n";\
  }\
@@ -356,8 +356,10 @@ to decide how many more bytes to read on a further pass.\
  print "\$type - ", join('¦', @rec);\
  print "\\n";\
  }\
- ***Defining record structure within the data file\
-***I mentioned earlier that it is possible that the structure of the
+
+#### Defining record structure within the data file\
+
+I mentioned earlier that it is possible that the structure of the
 data could be defined\
 in the file. You could then write your script to be flexible enough that
 it handles\
@@ -389,11 +391,7 @@ build up an unpack format to use on the rest of the file.\
  my \$meta\_fmt = 'a3' x \$fields;\
  my @widths = unpack(\$meta\_fmt, \$line);\
 
-------------------------------------------------------------------------
 
-**134**\
- CHAPTER\
- ***Fixed-width and binary data***\
  my \$fmt = join('', map { "A\$\_" } @widths);\
  while (\<STDIN\>) {\
  my @data = unpack(\$fmt, \$\_);\
@@ -451,10 +449,8 @@ because the marker character is not included in the array returned by
 the split, but it\
 should be included in the width of the field.\
 
-------------------------------------------------------------------------
 
-***Fixed-width data***\
- **135**\
+\
  These are just two common ways to encode field structures in a
 fixed-width data\
  file. You will come across others, but it is always a case of working
@@ -466,14 +462,18 @@ suggest that\
 the first line contains the format that you need to pass to unpack—let
 your source\
 system do the hard work!\
- ***7.1.2***\
- ***Writing fixed-width data***\
+
+### Writing fixed-width data
+
+
  If you have to read fixed-width data there is, of course, a chance that
 eventually you\
 will need to write it. In this section we’ll look at some common ways to
 do this.\
- ***Writing fixed-width data using pack\
-***Luckily, Perl has a function which is the opposite of unpack and,
+
+#### Writing fixed-width data using pack\
+
+Luckily, Perl has a function which is the opposite of unpack and,
 logically enough,\
 it is called pack. pack takes a template and a list of values and
 returns a string con-\
@@ -514,13 +514,11 @@ This may, of course, be fine for your data, but if you want to prepad
 numbers with\
 spaces then you should use the sprintf or printf functions.\
 
-------------------------------------------------------------------------
 
-**136**\
- CHAPTER\
- ***Fixed-width and binary data***\
- ***Writing fixed-width data using printf and sprintf\
-***These two functions do very similar things. The only difference is
+
+#### Writing fixed-width data using printf and sprintf\
+
+These two functions do very similar things. The only difference is
 that sprintf\
 returns its results in a scalar variable, whereas printf will write them
 directly to a\
@@ -574,10 +572,8 @@ is six):\
  2 %d is actually for a signed integer. If you need an unsigned value,
 use %u.\
 
-------------------------------------------------------------------------
 
-***Fixed-width data***\
- **137**\
+\
  For strings we can use the format specifier %s. Again, we can use a
 number within\
 the specifier to define the size of the field. You’ll notice from the
@@ -609,8 +605,10 @@ some examples:\
  Notice that we can prepad strings with zeroes just as we can for
 numbers, but it’s\
 difficult to think of a situation where that would be useful.\
- ***Example: writing fixed-width data with sprintf\
-***Putting this all together, we can produce code which can output
+
+#### Example: writing fixed-width data with sprintf\
+
+Putting this all together, we can produce code which can output
 fixed-width finan-\
 cial transaction records like the ones we were reading earlier.\
  my %rec1 = ( txnref =\> 374,\
@@ -642,11 +640,7 @@ cial transaction records like the ones we were reading earlier.\
  { name\
  =\> 'cust',\
 
-------------------------------------------------------------------------
 
-**138**\
- CHAPTER\
- ***Fixed-width and binary data***\
  width =\> 20,\
  num\
  =\> 0 },\
@@ -703,17 +697,18 @@ fixed\_rec func-\
 tion then extracts the relevant data from the record (which is stored in
 a hash) into\
 
-------------------------------------------------------------------------
 
-***Binary data***\
- **139**\
+\
  an array and feeds that array to sprintf along with the format. This
 creates our\
 fixed-width record. As expected, the results of running this program are
 the records\
 that we started with at the beginning of this chapter.\
- ***7.2***\
- ***Binary data***\
+
+Binary data
+----------
+
+
  All of the data that we have looked at so far has been ASCII data. That
 is, it has been\
 encoded using a system laid down by the American Standards Committee for
@@ -775,11 +770,7 @@ are trying to\
 define 256 characters, but the fact that\
  they are nonstandard can make dealing with them problematic.\
 
-------------------------------------------------------------------------
 
-**140**\
- CHAPTER\
- ***Fixed-width and binary data***\
  ensure that only properly licensed software is used to create GIF
 files.4 As Perl is Open\
 Source, it does not fall into this category, and you shouldn’t use it to
@@ -788,8 +779,10 @@ believe that using Perl to read GIFs would not violate the licensing
 terms, but to be\
 sure we’ll look at the *Portable Network Graphics* (PNG) format
 instead.\
- ***7.2.1***\
- ***Reading PNG files***\
+
+### Reading PNG files
+
+
  In order to read any binary file, you will need a definition of the
 format. I’m using\
 the definition in *Programming Web Graphics with Perl & GNU Software* by
@@ -797,8 +790,10 @@ Shawn\
 P. Wallace (O’Reilly), but you can get the definitive version from the
 PNG group\
 home page at http://www.cdrom.com/pub/png/.\
- ***Reading the file format signature\
-***Most binary files start with a *signature*, that is a few bytes that
+
+#### Reading the file format signature\
+
+Most binary files start with a *signature*, that is a few bytes that
 identify the format of\
 the file. This is so that applications that are reading the file can
 easily check that the\
@@ -813,8 +808,10 @@ like this:\
  die "Not a valid PNG\\n" unless \$data eq '\\x89PNG\\cM\\cJ\\cZ\\cM';\
  Note that we use \\x89 to match the hex number 0x89 and \\cZ to match
 Control-Z.\
- ***Reading the data chunks\
-***After this header sequence, a PNG file is made up of a number of
+
+#### Reading the data chunks\
+
+After this header sequence, a PNG file is made up of a number of
 *chunks*. Each\
 chunk contains an 8-byte header, some amount of data, and a 4-byte
 trailer. Each\
@@ -829,18 +826,18 @@ look only at\
 the IHDR (header) chunk, which is always the first chunk in the file and
 defines cer-\
 tain global attributes of the image.\
- ***Example: reading a PNG file\
-***A complete program to extract this data from a PNG file (passed in
+
+#### Example: reading a PNG file\
+
+A complete program to extract this data from a PNG file (passed in
 via STDIN) looks\
 like this:\
  4 You can read more about this dispute in Lincoln Stein’s excellent
 article at:\
  http://www.webtechniques.com/archives/1999/12/webm/.\
 
-------------------------------------------------------------------------
 
-***Binary data***\
- **141**\
+\
  binmode STDIN;\
  my \$data;\
  read(STDIN, \$data, 8);\
@@ -902,11 +899,7 @@ data that it contains, we can read in that amount of data from the file.
 In our pro-\
 gram we also display the information to the user.\
 
-------------------------------------------------------------------------
 
-**142**\
- CHAPTER\
- ***Fixed-width and binary data***\
  The type of the chunk determines how we process the data we have read.
 In our\
  case, we are only dealing with the IHDR chunk, and that is defined as
@@ -972,12 +965,12 @@ complex program would need to read the PNG specification and work out
 how to\
 process each type of chunk.\
 
-------------------------------------------------------------------------
 
-***Binary data***\
- **143**\
- ***Testing the PNG file reader\
-***To test this program I created a simple PNG file that was 100 pixels
+\
+
+#### Testing the PNG file reader\
+
+To test this program I created a simple PNG file that was 100 pixels
 by 50 pixels,\
 containing some simple text on a white background. As the program
 expects to\
@@ -1001,8 +994,10 @@ or interlac-\
 ing was used. After the IHDR chunk, you can see various other chunks.
 The impor-\
 tant one is the IDAT chunk which contains the actual image data.\
- ***CPAN modules\
-***There are, of course, easier ways to get to this information than by
+
+#### CPAN modules\
+
+There are, of course, easier ways to get to this information than by
 writing your own\
 program. In particular, Gisle Aas has written a module called
 Image::Info which is\
@@ -1012,8 +1007,10 @@ TIFF, and GIF file formats, and no doubt more will follow. Reading the
 source code\
 for this module will give you more useful insights into reading binary
 files using Perl.\
- ***7.2.2***\
- ***Reading and writing MP3 files***\
+
+### Reading and writing MP3 files
+
+
  Another binary file format that has been getting a lot of publicity
 recently is the\
 MP35 file. These files store near-CD quality sound in typically a third
@@ -1031,11 +1028,7 @@ allow you to store useful information about the sounds contained in the
 file within\
  5 Short for MPEG3 or Motion Pictures Experts Group—Audio Level 3.\
 
-------------------------------------------------------------------------
 
-**144**\
- CHAPTER\
- ***Fixed-width and binary data***\
  the file itself. This includes obvious fields such as the artist,
 album, track name, and\
 year of release, together with more obscure data like the genre of the
@@ -1085,8 +1078,11 @@ to read the\
  code of this module as it will give you many useful ideas on the best
 way to read and\
 write your binary data.\
- ***7.3***\
- ***Further information***\
+
+Further information
+----------
+
+
  This chapter has discussed a number of built-in Perl functions. These
 include pack,\
 unpack, read, printf, and sprintf. For more information about any
@@ -1094,10 +1090,8 @@ built-in\
 Perl function see the perldoc perlfunc manual page. The list of type
 specifiers\
 
-------------------------------------------------------------------------
 
-***Summary***\
- **145**\
+\
  supported by sprintf and printf is system-dependent, so you can get
 this infor-\
 mation from your system documentation.\
@@ -1106,22 +1100,25 @@ mation from your system documentation.\
 documentation by\
 typing perldoc Image::Info or perldoc MPEG::MP3Info at your command
 line.\
- ***7.4***\
- ***Summary***\
- ■\
- The easiest way to split apart a fixed-width data record is by using
+
+Summary
+----------
+
+
+
+*  The easiest way to split apart a fixed-width data record is by using
 the unpack\
 function.\
- ■\
- Conversely, the easiest way to create a fixed-width data record is by
+
+*  Conversely, the easiest way to create a fixed-width data record is by
 using the\
 pack function.\
- ■\
- If your data doesn’t have distinct end-of-record markers, you can read
+
+*  If your data doesn’t have distinct end-of-record markers, you can read
 a cer-\
 tain number of bytes from your input data stream using the read
 function.\
- ■\
- Once you have used the binmode function on a binary data stream it can
+
+*  Once you have used the binmode function on a binary data stream it can
 be\
 processed using exactly the same techniques as a text data stream.\
