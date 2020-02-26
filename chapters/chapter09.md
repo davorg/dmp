@@ -11,7 +11,6 @@ What this chapter covers:
 
 *  Getting a weather forecast
 
-
 Since the explosion in interest in the World Wide Web in the 1990s,
 HTML has become one of the most popular file formats that we can use
 for the purpose of extracting data. At the end of the 1990s it seemed
@@ -22,85 +21,86 @@ In this chapter we will look at HTML and see how to extract the data
 that we  need from HTML documents.
 
 Extracting HTML data from the World Wide Web
-----------
+--------------------------------------------
 
+Perl has a set of modules which can be used to read data from the
+World Wide Web. This set of modules is called LWP (for Library for WWW
+Programming in Perl) and you can find it on the CPAN under the name
+libwww. !!! FOOTNOTE  1 If, however, you are using ActiveState’s
+ActivePerl for Windows, you’ll find that LWP is part of the standard
+installation.!!! LWP contains modules for gleaning data from the WWW
+under a large number of conditions. Here we will look at only the
+simplest module that it contains. If these methods don’t work for you
+then you should take a close look at the documentation that comes with
+LWP.
 
-Perl has a set of modules which can be used to read data from the World
-Wide Web. This set of modules is called LWP (for Library for WWW Programming in
-Perl) and you can find it on the CPAN under the name libwww. !!! FOOTNOTE  1 If, however, you are using ActiveState’s ActivePerl for Windows, you’ll find that LWP is part of the standard installation.!!! LWP contains modules
-for gleaning data from the WWW under a large number of conditions. Here we
-will look at only the simplest module that it contains. If these methods
-don’t work for you then you should take a close look at the documentation that comes
-with LWP.
+The simplest method to use when pulling data down from the web is the
+LWP::Simple module. This module exports a number of functions which
+can send an HTTP request and handle the response. The simplest of
+these is the get function. This function takes a URL as an argument
+and returns the data that is returned when that URL is requested. For
+example:
 
-The simplest method to use when pulling data down from the web is the\
- LWP::Simple module. This module exports a number of functions which can
-send\
-an HTTP request and handle the response. The simplest of these is the
-get func-\
-tion. This function takes a URL as an argument and returns the data that
-is returned\
-when that URL is requested. For example:\
+	use LWP::Simple;
+	my $page = get('http://www.mag-sol.com/index.html');
 
- use LWP::Simple;\
- my \$page = get('http://www.mag-sol.com/index.html');\
+will put the contents of the requested page into the variable $page.
+If there is an error, then get will return undef.
 
- will put the contents of the requested page into the variable \$page.
-If there is an\
-error, then get will return undef.\
+Two of the most common steps that you will want to take with the data
+returned will be to print it out or to store it in a file.
+LWP::Simple has functions that carry out both of these options with a
+single call:
 
- Two of the most common steps that you will want to take with the data
-returned\
- will be to print it out or to store it in a file. LWP::Simple has
-functions that carry\
-out both of these options with a single call:\
+	getprint('http://www.mag-sol.com/index.html');
 
-	getprint('http://www.mag-sol.com/index.html');\
+will print the page directly to STDOUT and
 
-will print the page directly to STDOUT and\
+	getstore('http://www.mag-sol.com/index.html', 'index.html');
 
-	getstore('http://www.mag-sol.com/index.html', 'index.html');\
-
-will store the data in the (local) file index.html.\
-
+will store the data in the (local) file index.html.
 
 Parsing HTML
-----------
+------------
 
+Parsing HTML in Perl is all based around the HTML::Parser CPAN
+module.!!! FOOTNOTE  2 Note that what I am describing here is
+HTML::Parser version 3. In this version, the module was rewritten  so
+that it was implemented in C for increased performance. The interface
+was also changed. Unfortunately, the version available for ActivePerl
+on Win32 platforms still seems to be the older, pure Perl version,
+which doesn’t support the new interface. !!! This module takes either
+an HTML file or a chunk of HTML in a variable and splits it into
+individual tokens. To use HTML::Parser we need to define a number of
+*handler* subroutines which are called by the parser whenever it
+encounters certain constructions in the document being parsed.
 
-Parsing HTML in Perl is all based around the HTML::Parser CPAN module.!!! FOOTNOTE  2 Note that what I am describing here is HTML::Parser version 3. In this version, the module was rewritten  so that it was implemented in C for increased performance. The interface was also changed. Unfortunately, the version available for ActivePerl on Win32 platforms still seems to be the older, pure Perl version, which doesn’t support the new interface. !!!
-This module takes either an HTML file or a chunk of HTML in a variable and
-splits it into individual tokens. To use HTML::Parser we need to define a number of
-*handler* subroutines which are called by the parser whenever it encounters
-certain constructions in the document being parsed.
-
-The HTML that you want to parse can be passed to the parser in a couple
-of  ways. If you have it in a file you can use the parse\_file method, and
-if you have it in a variable you can use the parse method.
+The HTML that you want to parse can be passed to the parser in a
+couple of  ways. If you have it in a file you can use the parse\_file
+method, and if you have it in a variable you can use the parse method.
 
 ### Example: simple HTML parsing
-
 
 Here is a very simple HTML parser that displays all of the HTML tags
 and attributes it finds in an HTML page.
 
-	use HTML::Parser;\
-	use LWP::Simple;\
-	sub start {\
-	my (\$tag, \$attr, \$attrseq) = @\_;\
-	print "Found \$tag\\n";\
-	foreach (@\$attrseq) {\
-	print " [\$\_ -\> \$attr-\>{\$\_}]\\n";\
-	}\
-	}\
-	my \$h = HTML::Parser-\>new(start\_h =\> [\\&start,
-	'tagname,attr,attrseq']);\
-	my \$page = get(shift);\
-	\$h-\>parse(\$page);\
+	use HTML::Parser;
+	use LWP::Simple;
+	sub start {
+	my ($tag, $attr, $attrseq) = @_;
+	print "Found $tag\n";
+	foreach (@$attrseq) {
+	print " [$_ -> $attr->{$_}]\n";
+	}
+	}
+	my $h = HTML::Parser->new(start_h => [\&start,
+	'tagname,attr,attrseq']);
+	my $page = get(shift);
+	$h->parse($page);
 
 In this example, we define one handler, which is called whenever the
 parser encounters the start of an HTML tag. The subroutine start is
-defined as being a handler as part of the HTML::Parser-\>new call.
+defined as being a handler as part of the HTML::Parser->new call.
 Notice that we pass new a hash of values. The keys to the hash are the
 names of the handlers and the values are references to arrays that
 define the associated subroutines. The first element of the referenced
@@ -113,12 +113,13 @@ handler as scalars. This means that the attribute hash and the
 attribute sequence array are actually passed as references.
 
 In the start subroutine, we simply print out the type of the HTML
-element that  we have found, together with a list of its attributes. We use the
-@\$attrseq array to display the attributes following the same order in which they were
-defined in the original HTML. Had we relied on keys %\$attr, we couldn’t have
-guaranteed the attributes appearing in any particular order.
+element that  we have found, together with a list of its attributes.
+We use the @$attrseq array to display the attributes following the
+same order in which they were defined in the original HTML. Had we
+relied on keys %$attr, we couldn’t have guaranteed the attributes
+appearing in any particular order.
 
-#### Testing the simple HTML parser\
+#### Testing the simple HTML parser
 
 In order to test this, here is a simple HTML file:
 
@@ -135,7 +136,7 @@ In order to test this, here is a simple HTML file:
 	</body>
 	</html>
 
- and here is the output we get from running it through our parser:\
+and here is the output we get from running it through our parser:
 
 	Found html
 	Found head
@@ -154,22 +155,24 @@ In order to test this, here is a simple HTML file:
 	Found li
 
 Each time the parser finds an HTML element, it calls start, which
-displays information about the element and its attributes. Notice that none of the
-actual text of the document appears in our output. For that to happen we would need to
-define a text handler. You would do that by declaring a text\_h key/value pair
-in the call to HTML::Parser-\>new. You would define the handler in the same
-way, but in this case you might choose a different set of parameters. Depending on
-what your script was doing, you would probably choose the text or dtext
-parameters. Both of these parameters give you the text found, but in the dtext version
-any HTML entities are decoded.
+displays information about the element and its attributes. Notice that
+none of the actual text of the document appears in our output. For
+that to happen we would need to define a text handler. You would do
+that by declaring a text_h key/value pair in the call to
+HTML::Parser->new. You would define the handler in the same way, but
+in this case you might choose a different set of parameters. Depending
+on what your script was doing, you would probably choose the text or
+dtext parameters. Both of these parameters give you the text found,
+but in the dtext version any HTML entities are decoded.
 
 You can see how easy it is to build up a good idea of the structure of
-the docu-  ment. If you wanted a better picture of the structure of the document,
-you could also define an end handler and display information about closing tags as
-well. One option might be to keep a global variable, which was incremented each
-time a start tag was found, and decremented each time a close tag was found. You
-could then use this value to indent the data displayed according to how deeply
-nested the element was.
+the document. If you wanted a better picture of the structure of the
+document, you could also define an end handler and display information
+about closing tags as well. One option might be to keep a global
+variable, which was incremented each time a start tag was found, and
+decremented each time a close tag was found. You could then use this
+value to indent the data displayed according to how deeply nested the
+element was.
 
 Prebuilt HTML parsers
 ---------------------
@@ -193,7 +196,7 @@ The first element in a pair is the name of an attribute which denotes
 a link, and the second is the value of that attribute. This should
 become a bit clearer with an example.
 
-#### Example: listing links with HTML::LinkExtor\
+#### Example: listing links with HTML::LinkExtor
 
 Here is a program which simply lists all of the links found in an
 HTML file.
@@ -213,8 +216,8 @@ HTML file.
 	}
 	}
 
- and here is a sample HTML file which contains a number of links of
-various kinds:\
+and here is a sample HTML file which contains a number of links of
+various kinds:
 
 	<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 	<html>
@@ -232,7 +235,7 @@ various kinds:\
 	</body>
 	</html>
 
-When we run this program on this HTML file, the output is as follows:\
+When we run this program on this HTML file, the output is as follows:
 
 	Type: link
 	href -> style.css
@@ -248,7 +251,7 @@ When we run this program on this HTML file, the output is as follows:\
 	src -> pm.gif
 	lowsrc -> pmsmall.gif
 
-#### Example: listing specific types of links with HTML::LinkExtor\
+#### Example: listing specific types of links with HTML::LinkExtor
 
 As you can see, there are a number of different types of links that
 HTML:LinkExtor returns. The complete list changes as the HTML
@@ -256,10 +259,10 @@ specification changes, but basically any element that can refer to an
 external file is examined during parsing. If you only want to look at,
 say, links within an a tag, then you have a couple of options. You can
 either parse the file as we’ve just discussed and only use the links
-you are inter- ested in when you iterate over the list of links (using
-code something like: next unless  $ _- >[0] eq 'a'), or you can use
+you are interested in when you iterate over the list of links (using
+code something like: next unless  $_->[0] eq 'a'), or you can use
 the second, more complex, interface to HTML::LinkExtor. For this
-interface, you need to pass the new function a refer- ence to a
+interface, you need to pass the new function a reference to a
 function which the parser will call each time it encounters a link.
 This function will be passed the name of the element containing the
 link together with pairs of parameters indicating the names and values
@@ -282,15 +285,15 @@ displays only the a links within a file:
 	push @links, [@_] if $_[0] eq 'a';
 	}
 
- Running our test HTML file through this program gives us the following
-output:\
+Running our test HTML file through this program gives us the following
+output:
 
-	**Type: a**
-	**href -> http://www.perl.com/**
-	**Type: a**
-	**href -> http://www.pm.org**
+	Type: a
+	href -> http://www.perl.com/
+	Type: a
+	href -> http://www.pm.org
 
- which only lists the links that we are interested in.\
+which only lists the links that we are interested in.
 
 ### HTML::TokeParser
 
@@ -304,7 +307,7 @@ skip tags until it reaches a tag of the given type. There is also a
 get _text function which returns the text at the current position in
 the stream.
 
-#### Example: extracting \<h1\> elements with HTML::TokeParser\
+#### Example: extracting <h1> elements with HTML::TokeParser
 
 For example, to extract all of the  <h1> elements from an HTML file
 you could use code this way:
@@ -313,9 +316,9 @@ you could use code this way:
 	my $file = shift;
 
 
-	my $p = HTML::TokeParser- >new( $file);
-	while ( $p- >get _tag('h1')) {
-	print  $p- >get _text(), "  n";
+	my $p = HTML::TokeParser->new( $file);
+	while ( $p->get _tag('h1')) {
+	print  $p->get _text(), "  n";
 	}
 
 We will use the following HTML file to test this program:
@@ -346,7 +349,7 @@ and here is the output:
 	The first major item
 	Another major header
 
-#### Example: listing all header tags with HTML::TokeParser\
+#### Example: listing all header tags with HTML::TokeParser
 
 A more sophisticated approach might be to look at the structure of the
 document by examining all of the headers in the document. In this case
@@ -367,14 +370,14 @@ the structure of the document using code like this:
 	my $p = HTML::TokeParser->new($file);
 	my $tag;
 	while ($tag = $p->get_tag()) {
-	next unless $tag->[0] =~ /^h(\d)/;
+	next unless $tag->[0] =~ /^h(d)/;
 	my $level = $1;
 	print ' ' x $level, "Head $level: ", $p->get_text(), "n";
 	}
 
 Notice that we only process tags where the name matches the regular
-expression /\^h(\d)/. This ensures that we only see HTML header tags.
-We put brackets around the \d to capture this value in \$1. This value
+expression /^h(d)/. This ensures that we only see HTML header tags.
+We put brackets around the d to capture this value in $1. This value
 indicates the level of the header we have found and we can use it to
 calculate how far to indent the output. Running this program on our
 previous sample HTML file gives the following output:
@@ -432,7 +435,7 @@ useful. First, a great many HTML files aren’t strictly valid HTML.
 HTML::TreeBuilder does a good job of parsing invalid HTML and the
 as\_HTML method can then be used to output valid HTML. Second, the
 HTML::Element has a number of methods for changing the parse tree, so
-you can alter your page and then use the as\_HTML method to produce the
+you can alter your page and then use the as_HTML method to produce the
 altered page. And third, the tree can be scanned in ways that would be
 inconvenient or impossible with just a token stream.
 
@@ -479,7 +482,7 @@ program looks like this:
 	use LWP::Simple;
 	my $addr = 'http://uk.weather.yahoo.com/1208/index_c.html';
 	my $page = get $addr;
-	my $p = HTML::TokeParser->new(\$page)
+	my $p = HTML::TokeParser->new($page)
 	|| die "Parse errorn";
 	$p->get_tag('table') !! die "Not enough table tags!" foreach (1 .. 6);
 	$p->get_tag('font');
@@ -493,7 +496,7 @@ program looks like this:
 You will notice that I’ve used HTML::TokeParser in this example. I
 could have also chosen another HTML::Parser subclass or even written
 my own, but HTML:: TokeParser is a good choice for this task as it is
-very easy to target specific ele- ments, such as the sixth <table>
+very easy to target specific elements, such as the sixth <table>
 tag, and then move to the next <font> tag.
 
 In the program we use LWP::Simple to retrieve the required page from
@@ -511,7 +514,7 @@ can be used to extract just about any information that you can find on
 the World Wide Web.
 
 Further information
-----------
+-------------------
 
 LWP and HTML::Parser together with all of the other modules that we
 have discussed in this section are not part of the standard Perl
@@ -523,7 +526,7 @@ all of the documentation that comes with the module before posting a
 question).
 
 Summary
-----------
+-------
 
 *  HTML is one of the most common data formats that you will come across because of its popularity on the World Wide Web.
 
