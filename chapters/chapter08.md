@@ -107,7 +107,7 @@ The information in the footer is a little different. In this case we
 are describing the actual shape of the data rather than where (or
 when) it comes from. At first glance it might seem that this
 information is unnecessary, as we can find out the number of records
-in the file simply by counting them as we process them. The rea- son
+in the file simply by counting them as we process them. The reason
 that it is useful for the file to contain an indication of the number
 of records is that it acts as a simple check that the file has not
 been corrupted between the time it was created and the time we
@@ -283,9 +283,9 @@ pushing the remaining data onto a list of tracks on our current CD.
 Line 22 starts to deal with a new CD. First we need to push the
 previous CD record onto our list of CDs (which is stored in
 $data{CDs}). Notice that we also get to this line of code at the
-start of the first CD record. In this case there is no pre- vious CD
+start of the first CD record. In this case there is no previous CD
 record to store. We take care of this by only storing the record if
-it con- tains data. Notice also that as we reuse the same %rec
+it contains data. Notice also that as we reuse the same %rec
 variable for each CD, we make an anonymous copy of it each time.
 
 Line 23 resets the %rec hash to be empty, and line 24 gets the data
@@ -453,7 +453,7 @@ dealt with is very simple and almost certainly any real world HTML
 will be far more complex.
 
 The first assumption that we have made about HTML is that all tags
-start and fin- ish on the same line. You only need to look at a few
+start and finish on the same line. You only need to look at a few
 web pages to see how optimistic that is. Many HTML tags have a number
 of attributes and can be spread out over a number of lines. Take this
 tag for example:
@@ -484,7 +484,7 @@ times. Take a look at the following piece of valid HTML:
 In this example, the web page has graphics that link to the previous
 and next pages. In case the user has a text-only browser or has
 images switched off, the author has provided alt attributes which can
-be displayed instead of the images. Unfortu- nately, in the process
+be displayed instead of the images. Unfortunately, in the process
 he has completely broken our basic HTML parsing routine. The > symbol
 in the second alt attribute will be interpreted by our code as the
 end of the img tag. Our code doesn’t know that it should ignore >
@@ -495,7 +495,7 @@ complication that you’ll need to deal with.
 
 The point is that while you can solve all of these problems, there
 are always new problems around the corner and there comes a point
-when you have to stop look- ing for new problems to address and put
+when you have to stop looking for new problems to address and put
 the code into use. If you can be sure of the format of your HTML, you
 can write code which processes the subset of HTML that you know you
 will be dealing with, but the only way to deal with all HTML is to
@@ -517,7 +517,7 @@ these problems is to use a parser. A *parser* is a piece of software
 that takes a piece of input data and looks for recognizable patterns
 within it. This is, of course, what all of our parsing routines have
 been doing, but we are now looking at a far more mathematically
-rigor- ous way of splitting up our input data.
+rigorous way of splitting up our input data.
 
 Before I go into the details of parsing, I should point out that this
 is a very complex field and there is a lot of very specific jargon
@@ -554,7 +554,7 @@ the subject and the object are noun phrases and a noun phrase is
 defined as either a pronoun, a proper noun, or an article followed
 by a noun. In the last rule, pronouns, proper nouns, articles, and
 nouns are all terminals. Notice that the vertical bars in the
-definition of a noun_phrase indicate alterna- tives, i.e., a noun
+definition of a noun_phrase indicate alternatives, i.e., a noun
 phrase rule can be matched by one of three different forms. Each of
 these alternatives is called a *production*.
 
@@ -647,4 +647,4 @@ Summary
 
 *  Parsers work by examining a string of tokens to see if they match the rules defined in a grammar.
 
-*  Parsers can either be bottom-up (scan left, expand rightmost subrule) or top- down (scan left, expand leftmost subrule).
+*  Parsers can either be bottom-up (scan left, expand rightmost subrule) or top-down (scan left, expand leftmost subrule).

@@ -115,7 +115,7 @@ see later in the chapter, it is quite possible to match Perl regular
 expressions instead.
 
 Having defined our grammar, we simply create a parser object using
-this gram- mar and use that object to see if our sentences are valid.
+this grammar and use that object to see if our sentences are valid.
 Notice that we use the method sentence to validate each sentence in
 turn. This method was created by the Parse::RecDescent object as it
 read our grammar. The sentence method returns true or false depending
@@ -187,7 +187,7 @@ The grammar can be explained in English like this:
 There are a couple of new features to notice here. First, we have used
 (s) after the names of some of our subrules. This means that the
 subrule can appear one or more times in the rule. There are a number
-of other suffixes which can control the num- ber of times that a
+of other suffixes which can control the number of times that a
 subrule can appear, and the full list is in table 11.1. In this case
 we are saying that a file can contain one or more sections and that
 each section can contain one or more assignment statements.
@@ -363,7 +363,7 @@ name of the section.
 The section rule creates a new hash called %sec. It then iterates
 across the list returned by the assign subrule. Each element in this
 list is the return value from one assign rule. As we saw in the
-previous paragraph, this is a reference to a two- element list. We
+previous paragraph, this is a reference to a two-element list. We
 convert each of these lists to a key/value pair in the
 %sec hash. Finally, the rule returns a reference to a two-element
 %hash. The first
@@ -383,7 +383,7 @@ values are the associated strings from the right-hand side of the
 assignment.
 
 The code at the end of the script prints out the values in the
-returned data struc- ture. Running this script against our sample INI
+returned data structure. Running this script against our sample INI
 file gives us the following result:
 
 	rules

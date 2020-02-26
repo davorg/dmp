@@ -76,7 +76,7 @@ article is at http://www.perl.com/pub/2000/06/commify.html.
 
 ### The usefulness of the Perl community
 
-One of the best things about using Perl is the community that goes with it. It seems to attract people who are only too happy to help others—whether by sub- mitting their code to the CPAN, answering a technical question in a newsgroup such as comp.lang.perl.misc, or on a website like Perl Monks, or even writing arti- cles for *The Perl Journal*.
+One of the best things about using Perl is the community that goes with it. It seems to attract people who are only too happy to help others—whether by submitting their code to the CPAN, answering a technical question in a newsgroup such as comp.lang.perl.misc, or on a website like Perl Monks, or even writing articles for *The Perl Journal*.
 
 If you are going to use Perl, I would certainly encourage you to become part of the Perl community. There are a number of ways to do this:
 
@@ -102,13 +102,13 @@ more importantly, your intermediate data structures. You need to know
 as much as possible about not only the format of the data, but also
 what it will be used for, as this will help you to build flexibility
 into your program. Always design your program to be as flexible as
-possi- ble. This includes designing intermediate data structures
+possible. This includes designing intermediate data structures
 carefully and using the UNIX filter model to remove any assumptions
 about input and output channels.
 
 Know whether your data inputs or outputs are liable to change. If so,
 can you design your program so that it makes no assumptions about
-input and output for- mats? Can your program work out the format from
+input and output formats? Can your program work out the format from
 the actual input data? Or can the input and output formats be driven
 from configuration files? Can you have some input into the design of
 these formats? If so, can you make them flexible enough that one
@@ -134,7 +134,7 @@ back issues).
 
 Understand common Perl methods such as complex sorting techniques.
 Learn how to benchmark your programs. Find the best performing
-solution to the prob- lem (but know when your solution is fast
+solution to the problem (but know when your solution is fast
 enough).
 
 Visit the CPAN often enough to have an overview of what is there. If a

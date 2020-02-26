@@ -68,7 +68,7 @@ data as ASCII characters.
 One of the simplest things that we can do with an ASCII file is to
 read it into a data structure for later manipulation. The most
 suitable format for the data structure depends, of course, on the
-exact nature of the data in the file and what you are plan- ning to
+exact nature of the data in the file and what you are planning to
 do with it, but for readable text an array of lines will probably be
 the most appropriate structure. If you are interested in the
 individual words in each line then it will probably make sense to
@@ -108,14 +108,14 @@ expanded, looks something like this:
 	}
 
 which may be a little easier to follow. For each line in the file, we
-split the line wher- ever we see one or more white space characters.
+split the line wherever we see one or more white space characters.
 We then create an anonymous array which is a copy of the array
 returned by split and push the reference returned by the anonymous
 array constructor onto an @file.
 
 Also implicit in this line is our definition of a word. In this case
 we are using Perl’s built-in \\s character class to define our word
-separators as white space charac- ters (recall that split uses \\s+
+separators as white space characters (recall that split uses \\s+
 as the delimiter by default). Your application may require something
 a little more complicated.
 
@@ -195,7 +195,7 @@ into a scalar variable.
 #### Example: simple text replacement
 
 For example, if we have a text file where we want to convert all
-instances of “Win- dows” to “Linux”, we can write a short script like
+instances of “Windows” to “Linux”, we can write a short script like
 this:
 
 	my \$file;
@@ -209,7 +209,7 @@ this:
 Notice how the section that reads the data has been wrapped in a bare
 block in order to provide a limited scope for the local copy of the
 \$/ variable. Also, we have used the g modifier on the substitution
-command in order to change all occur- rences of Windows.
+command in order to change all occurrences of Windows.
 
 All of the power of regular expression substitutions is available to
 us. It would be simple to rewrite our translation program from the
@@ -388,7 +388,7 @@ interprets the data in such a way that it produces lines of text. One
 important character (or sequence of characters) in a text file is the
 character which separates different lines of text. When, for exam-
 ple, a text editor reaches this character in a file, it will know
-that the following char- acters must be displayed starting at the
+that the following characters must be displayed starting at the
 first column of the following line of the user’s display.
 
 #### Different line end characters
@@ -464,7 +464,7 @@ the source will not change during the execution of the while loop.
 Sometimes the unstructured data that you receive will contain
 numerical data and the only changes that you will want to make are to
 reformat the numbers into a standardized format. This breaks down
-into two processes. First you have to recog- nize the numbers you are
+into two processes. First you have to recognize the numbers you are
 interested in, then you need to reformat them.
 
 #### Recognizing numbers
@@ -508,7 +508,7 @@ do something like this:
 to print out a list of all of the numbers in \$data.
 
 If you have a function, reformat, that will change the numbers into
-your pre- ferred format then you can use code like this:
+your preferred format then you can use code like this:
 
 	\$data =\~ s/\$num\_re/reformat(\$1)/ge;
 
@@ -552,9 +552,9 @@ Convert::SciEng and Number::Format.
 
 Convert::SciEng is a module for converting numbers to and from a
 format in which they have a postfix letter indicating the magnitude
-of the number. This con- version is called *fixing* and *unfixing*
+of the number. This conversion is called *fixing* and *unfixing*
 the number. The module recognizes two different schemes of fixes, the
-SI scheme and the SPICE scheme. The module inter- face is via an
+SI scheme and the SPICE scheme. The module interface is via an
 object interface. A new object is created by calling the class new
 method and passing it a string indicating which fix scheme you want
 to use (SI or SPICE).

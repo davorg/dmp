@@ -36,18 +36,18 @@ elements. For example, an  HTML document makes it easy to recognize
 headings at various levels, paragraphs,  lists, and various other
 publishing elements. You can tell when an element should  be printed
 in bold, but the problem is that you don’t know *why* that particular
-ele-  ment was bold. It could be purely for emphasis, it could be
-because it is a row head-  ing in a table, or it could be because it
+element was bold. It could be purely for emphasis, it could be
+because it is a row heading in a table, or it could be because it
 is the temperature on a weather page.
 
 Our task would be a lot easier if the mark-up in a document told us
 more about   the actual meaning of the data. In our weather example,
 it would be nice if there was  a <FORECAST> … </FORECAST> element that
-surrounded the actual forecast descrip-  tion and perhaps a
+surrounded the actual forecast description and perhaps a
 <TEMPERATURE> … </TEMPERATURE> element which surrounded  each of the
 temperature figures in which we were interested. Even better, the
 <TEMPERATURE> element could have attributes which told us whether it
-was a maxi-  mum or minimum temperature and whether it was in degrees
+was a maximum or minimum temperature and whether it was in degrees
 Fahrenheit or Celsius.
 
 ### What is XML?
@@ -59,7 +59,7 @@ languages which are better suited to particular tasks.  The way it
 works is by defining a syntax for *Document Type Definitions* (DTDs).
 A  DTD defines the set of elements that are allowed in a document,
 together with their  attributes and relationships to each other. It
-will define which elements are manda-  tory or optional, whether there
+will define which elements are mandatory or optional, whether there
 is any defined order, and which elements can (or  must) contain other
 elements. The exact syntax of DTDs is beyond the scope of this  book,
 but there are a number of specialized books which cover it in some
@@ -108,7 +108,7 @@ Our sample weather document fulfills all of these constraints and is,
 therefore, well-formed. It cannot, however, be described as valid. A
 valid document is one that follows the rules laid down in a DTD. This
 means that it must have all of the correct elements in the right
-order and any nesting of elements must also be in combina- tions
+order and any nesting of elements must also be in combinations
 sanctioned by the DTD. If we wrote a weather DTD and wrote our
 weather document to conform with that DTD then we could call it
 valid. Currently, we don’t have such a DTD so there is no way that
@@ -228,7 +228,7 @@ therefore, fail the parsing process. !!! FOOTNOTE  3 This always throws a fatal 
 The Text function checks whether there is useful data in the text
 string (which is stored in $_) and returns if it can’t find at least
 one nonspace character. It then strips leading and trailing spaces
-from the data. If the current element we are pro- cessing (given by
+from the data. If the current element we are processing (given by
 $curr[-1]) is the OUTLOOK element, then the text must be the outlook
 description and we store it in the appropriate place in the
 %forecast variable. If the current element is a TEMPERATURE element,
@@ -260,7 +260,7 @@ correct approach for a program to take. If, however, you have a case
 where you want to recover a little more gracefully you can catch the
 fatal exception. You do this using eval. If the code that is passed
 to eval causes an exception, the program does not die, but the error
-mes- sage is put in the variable $@. You can therefore parse your XML
+message is put in the variable $@. You can therefore parse your XML
 documents using code like this:
 
 	eval { $p->parsefile($file) };
@@ -357,13 +357,13 @@ detail.
 
 Each element is represented by a list. The first item is the element
 type and the second item is a reference to another list which
-represents the contents of the ele- ment. The first element of this
-second level list is a reference to a hash which con- tains the
+represents the contents of the element. The first element of this
+second level list is a reference to a hash which contains the
 attributes for the element. If the element has no attributes then the
 reference to the hash still exists, but the hash itself is empty. The
 rest of the list is a series of pairs of items, which represent the
 text, and elements that are contained within the element. These pairs
-of items have the same structure as the original two- item list, with
+of items have the same structure as the original two-item list, with
 the exception that a text item has a special element type of 0.
 
 If you’re the sort of person who thinks that a picture is worth a
@@ -437,8 +437,8 @@ the type of node we are dealing with. If it is an element, then the
 first item in the node list will have a true value. Text nodes have
 the value 0 in this position, which will evaluate as false. If we are
 dealing with an element, then shifting the first element off of the
-con- tent list will give us a reference to the attribute hash. We can
-then print out the ele- ment type and attribute list indented to the
+content list will give us a reference to the attribute hash. We can
+then print out the element type and attribute list indented to the
 correct level.
 
 Having dealt with the element and its attributes we can process its
@@ -503,7 +503,7 @@ character 0.
 
 The processing for the TEMPERATURE element type is only slightly more
 complex as we need to access the attribute hash to find out the type
-of the temperature (min- imum or maximum) and the kind of degrees in
+of the temperature (minimum or maximum) and the kind of degrees in
 which is it measured.
 
 Notice that we still need to process any child elements and that this
@@ -588,13 +588,13 @@ more obvious $attrs = $node as this only copies the reference and
 still leaves it pointing to the same original hash. As the next line
 of the code deletes the Kids array reference from this hash, we use
 the slightly more complex $attrs = {%$node} as this takes a copy of
-the original hash and returns a refer- ence to the new copy. We can
+the original hash and returns a reference to the new copy. We can
 then delete the Kids reference without doing any lasting damage to the
 original object.
 
 Having retrieved the attribute hash, we display the element type along
 with its attributes. We then need to process all of the element’s
-children. We do this by iter- ating across the Kids array (which is
+children. We do this by iterating across the Kids array (which is
 why it’s a good idea that we didn’t delete the original earlier),
 passing each object in turn to process_node.
 
@@ -624,7 +624,7 @@ we used HTML::Parser or the Stream style of XML::Parser.
 Handlers can be set to process a large number of XML constructs. The
 most obvious ones are the start and end of an XML element or character
 data, but you can also set handlers for the XML declaration, various
-DTD definitions, XML comments, proc- essing instructions, and any
+DTD definitions, XML comments, processing instructions, and any
 other construct that you find in an XML document.
 
 You set handlers either by using the Handlers parameter when you
@@ -949,7 +949,7 @@ have installed the module.
 
 The image method is used to add image information to the RSS object.
 Once more, the various subelements of the <image> element are passed
-as named param- eters to the method. For each item that you wish to
+as named parameters to the method. For each item that you wish to
 add to the RSS file, you call the add\_item method. Finally, to write
 the RSS object to a file you use the save method. You could also use
 the as_string method, which will return the XML that your RSS object
@@ -978,7 +978,7 @@ The file is parsed using the parsefile method (which XML::RSS
 overrides from its parent XML::Parser). This method adds data
 structures modeling the RSS file to the RSS parser object. This data
 can be accessed using various accessor methods. The channel method
-gives you access to the various parts of the <channel> ele- ment, and
+gives you access to the various parts of the <channel> element, and
 the items method returns a list of the items in the file. Each
 element in the items list is a reference to a hash containing the
 various attributes of one item from the file.
@@ -1559,7 +1559,7 @@ exceptions. The <DESCRIPTION> element has no useful content (other
 than, of course, its contained elements, which will be handled
 elsewhere). The <LIST> element is more complex. First, it is the only
 element with an attribute list which needs to be passed on to the
-subroutine and, second, as the list subrou- tine processes all of the
+subroutine and, second, as the list subroutine processes all of the
 element’s content, we need to set the content to an empty list to
 prevent it being processed again.
 

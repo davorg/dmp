@@ -299,7 +299,7 @@ that the definition of the structure remains the same).
 There are a number of ways to encode this metadata, most of them based
 around putting the information in the first row of the file. In this
 case you would read the first line separately and parse it to extract
-the data. You would then use this informa- tion to build the format
+the data. You would then use this information to build the format
 string that you pass to unpack. Here are a couple of the encoding
 methods that you might find—and how to deal with them.
 
@@ -620,17 +620,17 @@ are taken up by punctuation marks and various control characters.
 When an ASCII character is written to a file, what is actually
 written is the binary version of the ASCII code for the given
 character. For example the number 123 would be written to the file
-as 00110001 00110010 00110011 (the binary equiva- lents of 49, 50,
+as 00110001 00110010 00110011 (the binary equivalents of 49, 50,
 and 51). The advantage of this type of data is that it is very easy
 to write software that allows users to make sense of the data. All
-you need to do is con- vert each byte of data into its equivalent
+you need to do is convert each byte of data into its equivalent
 ASCII character. The major disadvantage is the amount of space used.
 In the previous example we used 3 bytes of data to store a number,
 but if we had stored the binary number 01111011 (the binary
 equivalent of 123) we could have used a third of the space.
 
 For this reason, there are a number of applications which store data
-in binary for- mat. In many cases these are proprietary binary
+in binary format. In many cases these are proprietary binary
 formats which are kept secret so that one company has a competitive
 advantage over another. A good example of this is spreadsheets.
 Microsoft and Lotus have their own spreadsheet file format and,
@@ -922,6 +922,6 @@ Summary
 
 *  Conversely, the easiest way to create a fixed-width data record is by using the pack function.
 
-*  If your data doesn’t have distinct end-of-record markers, you can read a cer- tain number of bytes from your input data stream using the read function.
+*  If your data doesn’t have distinct end-of-record markers, you can read a certain number of bytes from your input data stream using the read function.
 
 *  Once you have used the binmode function on a binary data stream it can be processed using exactly the same techniques as a text data stream.
