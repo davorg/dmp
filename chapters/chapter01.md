@@ -74,6 +74,8 @@ the file will contain information on the date on which it was generated
 and the number of records in the file. Figure 1.1 shows what this file
 looks like with the various parts labeled.
 
+![Sample data file](images/1-1-sample-data-file.png)
+
 Each row of data in the file (i.e., the information about one CD) is
 called a data *record*. Each individual item of data (e.g., the CD
 title or year of release) is called a data *field*. In addition to
@@ -211,7 +213,7 @@ will not be in the most appropriate format for all of the systems that
 need to access that data. While this format may not be particularly
 convenient for any individual system, it should be chosen to allow
 maximum flexibility and ease of processing to simplify conversion into
-other formats. In order to be useful to all of the people who want 
+other formats. In order to be useful to all of the people who want
 to make use of the data, it will need to be transformed in various ways
 as it moves from one system to the next.
 
@@ -252,15 +254,12 @@ writing to one place.
 In the second example I was working on a trading system which needed to send
 details of trades to various other systems. Once more, the data was stored
 in a relational database. In this case the bank had made all interaction
-between systems much easier by designing an XML file format[1] for data
-interchange. Therefore, all we needed to do was to extract our data, create
+between systems much easier by designing an XML file format for data
+interchange (we'll talk about DTDs in Chapter 10). Therefore, all we needed to do was to extract our data, create
 the necessary XML file, and send it on to the systems that required it. By
 defining a standard data format, the bank ensured that all of its systems
 would only need to read or write one type of file, thereby saving a large
 amount of development time.
-
-[1: The definition of an XML file format is known as a Document Type
-Definition (DTD), but we’ll get to that in chapter 10.]
 
 Where does data come from? Where does it go?
 --------------------------------------------
@@ -281,7 +280,7 @@ common ones that you will come across are:
 * Databases
 * Data pipes
 
-Let’s look at these data sources and sinks in more detail.\
+Let’s look at these data sources and sinks in more detail.
 
 ### Data files
 
@@ -363,7 +362,7 @@ database is potentially slower than equivalent operations on data files.
 You may also need to invest in new hardware as some larger database systems
 like to have their own CPU (or CPUs) to run on. Nevertheless, most
 organizations are prepared to pay this price for the extra flexibility that
-they get from a database.\
+they get from a database.
 
 #### Communicating with databases
 
@@ -373,9 +372,8 @@ source or sink is an RDBMS that you will be communicating with it using SQL.
 Each vendor’s RDBMS has its own proprietary interface to get SQL queries into
 the database and data back into your program, but Perl now has a
 vendor-independent database interface (called DBI) which makes it much easier
-to switch processing between different databases.[2]
-
-[2: As long as you don’t make any use of vendor-specific features.]
+to switch processing between different databases (as long as you don’t make
+any use of vendor-specific features).
 
 ### Data pipes
 
@@ -408,14 +406,14 @@ useful if the reading process has been written to expect a file, but you
 want to write constantly changing data.
 
 * *TCP/IP Socket* — This is a good way to send a stream of data between two
-computers that are on the same network.[3] The two systems define a TCP/IP
+computers that are on the same network. The two systems define a TCP/IP
 port number through which they will communicate. The data munging process
 then sets itself up as a TCP/IP server and listens for connections on the
 right port. When the source has data to send, it instigates a connection on
 the port. Some kind of (application-defined) handshaking then takes place,
 followed by the source sending the data across to the waiting server.
 
-* *HTTP* [4]—This method is becoming more common. If both programs have access
+* *HTTP* —This method is becoming more common. If both programs have access
 to the Internet, they can be on opposite sides of the world and can still
 talk to each other. The source simply writes the data to a file somewhere on
 the publicly accessible Internet. The data munging program uses HTTP to send
@@ -424,13 +422,6 @@ server sends the file. The file could be an HTML file, but it could just as
 easily be in any other format. HTTP also has some basic authentication
 facilities built into it, so it is feasible to protect files to which you
 don’t want the public to have access.
-
-[3:  Using the term “network” in a very wide sense. Most Internet
-protocols are based on TCP/IP so that while your modem is dialed into your
-Internet Service Provider, your PC is on the same network as the web server
-that you are downloading MP3s from.]
-[4: Strictly speaking, HTTP is just another protocol running on top of
-TCP/IP, but it is important enough to justify discussing it separately.]
 
 What forms does data take?
 --------------------------
@@ -463,10 +454,9 @@ That is, the data source will consist of a number of records, each of which
 can be processed separately from its siblings. Records can be separated from
 each other in a number of ways. The most common way is for each line in a
 text file to represent one record,[5] but it is also possible that a blank
-line or a well-defined series of characters separates records.
-
-[5: There is, of course, potential for confusion over exactly what
-constitutes a line, but we’ll discuss that in more detail later.]
+line or a well-defined series of characters separates records. There is, of
+course, potential for confusion over exactly what constitutes a line, but we’ll
+discuss that in more detail later.
 
 Within each record, there will probably be fields, which represent the various
 data items of the record. These will also be denoted in several different ways.
@@ -485,16 +475,16 @@ Language* (SGML), and its two better known offspring, the *Hypertext Mark-up
 Language* (HTML) and the *Extensible Mark-up Language* (XML). In these systems,
 each data item is surrounded by tags which denote its position in the
 hierarchy of the data. A data item is contained by its parent and contains
-its own children.[6] At this point, the record-at-a-time processing methods
+its own children. At this point, the record-at-a-time processing methods
 that we will have been using on simpler data types no longer work and we
 will be forced to find more powerful tools.
 
+This family metaphor can, of course, be taken further. Two nodes which
+have the same parent are known as *sibling* nodes, although I’ve never yet
+heard two nodes with the same grandparents described as *cousins*.
 We will look at hierarchical data (specifically HTML and XML) in chapters 9
 and 10.
 
-[6: This family metaphor can, of course, be taken further. Two nodes which
-have the same parent are known as *sibling* nodes, although I’ve never yet
-heard two nodes with the same grandparents described as *cousins*.]
 
 ### Binary data
 
@@ -534,24 +524,24 @@ use to write something like this:
     if (condition) {
       do_something();
     }
-    
+
 but what happens if you want to do some special processing only if the
 condition is false? Of course you can often write something like:
 
     if (not condition) {
       do_something();
     }
-    
+
 but it’s already starting to look a bit unwieldy. In Perl you can write:
 
     unless (condition) {
       do_something();
     }
-    
+
 which reads far more like English. In fact you can even write:
 
     do_something() unless condition;
-    
+
 which is about as close to English as a programming language ever gets.
 
 A Perl programmer once explained to me the moment when he realized that Perl
@@ -592,24 +582,20 @@ be written in Perl if desired.
 
 ### Getting Perl
 
-One of the advantages of Perl is that it is free.[7] The source code for Perl
+One of the advantages of Perl is that it is free (as in both "free speech" and "free beer"). The source code for Perl
 is available for download from a number of web sites. The definitive site to
 get the Perl source code (and, indeed, for all of your other Perl needs) is
 www.perl.com, but the Perl source is mirrored at sites all over the world.
 You can find the nearest one to you listed on the main site. Once you have
 the source code, it comes with simple instructions on how to build and
-install it. You’ll need a C compiler and a make utility.[8]
-
-[7: Free as in both the “free speech” and “free beer” meanings of the word.
-For a longer discussion of the advantages of these, please visit the Free
-Software Foundation at www.fsf.org.]
-[8: If you don’t have these, then you can get copies of the excellent gcc
-and GNU make from the Free Software Foundation.]
+install it. You’ll need a C compiler and a make utility—[Gnu's gcc](https://gcc.gnu.org)
+should work for you.
 
 Downloading source code and compiling your own tools is a common procedure
 on UNIX systems. Many Windows developers, however, are more used to installing
 prepackaged software. This is not a problem, as they can get a prebuilt binary
-called ActivePerl from ActiveState at www.activestate.com. As with other
+called [ActivePerl](https://www.activestate.com/products/perl/downloads/) from
+[ActiveState](www.activestate.com). As with other
 versions of Perl, this distribution is free.
 
 ### Why is Perl good for data munging?
@@ -654,7 +640,7 @@ will find a solution there. If you are the first person to address a particular
 problem, once you’ve solved it, why not submit the solution to the CPAN. That
 way everyone benefits.
 
-* *Perl is fun * — I know this is a very subjective opinion, but the fact
+* *Perl is fun* — I know this is a very subjective opinion, but the fact
 remains that I have seen jaded C programmers become fired up with enthusiasm
 for their jobs once they’ve been introduced to Perl. I’m not going to try to
 explain it, I’m just going to suggest that you give it a try.
@@ -668,12 +654,12 @@ Appendix B contains a brief overview of the Perl language, but if you want to
 learn Perl you should look at one of the many Perl tutorial books. If you are
 a non-programmer then *Elements of Programming with Perl* by Andrew Johnson
 (Manning) would be a good choice. Programmers looking to learn a new language
-should look at *Learning Perl (2nd edition)* by Randal Schwartz and Tom
+should look at *Learning Perl (7th edition)* by Randal Schwartz, brian d foy, and Tom
 Christiansen (O’Reilly) or *Perl: The Programmer’s Companion* by Nigel Chapman
 (Wiley).
 
-The definitive Perl reference book is *Programming Perl (3rd edition)*
-by Larry  Wall, Tom Christiansen and Jon Orwant (O’Reilly).
+The definitive Perl reference book is *Programming Perl (4th edition)*
+by Tom Christiansen, brian d foy, Larry  Wall, and Jon Orwant (O’Reilly).
 
 Perl itself comes with a huge amount of documentation. Once you have installed
 Perl, you can type perldoc perl at your command line to get a list of the
