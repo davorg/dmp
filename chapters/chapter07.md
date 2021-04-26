@@ -229,7 +229,7 @@ whole file into memory and split the data using substr or unpack, but
 for many tasks the amount of data to process makes this unfeasible.
 
 The most efficient way is to use a completely different method of
-reading your data. In addition to the <FILE> syntax that reads data
+reading your data. In addition to the `<FILE>` syntax that reads data
 from file handles one record at a time, Perl supports a more
 traditional syntax using the read and seek functions. The read
 function takes three or four arguments. The first three are: a file
@@ -425,7 +425,7 @@ spaces (or nulls, depending on the template you use). This may, of
 course, be fine for your data, but if you want to prepad numbers with
 spaces then you should use the sprintf or printf functions.
 
-#### Writing fixed-width data using printf and sprintf\
+#### Writing fixed-width data using printf and sprintf
 
 These two functions do very similar things. The only difference is
 that sprintf returns its results in a scalar variable, whereas printf

@@ -11,7 +11,7 @@ book. Instead, I have gathered all of that information in this
 appendix. In all cases, this is not a complete reference for the
 module, but should be enough to take you beyond the examples in the
 book. Full references will come with the module and can be accessed
-by typing perldoc <module_name> at your command line. For example,
+by typing perldoc `<module_name>` at your command line. For example,
 typing
 
 	perldoc DBI
@@ -32,7 +32,7 @@ These functions are called via the DBI class itself.
 
 * DBI->connect($data_source, $user, $password [, \%attributes]) Creates a connection to a database and returns a handle which you use to carry out further actions on this connection.
 
-* $data_source will always start with “dbi:driver_name:”. The rest of the string is driver dependent.
+* `$data_source` will always start with “dbi:driver_name:”. The rest of the string is driver dependent.
 
 * $user and $password are passed unchanged to the database driver. They will usually be a valid database user and associated password.
 
@@ -79,59 +79,57 @@ The following attributes can be accessed via any DBI handle.
 
 The following functions are called on a valid database handle.
 
-* $dbh->selectrow_array($statement [, \%attr [, @bind_values]]) Combines the prepare, execute, and fetchrow_array functions into one function call. When it is called in a list context it returns the first row of data returned by the query. When it is called in a scalar context it returns the first field of the first row. See the separate functions for more details on the parameters.
+* `$dbh->selectrow_array($statement [, \%attr [, @bind_values]])` Combines the prepare, execute, and fetchrow_array functions into one function call. When it is called in a list context it returns the first row of data returned by the query. When it is called in a scalar context it returns the first field of the first row. See the separate functions for more details on the parameters.
 
-* $dbh->selectall_arrayref($statement [, \%attr [, @bind_values]]) Combines the prepare, execute, and fetchall_arrayref functions into a single function call. It returns a reference to an array. Each element of the array contains a reference to an array containing the data returned. See the separate functions for more details on the parameters.
+* `$dbh->selectall_arrayref($statement [, \%attr [, @bind_values]])` Combines the prepare, execute, and fetchall_arrayref functions into a single function call. It returns a reference to an array. Each element of the array contains a reference to an array containing the data returned. See the separate functions for more details on the parameters.
 
-* $dbh->prepare($statement [, \%attr]) Prepares an SQL statement for later execution against the database and returns a statement handle. This handle can later be used to invoke the execute function. Most database drivers will, at this point, pass the statement to the database to ensure that it compiles correctly. If there is a problem, prepare will return undef.
+* `$dbh->prepare($statement [, \%attr])` Prepares an SQL statement for later execution against the database and returns a statement handle. This handle can later be used to invoke the execute function. Most database drivers will, at this point, pass the statement to the database to ensure that it compiles correctly. If there is a problem, prepare will return undef.
 
-* $dbh->do($statement, \%attr, @bind_values) Prepares and executes an SQL statement. It returns the number of rows affected (–1 if the database driver doesn’t support this) or undef if there is an error. This is useful for executing statements that have no return sets, such as updates or deletes.
+* `$dbh->do($statement, \%attr, @bind_values)` Prepares and executes an SQL statement. It returns the number of rows affected (–1 if the database driver doesn’t support this) or undef if there is an error. This is useful for executing statements that have no return sets, such as updates or deletes.
 
-* $dbh->commit, $dbh->rollback Will commit or rollback the current database transaction. They are only effective if the AutoCommit attribute is set to 0.
+* `$dbh->commit`, `$dbh->rollback` Will commit or rollback the current database transaction. They are only effective if the AutoCommit attribute is set to 0.
 
-* $dbh->disconnect Disconnects the database handle from the database and frees any associated memory.
+* `$dbh->disconnect` Disconnects the database handle from the database and frees any associated memory.
 
-* $dbh->quote Applies whatever transformations are required to quote dangerous characters in a string, so that the string can be passed to the database safely. For example, many database systems use single quotes to delimit strings so that any apostrophes in a string can cause a syntax error. Passing the string through the quote function will escape the apostrophe in a database-specific manner.
+* `$dbh->quote` Applies whatever transformations are required to quote dangerous characters in a string, so that the string can be passed to the database safely. For example, many database systems use single quotes to delimit strings so that any apostrophes in a string can cause a syntax error. Passing the string through the quote function will escape the apostrophe in a database-specific manner.
 
 ### Database handle attributes
 
 The following attribute can be accessed through a database handle.
 
-* $dbh->{AutoCommit} Set to a Boolean value which determines whether or not each statement is committed as it is executed. The default value is 1, which means that it is impossible to roll back transactions. If you want to be able to roll back database changes then you must change this attribute to 0.
+* `$dbh->{AutoCommit}` Set to a Boolean value which determines whether or not each statement is committed as it is executed. The default value is 1, which means that it is impossible to roll back transactions. If you want to be able to roll back database changes then you must change this attribute to 0.
 
 ### Functions called on a statement handle
 
 The following functions are all called via a valid statement handle.
 
-* $sth->bind_param($p_num, $bind_value[, $bind_type]) Used to bind a value to a placeholder in a prepared SQL statement. Placeholders are marked with the question mark character (?). The $p_num parameter indicates which placeholder to use (placeholders are numbered from 1) and the $bind_values is the actual data to use. For example:
+* `$sth->bind_param($p_num, $bind_value[, $bind_type])` Used to bind a value to a placeholder in a prepared SQL statement. Placeholders are marked with the question mark character (?). The `$p_num` parameter indicates which placeholder to use (placeholders are numbered from 1) and the $bind_values is the actual data to use. For example:
 
-	my %data = (LON => 'London', MAN => 'Manchester', BIR =>
-	'Birmingham');
-	my $sth = $dbh->prepare('insert into city (code, name) values (?,
-	?)');
+	my %data = (LON => 'London', MAN => 'Manchester', BIR => 'Birmingham');
+	my $sth = $dbh->prepare('insert into city (code, name) values (?,?)');
 	foreach (keys %data) {
 	$sth->bind_param(1, $_);
 	$sth->bind_param(2, $data{$_});
 	$sth->execute;
 	}
 
-* $sth->bind_param_inout($p_num, \\$bind_value, $max_len [, $bindtype]) Like bind_param but it also enables variables to be updated by the results of the statement. This function is often used when the SQL statement is a call to a stored procedure. Note that the $bind_value must be passed as a reference to the variable to be used. The $max_len parameter is used to allocate the correct amount of memory to store the returned value.
+* `$sth->bind_param_inout($p_num, \\$bind_value, $max_len [, $bindtype])` Like `bind_param` but it also enables variables to be updated by the results of the statement. This function is often used when the SQL statement is a call to a stored procedure. Note that the $bind_value must be passed as a reference to the variable to be used. The $max_len parameter is used to allocate the correct amount of memory to store the returned value.
 
-* $sth->execute([@bind_values]) Executes the prepared statement on the database. If the statement is an insert, delete, or update then when this function returns, the insert, delete, or update will be complete. If the statement was a select statement, then you will need to call one of the fetch functions to get access to the result set. If any parameters are passed to this function, then bind_param will be run for each value before the statement is executed.
+* `$sth->execute([@bind_values])` Executes the prepared statement on the database. If the statement is an insert, delete, or update then when this function returns, the insert, delete, or update will be complete. If the statement was a select statement, then you will need to call one of the fetch functions to get access to the result set. If any parameters are passed to this function, then bind_param will be run for each value before the statement is executed.
 
-* $sth->fetchrow_arrayref, $sth->fetch (fetch is an alias for fetchrow_arrayref) Fetches the next row of data from the result set and returns a reference to an array that holds the data values. Any NULL data items are returned as undef. When there are no more rows to be returned, the function returns undef.
+* `$sth->fetchrow_arrayref`, `$sth->fetch` (fetch is an alias for `fetchrow_arrayref`) Fetches the next row of data from the result set and returns a reference to an array that holds the data values. Any NULL data items are returned as undef. When there are no more rows to be returned, the function returns undef.
 
-* $sth->fetchrow_array Similar to fetchrow_arrayref, except that it returns an array containing the row data. When there are no more rows to return, fetchrow_array returns an empty array.
+* `$sth->fetchrow_array` Similar to `fetchrow_arrayref`, except that it returns an array containing the row data. When there are no more rows to return, fetchrow_array returns an empty array.
 
-* $sth->fetchrow_hashref Similar to fetchrow_arrayref, except that it returns a hash containing the row data. The keys of the hash are the column names and the values are the data items. When there are no more rows to return, this function returns undef.
+* `$sth->fetchrow_hashref` Similar to fetchrow_arrayref, except that it returns a hash containing the row data. The keys of the hash are the column names and the values are the data items. When there are no more rows to return, this function returns undef.
 
-* $sth->fetchall_arrayref Returns all of the data from a result set at one time. The function returns a reference to an array. Each element of the array is a reference to another. Each of these second-level arrays represents one row in the result set and each element contains a data item. This function returns an empty array if there is no data returned by the statement.
+* `$sth->fetchall_arrayref` Returns all of the data from a result set at one time. The function returns a reference to an array. Each element of the array is a reference to another. Each of these second-level arrays represents one row in the result set and each element contains a data item. This function returns an empty array if there is no data returned by the statement.
 
-* $sth->finish Disposes of the statement handle and frees up any memory associated with it.
+* `$sth->finish` Disposes of the statement handle and frees up any memory associated with it.
 
-* $sth->bind_col($column_number, \\$var_to_bind) Binds a column in a return set to a Perl variable. Note that you must pass a reference to the variable. This means that each time a row is fetched, the variable is automatically updated to contain the value of the bound column in the newly fetched row. See the code example under bind_columns for more details.
+* `$sth->bind_col($column_number, \\$var_to_bind)` Binds a column in a return set to a Perl variable. Note that you must pass a reference to the variable. This means that each time a row is fetched, the variable is automatically updated to contain the value of the bound column in the newly fetched row. See the code example under bind_columns for more details.
 
-* $sth->bind_columns(@list_of_refs_to_vars) Binds each variable in the list to a column in the result set (the first variable in the list is bound to the first column in the result set, and so on). Note that the list must contain references to the variables. For example:
+* `$sth->bind_columns(@list_of_refs_to_vars)` Binds each variable in the list to a column in the result set (the first variable in the list is bound to the first column in the result set, and so on). Note that the list must contain references to the variables. For example:
 
 	my ($code, $name);
 	my $sth = $dbh->prepare(‘select code, name from city’);
@@ -145,13 +143,13 @@ The following functions are all called via a valid statement handle.
 
 The following attributes can be accessed through a statement handle.
 
-* $sth->{NUM_OF_FIELDS} Contains the number of fields (columns) that the statement will return.
+* `$sth->{NUM_OF_FIELDS}` Contains the number of fields (columns) that the statement will return.
 
-* $sth->{NAME} Contains a reference to an array which contains the names of the fields that will be returned by the statement.
+* `$sth->{NAME}` Contains a reference to an array which contains the names of the fields that will be returned by the statement.
 
-* $sth->{TYPE} Contains a reference to an array which contains an integer for each field in the result set. This integer indicates the data type of the field using an international standard.
+* `$sth->{TYPE}` Contains a reference to an array which contains an integer for each field in the result set. This integer indicates the data type of the field using an international standard.
 
-* $sth->{NULLABLE} Contains a reference to an array which contains a value for each field that indicates whether the field can contain NULL values. The valid values are 0 = no, 1 = yes, and 2 = don’t know.
+* `$sth->{NULLABLE}` Contains a reference to an array which contains a value for each field that indicates whether the field can contain NULL values. The valid values are 0 = no, 1 = yes, and 2 = don’t know.
 
 Number::Format
 --------------
@@ -162,33 +160,33 @@ The following is a brief reference to Number::Format.
 
 These are the attributes that can be passed to the new method.
 
-* THOUSANDS_SEP The character which is inserted between groups of three digits. The default is a comma.
+* `THOUSANDS_SEP` The character which is inserted between groups of three digits. The default is a comma.
 
-* DECIMAL_POINT The character which separates the integer and fractional parts of a number. The default is a decimal point.
+* `DECIMAL_POINT` The character which separates the integer and fractional parts of a number. The default is a decimal point.
 
-* MON_THOUSANDS_SEP The same as THOUSANDS_SEP, but used for monetary values (formatted using format_price). The default is a comma.
+* `MON_THOUSANDS_SEP` The same as `THOUSANDS_SEP`, but used for monetary values (formatted using format_price). The default is a comma.
 
-* MON_DECIMAL_POINT The same as DECIMAL_POINT, but used for monetary values (formatted using format_price). The default is a decimal point.
+* `MON_DECIMAL_POINT` The same as `DECIMAL_POINT`, but used for monetary values (formatted using format_price). The default is a decimal point.
 
-* INT_CURR_SYMBOL The character(s) used to denote the currency. The default is USD .
+* `INT_CURR_SYMBOL` The character(s) used to denote the currency. The default is USD .
 
-* DECIMAL_DIGITS The number of decimal digits to display. The default is two.
+* `DECIMAL_DIGITS` The number of decimal digits to display. The default is two.
 
-* DECIMAL_FILL A Boolean flag indicating whether or not the formatter should add zeroes to pad out decimal numbers to DECIMAL_DIGITS places. The default is off.
+* `DECIMAL_FILL` A Boolean flag indicating whether or not the formatter should add zeroes to pad out decimal numbers to DECIMAL_DIGITS places. The default is off.
 
-* NEG_FORMAT The format to use when displaying negative numbers. An 'x' marks where the number should be inserted. The default is -x.
+* `NEG_FORMAT` The format to use when displaying negative numbers. An 'x' marks where the number should be inserted. The default is -x.
 
-* KILO_SUFFIX The letter to append when format_bytes is formatting a value in kilobytes. The default is K.
+* `KILO_SUFFIX` The letter to append when format_bytes is formatting a value in kilobytes. The default is K.
 
-* MEGA_SUFFIX The letter to append when format_bytes is formatting a value in megabytes. The default is M.
+* `MEGA_SUFFIX` The letter to append when format_bytes is formatting a value in megabytes. The default is M.
 
 ### Methods
 
 These are the methods that you can call to format your data.
 
-* round($number, $precision) Rounds the given number to the given precision. If no precision is given, then DECIMAL_DIGITS is used. A negative precision will decrease the precision before the decimal point. This method doesn’t make use of the DECIMAL_ POINT or THOUSANDS_SEP values.
+* `round($number, $precision)` Rounds the given number to the given precision. If no precision is given, then `DECIMAL_DIGITS` is used. A negative precision will decrease the precision before the decimal point. This method doesn’t make use of the `DECIMAL_POINT` or THOUSANDS_SEP values.
 
-* format_number($number, $precision, $trailing_zeroes) Formats the given number to the given precision and pads with trailing zeroes if $trailing_zeroes is true. If neither $precision nor $trailing_zeroes are given then the values in DECIMAL_DIGITS and DECIMAL_FILL are used instead. This method inserts the value of THOUSANDS_SEP every three digits and replaces the decimal point with the value of DECIMAL_POINT.
+* `format_number($number, $precision, $trailing_zeroes)` Formats the given number to the given precision and pads with trailing zeroes if $trailing_zeroes is true. If neither $precision nor $trailing_zeroes are given then the values in DECIMAL_DIGITS and DECIMAL_FILL are used instead. This method inserts the value of THOUSANDS_SEP every three digits and replaces the decimal point with the value of DECIMAL_POINT.
 
 * format_negative($number, $picture) Formats the given number using the given picture. If a picture is not given then the value of NEG_FORMAT is used instead. In the picture, the character “x” should be used to mark the place where the number should go.
 

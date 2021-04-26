@@ -253,7 +253,7 @@ Assume that we want to model the three business rules mentioned at the start of 
       is_valid_sales_ref($cust->{salesperson})
         || croak "Invalid salesperson ref: $cust->{salesperson}.";
       write_sales_record($cust);
-    }\
+    }
 
 #### How Customer_Rules.pm works
 
@@ -581,8 +581,7 @@ Sometimes you will want to log your audit trail to the UNIX system log. This is 
 
 Notice that as the system logger automatically timestamps all messages, we don't need to print the start time in our log message.
 
-Further information
--------------------
+## Further information
 
 For more information on writing objects in Perl see *Object Oriented Perl* by Damian Conway (Manning).
 
@@ -590,8 +589,7 @@ For more information about the UNIX filter model and other UNIX programming tric
 
 For more general programming advice see *The Practice of Programming* by Brian Kernigan and Rob Pike (Addison-Wesley) and *Programming Pearls* by Jon Bentley (Addison-Wesley).
 
-Summary
--------
+## Summary
 
 * Decoupling the various stages of your program can cut down on the code that you have to write by making code more reusable.
 * Designing data structures carefully will make your programs more flexible.

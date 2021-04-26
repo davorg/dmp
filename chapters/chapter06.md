@@ -37,14 +37,14 @@ have seen before the idiom where you can read a file a line at a time
 using a construct like
 
 	while (<FILE>) {
-	chomp; # remove newline
-	# each line in turn is assigned to $_
+	  chomp; # remove newline
+	  # each line in turn is assigned to $_
 	}
 
 Let’s take a closer look and see what Perl is doing here to make life
 easier.
 
-The most important part of the construct is the use of <FILE> to read
+The most important part of the construct is the use of `<FILE>` to read
 data from the file handle FILE which has presumably been assigned to a
 file earlier in the program by a call to the open function. This file
 input operator can return two different results, depending on whether

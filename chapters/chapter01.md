@@ -24,8 +24,7 @@ What this chapter covers:
 * Forms data takes
 * Perl and why it is perfect for data munging
 
-What is data munging?
----------------------
+## What is data munging?
 
 > **munge** (muhnj) vt. **1.** [derogatory] To imperfectly transform
 > information. **2.** A comprehensive rewrite of a routine, a data
@@ -666,8 +665,7 @@ Perl, you can type perldoc perl at your command line to get a list of the
 available documents.
 
 
-Summary
-=======
+## Summary
 
 * Data munging is the process of taking data from one system (a data source)
 and converting it so that it is suitable for use by a different system

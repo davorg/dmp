@@ -42,11 +42,11 @@ is the temperature on a weather page.
 
 Our task would be a lot easier if the mark-up in a document told us
 more about   the actual meaning of the data. In our weather example,
-it would be nice if there was  a <FORECAST> … </FORECAST> element that
+it would be nice if there was  a `<FORECAST>` … `</FORECAST>` element that
 surrounded the actual forecast description and perhaps a
-<TEMPERATURE> … </TEMPERATURE> element which surrounded  each of the
+`<TEMPERATURE>` … `</TEMPERATURE>` element which surrounded  each of the
 temperature figures in which we were interested. Even better, the
-<TEMPERATURE> element could have attributes which told us whether it
+`<TEMPERATURE>` element could have attributes which told us whether it
 was a maximum or minimum temperature and whether it was in degrees
 Fahrenheit or Celsius.
 
@@ -323,7 +323,7 @@ except that instead of the same functions being called for the start
 and end tags of each element, a different pair of functions is called
 for each element type. For example, in our weather document, the
 parser would expect to find functions called FORECAST and OUTLOOK that
-it would call when it found <FORECAST> and <OUTLOOK> tags. For the
+it would call when it found `<FORECAST>` and `<OUTLOOK>` tags. For the
 closing tags, it would look for functions called _FORECAST and
 _OUTLOOK. This method prevents the program from having to check which
 element type is being processed (although this information is still
@@ -367,7 +367,7 @@ of items have the same structure as the original two-item list, with
 the exception that a text item has a special element type of 0.
 
 If you’re the sort of person who thinks that a picture is worth a
-thousand words, then figure 10.1 might have saved me a lot of typing.
+thousand words, then Figure 10.1 might have saved me a lot of typing.
 
 ![Output from XML::Parser Tree style](images/10-1-output-from-xml-parser-tree-style.png)
 
@@ -570,7 +570,7 @@ document using the Objects style:
 
 This program is very similar to the example that we wrote using the
 Tree style. Once again, most of the processing is carried out in the
-process_node function. In this case each node is represented by a
+`process_node` function. In this case each node is represented by a
 single reference rather than a two-item list. The first thing that we
 do in process_node is to work out the type of element with which we
 are dealing. We do this by using the standard Perl function ref. This
@@ -1528,22 +1528,22 @@ current header level.
 
 Line 28 calls the top function which is defined in lines 67 to 81.
 This function prints header information for the chosen format. For
-HTML, this is all of the <HEAD> … </HEAD> section, for POD it is
+HTML, this is all of the `<HEAD>` … `</HEAD>` section, for POD it is
 simply the text =pod, and for text it is the title of the document
 underlined. Notice that we use the expression $tree->[1]->[4]->[2] to
 get the title of the document. We can take this kind of shortcut
 because we know the structure of our document. $tree->[1] is the
 content of the first node in the tree (i.e., everything within the
-<README> element). $tree->[1]->[4] is the content of the second node
-contained within the <README> element. The first node within this
+`<README>` element). $tree->[1]->[4] is the content of the second node
+contained within the `<README>` element. The first node within this
 element is the text node containing the newline character immediately
-after the <README> tag. !!!FOOTNOTE  7 Of course, the script now
+after the `<README>` tag. !!!FOOTNOTE  7 Of course, the script now
 relies on this newline character always being there. Relying on the
 presence of this ignorable white space is a serious limitation of this
 script, and if you wanted to use a script like this in earnest you
 would need to design something a little more robust. !!!  The second
-node is the <NAME> element. $tree->[1]->[4]->[2] is the content of the
-first node within the <NAME> element, i.e., the name text, which we
+node is the `<NAME>` element. $tree->[1]->[4]->[2] is the content of the
+first node within the `<NAME>` element, i.e., the name text, which we
 will use as a title.
 
 Line 30 calls the process\_node function which is defined in lines 34
@@ -1555,9 +1555,9 @@ element (remember the value of $type is the name of the element or
 zero if it is a text node), we extract the attributes and call the
 relevant subroutine to process each type of element. In most cases we
 pass the element content to the subroutine, but there are two
-exceptions. The <DESCRIPTION> element has no useful content (other
+exceptions. The `<DESCRIPTION>` element has no useful content (other
 than, of course, its contained elements, which will be handled
-elsewhere). The <LIST> element is more complex. First, it is the only
+elsewhere). The `<LIST>` element is more complex. First, it is the only
 element with an attribute list which needs to be passed on to the
 subroutine and, second, as the list subroutine processes all of the
 element’s content, we need to set the content to an empty list to
@@ -1585,7 +1585,7 @@ closer look at the head and list functions.
 head is the function which prints out header sections. In its POD and
 HTML sections it needs to know which level of header to display. It
 accomplishes this by using the global $head variable which is
-incremented each time a <SUBSECTION> element is encountered. Like
+incremented each time a `<SUBSECTION>` element is encountered. Like
 many of the other element functions, head also makes use of a helper
 function called trim which removes all of the excess white space from
 a text string.

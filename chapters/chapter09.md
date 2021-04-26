@@ -309,7 +309,7 @@ the stream.
 
 #### Example: extracting <h1> elements with HTML::TokeParser
 
-For example, to extract all of the  <h1> elements from an HTML file
+For example, to extract all of the `<h1>` elements from an HTML file
 you could use code this way:
 
 	use HTML::TokeParser;
@@ -442,7 +442,7 @@ inconvenient or impossible with just a token stream.
 Notice that I’ve been saying that you can call HTML::Element methods
 on an HTML::TreeBuilder object. This is because HTML::TreeBuilder
 inherits from both HTML::Parser and HTML::Element. An HTML document
-should always start with an <HTML> and end with a </HTML> tag and
+should always start with an `<HTML>` and end with a `</HTML>` tag and
 therefore the whole document can be viewed as an HTML element, with
 all of the other elements contained within it. It is, therefore, valid
 to call HTML::Element methods on our HTML::TreeBuilder object.
@@ -468,8 +468,8 @@ the page in a file.
 Having retrieved a copy of the page we can examine it to find out
 where in the page we can find the data that we want. Looking at the
 Yahoo! page I found that the description of the weather outlook was
-within the first <font> tag after the sixth <table> tag. The high and
-low temperature measurements were within the following two <b> tags.
+within the first `<font>` tag after the sixth `<table>` tag. The high and
+low temperature measurements were within the following two `<b>` tags.
 !!! Footnote  4 You should, of course, bear in mind that web pages
 change very frequently. By the time you read this, Yahoo! may well
 have changed the design of this page which will render this program
@@ -496,15 +496,15 @@ program looks like this:
 You will notice that I’ve used HTML::TokeParser in this example. I
 could have also chosen another HTML::Parser subclass or even written
 my own, but HTML:: TokeParser is a good choice for this task as it is
-very easy to target specific elements, such as the sixth <table>
-tag, and then move to the next <font> tag.
+very easy to target specific elements, such as the sixth `<table>`
+tag, and then move to the next `<font>` tag.
 
 In the program we use LWP::Simple to retrieve the required page from
 the web site and then parse it using HTML::TokeParser. We then step
-through the parsed document looking for <table> tags, until we find
-the sixth one. At this point we find the next <font> tag and extract
+through the parsed document looking for `<table>` tags, until we find
+the sixth one. At this point we find the next `<font>` tag and extract
 the text within it using the get_text method. This gives us the brief
-weather outlook. We then move in turn to each of the next two <b> tags
+weather outlook. We then move in turn to each of the next two `<b>` tags
 and for each one extract the text from it. This gives us the forecast
 high and low temperatures. We can then format all of this information
 in a nice way and present it to the user.
