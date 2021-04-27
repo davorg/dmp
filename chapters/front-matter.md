@@ -195,7 +195,7 @@ Source code downloads
 ---------------------
 
 All source code for the examples presented in this book is available to
-purchasers from the Manning web site. The URL www.manning.com/cross/
+purchasers from the Manning web site. The URL [www.manning.com/cross/](www.manning.com/cross/)
 includes a link to the source code files.
 
 Author Online
@@ -205,7 +205,7 @@ Purchase of *Data Munging with Perl* includes free access to a private
 Web forum run by Manning Publications where you can make comments about
 the book, ask technical questions, and receive help from the author and
 from other users. To access the forum and subscribe to it, point your web
-browser to www.manning.com/cross/. This page provides information on how
+browser to [www.manning.com/cross/](www.manning.com/cross/). This page provides information on how
 to get on the forum once you are registered, what kind of help is
 available, and the rules of conduct on the forum.
 
