@@ -14,7 +14,6 @@ What this chapter covers:
 *  Parsing complex file formats into complex data structures
 
 
-
 The prebuilt parsers that we have looked at in the two previous
 chapters are, of course, very useful, but there are many times when
 you need to parse data in a format for which a prebuilt parser does
@@ -26,10 +25,10 @@ use.
 Introduction to Parse::RecDescent
 ---------------------------------
 
-Parse::RecDescent is a tool for building top-down parsers which was
+[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent) is a tool for building top-down parsers which was
 written by Damian Conway. It doesn’t form a part of the standard Perl
 distribution, so you will need to get it from the CPAN. It can be
-found at http://www.cpan.org/modules/by-module/Parse/. The module
+found at [https://metacpan.org/pod/Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent). The module
 comes with copious documentation and more example code than anyone
 would ever want to read.
 
@@ -51,7 +50,6 @@ structure which looks like this:
 	$parser->top_rule($text);
 
 ### Example: parsing simple English sentences
-
 
 For example, if we go back to the example of simple English sentences
 which we used in chapter 8, we could write code like this in order to
@@ -106,7 +104,7 @@ grammar of course—not by the real rules of English.!!!
 The only complex part of this script is the definition of the grammar.
 The syntax of this definition is similar to one that we used in
 chapter 8. The only major difference is that we have replaced the
-arrow -> with a colon. If you read the rules, replacing the colon with
+arrow `->` with a colon. If you read the rules, replacing the colon with
 the phrase “is made up of” and the vertical bar with the word “or”,
 then these rules are easy to understand.
 
@@ -178,14 +176,14 @@ The grammar can be explained in English like this:
 
 *  Each section consists of a header followed by one or more assignments.
 
-*  The header consists of a [ character, one or more word characters, and a ] character.
+*  The header consists of a `[` character, one or more word characters, and a `]` character.
 
-*  An assignment consists of a sequence of one or more word characters, an = character, and another sequence of one or more word characters.
+*  An assignment consists of a sequence of one or more word characters, an `=` character, and another sequence of one or more word characters.
 
-#### Using subrule suffixes\
+#### Using subrule suffixes
 
 There are a couple of new features to notice here. First, we have used
-(s) after the names of some of our subrules. This means that the
+`(s)` after the names of some of our subrules. This means that the
 subrule can appear one or more times in the rule. There are a number
 of other suffixes which can control the number of times that a
 subrule can appear, and the full list is in table 11.1. In this case
@@ -206,7 +204,7 @@ Table 11.1 Optional and repeating subrules
 
 
 
-#### Using regular expressions\
+#### Using regular expressions
 
 The other thing to notice is that we are using regular expressions in
 many places to match our terminals. This is useful because the names
@@ -221,11 +219,11 @@ In order to extract data, we can make use of parser actions. These
 are pieces of code that you write and then attach to any rule in a
 grammar. Your code is then executed whenever that rule is matched.
 Within the action code a number of special variables are available.
-The most useful of these is probably the @item array which contains a
+The most useful of these is probably the `@item` array which contains a
 list of the values that have been matched in the current rule. The
-value in $item[0] is always the name of the rule which has matched.
-For example, when our header rule is matched, the @item array will
-contain “header”, “[”, the name of the section, and “]” with elements
+value in `$item[0]` is always the name of the rule which has matched.
+For example, when our header rule is matched, the `@item` array will
+contain `header`, `[`, the name of the section, and `]` with elements
 0 to 3 !!!FOOTNOTE 3 The same information is also available in a hash called %item, but I’ll use @item in these examples. For more details on %item see perldoc Parse::RecDescent.
 !!! (figure 11.3).
 
@@ -233,7 +231,7 @@ contain “header”, “[”, the name of the section, and “]” with element
 
 In order to see what values are being matched, you could put action
 code on each of the rules in the grammar like the following code. All
-this code does is print out the contents of the @item array each time
+this code does is print out the contents of the `@item` array each time
 a rule is matched.
 
  file: section(s) { print "$item[0]: $item[1]\n"; }
@@ -244,13 +242,13 @@ a rule is matched.
 However, Parse::RecDescent provides an easier way to achieve the same
 result, by providing a way to assign a default action to all rules in
 a grammar. If you assign a string containing code to the variable
-$::RD_AUTOACTION, then that code will be assigned to every rule which
+`$::RD_AUTOACTION`, then that code will be assigned to every rule which
 doesn’t have an explicit action.
 
 ### Example: displaying the contents of @item
 
 Here is a sample program which reads an INI file and displays the
-contents of @item for each matched rule.
+contents of `@item` for each matched rule.
 
 	 use Parse::RecDescent;
 	 my $grammar = q(
@@ -269,7 +267,7 @@ contents of @item for each matched rule.
 	 $parser->file($text);
 
 The general structure of the code and the grammar should be familiar.
-The only thing new here is the code assigned to $::RD_AUTOACTION.
+The only thing new here is the code assigned to `$::RD_AUTOACTION`.
 This code will be run whenever a rule that doesn’t have its own
 associated action code is matched. When you run this program using
 our earlier sample INI file as input, the resulting output is as
@@ -287,7 +285,7 @@ follows:
 	section: 1 ARRAY(0x8adc844)
 	file: ARRAY(0x8adc850)
 
-#### How rule matching works\
+#### How rule matching works
 
 The previous example shows us a couple of interesting things about the
 way that Parse::RecDescent works. Look at the order in which the rules
@@ -360,20 +358,19 @@ first element is the left-hand side of the assignment and the second
 element is the right-hand side. The header rule simply returns the
 name of the section.
 
-The section rule creates a new hash called %sec. It then iterates
+The section rule creates a new hash called `%sec`. It then iterates
 across the list returned by the assign subrule. Each element in this
 list is the return value from one assign rule. As we saw in the
 previous paragraph, this is a reference to a two-element list. We
-convert each of these lists to a key/value pair in the
-%sec hash. Finally, the rule returns a reference to a two-element
-%hash. The first
-element of this list is the return value from the header rule (which
-is the section name), and the second element is a reference to the
-section hash.
+convert each of these lists to a key/value pair in the `%sec` hash.
+Finally, the rule returns a reference to a two-element `%hash`. The
+first element of this list is the return value from the header rule
+(which is the section name), and the second element is a reference to
+the section hash.
 
 The file rule uses a very similar technique to take the list of
-sections and convert them into a hash called %file. It then returns
-the %file hash.
+sections and convert them into a hash called `%file`. It then returns
+the `%file` hash.
 
 This means that the file method returns a reference to a hash. The
 keys to the hash are the names of the sections in the file and the
@@ -508,19 +505,19 @@ sentences. The program would look like this:
 
 
 This program will print valid or invalid depending on whether or not
-the file passed to it on STDIN parses correctly against the given
+the file passed to it on `STDIN` parses correctly against the given
 grammar. In this case it does, but if it doesn’t and you want to find
 out where the errors are, there are two useful variables which
 Parse::RecDescent uses to help you follow what it is doing.
 
 #### Debugging the grammar with $::RD\_TRACE and $::RD\_HINT
 
-Setting $::RD\_TRACE to true will display a trace of the parsing
+Setting `$::RD\_TRACE` to true will display a trace of the parsing
 process as it progresses, allowing you to see where your grammar and
 the structure of the file disagree. If the problems are earlier in the
 process and there are syntax errors in your grammar, then setting
-$::RD\_HINT to true will provide hints on how you could fix the
-problems. Setting $::RD\_AUTOACTION to a snippet of code which prints
+`$::RD\_HINT` to true will provide hints on how you could fix the
+problems. Setting `$::RD\_AUTOACTION` to a snippet of code which prints
 out the values in @item can also be a useful debugging tool.
 
 ### Adding parser actions
@@ -568,30 +565,30 @@ As is generally the case, the parser actions will be easier to follow
 if we examine them bottom up.
 
 The footer rule returns a reference to a hash with only one value. The
-key to this hash is count and the value is $item[1], which is the
+key to this hash is count and the value is `$item[1]`, which is the
 number that is matched on the footer line. As we’ll see when we get to
 the file rule, I chose to return this as a hash reference since it
 makes it easier to combine parts into a data structure.
 
 The track rule returns the name of the track.
 
-The cd\_line rule builds a hash where the keys are the column headings
+The `cd\_line` rule builds a hash where the keys are the column headings
 and the values are the associated values from the CD line in the file.
 In order to do this, it makes use of the global @cols array which is
-created by the col\_heads rule.
+created by the `col\_heads` rule.
 
-The cd rule takes the hash reference which is returned by the cd_line
+The cd rule takes the hash reference which is returned by the `cd\_line`
 rule and creates another element in the same hash where the key is
 tracks, and the value is a reference to the array of multiple track
-records which is returned by the track(s) subrule. The rule then
+records which is returned by the `track(s)` subrule. The rule then
 returns this hash reference.
 
-The col_head rule matches one individual column heading and returns
+The `col\_head` rule matches one individual column heading and returns
 that value.
 
-The col\_heads rule takes the array which is returned by the
-col\_head(s) subrule and assigns this array to the global array @cols,
-so that it can later be used by the cd\_line rule.
+The `col\_heads` rule takes the array which is returned by the
+`col\_head(s)` subrule and assigns this array to the global array `@cols`,
+so that it can later be used by the `cd\_line` rule.
 
 The body rule returns the array returned by the cd(s) subrule. Each
 element of this array is the hash returned by one occurrence of the cd
@@ -608,9 +605,10 @@ returns a reference to this hash.
 
 #### Checking the output with Data::Dumper
 
-The program uses the Data::Dumper module to print out a data dump of
-the data structure that we have built. For our sample CD data file,
-the output from this program look like this:
+The program uses the
+[Data::Dumper](https://www.metacpan.org/pod/Data::Dumper) module to
+print out a data dump of the data structure that we have built. For
+our sample CD data file, the output from this program look like this:
 
 	$VAR1 = {
 	'list' => [
@@ -721,7 +719,7 @@ the manual pages that come with the module. Typing perldoc
 Parse::RecDescent at any command line will show you this
 documentation. The distribution also contains almost forty demo
 programs and an HTML version of Damian Conway’s article for the
-Winter 1998 issue of *The Perl Journal* titled “The man of descent,”
+Winter 1998 issue of *The Perl Journal* titled [The man(1) of descent](http://www.foo.be/docs/tpj/issues/vol3_4/tpj0304-0010.html),
 which is a useful introduction to parsing in general and
 Parse::RecDescent in particular.
 

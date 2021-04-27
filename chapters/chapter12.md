@@ -25,7 +25,7 @@ should munge it using Perl.
 
 ### The usefulness of data munging
 
-In chapter 1 I said that data munging lived in the “interstices
+In chapter 1, I said that data munging lived in the “interstices
 between computer systems.” I hope that you can now see just how
 all-pervasive it is. There are very few computing tasks that don’t
 involve munging data to some degree. From the run-once command line
@@ -72,7 +72,7 @@ model the problem exactly, it follows that you end up with a far
 smaller amount of synthetic code than in many other languages.
 
 If you’re interested in reading more (and you *should* be), Dominus’
-article is at http://www.perl.com/pub/2000/06/commify.html.
+article is at [http://www.perl.com/pub/2000/06/commify.html](https://www.perl.com/pub/2000/06/commify.html/).
 
 ### The usefulness of the Perl community
 
@@ -125,11 +125,11 @@ little-endian? What is the line end character sequence?
 
 Ensure that you are as comfortable as possible with Perl and its
 features. Buy and read Perl books. All Perl programmers should have
-read *Programming Perl, The Perl Cookbook*, *Mastering Regular
-Expressions*, and *Object Oriented Perl.* Read the documentation that
+read [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-3rd/0596000278/), [The Perl Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/), [Mastering Regular
+Expressions](https://learning.oreilly.com/library/view/mastering-regular-expressions/0596528124/), and [Object Oriented Perl](https://www.manning.com/books/object-oriented-perl). Read the documentation that
 comes with Perl—it will be more up-to-date than any book. Know what
-questions are answered in perldoc perlfaq (and know their answers).
-Subscribe to *The Perl Journal* (and consider buying a complete set of
+questions are answered in [perldoc perlfaq](https://perldoc.perl.org/perlfaq) (and know their answers).
+Subscribe to [The Perl Journal](https://www.foo.be/docs/tpj/) (and consider buying a complete set of
 back issues).
 
 Understand common Perl methods such as complex sorting techniques.
@@ -149,22 +149,22 @@ Here is a list of sources for information about Perl. Most of them
 have been mentioned at some point in the book, but I thought it would
 be useful to gather them together in one place.
 
-*  *The Perl Home Page*—Definitive source for all things Perl: www.perl.com
+*  [The Perl Home Page](http://www.perl.com)—Definitive source for all things Perl: www.perl.com
 
 *  *comp.lang.perl.misc*—The most active Perl newsgroup.
 
-*  **perldoc perl** *(and others)*—The best Perl documentation installed right on your computer.
+*  [perldoc perl](https://perldoc.perl.org) *(and others)*—The best Perl documentation installed right on your computer.
 
-*  *Programming Perl* (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl book. Make sure you get the 3rd edition.
+*  [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-3rd/0596000278/) (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl book. Make sure you get the 3rd edition.
 
-*  *The Perl Cookbook* (O’Reilly), Tom Christiansen and Nathan Torkington— The essential Perl book (volume 2).
+*  [The Perl Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/) (O’Reilly), Tom Christiansen and Nathan Torkington— The essential Perl book (volume 2).
 
-*  *Mastering Regular Expressions* (O’Reilly), Jeffrey Friedl—Everything you ever wanted to know about regexes.
+*  [Mastering Regular Expressions](https://learning.oreilly.com/library/view/mastering-regular-expressions/0596528124/) (O’Reilly), Jeffrey Friedl—Everything you ever wanted to know about regexes.
 
-*  *Object Oriented Perl* (Manning), Damian Conway—Everything you ever wanted to know about programming with objects in Perl.
+*  [Object Oriented Perl](https://www.manning.com/books/object-oriented-perl) (Manning), Damian Conway—Everything you ever wanted to know about programming with objects in Perl.
 
-*  *The Perl Journal*—The only Perl magazine.
+*  [The Perl Journal](https://www.foo.be/docs/tpj/)—The only Perl magazine.
 
-*  *The Perl Mongers*—Friendly Perl people in your town. www.pm.org.
+*  [The Perl Mongers](http://www.pm.org)—Friendly Perl people in your town. www.pm.org.
 
-*  *Perl Monks*—A web site where Perl programmers help each other with Perl problems. http://www.perlmonks.org.
+*  [Perl Monks](https://www.perlmonks.org)—A web site where Perl programmers help each other with Perl problems. http://www.perlmonks.org.
