@@ -88,7 +88,7 @@ Now that we understand a little more about the file input operator
 and chomp, let’s
 see if we can build our standard data munging input construct from first
 principles.
- A first attempt at processing each line in a file might look something
+A first attempt at processing each line in a file might look something
 like this:
 
  my \$line;
@@ -468,8 +468,8 @@ handle using code like this:
 	$| = 1;
 	select $file;
 
- While this works, it isn’t as compact as it could be, so in many Perl
- programs you will see this code instead:
+While this works, it isn’t as compact as it could be, so in many Perl
+programs you will see this code instead:
 
 	select((select(FILE), $| = 1)[0]);
 
@@ -747,8 +747,7 @@ we mentioned in previous sections.
 
 ### Example: a different CD file
 
-
- Imagine, for example, if our CD file was in a slightly different
+Imagine, for example, if our CD file was in a slightly different
 format, like this:
 
 	Name: Bragg, Billy
