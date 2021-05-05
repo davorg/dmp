@@ -82,13 +82,13 @@ Let’s write an input routine that will read an unstructured text file
 into an array of arrays. As always we will assume that the file is
 coming to us via STDIN.
 
-	1: sub read\_text {
+	1: sub read_text {
 	2:
 	3:   my @file;
 	4:
-	5:   push @file, [split] while \<STDIN\>;
+	5:   push @file, [split] while <STDIN>;
 	6:
-	7:   return \\@file;
+	7:   return \@file;
 	8: }
 
 Let’s look at this line by line.
@@ -102,20 +102,20 @@ Line 5 does most of the work. It might be easier to follow if you
 read it in reverse. It is actually a contraction of code that, when
 expanded, looks something like this:
 
-	while (\<STDIN\>) {
-	my @line = split(/\\s+/, \$\_);
-	push @file, [@line];
+	while (<STDIN>) {
+	  my @line = split(/\s+/, $_);
+	  push @file, [@line];
 	}
 
 which may be a little easier to follow. For each line in the file, we
 split the line wherever we see one or more white space characters.
 We then create an anonymous array which is a copy of the array
 returned by split and push the reference returned by the anonymous
-array constructor onto an @file.
+array constructor onto an `@file`.
 
 Also implicit in this line is our definition of a word. In this case
-we are using Perl’s built-in \\s character class to define our word
-separators as white space characters (recall that split uses \\s+
+we are using Perl’s built-in `\s` character class to define our word
+separators as white space characters (recall that split uses `\s+`
 as the delimiter by default). Your application may require something
 a little more complicated.
 
@@ -123,25 +123,25 @@ Line 7 returns a reference to the array.
 
 Our new function can be called like this:
 
-	my \$file = read\_text;
+	my $file = read_text;
 
 and we can then access any line of the file using
 
-	my \$line = \$file-\>[\$x];
+	my $line = $file->[$x];
 
-where \$x contains the number of the line that we are interested in.
-After this call, \$line will contain a reference to the line array.
+where `$x` contains the number of the line that we are interested in.
+After this call, `$line` will contain a reference to the line array.
 We can, therefore, access any given word using
 
-	my \$word = \$line-\>[\$y];
+	my $word = $line->[$y];
 
-or, from the original \$file reference:
+or, from the original `$file` reference:
 
-	my \$word = \$file-\>[\$x][\$y];
+	my $word = $file->[$x][$y];
 
 Of course, all of this is only a very good idea if your text file is
-of a reasonable size, as attempting to store the entire text of “War
-and Peace” in memory may cause your computer to start swapping memory
+of a reasonable size, as attempting to store the entire text of *War
+and Peace* in memory may cause your computer to start swapping memory
 to disk, which will slow down your program. !!! Footnote 2 Then
 again, if you have enough memory that you can store the entire text
 of *War and Peace* in it without swapping to disk, that would be the
@@ -155,39 +155,39 @@ there are a couple of tricks that might be of use to you. If you want
 to read the file into an array of lines without splitting the lines
 into individual words, then you can do it in one line like this:
 
-	my @file = \<FILE\>;
+	my @file = <FILE>;
 
 If, on the other hand, you want the whole text to be stored in one
-scalar variable then you should look at the \$/ variable. This
+scalar variable then you should look at the `$/` variable. This
 variable is the input record separator and its default value is a
-newline character. This means that, by default, data read from a \<\>
+newline character. This means that, by default, data read from a `<>`
 operator will be read until a newline is encountered. Setting this
 variable to undef will read the whole input stream in one go.  !!!
-Footnote 3 Note that \$/ (like most Perl internal variables) is, by
+Footnote 3 Note that `$/` (like most Perl internal variables) is, by
 default, global, so altering it in one place will affect your whole
 program. For that reason, it is usually a good idea to use local and
 enclosing braces to ensure that any changes have a strictly limited
 scope.!!! You can, therefore, read in a whole file by doing this
 
-	local \$/ = undef;
-	my \$file = \<FILE\>;
+	local $/ = undef;
+	my $file = <FILE>;
 
-You can set \$/ to any value that your program will find useful.
+You can set `$/` to any value that your program will find useful.
 Another value that is often used is an empty string. This puts Perl
 into paragraph mode where a blank line is used as the input
 delimiter.
 
 If your file is too large to fit efficiently into memory then you are
 going to have to process a row at a time (or a record at a time if
-you have changed \$/). We will look at line-based and record-based
-data in the next chapter, but for the rest of this chapter we will
+you have changed `$/`). We will look at line-based and record-based
+data in the [next chapter](/chapter6.html), but for the rest of this chapter we will
 assume that we can get the whole file in memory at one time.
 
 ### Text transformations
 
 Having read the file into our data structures, the simplest thing to
 do is to transform part of the data using the simple regular
-expression techniques that we discussed in the last chapter. In this
+expression techniques that we discussed in the [last chapter](/chapter4.html). In this
 case the lines or individual words of the data are largely irrelevant
 to us, and our lives become much easier if we read the whole file
 into a scalar variable.
@@ -198,22 +198,22 @@ For example, if we have a text file where we want to convert all
 instances of “Windows” to “Linux”, we can write a short script like
 this:
 
-	my \$file;
+	my $file;
 	{
-	local \$/ = undef;
-	\$file = \<STDIN\>;
+	local $/ = undef;
+	$file = <STDIN>;
 	}
-	\$file =\~ s/Windows/Linux/g;
-	print \$file;
+	$file =~ s/Windows/Linux/g;
+	print $file;
 
 Notice how the section that reads the data has been wrapped in a bare
 block in order to provide a limited scope for the local copy of the
-\$/ variable. Also, we have used the g modifier on the substitution
+`$/` variable. Also, we have used the g modifier on the substitution
 command in order to change all occurrences of Windows.
 
 All of the power of regular expression substitutions is available to
 us. It would be simple to rewrite our translation program from the
-previous chapter to translate the whole input file in one operation.
+[previous chapter](/chapter4.html) to translate the whole input file in one operation.
 
 ### Text statistics
 
@@ -222,7 +222,7 @@ the text file. It is simple to produce information on the number of
 lines or words in a file. It is only a little harder to find the
 longest word or to produce a table that counts the occurrences of
 each word. In the following examples we will assume that a file is
-read in using the read\_text function that we defined earlier in the
+read in using the `read_text` function that we defined earlier in the
 chapter. This function returns a reference to an array of arrays. We
 will produce a script that counts the lines and words in a file and
 then reports on the lengths of words and the most-used words in the
@@ -230,57 +230,57 @@ text.
 
 #### Example: producing text statistics
 
-	  1: \# Variables to keep track of where we are in the file
- 	  2: my (\$line, \$word);
+	  1: # Variables to keep track of where we are in the file
+ 	  2: my ($line, $word);
 	  3:
-	  4: \# Variables to store stats
-	  5: my (\$num\_lines, \$num\_words);
+	  4: # Variables to store stats
+	  5: my ($num_lines, $num_words);
 	  6: my (%words, %lengths);
 	  7:
-	  8: my \$text = read\_text();
+	  8: my $text = read_text();
 	  9:
-	 10: \$num\_lines = scalar @{\$text};
+	 10: $num_lines = scalar @{$text};
 	 11:
-	 12: foreach \$line (@{\$text}) {
-	 13:   \$num\_words += scalar @{\$line};
+	 12: foreach $line (@{$text}) {
+	 13:   $num_words += scalar @{$line};
 	 14:
-	 15:   foreach \$word (@{\$line}) {
-	 16:     \$words{\$word}++;
-	 17:     \$lengths{length \$word}++;
+	 15:   foreach $word (@{$line}) {
+	 16:     $words{$word}++;
+	 17:     $lengths{length $word}++;
 	 18:   }
 	 19: }
 	 20:
-	 21: my @sorted\_words = sort { \$words{\$b} \<=\> \$words{\$a} } keys %words;
-	 22: my @sorted\_lengths = sort { \$lengths{\$b} \<=\> \$lengths{\$a} } keys %lengths;
+	 21: my @sorted_words = sort { $words{$b} <=> $words{$a} } keys %words;
+	 22: my @sorted_lengths = sort { $lengths{$b} <=> $lengths{$a} } keys %lengths;
 	 23:
-	 24: print "Your file contains \$num\_lines lines ";
-	 25: print "and \$num\_words words\\n\\n";
+	 24: print "Your file contains $num_lines lines ";
+	 25: print "and $num_words words\n\n";
 	 26:
-	 27: print "The 5 most popular words were:\\n";
-	 28: print map { "\$\_ (\$words{\$\_} times)\\n" } @sorted\_words[0..4];
+	 27: print "The 5 most popular words were:\n";
+	 28: print map { "$_ ($words{$_} times)\n" } @sorted_words[0..4];
 	 29:
-	 30: print "\\nThe 5 most popular word lengths were:\\n";
-	 31: print map { "\$\_ (\$lengths{\$\_} words)\\n" } @sorted\_lengths[0..4];
+	 30: print "\nThe 5 most popular word lengths were:\n";
+	 31: print map { "$_ ($lengths{$_} words)\n" } @sorted_lengths[0..4];
 
 Line 2 declares two variables that we will use to keep track of where
 we are in the file.
 
 Lines 5 and 6 declare four variables that we will use to produce the
-statistics. \$num\_lines and \$num\_words are the numbers of lines and
+statistics. $num_lines and $num_words are the numbers of lines and
 words in the file. %words is a hash that will keep a count of the
 number of times each %word has occurred in the file. Its key will be the word and its value
 %will be the number of times the word has been seen. %lengths is a hash that
 keeps count of the frequency of word lengths in a similar fashion.
 
-Line 8 calls our read\_text function to get the contents of the file.
+Line 8 calls our read_text function to get the contents of the file.
 
 Line 10 calculates the number of lines in the file. This is simply the
-number of elements in the \$text array.
+number of elements in the $text array.
 
 Line 12 starts to loop around each line in the array.
 
-Line 13 increases the \$num\_words variable with the number of
-elements in the \$line array. This is equal to the number of words in
+Line 13 increases the $num_words variable with the number of
+elements in the $line array. This is equal to the number of words in
 the line.
 
 Line 15 starts to loop around the words on the line.
@@ -294,27 +294,27 @@ Lines 24 and 25 print out the total number of words and lines in the
 file.
 
 Lines 27 and 28 print out the five most popular words in the file by
-taking the first five elements in the @sorted\_words array and
+taking the first five elements in the @sorted_words array and
 printing the value associated with that key in the %words hash. Lines
-30 and 31 do the same thing for the @sorted\_lengths array.
+30 and 31 do the same thing for the @sorted_lengths array.
 
 #### Example: calculating average word length
 
 As a final example of producing text file statistics, let’s calculate
 the average word length in the files. Once again we will use the
-existing read\_text function to read in our text.
+existing read_text function to read in our text.
 
-	my (\$total\_length, \$num\_words);
-	my \$text = read\_text();
-	my (\$word, \$line);
-	foreach \$line (@{\$text}) {
-	\$num\_words += scalar @{\$line};
-	foreach \$word (@{\$line}) {
-	\$total\_length += length \$word;
+	my ($total_length, $num_words);
+	my $text = read_text();
+	my ($word, $line);
+	foreach $line (@{$text}) {
+	$num_words += scalar @{$line};
+	foreach $word (@{$line}) {
+	$total_length += length $word;
 	}
 	}
-	printf "The average word length is %.2f\\n", \$total\_length /
-	\$num\_words;
+	printf "The average word length is %.2f\n", $total_length /
+	$num_words;
 
 Data conversions
 ----------------
@@ -356,26 +356,26 @@ data arriving on STDIN into EBCDIC.
 
 	use strict;
 	use Convert::EBCDIC qw/ascii2ebcdic/;
-	my \$data;
+	my $data;
 
 
 	{
-	local \$/ = undef;
-	\$data = \<STDIN\>;
+	local $/ = undef;
+	$data = <STDIN>;
 	}
-	print ascii2ebcdic(\$data);
+	print ascii2ebcdic($data);
 	The second example uses the object interface to convert EBCDIC data to
 	ASCII.
 	use strict;
 	use Convert::EBCDIC;
-	my \$data;
-	my \$conv = Convert::EBCDIC-\>new;
-	my \$data;
+	my $data;
+	my $conv = Convert::EBCDIC->new;
+	my $data;
 	{
-	local \$/ = undef;
-	\$data = \<STDIN\>;
+	local $/ = undef;
+	$data = <STDIN>;
 	}
-	print \$conv-\>toascii(\$data);
+	print $conv->toascii($data);
 
 The Convert::EBCDIC constructor takes one optional parameter which is
 a 256 character string which defines a translation table.
@@ -404,8 +404,8 @@ This difference in line endings causes no problems when data files
 are used on the same system on which they were created, but when you
 start to transfer data files between different systems it can lead to
 some confusion. You may have edited a file that was created under
-Windows in a UNIX text editor. If so you will have seen an extra \^M
-character at the end of each line of text.!!! Footnote 4 This is becoming less common as many editors will now display the lines without the \^M, and indicate the newline style in the status line. !!! This is the printable
+Windows in a UNIX text editor. If so you will have seen an extra ^M
+character at the end of each line of text.!!! Footnote 4 This is becoming less common as many editors will now display the lines without the ^M, and indicate the newline style in the status line. !!! This is the printable
 equivalent of the carriage return character that Windows inserts
 before each line feed. Similarly, a UNIX text file opened in Windows
 Notepad will have no carriage returns before the line feed and,
@@ -428,31 +428,31 @@ The following program can be used as a filter to clean up problem
 files. It takes two parameters, which are the line endings on the
 source and target systems. These are the strings CR, LF, or CRLF.
 
-In the program, instead of using \\n and \\r we use the ASCII control
-character sequences \\cM and \\cJ (Ctrl-M and Ctrl-J). This is
+In the program, instead of using \n and \r we use the ASCII control
+character sequences \cM and \cJ (Ctrl-M and Ctrl-J). This is
 because Perl is cleverer than we might like it to be in this case.
-Whenever Perl sees a \\n sequence in a program it actually converts
+Whenever Perl sees a \n sequence in a program it actually converts
 it to the correct end-of-line character sequence for the current
 system. This is very useful most of the time (it means, for example,
-that you don’t need to use print "some text\\r\\n"; to output text
+that you don’t need to use print "some text\r\n"; to output text
 when using Perl on a Windows system). But in this situation it masks
 the very problem that we’re trying to solve—so we have to go to a
 lower level representation of the characters.
 
-	\#!/usr/local/bin/perl -w
+	#!/usr/local/bin/perl -w
 	use strict;
 	(@ARGV == 2) or die "Error: source and target formats not given.";
-	my (\$src, \$tgt) = @ARGV;
-	my %conv = (CR =\>
-	"\\cM",
-	LF =\>
-	"\\cJ",
-	CRLF =\> "\\cM\\cJ");
-	\$src = \$conv{\$src};
-	\$tgt = \$conv{\$tgt};
-	\$/ = \$src;
-	while (\<STDIN\>) {
-	s/\$src/\$tgt/go;
+	my ($src, $tgt) = @ARGV;
+	my %conv = (CR =>
+	"\cM",
+	LF =>
+	"\cJ",
+	CRLF => "\cM\cJ");
+	$src = $conv{$src};
+	$tgt = $conv{$tgt};
+	$/ = $src;
+	while (<STDIN>) {
+	s/$src/$tgt/go;
 	print;
 	}
 
@@ -479,38 +479,38 @@ process.
 To match natural numbers (i.e., positive integers) you can use a
 simple regular expression such as:
 
-	/\\d+/
+	/\d+/
 
 To match integers (with optional +/- signs) use
 
-	/[-+]?\\d+/
+	/[-+]?\d+/
 
 To match a floating point number use
 
- 	/[-+]?(\\d+(\\.\\d\*)?|\\.\\d+)/
+ 	/[-+]?(\d+(\.\d*)?|\.\d+)/
 
 To match a number that can optionally be in exponential notation, use
 
- 	/[-+]?(?=\\d|\\.\\d)\\d\*(\\.\\d\*)?([eE]([-+]?\\d+))?/
+ 	/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/
 
 As these become rather complex, it might be a suitable time to
 consider using Perl’s precompiled regular expression feature and
 creating your number-matching regular expressions in advance. You can
 do something like this:
 
-	my \$num\_re =
-	qr/[-+]?(?=\\d|\\.\\d)\\d\*(\\.\\d\*)?([eE]([-+]?\\d+))?/;
+	my $num_re =
+	qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
 	my @nums;
-	while (\$data =\~ /\$num\_re/g) {
-	push @nums, \$1;
+	while ($data =~ /$num_re/g) {
+	push @nums, $1;
 	}
 
-to print out a list of all of the numbers in \$data.
+to print out a list of all of the numbers in $data.
 
 If you have a function, reformat, that will change the numbers into
 your preferred format then you can use code like this:
 
-	\$data =\~ s/\$num\_re/reformat(\$1)/ge;
+	$data =~ s/$num_re/reformat($1)/ge;
 
 which makes use, once more, of the e modifier to execute the
 replacement string before using it.
@@ -523,11 +523,11 @@ places, pad the start of the number with spaces or zeroes, and right
 or left align the number within its field. Here is an example of the
 sort of things that you can do:
 
-	my \$number = 123.456789;
+	my $number = 123.456789;
 	my @fmts = ('0.2f', '.2f', '10.4f', '-10.4f');
 	foreach (@fmts) {
-	my \$fmt = sprintf "%\$\_", \$number;
-	print "\$\_: [\$fmt]\\n";
+	my $fmt = sprintf "%$_", $number;
+	print "$_: [$fmt]\n";
 	}
 
 which gives the following output:
@@ -559,18 +559,18 @@ object interface. A new object is created by calling the class new
 method and passing it a string indicating which fix scheme you want
 to use (SI or SPICE).
 
-	my \$conv = Convert::SciEng-\>new('SI');
+	my $conv = Convert::SciEng->new('SI');
 
 You can then start fixing and unfixing numbers. The following:
 
-	 print \$conv-\>unfix('2.34u');
+	 print $conv->unfix('2.34u');
 
 will print the value 2.34e-06. The “u” is taken to mean the SI symbol
 for microunits.
 
 You can also pass an array to unfix, as in
 
-	print map { "\$\_\\n" } \$conv-\>unfix(qw/1P 1T 1G 1M 1K 1 1m 1u 1p 1f 1a/);
+	print map { "$_\n" } $conv->unfix(qw/1P 1T 1G 1M 1K 1 1m 1u 1p 1f 1a/);
 
  which will produce the output
 
@@ -597,11 +597,11 @@ whenever a value is required. The default format is %5.5g.
 There is, of course, also a fix method that takes a number and
 returns a value with the correct postfix letter appended:
 
-	print \$conv-\>fix(100\_000)
+	print $conv->fix(100_000)
 
 prints “100K” and
 
-	print \$conv-\>fix(1\_000\_000)
+	print $conv->fix(1_000_000)
 
 prints “1M”.
 
@@ -617,16 +617,16 @@ within Number::Format.
 
 Here are some examples of using this module:
 
-	my \$fmt = Number::Format-\>new; \# use all defaults
-	my \$number = 1234567.890;
+	my $fmt = Number::Format->new; # use all defaults
+	my $number = 1234567.890;
 
-	print \$fmt-\>round(\$number), "\\n";
-	print \$fmt-\>format\_number(\$number), "\\n";
-	print \$fmt-\>format\_negative(\$number), "\\n";
-	print \$fmt-\>format\_picture(\$number, '\#\#\#\#\#\#\#\#\#\#\#'), "\\n";
-	print \$fmt-\>format\_price(\$number), "\\n";
-	print \$fmt-\>format\_bytes(\$number), "\\n";
-	print \$fmt-\>unformat\_number('1,000,000.00'), "\\n";
+	print $fmt->round($number), "\n";
+	print $fmt->format_number($number), "\n";
+	print $fmt->format_negative($number), "\n";
+	print $fmt->format_picture($number, '###########'), "\n";
+	print $fmt->format_price($number), "\n";
+	print $fmt->format_bytes($number), "\n";
+	print $fmt->unformat_number('1,000,000.00'), "\n";
 
 This results in:
 
@@ -640,15 +640,15 @@ This results in:
 
 Changing the formatting options slightly:
 
-	my \$fmt = Number::Format-\>new(INTL\_CURRENCY\_SYMBOL =\> 'GBP', DECIMAL\_DIGITS =\> 1);
-	my \$number = 1234567.890;
-	print \$fmt-\>round(\$number), "\\n";
-	print \$fmt-\>format\_number(\$number), "\\n";
-	print \$fmt-\>format\_negative(\$number), "\\n";
-	print \$fmt-\>format\_picture(\$number, '\#\#\#\#\#\#\#\#\#\#\#'),
-	"\\n";
-	print \$fmt-\>format\_bytes(\$number), "\\n";
-	print \$fmt-\>unformat\_number('1,000,000.00'), "\\n";
+	my $fmt = Number::Format->new(INTL_CURRENCY_SYMBOL => 'GBP', DECIMAL_DIGITS => 1);
+	my $number = 1234567.890;
+	print $fmt->round($number), "\n";
+	print $fmt->format_number($number), "\n";
+	print $fmt->format_negative($number), "\n";
+	print $fmt->format_picture($number, '###########'),
+	"\n";
+	print $fmt->format_bytes($number), "\n";
+	print $fmt->unformat_number('1,000,000.00'), "\n";
 
 results in:
 
@@ -663,13 +663,13 @@ results in:
 If we were formatting numbers for a German system, we might try
 something like this:
 
-	my \$de = Number::Format-\>new(INT\_CURR\_SYMBOL =\> 'DEM ',
-	THOUSANDS\_SEP =\> '.',
-	DECIMAL\_POINT =\> ',');
-	my \$number = 1234567.890;
-	print \$de-\>format\_number(\$number), "\\n";
-	print \$de-\>format\_negative(\$number), "\\n";
-	print \$de-\>format\_price(\$number), "\\n";
+	my $de = Number::Format->new(INT_CURR_SYMBOL => 'DEM ',
+	THOUSANDS_SEP => '.',
+	DECIMAL_POINT => ',');
+	my $number = 1234567.890;
+	print $de->format_number($number), "\n";
+	print $de->format_negative($number), "\n";
+	print $de->format_price($number), "\n";
 
 which would result in:
 
@@ -680,9 +680,9 @@ which would result in:
 And finally, if we were accountants, we might want to do something like
 this:
 
-	my \$fmt = Number::Format-\>new(NEG\_FORMAT=\> '(x)');
-	my \$debt = -12345678.90;
-	print \$fmt-\>format\_negative(\$debt);
+	my $fmt = Number::Format->new(NEG_FORMAT=> '(x)');
+	my $debt = -12345678.90;
+	print $fmt->format_negative($debt);
 
 which would give us:
 
@@ -694,21 +694,21 @@ that contained numbers in different formats and we wanted to ensure
 that they were all in our standard format we could do it like this:
 
 	use Number::Format;
-	my \$data;
+	my $data;
 	{
-	local \$/ = undef;
-	\$data = \<STDIN\>;
+	local $/ = undef;
+	$data = <STDIN>;
 	}
-	my \$fmt = Number::Format-\>new;
-	my \$num\_re =
-	qr/[-+]?(?=\\d|\\.\\d)\\d\*(\\.\\d\*)?([eE]([-+]?\\d+))?/;
-	\$data =\~ s/\$num\_re/\$fmt-\>format\_number(\$1)/ge;
-	print \$data;
+	my $fmt = Number::Format->new;
+	my $num_re =
+	qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
+	$data =~ s/$num_re/$fmt->format_number($1)/ge;
+	print $data;
 
 Further information
 -------------------
 
-For more information about input control variables such as \$/, see
+For more information about input control variables such as $/, see
 the perldoc perlvar manual pages.
 
 For more information about the Unicode support in Perl, see the
