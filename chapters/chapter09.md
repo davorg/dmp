@@ -307,7 +307,7 @@ skip tags until it reaches a tag of the given type. There is also a
 get _text function which returns the text at the current position in
 the stream.
 
-#### Example: extracting <h1> elements with HTML::TokeParser
+#### Example: extracting `<h1>` elements with HTML::TokeParser
 
 For example, to extract all of the `<h1>` elements from an HTML file
 you could use code this way:

@@ -891,12 +891,12 @@ using a validating parser, it needs a reference to a DOCTYPE (or DTD).
 This is given on the second line and points to version 0.91 of the DTD
 (which, you’ll notice, was defined by Netscape). After the DOCTYPE
 definition, the next line opens the top-level element, which is called
-<rss>. Within one RSS file you can define multiple channels; however,
+`<rss>`. Within one RSS file you can define multiple channels; however,
 most RSS files will contain only one channel.
 
 With the channel element you can define a number of data items which
 define the channel. Only a subset of the possible items is used in
-this example. The next complex data item is the <image> element. This
+this example. The next complex data item is the `<image>` element. This
 element defines an image which a client program can display to
 identify your channel. You can define a URL to fetch the image from, a
 title, and a link. It is obviously up to the client program how this
@@ -942,14 +942,14 @@ create the file given above:
 As you can see, XML::RSS makes the creation of RSS files almost
 trivial. You create an RSS object using the class’s new method and
 then add a channel using the channel method. The named parameters to
-the channel method are the various subelements of the <channel>
+the channel method are the various subelements of the `<channel>`
 element in the RSS file. I’m only using a subset here. The full set
 is described in the documentation for the XML::RSS which you can
 access by typing perldoc XML::RSS from your command line once you
 have installed the module.
 
 The image method is used to add image information to the RSS object.
-Once more, the various subelements of the <image> element are passed
+Once more, the various subelements of the `<image>` element are passed
 as named parameters to the method. For each item that you wish to
 add to the RSS file, you call the add\_item method. Finally, to write
 the RSS object to a file you use the save method. You could also use
@@ -979,7 +979,7 @@ The file is parsed using the parsefile method (which XML::RSS
 overrides from its parent XML::Parser). This method adds data
 structures modeling the RSS file to the RSS parser object. This data
 can be accessed using various accessor methods. The channel method
-gives you access to the various parts of the <channel> element, and
+gives you access to the various parts of the `<channel>` element, and
 the items method returns a list of the items in the file. Each
 element in the items list is a reference to a hash containing the
 various attributes of one item from the file.
