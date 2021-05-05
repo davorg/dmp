@@ -1,12 +1,16 @@
 bookname = $(shell cat bookname.txt)
 chapters = $(shell cat chapters.txt)
 
+.PHONY: epub
 epub: book $(bookname).epub
 
+.PHONY: book
 book: chapters.txt bookname.txt title.txt chapters
 
+.PHONY: mobi
 mobi: book $(bookname).mobi
 
+.PHONY: pdf
 pdf: book $(bookname).pdf
 
 $(bookname).mobi: $(bookname).epub
