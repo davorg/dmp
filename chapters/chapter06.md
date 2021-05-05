@@ -163,14 +163,14 @@ of such simple looking code).
 Notice that this final optimization is dependent on two things being
 true:
 
-1. The file input operator must be the only thing in the conditional
+First, the file input operator must be the only thing in the conditional
 expression, so you can’t write things like
 
 	while (<FILE> and $_ ne 'END') { # THIS DOESN'T WORK!
-	…
+	  …
 	}
 
-2 The conditional expression must be part of a while loop, so you
+Second, the conditional expression must be part of a while loop, so you
 can’t write things like
 
 	if (<FILE>) { # THIS DOESN'T WORK EITHER!
@@ -704,6 +704,8 @@ The important functions in Text:CSV are therefore:
 *  combine(@fields)—Takes a list of data fields and converts them into a CSV data record. The CSV record is stored internally within the CSV object and can be accessed using the string method.
 
 *  string —Returns a string which is the last created CSV data record. With this in mind, it is simple to create generic CSV data reading and writing routines.
+
+<!-- end of list -->
 
 	use Text::CSV;
 	sub read_csv {
