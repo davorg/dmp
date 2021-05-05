@@ -91,11 +91,11 @@ principles.
 A first attempt at processing each line in a file might look something
 like this:
 
- my \$line;
- while (\$line = \<FILE\>) {
- chomp \$line;
- …
- }
+	my $line;
+	while ($line = <FILE>) {
+	  chomp $line;
+	  …
+	}
 
 This is a good start, but it has a subtle bug in it. The conditional
 expression in the while loop is checking for the truth of the scalar
@@ -123,8 +123,8 @@ therefore rewrite our first attempt into something like this:
 
 	my $line;
 	while (defined($line = <FILE>)) {
-	chomp $line;
-	…
+	  chomp $line;
+	  …
 	}
 
 and this will exhibit all of the behavior that we need. There are
@@ -174,9 +174,9 @@ Second, the conditional expression must be part of a while loop, so you
 can’t write things like
 
 	if (<FILE>) { # THIS DOESN'T WORK EITHER!
-	print;
+	  print;
 	} else {
-	print "No data\n";
+	  print "No data\n";
 	}
 
 #### Counting the current record number
