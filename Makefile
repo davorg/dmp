@@ -25,5 +25,5 @@ $(bookname).pdf: $(bookname).epub
 	ebook-convert $(bookname).epub $(bookname).pdf
 
 clean:
-	rm -f $(bookname).epub $(bookname).mobi
+	rm -f $(bookname).epub $(bookname).mobi $(bookname).pdf
 
