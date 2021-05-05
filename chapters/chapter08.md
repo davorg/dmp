@@ -43,10 +43,10 @@ Complex data files
 
 A lot of the data that we have seen up to now has used one line to
 represent each record in the data set. There have been exceptions;
-some of the records that we saw in [Chapter 6](/chapter6.html) used more than one row
+some of the records that we saw in [Chapter 6](ch010.xhtml) used more than one row
 for each record, and most of the binary data that we discussed in
-[Chapter 7](/chapter7.html) had no record-based structure at all. Even going back to
-the very [first chapter](/chapter1.html), the first sample CD data set that we saw
+[Chapter 7](ch011.xhtml) had no record-based structure at all. Even going back to
+the very [first chapter](ch004.xhtml), the first sample CD data set that we saw
 consisted largely of a record-based middle section, but it also has
 header and footer records which would have made processing it
 slightly more complex.
@@ -239,7 +239,7 @@ data structure.
 	37: }
 
 This code is not the best way to achieve this. We’ll see a far better
-way when we examine the module Parse::RecDescent in [Chapter 11](/chapter11.html), but
+way when we examine the module Parse::RecDescent in [Chapter 11](ch016.xhtml), but
 in the meantime let’s take a look at the code in more detail to see
 where it’s a bit kludgy.
 
@@ -619,13 +619,13 @@ type of data, and modules such as Parse::Yapp and Parse::RecDescent
 which allow you to create your own parsers from a grammar which you
 have defined. In the next two chapters we will take a longer look at
 the HTML::Parser and XML::Parser families of modules; and in [Chapter
-11](/chapter11.html) we will examine Parse::RecDescent, in detail,
+11](ch016.xhtml) we will examine Parse::RecDescent, in detail,
 which is the most flexible tool for creating your own parsers in Perl.
 
 Further information
 -------------------
 
-More information about parsing HTML can be found in the [next chapter](/chapter9.html)
+More information about parsing HTML can be found in the [next chapter](ch014.xhtml)
 of this book. For additional information about parsing in general:
 *Compilers: Principles, Techniques and Tools* (a.k.a. “The Dragon
 Book”) by Aho, Sethi, and Ullman (Addison-Wesley) is the definitive

@@ -22,7 +22,7 @@ XML overview
 -------
 
 One of the problems we had when extracting the weather information
-from the web page in the [previous chapter](/chapter9.html) was that it was difficult to
+from the web page in the [previous chapter](ch014.xhtml) was that it was difficult to
 know where in the page to find the data we needed. The only way to do
 it was to closely examine the HTML file and work out which tags
 surrounded our required data. This also meant that each time the
@@ -916,6 +916,7 @@ page of the site.
 XML::RSS differs from other XML parsers that we have seen as it can
 also be used to create an RSS file. Here is the script that I used to
 create the file given above:
+
 	 #!/usr/bin/perl -w
 	 use strict;
 	 use XML::RSS;

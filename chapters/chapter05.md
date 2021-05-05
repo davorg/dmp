@@ -180,14 +180,14 @@ delimiter.
 If your file is too large to fit efficiently into memory then you are
 going to have to process a row at a time (or a record at a time if
 you have changed `$/`). We will look at line-based and record-based
-data in the [next chapter](/chapter6.html), but for the rest of this chapter we will
+data in the [next chapter](ch010.xhtml), but for the rest of this chapter we will
 assume that we can get the whole file in memory at one time.
 
 ### Text transformations
 
 Having read the file into our data structures, the simplest thing to
 do is to transform part of the data using the simple regular
-expression techniques that we discussed in the [last chapter](/chapter4.html). In this
+expression techniques that we discussed in the [last chapter](ch007.xhtml). In this
 case the lines or individual words of the data are largely irrelevant
 to us, and our lives become much easier if we read the whole file
 into a scalar variable.
@@ -213,7 +213,7 @@ command in order to change all occurrences of Windows.
 
 All of the power of regular expression substitutions is available to
 us. It would be simple to rewrite our translation program from the
-[previous chapter](/chapter4.html) to translate the whole input file in one operation.
+[previous chapter](ch007.xhtml) to translate the whole input file in one operation.
 
 ### Text statistics
 

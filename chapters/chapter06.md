@@ -273,7 +273,7 @@ something like this:
 
 and so on.
 
-Within the actual CD file input code from [Chapter 3](/chapter3.html) we simplified
+Within the actual CD file input code from [Chapter 3](ch006.xhtml) we simplified
 this code slightly by writing it like this:
 
 	my @fields = qw/artist title label year/;
@@ -395,7 +395,7 @@ space. This means that if we change our original code to
 
 then we will get spaces printed between the elements of our list. In
 order to print the data with tabs separating each record we simply
-have to set $" to a tab character (\t). In [Chapter 3](/chapter3.html) when we were
+have to set $" to a tab character (\t). In [Chapter 3](ch006.xhtml) when we were
 reading in the CD data file we stored the data in an array of hashes.
 An easy way to print out this data would be to use code like this:
 
@@ -585,7 +585,7 @@ problem. !!!
 #### Taking caching further—Memoize.pm
 
 This trick is very similar to the Orcish Manoeuvre which we saw when
-we were discussing sorting techniques in [Chapter 3](/chapter3.html). It is, however,
+we were discussing sorting techniques in [Chapter 3](ch006.xhtml). It is, however,
 possible to take things one step further. On the CPAN there is a
 module called Memoize.pm which was written by Mark-Jason Dominus. This
 module includes a function called memoize which will automatically

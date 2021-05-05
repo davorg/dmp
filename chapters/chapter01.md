@@ -255,7 +255,7 @@ to send details of trades to various other systems. Once more, the
 data was stored in a relational database. In this case the bank had
 made all interaction between systems much easier by designing an XML
 file format for data interchange (we'll talk about DTDs in [Chapter
-10](/chapter10.html)). Therefore, all we needed to do was to extract our data, create
+10](ch015.xhtml)). Therefore, all we needed to do was to extract our data, create
 the necessary XML file, and send it on to the systems that required
 it. By defining a standard data format, the bank ensured that all of
 its systems would only need to read or write one type of file, thereby
@@ -388,7 +388,7 @@ munged data to your standard output, hoping that the next link in the pipe
 will pick it up from there.
 
 We will look at this concept in more detail when discussing the UNIX “filter”
-model in [Chapter 2](/chapter2.html).
+model in [Chapter 2](ch005.xhtml).
 
 ### Other sources/sinks
 
@@ -443,7 +443,7 @@ The best example of unstructured data is plain text. Other than separating
 text into individual lines and words and producing statistics, it is difficult
 to do much useful work with this kind of data.
 
-Nonetheless, we will examine unstructured data in [Chapter 5](/chapter5.html). This is largely
+Nonetheless, we will examine unstructured data in [Chapter 5](ch009.xhtml). This is largely
 because it will give us the chance to discuss some general mechanisms, such
 as reading and writing files, before moving on to better structured data.
 
@@ -465,7 +465,7 @@ comma or a tab), but it is also possible that a record will be padded with
 spaces or zeroes to ensure that it is always a given number of characters
 in width.
 
-We will look at record-oriented data in [Chapter 6](/chapter6.html).
+We will look at record-oriented data in [Chapter 6](ch010.xhtml).
 
 ### Hierarchical data
 
@@ -482,8 +482,8 @@ will be forced to find more powerful tools.
 This family metaphor can, of course, be taken further. Two nodes which
 have the same parent are known as *sibling* nodes, although I’ve never yet
 heard two nodes with the same grandparents described as *cousins*.
-We will look at hierarchical data (specifically HTML and XML) in [Chapters 9](/chapter9.html)
-and [10](/chapter10.html).
+We will look at hierarchical data (specifically HTML and XML) in [Chapters 9](ch014.xhtml)
+and [10](ch015.xhtml).
 
 
 ### Binary data
@@ -495,7 +495,7 @@ is very difficult to make any sense of it. We will take a look at some
 publicly available binary file formats and see how to get some meaningful
 data out of them.
 
-We will look at binary data in [Chapter 7](/chapter7.html).
+We will look at binary data in [Chapter 7](ch011.xhtml).
 
 What is Perl?
 -------------

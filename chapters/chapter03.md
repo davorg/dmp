@@ -345,7 +345,7 @@ http://www.hpl.hp.com/personal/Larry _Rosler/sort/.
 
 ## Database Interface (DBI)
 
-As discussed in [Chapter 1](/chapter1.html), a common source or sink for data is a
+As discussed in [Chapter 1](ch004.xhtml), a common source or sink for data is a
 database. For many years Perl has had mechanisms that enable it to
 talk to various database systems. For example, if you wanted to
 exchange data with an Oracle database you would use oraperl and if you
@@ -738,7 +738,7 @@ separator (`$\` ).5 This value is appended to the end of each output
 line. Without the octal number, `$\` is set to the same value as the
 input record separator (`$/`). The default value for this is a newline.
 You can change the value of `$/` using the `-0` (that’s dash-zero, not
-dash-oh) option. We cover special variables in [Chapter 6](/chapter6.html).
+dash-oh) option. We cover special variables in [Chapter 6](ch010.xhtml).
 
 What this means is that in order to have newlines
 automatically removed from your input lines and automatically added

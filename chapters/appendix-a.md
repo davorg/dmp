@@ -270,7 +270,7 @@ Date::Manip.
 LWP::Simple
 -----------
 
-In [Chapter 9](/chapter9.html) we took a brief look at the LWP::Simple module. Here is
+In [Chapter 9](ch014.xhtml) we took a brief look at the LWP::Simple module. Here is
 a slightly less brief look at the functions that this module
 provides. For more information on using this module see the lwpcook
 manual page which comes with the LWP bundle of modules.
@@ -289,7 +289,7 @@ HTML::Parser
 ------------
 
 Here is a brief guide to the methods of the HTML::Parser object. As I
-mentioned briefly in [Chapter 9](/chapter9.html), this describes version 3.x of
+mentioned briefly in [Chapter 9](ch014.xhtml), this describes version 3.x of
 HTML::Parser. In older versions you had to subclass HTML::Parser in
 order to do any useful work with it. Unfortunately, as I write
 this, the version of HTML::Parser available from the ActiveState

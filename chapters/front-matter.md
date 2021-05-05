@@ -94,9 +94,10 @@ flexible and vital tool for their day-to-day work.
 Throughout the book, I assume a rudimentary knowledge of Perl on the
 part of the reader. Anyone who has read and understood an introductory
 Perl text should have no problem following the code here, but for the
-benefit of readers brand new to Perl, I’ve included both my suggestions
-for Perl primers (see [Chapter 1](/chapter1.html)) as well as a brief introduction to Perl
-(see appendix B).
+benefit of readers brand new to Perl, I’ve included both my
+suggestions for Perl primers (see [Chapter 1](ch004.html)) as
+well as a brief introduction to Perl (see [Appendix
+B](ch019.html)).
 
 About this book
 ---------------
@@ -104,71 +105,71 @@ About this book
 The book begins by addressing introductory and general topics, before
 gradually exploring more complex types of data munging.
 
-PART I sets the scene for the rest of the book.
+[PART I](ch003.xhtml) sets the scene for the rest of the book.
 
-*Chapter 1* introduces data munging and Perl. I discuss why Perl is
+*[Chapter 1](ch004.xhtml)* introduces data munging and Perl. I discuss why Perl is
 particularly  well suited to data munging and survey the types of data
 that you might meet, along with the mechanisms for receiving and sending
 data.
 
-*Chapter 2* contains general methods that can be used to make data
+*[Chapter 2](ch005.xhtml)* contains general methods that can be used to make data
 munging programs more efficient. A particularly important part of this
 chapter is the discussion of the UNIX filter model for program input
 and output.
 
-*Chapter 3* discusses a number of Perl idioms that will be useful across
+*[Chapter 3](ch006.xhtml)* discusses a number of Perl idioms that will be useful across
 a number of different data munging tasks, including sorting data and
 accessing databases.
 
-*Chapter 4* introduces Perl’s pattern-matching facilities, a fundamental
+*[Chapter 4](ch007.xhtml)* introduces Perl’s pattern-matching facilities, a fundamental
 part of many data munging programs.
 
-PART II begins our survey of data formats by looking at unstructured
+[PART II](ch008.xhtml) begins our survey of data formats by looking at unstructured
 and record-structured data.
 
-*Chapter 5* surveys unstructured data. We concentrate on processing
+*[Chapter 5](ch009.xhtml)* surveys unstructured data. We concentrate on processing
 free text and producing statistics from a text file. We also go over
 a couple of techniques for converting numbers between formats.
 
-*Chapter 6* considers record-oriented data. We look at reading and
+*[Chapter 6](ch010.xhtml)* considers record-oriented data. We look at reading and
 writing data one record at a time and consider the best ways to split
 records into individual fields. In this chapter, we also take a closer
 glance at one common record-oriented file format: comma-separated
 values (CSV) files, view more complex record types, and examine Perl’s
 data handling facilities.
 
-*Chapter 7* discusses fixed-width and binary data. We compare several
+*[Chapter 7](ch011.xhtml)* discusses fixed-width and binary data. We compare several
 techniques for splitting apart fixed-width records and for writing
 results into a fixed-width format. Then, using the example of a couple
 of popular binary file formats, we examine binary data.
 
-PART III moves beyond the limits of the simple data formats into the
+[PART III](ch012.xhtml) moves beyond the limits of the simple data formats into the
 realms of hierarchical data structures and parsers.
 
-*Chapter 8* investigates the limitations of the data formats that we
+*[Chapter 8](ch013.xhtml)* investigates the limitations of the data formats that we
 have seen previously and suggests good reasons for wanting more complex
 formats. We then see how the methods we have used so far start to break
 down on more complex data like HTML. We also take a brief look at an
 introduction to parsing theory.
 
-*Chapter 9* explores how to extract useful information from documents
+*[Chapter 9](ch014.xhtml)* explores how to extract useful information from documents
 marked up with HTML. We cover a number of HTML parsing tools available for
 Perl and discuss their suitability to particular tasks.
 
-*Chapter 10* discusses XML. First, we consider the limitations of HTML
+*[Chapter 10](ch015.xhtml)* discusses XML. First, we consider the limitations of HTML
 and the advantages of XML. Then, we look at XML parsers available for
 use with Perl.
 
-*Chapter 11* demonstrates how to write parsers for your own data
+*[Chapter 11](ch016.xhtml)* demonstrates how to write parsers for your own data
 structures using a parser-building tool available for Perl.
 
 PART IV concludes our tour with a brief review as well as suggestions
 for further study.
 
-*Appendix A* is a guide to many of the Perl modules covered in the
+*[Appendix A](ch018.xhtml)* is a guide to many of the Perl modules covered in the
 book.
 
-*Appendix B* provides a rudimentary introduction to Perl.
+*[Appendix B](ch019.xhtml)* provides a rudimentary introduction to Perl.
 
 Typographical conventions
 -------------------------

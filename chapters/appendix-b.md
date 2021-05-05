@@ -75,7 +75,7 @@ It may seem that this feature wouldn’t be very useful as the only
 scripts that you can write like this would be very small; however,
 Perl has a number of other command line options that can combine
 with -e to create surprisingly complex scripts. Details of these
-options are given in [Chapter 3](/chapter3.html).
+options are given in [Chapter 3](ch006.xhtml).
 
 All of the information that you could ever need about running Perl can
 be found in the perlrun manual page.
@@ -923,7 +923,7 @@ examples of creating and using such structures.
 More information on Perl
 ------------------------
 
-[Chapter 12](/chapter12.html) contains details of other places to obtain useful
+[Chapter 12](ch017.xhtml) contains details of other places to obtain useful
 information about Perl. In general the best place to start is with
 the manual pages which come with your distribution of Perl. Typing
 perldoc perl on your command line will give you an overview of the
