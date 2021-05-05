@@ -811,7 +811,7 @@ you could run the program using the command line
 	translate.pl \< in.txt \> out.txt
 
 Once again we make use of the power of the UNIX filter model as
-discussed in [Chapter 2](/chapter2.html).
+discussed in [Chapter 2](ch005.xhtml).
 
 This isn’t a particularly useful script. It doesn’t, for example,
 handle capitalization of the words that it translates. In the next

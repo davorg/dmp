@@ -243,7 +243,7 @@ are very similar and many people tend to use the terms as if they are
 interchangeable.!!! In the other method each field is defined to take
 up a certain number of characters and is space—or zero—padded if it is
 less than the defined size. This is known as fixed-width data. We will
-cover fixed-width data in more detail in the [next chapter](/chapter7.html) and for now
+cover fixed-width data in more detail in the [next chapter](ch011.xhtml) and for now
 will limit ourselves to separated and delimited data.
 
 We have seen separated data before. The CD example that we have looked
