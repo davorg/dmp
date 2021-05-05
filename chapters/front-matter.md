@@ -195,9 +195,8 @@ disk.
 Source code downloads
 ---------------------
 
-All source code for the examples presented in this book is available to
-purchasers from the Manning web site. The URL [www.manning.com/books/data-munging-with-perl](https://www.manning.com/books/data-munging-with-perl)
-includes a link to the source code files.
+The source for the examples presented in this book is available in
+the GitHub repo, [davorg/dmp](https://github.com/davorg/dmp).
 
 Author Online
 -------------
