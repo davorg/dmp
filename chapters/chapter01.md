@@ -31,8 +31,8 @@ What this chapter covers:
 > structure, or the whole program. **3.** To modify data in some way
 > the speaker doesn’t need to go into right now or cannot describe
 > succinctly (compare mumble).
-> The Jargon File
-http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html
+> [The Jargon File](http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html
+)
 
 Data munging is all about taking data that is in one format and
 converting it into another. You will often hear the term being used
@@ -582,20 +582,21 @@ be written in Perl if desired.
 
 ### Getting Perl
 
-One of the advantages of Perl is that it is free (as in both "free speech" and "free beer"). The source code for Perl
-is available for download from a number of web sites. The definitive site to
-get the Perl source code (and, indeed, for all of your other Perl needs) is
-www.perl.com, but the Perl source is mirrored at sites all over the world.
-You can find the nearest one to you listed on the main site. Once you have
-the source code, it comes with simple instructions on how to build and
-install it. You’ll need a C compiler and a make utility—[Gnu's gcc](https://gcc.gnu.org)
-should work for you.
+One of the advantages of Perl is that it is free (as in both "free
+speech" and "free beer"). The source code for Perl is available for
+download from a number of web sites. The definitive site to get the
+Perl source code (and, indeed, for all of your other Perl needs) is
+www.perl.com, but the Perl source is mirrored at sites all over the
+world. You can find the nearest one to you listed on the main site.
+Once you have the source code, it comes with simple instructions on
+how to build and install it. You’ll need a C compiler and a make
+utility—[Gnu's gcc](https://gcc.gnu.org) should work for you.
 
 Downloading source code and compiling your own tools is a common procedure
 on UNIX systems. Many Windows developers, however, are more used to installing
 prepackaged software. This is not a problem, as they can get a prebuilt binary
 called [ActivePerl](https://www.activestate.com/products/perl/downloads/) from
-[ActiveState](www.activestate.com). As with other
+[ActiveState](https://www.activestate.com). As with other
 versions of Perl, this distribution is free.
 
 ### Why is Perl good for data munging?
