@@ -396,30 +396,13 @@ A summary of the character strings used in basic I/O redirection is given in tab
 
 Table 2.1 - Common I/O redirection
 
-<table>
-  <tr><th>String</th><th>Usage</th><th>Description</th></tr>
-  <tr>
-    <td>></td>
-    <td>cmd > file</td>
-    <td>Runs cmd and writes the output to file, overwriting whatever
-      was in file.</td>
-  </tr>
-  <tr>
-    <td>>></td>
-    <td>cmd >> file</td>
-    <td>Runs cmd and appends the output to the end of file.</td>
-  </tr>
-  <tr>
-    <td><</td>
-    <td>cmd < file</td>
-    <td>Runs cmd, taking input from file.</td>
-  </tr>
-  <tr>
-    <td>|</td>
-    <td>cmd1 | cmd2</td>
-    <td>Runs cmd1 and passes any output as input to cmd2</td>
-  </tr>
-</table>
+| String  | Usage         | Description |
+|---------|---------------|-----------|
+| `>`     | `cmd > file`  | Runs cmd and writes the output to file, overwriting whatever was in file. |
+| `>>`    | `cmd >> file` | Runs cmd and appends the output to the end of file. |
+| `<`     | `cmd < file`  | Runs cmd, taking input from file. |
+| `|`     | `cmd | file`  | Runs cmd1 and passes any output as input to cmd2 |
+
 
 ### Advantages of the filter model
 
