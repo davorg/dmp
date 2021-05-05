@@ -45,7 +45,7 @@ Probably the most important way that you can make your data munging code (or, in
 
 ### Example: the CD file revisited
 
-As an example, let's return to the list of compact disks that we discussed in chapter 1. We'll assume that we have a tab-separated text file where the columns are artist, title, record label, and year of release. Before considering what internal data structures we will use, we need to know what
+As an example, let's return to the list of compact disks that we discussed in [Chapter 1](/chapter1.html). We'll assume that we have a tab-separated text file where the columns are artist, title, record label, and year of release. Before considering what internal data structures we will use, we need to know what
 sort of output data we will be creating. Suppose that we needed to create a list of years, together with the number of CDs released in that year.
 
 #### Solution 1: simple hash

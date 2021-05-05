@@ -52,7 +52,7 @@ structure which looks like this:
 ### Example: parsing simple English sentences
 
 For example, if we go back to the example of simple English sentences
-which we used in chapter 8, we could write code like this in order to
+which we used in [Chapter 8](/chapter8.html), we could write code like this in order to
 check for valid sentences.
 
 	use Parse::RecDescent;
@@ -103,7 +103,7 @@ grammar of course—not by the real rules of English.!!!
 
 The only complex part of this script is the definition of the grammar.
 The syntax of this definition is similar to one that we used in
-chapter 8. The only major difference is that we have replaced the
+[Chapter 8](/chapter8.html). The only major difference is that we have replaced the
 arrow `->` with a colon. If you read the rules, replacing the colon with
 the phrase “is made up of” and the vertical bar with the word “or”,
 then these rules are easy to understand.
@@ -290,7 +290,7 @@ follows:
 The previous example shows us a couple of interesting things about the
 way that Parse::RecDescent works. Look at the order in which the rules
 have been matched and recall what we saw about the workings of
-top-down parsers in chapter 8. Here you can clearly see that a rule
+top-down parsers in [Chapter 8](/chapter8.html). Here you can clearly see that a rule
 doesn’t match until all of its subrules have been matched
 successfully.
 
@@ -400,7 +400,7 @@ Another example: the CD data file
 
 Let’s take a look at another example of parsing a data file with
 Parse::RecDescent. We’ll take a look at how we’d parse the CD data
-file that we discussed in chapter 8. What follows is the data file we
+file that we discussed in [Chapter 8](/chapter8.html). What follows is the data file we
 were discussing:
 
 	Dave's CD Collection
@@ -429,7 +429,7 @@ were discussing:
 
 	6 Records
 
-In chapter 8 we came up with a rather unsatisfying way to extract the
+In [Chapter 8](/chapter8.html) we came up with a rather unsatisfying way to extract the
 data from this file and put it into a data structure. Now that
 Parse::RecDescent is in our toolkit, we should be able to come up with
 something far more elegant.
@@ -679,7 +679,7 @@ our sample CD data file, the output from this program look like this:
 	};
 
 You can see that this structure is the same as the one that we built
-in chapter 8. The main part of the structure is a hash, the keys of
+in [Chapter 8](/chapter8.html). The main part of the structure is a hash, the keys of
 which are “list,” “title,” “count,” and “date.” Of these, all but
 “list” is associated with a scalar containing data from the header or
 the footer of the file. The key “list” is associated with a reference

@@ -243,7 +243,7 @@ are very similar and many people tend to use the terms as if they are
 interchangeable.!!! In the other method each field is defined to take
 up a certain number of characters and is space—or zero—padded if it is
 less than the defined size. This is known as fixed-width data. We will
-cover fixed-width data in more detail in the next chapter and for now
+cover fixed-width data in more detail in the [next chapter](/chapter7.html) and for now
 will limit ourselves to separated and delimited data.
 
 We have seen separated data before. The CD example that we have looked
@@ -273,7 +273,7 @@ something like this:
 
 and so on.
 
-Within the actual CD file input code from chapter 3 we simplified
+Within the actual CD file input code from [Chapter 3](/chapter3.html) we simplified
 this code slightly by writing it like this:
 
 	my @fields = qw/artist title label year/;
@@ -395,7 +395,7 @@ space. This means that if we change our original code to
 
 then we will get spaces printed between the elements of our list. In
 order to print the data with tabs separating each record we simply
-have to set $" to a tab character (\t). In chapter 3 when we were
+have to set $" to a tab character (\t). In [Chapter 3](/chapter3.html) when we were
 reading in the CD data file we stored the data in an array of hashes.
 An easy way to print out this data would be to use code like this:
 
@@ -585,7 +585,7 @@ problem. !!!
 #### Taking caching further—Memoize.pm
 
 This trick is very similar to the Orcish Manoeuvre which we saw when
-we were discussing sorting techniques in chapter 3. It is, however,
+we were discussing sorting techniques in [Chapter 3](/chapter3.html). It is, however,
 possible to take things one step further. On the CPAN there is a
 module called Memoize.pm which was written by Mark-Jason Dominus. This
 module includes a function called memoize which will automatically

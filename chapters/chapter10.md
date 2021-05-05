@@ -22,7 +22,7 @@ XML overview
 -------
 
 One of the problems we had when extracting the weather information
-from the web page in the previous chapter was that it was difficult to
+from the web page in the [previous chapter](/chapter9.html) was that it was difficult to
 know where in the page to find the data we needed. The only way to do
 it was to closely examine the HTML file and work out which tags
 surrounded our required data. This also meant that each time the

@@ -95,7 +95,7 @@ Throughout the book, I assume a rudimentary knowledge of Perl on the
 part of the reader. Anyone who has read and understood an introductory
 Perl text should have no problem following the code here, but for the
 benefit of readers brand new to Perl, I’ve included both my suggestions
-for Perl primers (see chapter 1) as well as a brief introduction to Perl
+for Perl primers (see [Chapter 1](/chapter1.html)) as well as a brief introduction to Perl
 (see appendix B).
 
 About this book

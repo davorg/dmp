@@ -25,7 +25,7 @@ should munge it using Perl.
 
 ### The usefulness of data munging
 
-In chapter 1, I said that data munging lived in the “interstices
+In [Chapter 1](/chapter1.html), I said that data munging lived in the “interstices
 between computer systems.” I hope that you can now see just how
 all-pervasive it is. There are very few computing tasks that don’t
 involve munging data to some degree. From the run-once command line
