@@ -34,7 +34,7 @@ are ideal for slicing and dicing ordinary data.
 
 Now *that’s* a knife!
 
-DAMIAN CONWAY
+Damian Conway
 
 Preface
 =======
@@ -198,29 +198,6 @@ Source code downloads
 The source for the examples presented in this book is available in
 the GitHub repo, [davorg/dmp](https://github.com/davorg/dmp).
 
-Author Online
--------------
-
-Purchase of *Data Munging with Perl* includes free access to a private
-Web forum run by Manning Publications where you can make comments about
-the book, ask technical questions, and receive help from the author and
-from other users. To access the forum and subscribe to it, point your web
-browser to [www.manning.com/books/data-munging-with-perl](https://www.manning.com/books/data-munging-with-perl). This page provides information on how
-to get on the forum once you are registered, what kind of help is
-available, and the rules of conduct on the forum.
-
-Manning’s commitment to our readers is to provide a venue where a
-meaningful dialog between individual readers and between readers and the
-author can take place. It is not a commitment to any specific amount of
-participation on the part of the author, whose contribution to the AO
-remains voluntary (and unpaid).
-
-We suggest you try asking the author some challenging questions lest his
-interest stray!
-
-The Author Online forum and the archives of previous discussions will
-be accessible from the publisher’s website as long as the book is in print.
-
 Acknowledgments
 ---------------
 
@@ -272,43 +249,3 @@ encouragement, and love I would never have got to the end of this. I
 know that at times over the last year she must have wondered if she
 still had a husband, but I can only apologize (again) and promise that
 she’ll see much more of me now that the book is finished.
-
-About the cover illustration
-----------------------------
-
-The important-looking man on the cover of *Data Munging with Perl* is a
-Turkish First Secretary of State. While the exact meaning of his title
-is for us shrouded in historical fog, there is no doubt that we are
-facing a man of prestige and power. The illustration is taken from a
-Spanish compendium of regional dress customs first published in Madrid
-in 1799. The book’s title page informs us:
-
-> Coleccion general de los Trages que usan actualmente todas las Nacionas
-> del Mundo desubierto, dibujados y grabados con la mayor exactitud por
-> R.M.V.A.R. Obra muy util y en special para los que tienen la del viajeroi
-> universal
-
-Which we loosely translate as:
-
-> General Collection of Costumes currently used in the Nations of the
-> Known World, designed and printed with great exactitude by R.M.V.A.R. This
-> work is very useful especially for those who hold themselves to be universal
-> travelers
-
-Although nothing is known of the designers, engravers and artists who
-colored this illustration by hand, the “exactitude” of their execution is
-evident in this drawing. The figure on the cover is a “Res Efendi,” a
-Turkish government official which the Madrid editor renders as “Primer
-Secretario di Estado.” The Res Efendi is just one of a colorful variety
-of figures in this collection which reminds us vividly of how distant
-and isolated from each other the world’s towns and regions were
-just 200 years ago. Dress codes have changed since then and the diversity
-by region, so rich at the time, has faded away. It is now often hard to
-tell the inhabitant of one continent from another. Perhaps we have traded
-a cultural and visual diversity for a more varied personal life — certainly
-a more varied and interesting world of technology.
-
-At a time when it can be hard to tell one computer book from another,
-Manning celebrates the inventiveness and initiative of the computer business
-with book covers based on the rich diversity of regional life of two centuries
-ago—brought back to life by the picture from this collection.

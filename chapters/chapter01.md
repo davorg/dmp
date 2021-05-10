@@ -12,7 +12,7 @@ fighting with any weapon, and once learned, can be combined with the
 power of the Perl to make them even more effective.
 
 Later, our heroes are introduced to additional techniques for using
-the Perl — all of which prove useful as their journey continues.
+the Perl—all of which prove useful as their journey continues.
 
 Chapter 1: Data, data munging, and Perl
 =======================================
@@ -31,8 +31,7 @@ What this chapter covers:
 > structure, or the whole program. **3.** To modify data in some way
 > the speaker doesn’t need to go into right now or cannot describe
 > succinctly (compare mumble).
-> [The Jargon File](http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html
-)
+> [The Jargon File](http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html)
 
 Data munging is all about taking data that is in one format and
 converting it into another. You will often hear the term being used
@@ -371,7 +370,7 @@ all of their data manipulation. It is therefore very likely that if your data
 source or sink is an RDBMS that you will be communicating with it using SQL.
 Each vendor’s RDBMS has its own proprietary interface to get SQL queries into
 the database and data back into your program, but Perl now has a
-vendor-independent database interface (called DBI) which makes it much easier
+-independent database interface (called DBI) which makes it much easier
 to switch processing between different databases (as long as you don’t make
 any use of vendor-specific features).
 
@@ -453,7 +452,7 @@ Most of the simple data that you will come across will be record-oriented.
 That is, the data source will consist of a number of records, each of which
 can be processed separately from its siblings. Records can be separated from
 each other in a number of ways. The most common way is for each line in a
-text file to represent one record,[5] but it is also possible that a blank
+text file to represent one record, but it is also possible that a blank
 line or a well-defined series of characters separates records. There is, of
 course, potential for confusion over exactly what constitutes a line, but we’ll
 discuss that in more detail later.
@@ -589,7 +588,7 @@ Perl source code (and, indeed, for all of your other Perl needs) is
 www.perl.com, but the Perl source is mirrored at sites all over the
 world. You can find the nearest one to you listed on the main site.
 Once you have the source code, it comes with simple instructions on
-how to build and install it. You’ll need a C compiler and a make
+how to build and install it. You’ll need a C compiler and a `make`
 utility—[Gnu's gcc](https://gcc.gnu.org) should work for you.
 
 Downloading source code and compiling your own tools is a common procedure
@@ -666,7 +665,6 @@ Perl itself comes with a huge amount of documentation. Once you have installed
 Perl, you can type perldoc perl at your command line to get a list of the
 available documents.
 
-
 ## Summary
 
 * Data munging is the process of taking data from one system (a data source)
@@ -684,4 +682,3 @@ structured, record oriented or hierarchical.
 
 * Perl is a language which is very well suited for the whole range of data
 munging jobs.
-

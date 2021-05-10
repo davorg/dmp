@@ -102,7 +102,7 @@ keys, forename and surname, and you want to sort the list like a telephone book
 
     sub namesort {
       return $a->{surname} cmp $b->{surname}
-          || $a->{forename} cmp $b->{forename};
+        || $a->{forename} cmp $b->{forename};
     }
 
 Note that we make good use of the “short circuit” functionality of the
@@ -118,8 +118,8 @@ person first.
 
     sub namesort {
       return $a->{surname} cmp $b->{surname}
-          || $a->{forename} cmp $b->{forename}
-          || $b->{age} <=> $a->{age};
+        || $a->{forename} cmp $b->{forename}
+        || $b->{age} <=> $a->{age};
     }
 
 his default sort mechanism is implemented using a Quicksort algorithm.
@@ -154,7 +154,10 @@ stored in a hash. The basic code would look like this:
     }
 
 There is a lot going on here so it’s worth looking at it in some
-detail. The hash `%key_cache` is used to store the precalculated sort keys.
+detail.
+
+The hash `%key_cache` is used to store the precalculated sort keys.
+
 The function orcish carries out the sort, but for each element, before
 calculating the sort key, it checks to see if the key has already been
 calculated, in which case it will be stored in `%key_cache`. It makes use of
@@ -340,8 +343,7 @@ purpose of shaving five seconds off the runtime isn’t much of a gain.
 
 This section has only really started to discuss the subject of sorting
 in Perl. If you’d like to know more, Guttman and Rosler’s paper is a
-very good place to start. You can find it online at
-http://www.hpl.hp.com/personal/Larry _Rosler/sort/.
+very good place to start. You can find it online at [archive.org](https://web.archive.org/web/20000818012018/http://www.hpl.hp.com/personal/Larry_Rosler/sort/).
 
 ## Database Interface (DBI)
 
@@ -403,9 +405,9 @@ important DBI concepts and it is worth examining line by line.
 
 Line 1 points to the Perl interpreter. Notice the use of the `-w` flag.
 
-Line 3 switches on the strict pragma.
+Line 3 switches on the [strict]() pragma.
 
-Line 4 brings in the DBI.pm module. This allows us to use the DBI
+Line 4 brings in the [DBI.pm]() module. This allows us to use the DBI
 functions.
 
 Lines 6 and 7 define a username and password that we will use to connect
@@ -423,13 +425,12 @@ it is always a colon-separated string. The first part is the string
 dbi and the second part is always the name of the database system2
 that we are connecting to. In this case the string `mysql` tells DBI
 that we will be talking to a MySQL database, and it should therefore
-load the DBD::mysql module. The third section of the connection string
+load the [DBD::mysql]() module. The third section of the connection string
 in this case is the particular database that we want to connect to.
 Many database systems (including MySQL) can store many different
 databases on the same database server. In this case we want to connect
 to a database called testdb. The second and third parameters are valid
 usernames and passwords for connecting to this database.
-
 
 The fourth parameter to `DBI->connect` is a reference to a hash
 containing various configuration options. In this example we switch on
@@ -444,7 +445,7 @@ the variable `$DBI::errstr` which contains the most recent database
 error message.
 
 Line 12 prepares an SQL statement for execution against the database.
-It does this by calling the DBI function `prepar`e. This function
+It does this by calling the DBI function `prepare`. This function
 returns a statement handle which can be used to access another set of
 DBI functions—those that deal with executing queries on the database
 and reading and writing data. This handle is undefined if there is an
@@ -456,10 +457,10 @@ Line 16 defines an array variable which will hold each row of data
 returned from the database in turn.
 
 Lines 17 to 19 define a loop which receives each row from the database
-query and prints it out. On line 17 we call `fetchrow _array` which
+query and prints it out. On line 17 we call `fetchrow_array` which
 returns a list containing one element for each of the columns in the
 next row of the result set. When the result set has all been returned,
-the next call to `fetchrow_array` will return the value undef.
+the next call to `fetchrow_array` will return the value `undef`.
 
 Line 18 prints out the current row with a tab character between each
 element.
@@ -471,7 +472,7 @@ clean up yourself.
 
 This has been a very quick overview of using the DBI. There are a
 number of other functions and the most useful ones are listed in
-appendix A. More detailed documentation comes with the DBI module and
+[Appendix A](ch018.xhtml). More detailed documentation comes with the DBI module and
 your chosen DBD modules.
 
 ## Data::Dumper
@@ -515,42 +516,42 @@ Running this program using our CD files as input produces the following
 output:
 
 	$VAR1 = [
-	{
-	'artist' => 'Bragg, Billy',
-	'title' => 'Workers' Playtime',
-	'year' => '1987',
-	'label' => 'Cooking Vinyl'
-	},
-	{
-	'artist' => 'Bragg, Billy',
-	'title' => 'Mermaid Avenue',
-	'year' => '1998',
-	'label' => 'EMI'
-	},
-	{
-	'artist' => 'Black, Mary',
-	'title' => 'The Holy Ground',
-	'year' => '1993',
-	'label' => 'Grapevine'
-	},
-	{
-	'artist' => 'Black, Mary',
-	'title' => 'Circus',
-	'year' => '1996',
-	'label' => 'Grapevine'
-	},
-	{
-	'artist' => 'Bowie, David',
-	'title' => 'Hunky Dory',
-	'year' => '1971',
-	'label' => 'RCA'
-	},
-	{
-	'artist' => 'Bowie, David',
-	'title' => 'Earthling',
-	'year' => '1998',
-	'label' => 'EMI'
-	}
+		{
+		  'artist' => 'Bragg, Billy',
+		  'title' => 'Workers' Playtime',
+		  'year' => '1987',
+		  'label' => 'Cooking Vinyl'
+		},
+		{
+		  'artist' => 'Bragg, Billy',
+		  'title' => 'Mermaid Avenue',
+		  'year' => '1998',
+		  'label' => 'EMI'
+		},
+		{
+		  'artist' => 'Black, Mary',
+		  'title' => 'The Holy Ground',
+		  'year' => '1993',
+		  'label' => 'Grapevine'
+		},
+		{
+		  'artist' => 'Black, Mary',
+		  'title' => 'Circus',
+		  'year' => '1996',
+		  'label' => 'Grapevine'
+		},
+		{
+		  'artist' => 'Bowie, David',
+		  'title' => 'Hunky Dory',
+		  'year' => '1971',
+		  'label' => 'RCA'
+		},
+		{
+		  'artist' => 'Bowie, David',
+		  'title' => 'Earthling',
+		  'year' => '1998',
+		  'label' => 'EMI'
+		}
 	];
 
 This is a very understandable representation of our data structure.
@@ -562,7 +563,7 @@ element of the array individually and produced output for each of
 them. By passing a reference we forced it to treat our array as a
 single object.
 
-***Benchmarking***
+## Benchmarking
 
 When choosing between various ways to implement a task in Perl, it will
 often be useful to know which option is the quickest. Perl provides a module
@@ -574,21 +575,24 @@ the time that each piece of code took to run. You should, therefore, break your
 options down into separate functions which all do the same thing in different
 ways and pass these functions to timethese. For example, there are four ways to put
 the value of a variable into the middle of a fixed string. You can interpolate the
-variable directly within the string
+variable directly within the string:
 
 	$str = "The value is $x (or thereabouts)";
 
-or join a list of values\
+or join a list of values:
 
 	$str = join '', 'The value is ', $x, ' (or thereabouts)';
-	or concatenate the values
+
+or concatenate the values:
+
 	$s = 'The value is ' . $x . ' (or thereabouts)';
-	or, finally, use sprintf.
+
+or, finally, use `sprintf`:
 
 	$str = sprintf 'The value is %s (or thereabouts)', $x;
 
 In order to calculate which of these methods is the fastest, you would
-write a script like this:\
+write a script like this
 
 	#!/usr/bin/perl -w
 	use strict;
@@ -637,7 +641,7 @@ each of the subroutines and the values are references to the functions themselve
 timethese will run each of your functions the given number of times and will print
 out the results. As you can see from the results we get above, our functions
 fall into three sets. Both concat and interp took about 8 seconds of CPU time to run
-1,000,000 times; join was a little longer at 9 seconds; and sprintf came in at 12
+1,000,000 times; join was a little longer at 9 seconds; and `sprintf` came in at 12
 seconds of CPU time.
 
 You can then use these figures to help you decide which version of the
@@ -664,10 +668,10 @@ combine many statements in one `-e` string by separating them with a
 semicolon.
 
 If the code that you want to run needs a module that you would usually
-include with a use statement, you can use the `-M` option to load the
+include with a `use` statement, you can use the `-M` option to load the
 module. For example, this makes it easy to find the version of any
 module that is installed on your system using code like this
-(Providing that the module uses the standard practice of defining a
+(providing that the module uses the standard practice of defining a
 `$VERSION` variable):
 
 	perl -MCGI -e 'print $CGI::VERSION'
@@ -682,7 +686,7 @@ looks like this:
 	  # Your -e code goes here
 	}
 
-This can be used, for example, to write a simple grep-like script such
+This can be used, for example, to write a simple `grep`-like script such
 as:
 
 	perl -ne 'print if /search text/' file.txt\
@@ -692,7 +696,7 @@ text”. Notice the presence of the `LINE` label which allows you to
 write code using `next LINE`.
 
 If you are transforming data in the file and want to print a result
-for every line, then you should use the -p option which prints the
+for every line, then you should use the `-p` option which prints the
 contents of `$_` at the end of each iteration of the while loop. The
 code it generates looks like this:
 
@@ -709,7 +713,7 @@ multiple zeroes in a record to just one. You could write code like this:
 	perl -pe 's/0+/0/g' input.txt > output.txt
 
 With the examples we’ve seen so far, the output from the script is
-written to STDOUT (that is why we redirected STDOUT to another file in
+written to `STDOUT` (that is why we redirected `STDOUT` to another file in
 the last example). There is another option, `-i`, which allows us to
 process a file in place and optionally create a backup containing the
 previous version of the file. The `-i` takes a text string which will be
@@ -719,7 +723,7 @@ previous example as:
 	perl -i.bak -pe 's/0+/0/g' input.txt
 
 This option will leave the changed data in `input.txt` and the original
-data in `input.txt.bak`. If you don’t give `-i` an extension then no
+data in *input.txt.bak*. If you don’t give `-i` an extension then no
 backup is made (so you’d better be pretty confident that you know
 what you’re doing!).
 
@@ -727,14 +731,14 @@ There are a number of other options that can make your life even
 easier. Using `-a` turns on autosplit, which in turn splits each input
 row into `@F`. By default, autosplit splits the string on any white
 space, but you can change the split character using `-F`. Therefore, in
-order to print out the set of user names from `/etc/passwd` you can use code like this:
+order to print out the set of user names from */etc/passwd* you can use code like this:
 
 	perl -a -F':' -ne 'print "$F[0]\n"' < /etc/passwd
 
 The `–l` option switches on line-end processing. This automatically does
 a `chomp` on each line when used with `-n` or `-p`. You can also give it an
 optional octal number which will change the value of the output record
-separator (`$\` ).5 This value is appended to the end of each output
+separator, `$\`. This value is appended to the end of each output
 line. Without the octal number, `$\` is set to the same value as the
 input record separator (`$/`). The default value for this is a newline.
 You can change the value of `$/` using the `-0` (that’s dash-zero, not
@@ -743,11 +747,11 @@ dash-oh) option. We cover special variables in [Chapter 6](ch010.xhtml).
 What this means is that in order to have newlines
 automatically removed from your input lines and automatically added
 back to your output line, just use `–l`. For instance, the previous
-`/etc/passwd` example could be rewritten as:
+*/etc/passwd* example could be rewritten as:
 
 	perl -a -F':' -nle 'print $F[0]' < /etc/passwd
 
-For more information about these command line options see the **perlrun**
+For more information about these command line options see the [perlrun](https://perldoc.perl.org/perlrun)
 manual page which is installed when you install Perl.
 
 ## Further information

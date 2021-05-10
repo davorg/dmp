@@ -103,8 +103,7 @@ What happens, however, if the requirements change completely so that we now need
 In all of the scripts above we were not following the advice of the previous section. We were trying to do too much in the input section and left ourselves nothing to do in the data munging section. Perhaps if we went back to a more decoupled approach, we would have more success.
 
 This leaves us contemplating our original question again - what structure would offer the best way to represent our data inside the program? Let's take another look at the data. What we have is a list of records, each of which has a well-defined set of attributes. We could use either a hash or an array
-to model our list of records and we have the same choices to model each individual record. In this case we will use an array of hashes to model our data. A good argument could be made for just about any other combination of arrays and hashes, but the representation that I have chosen seems more
-natural to me. Our input routine will therefore look like this:
+to model our list of records and we have the same choices to model each individual record. In this case we will use an array of hashes to model our data. A good argument could be made for just about any other combination of arrays and hashes, but the representation that I have chosen seems more natural to me. Our input routine will therefore look like this:
 
     my @CDs;
     sub input {
@@ -204,12 +203,11 @@ In most cases you will have to make similar decisions when designing data struct
 Encapsulate business rules
 --------------------------
 
-Much of the logic in your data munging programs will be modeling what might be described as "business rules". These are the rules about what particular data items mean, what their valid sets of values are, and how they relate to other values in the same or other records. Examples of these three types of business rules are:
+Much of the logic in your data munging programs will be modeling what might be described as "business rules" or "domain-specific constraints". These are the rules about what particular data items mean, what their valid sets of values are, and how they relate to other values in the same or other records. Examples of these three types of business rules are:
 
 * Customer number is a unique identifier for a customer.
 * Customer number is always in the format CUS-XXXXX, where XXXXX is a unique integer.
 * Each customer record must be linked to a valid salesperson record.
-
 
 In any system where these data items are used, the business rules must always hold true. No matter what your program does to a customer record, the customer number must remain unique and in the given format, and the customer must be linked to a valid salesperson record. Nothing that you do to a customer record is allowed to leave the data in a state that breaks any of these rules.
 
@@ -277,9 +275,9 @@ in a program. The program will now have access to the `get_next_cust_no` and `sa
 
 While the module of the previous section is useful, it still has a number of problems; not the least of which is the fact that the structure of the customer record is defined elsewhere in the application. If the module is reused in a number of applications, then each application will define its own customer record and it is possible that the definitions will become out of step with each other. The solution to this problem is to create an object class.
 
-An object defines both the structure of a data record and all of the methods used  to operate on the record. It makes the code far easier to reuse and maintain. A full discussion of the advantages of object-oriented programming (OOP) is beyond the scope of this book, but two very good places to get the full story are the *perltoot* manual page and Damian Conway's *Object Oriented Perl* (Manning).
+An object defines both the structure of a data record and all of the methods used  to operate on the record. It makes the code far easier to reuse and maintain. A full discussion of the advantages of object-oriented programming (OOP) is beyond the scope of this book, but two very good places to get the full story are the *perltoot* manual page and Damian Conway's *Object Oriented Perl*.
 
-Let's examine a cut-down customer object which is implemented in a module called Customer.pm.
+Let's examine a cut-down customer object which is implemented in a module called *Customer.pm*.
 
     package Customer;
     use strict;
@@ -330,18 +328,24 @@ The advantage that this method has over the previous example is that in addition
 As an example of using this module, let's look at a simple script for creating a customer record. We'll prompt the user for the information that we require.
 
     use Customer;
+
     my $cust = Customer->new;
+
     print 'Enter new customer name: ';
     my $name = <STDIN>;
     $cust->name($name);
+
     print 'Enter customer address: ';
     my $addr = <STDIN>;
     $cust->address($addr);
+
     print 'Enter salesperson code: ';
     my $sp_code = <STDIN>;
     $cust->salesperson($sp_code);
+
     # Write code similar to that above to get any other
     # required data from the user.
+
     if ($cust->save) {
       print "New customer saved successfully.\n"
       print "New customer code is ", $cust->code, "\n";
@@ -349,7 +353,7 @@ As an example of using this module, let's look at a simple script for creating a
       print "Error saving new customer.\n";
     }
 
-In this case we create an empty customer object by calling the `Customer->new` method without any parameters. We then fill in the various data items in our customer object with data input by the user. Notice that we assume that each customer attribute has an access method which can be used to set or get the attribute value.
+In this case we create an empty customer object by calling the `Customer->new` method without any parameters. We then fill in the various data items in our customer object with data input by the user. Notice that we assume that each customer attribute has an access method which can be used to set or get the attribute value (or maybe one to set and one to get).
 
 Having filled in all of the required data, we called $cust->save to save our new record. If the save is successful, the code attribute will have been filled in and we can display the new customer's code to the user by way of the `$cust->code` attribute access method.
 
@@ -406,7 +410,7 @@ Table 2.1 - Common I/O redirection
 
 ### Advantages of the filter model
 
-The filter model is a very useful concept and is fundamental to the way that UNIX works. It means that UNIX can supply a large number of small, simple utilities, each of which do one task and do it well. Many complex tasks can be carried out by plugging a number of these utilities together. For example, if we needed to list all of the files in a directory with a name containing the string "proj01" and wanted them sorted in alphabetical order, we could use a combination of ls, sort, and grep like this:
+The filter model is a very useful concept and is fundamental to the way that UNIX works. It means that UNIX can supply a large number of small, simple utilities, each of which do one task and do it well. Many complex tasks can be carried out by plugging a number of these utilities together. For example, if we needed to list all of the files in a directory with a name containing the string "proj01" and wanted them sorted in alphabetical order, we could use a combination of `ls`, `sort`, and `grep` like this:
 
     ls -1 | grep proj01 | sort
 
@@ -425,10 +429,13 @@ Suppose, for example, that we had written a program called data_munger which mun
 Within the script we would open the files and read from the input, munge the data, and then write to the output file. In Perl, the program might look something like:
 
     #!/usr/bin/perl -w
+
     use strict;
+
     my ($input, $output) = @ARGV;
     open(IN, $input) || die "Can't open $input for reading: $!";
     open(OUT, ">$output") || die "Can't open $output for writing: $!";
+
     while (<IN>) {\
       print OUT munge_data($_);
     }
@@ -515,8 +522,7 @@ At different points in the life of a program, different levels of auditing will 
 
 In this example we set the value of `$audit_level` from the environment variable `AUDIT\_LEVEL`. If this level is not set then we default to 0, the minimum level. Later in the script we can write code like:
 
-    print LOG 'Starting processing at ',
-              scalar localtime, "\n"
+    print LOG 'Starting processing at ', scalar localtime, "\n"
       if $audit_level > 0;
 
 to print audit information to the previously opened file handle, LOG. Standards for audit trails will typically vary from company to company, but some things that you might consider auditing are:
@@ -556,9 +562,12 @@ A useful audit trail for a data munging process that takes data from a file and 
 Sometimes you will want to log your audit trail to the UNIX system log. This is a centralized process in which the administrator of a UNIX system can control where the log information for various processes is written. To access the system log from Perl, use the Sys::Syslog module. This module contains four functions called `openlog`, `closelog`, `setlogmask`, and `syslog` which closely mirror the functionality of the UNIX functions with the same names. For more details on these functions, see the Sys::Syslog module's documentation and your UNIX manual. Here is an example of their use:
 
     use Sys::Syslog;
+
     openlog('data_munger.pl', 'cons', 'user');
+
     # then later in the program
     syslog('info', 'Process started');
+
     # then later again
     closelog();
 
