@@ -54,7 +54,7 @@ There are a number of command line options that you can either put on
 the command line or on the interpreter line in the program file. The
 most useful include:
 
-* -w Asks Perl to notify you when it comes across a number of unsafe programming practices in your program. These include using a variable before it is initialized and attempting to write to a file handle that is opened for reading. These warnings are usually very useful and there is no good reason not to use this option for every Perl program that you write.
+* -w Asks Perl to notify you when it comes across a number of unsafe programming practices in your program. These include using a variable before it is initialized and attempting to write to a filehandle that is opened for reading. These warnings are usually very useful and there is no good reason not to use this option for every Perl program that you write.
 
 * -T Turns on Perl’s “taint” mode. In this mode all input from an external source is untrusted by default. You can make use of such input only by explicitly cleaning it first. This is particularly useful if you are writing a CGI script. For more details see the perlsec manual page.
 
@@ -170,7 +170,7 @@ range, then the array is automatically extended.
 	$hobbits[100] = 'Sam';
 
 In that last example, all of the elements between 4 and 99 also
-magically sprang into existence, and they all contain the value undef.
+magically sprang into existence, and they all contain the value `undef`.
 
 You can use negative index values to access array values from the end
 of the array.
@@ -683,7 +683,7 @@ this:
 it won’t work because, within the subroutine, the assignment to @arr
 doesn’t know when to stop pulling elements from @_ and will,
 therefore, take all of @_, leaving nothing to go into $x which
-therefore ends up containing the undef value.
+therefore ends up containing the `undef` value.
 
 If you were to pass the parameters the other way round like this:
 
@@ -746,7 +746,7 @@ ways.
 ### Using references
 
 To get back to the original object that the scalar points at, you
-simply put the object’s type specifier character (i.e., $, @, or %) in
+simply put the object’s type specifier character (*i.e.*, $, @, or %) in
 front of the variable holding the reference. For example:
 
 	$orig_scalar = $$scalar_ref;
@@ -786,7 +786,7 @@ this:
 	$sub_ref->(); # another way to execute my_sub (allowing parameter
 	passing)
 
- You can use this to create references to anonymous subroutines (i.e.,
+ You can use this to create references to anonymous subroutines (*i.e.*,
  subroutines without names) like this:
 
 	$sub_ref = sub { print "I'm an anonymous subroutine" };

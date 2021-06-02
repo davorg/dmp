@@ -83,9 +83,9 @@ The following functions are called on a valid database handle.
 
 * `$dbh->selectall_arrayref($statement [, \%attr [, @bind_values]])` Combines the prepare, execute, and fetchall_arrayref functions into a single function call. It returns a reference to an array. Each element of the array contains a reference to an array containing the data returned. See the separate functions for more details on the parameters.
 
-* `$dbh->prepare($statement [, \%attr])` Prepares an SQL statement for later execution against the database and returns a statement handle. This handle can later be used to invoke the execute function. Most database drivers will, at this point, pass the statement to the database to ensure that it compiles correctly. If there is a problem, prepare will return undef.
+* `$dbh->prepare($statement [, \%attr])` Prepares an SQL statement for later execution against the database and returns a statement handle. This handle can later be used to invoke the execute function. Most database drivers will, at this point, pass the statement to the database to ensure that it compiles correctly. If there is a problem, prepare will return `undef`.
 
-* `$dbh->do($statement, \%attr, @bind_values)` Prepares and executes an SQL statement. It returns the number of rows affected (–1 if the database driver doesn’t support this) or undef if there is an error. This is useful for executing statements that have no return sets, such as updates or deletes.
+* `$dbh->do($statement, \%attr, @bind_values)` Prepares and executes an SQL statement. It returns the number of rows affected (–1 if the database driver doesn’t support this) or `undef` if there is an error. This is useful for executing statements that have no return sets, such as updates or deletes.
 
 * `$dbh->commit`, `$dbh->rollback` Will commit or rollback the current database transaction. They are only effective if the AutoCommit attribute is set to 0.
 
@@ -117,11 +117,11 @@ The following functions are all called via a valid statement handle.
 
 * `$sth->execute([@bind_values])` Executes the prepared statement on the database. If the statement is an insert, delete, or update then when this function returns, the insert, delete, or update will be complete. If the statement was a select statement, then you will need to call one of the fetch functions to get access to the result set. If any parameters are passed to this function, then bind_param will be run for each value before the statement is executed.
 
-* `$sth->fetchrow_arrayref`, `$sth->fetch` (fetch is an alias for `fetchrow_arrayref`) Fetches the next row of data from the result set and returns a reference to an array that holds the data values. Any NULL data items are returned as undef. When there are no more rows to be returned, the function returns undef.
+* `$sth->fetchrow_arrayref`, `$sth->fetch` (fetch is an alias for `fetchrow_arrayref`) Fetches the next row of data from the result set and returns a reference to an array that holds the data values. Any NULL data items are returned as `undef`. When there are no more rows to be returned, the function returns `undef`.
 
 * `$sth->fetchrow_array` Similar to `fetchrow_arrayref`, except that it returns an array containing the row data. When there are no more rows to return, fetchrow_array returns an empty array.
 
-* `$sth->fetchrow_hashref` Similar to fetchrow_arrayref, except that it returns a hash containing the row data. The keys of the hash are the column names and the values are the data items. When there are no more rows to return, this function returns undef.
+* `$sth->fetchrow_hashref` Similar to fetchrow_arrayref, except that it returns a hash containing the row data. The keys of the hash are the column names and the values are the data items. When there are no more rows to return, this function returns `undef`.
 
 * `$sth->fetchall_arrayref` Returns all of the data from a result set at one time. The function returns a reference to an array. Each element of the array is a reference to another. Each of these second-level arrays represents one row in the result set and each element contains a data item. This function returns an empty array if there is no data returned by the statement.
 
@@ -217,7 +217,7 @@ The most useful functions in Date::Calc include:
 
 * $week = Week_Number($year, $month, $day) Returns the week number of the year that the given date falls in. Week one is defined as the week that January 4 falls in, so it is possible for the number to be zero. It is also possible for the week number to be 53.
 
-* ($year, $month, $day) = Monday_of_Week($week, $year) Returns the date of the first day (i.e., Monday) of the given week in the given year.
+* ($year, $month, $day) = Monday_of_Week($week, $year) Returns the date of the first day (*i.e.*, Monday) of the given week in the given year.
 
 * ($year, $month, $day) ** = ** Nth_Weekday_of_Month_Year($year, $month,* *$dow, ** $n) Returns the *n*th week day in the given month in the given year. For example if you wanted to find the third Sunday (day seven of the week) in November 1999 you would call it as Nth_Weekday_of_Month_Year(1999, 11, 7, 3) which would return the November 21, 1999.
 
@@ -249,7 +249,7 @@ Date::Manip.
 
 * @dates = ParseRecur($recur, [$base, $start, $end, $flags]) Returns a list of dates for a recurring event. The rules that govern how the event recurs are defined in $recur. The syntax is a little complex, but it is based loosely on the syntax of a UNIX crontab file and is defined in detail in the Date::Manip documentation.
 
-* $diff = Date_Cmp($date1, $date2) Compares two dates and returns the same values as Perl’s internal Cmp and <=> operators do for strings and numbers respectively; i.e., –1 if $date < $date1, 0 if $date1 == $date2, and 1 if $date1 > $date2. This means that this function can be used as a sort routine.
+* $diff = Date_Cmp($date1, $date2) Compares two dates and returns the same values as Perl’s internal Cmp and <=> operators do for strings and numbers respectively; *i.e.*, –1 if $date < $date1, 0 if $date1 == $date2, and 1 if $date1 > $date2. This means that this function can be used as a sort routine.
 
 * $d = DateCalc($d1, $d2) Takes two dates (or two deltas or one of each) and performs an appropriate calculation with them. Two deltas yield a third delta; a date and a delta yield the result of applying the delta to the date; and two dates yield a delta which is the time between the two dates. There are additional parameters that give you finer control over the calculation.
 
@@ -275,7 +275,7 @@ a slightly less brief look at the functions that this module
 provides. For more information on using this module see the lwpcook
 manual page which comes with the LWP bundle of modules.
 
-* $page = get($url) Returns the document which is found at the given URL. It returns only the document without any of the HTTP headers. Returns undef if the request fails.
+* $page = get($url) Returns the document which is found at the given URL. It returns only the document without any of the HTTP headers. Returns `undef` if the request fails.
 
 * ($content_type, $document_len, $mod_time, $expiry_time, $server) = head($url) Returns various information from the HTTP header that is returned when the given URL is requested. Returns an empty list if the request fails.
 
@@ -297,7 +297,7 @@ module repository for use with ActivePerl is still a 2.x version.1
 For further detail on using an older version, see the documentation
 that comes with the module.
 
-* $parser = HTML::Parser->new(%options_and_handlers) Creates an instance of the HTML parser object. For details of the various options and handlers that can be passed to this method, see the description later in this section. Returns the new parser object or undef on failure.
+* $parser = HTML::Parser->new(%options_and_handlers) Creates an instance of the HTML parser object. For details of the various options and handlers that can be passed to this method, see the description later in this section. Returns the new parser object or `undef` on failure.
 
 * $parser->parse($html) Parses a piece of HTML text. Can be called multiple times.
 
@@ -305,7 +305,7 @@ that comes with the module.
 
 * $parser->parse_file($file_name) Parses a file containing HTML.
 
-* $parser->strict_comment($boolean) Many popular browsers (including Netscape Navigator and Microsoft Internet Explorer) parse HTML comments in a way which is subtly different than the HTML standard. Calling this function and passing it a true value will switch on strict (i.e., in line with the HTML specification) comment handling. 1 As I was completing the final edits of this book, there were some moves towards correcting this discrepancy.
+* $parser->strict_comment($boolean) Many popular browsers (including Netscape Navigator and Microsoft Internet Explorer) parse HTML comments in a way which is subtly different than the HTML standard. Calling this function and passing it a true value will switch on strict (*i.e.*, in line with the HTML specification) comment handling. 1 As I was completing the final edits of this book, there were some moves towards correcting this discrepancy.
 
 * $parser->strict_names($boolean) This method has similar functionality to strict_comment, but deals with certain browsers’ ability to understand broken tag and attribute names.
 
@@ -438,13 +438,13 @@ HTML::TokeParser is another subclass of HTML::Parser; however, it is
 not recommended that you call any of the methods from the superclass.
 You should only use the methods defined by HTML::TokeParser.
 
-* $parser = HTML::TokeParser->new($document) Creates an HTML::TokeParser object. The single parameter defines the document to be parsed in one of a number of possible ways. If the method is passed a plain scalar then it is taken as the name of a file to open and read. If the method is passed a reference to a scalar then it assumes that the scalar contains the entire text of the document. If it is passed any other type of object (for example, a file handle) then it assumes that it can read data from the object as it is required.
+* $parser = HTML::TokeParser->new($document) Creates an HTML::TokeParser object. The single parameter defines the document to be parsed in one of a number of possible ways. If the method is passed a plain scalar then it is taken as the name of a file to open and read. If the method is passed a reference to a scalar then it assumes that the scalar contains the entire text of the document. If it is passed any other type of object (for example, a filehandle) then it assumes that it can read data from the object as it is required.
 
-* $token = $parser->get_token Returns the next token from the document (or undef when there are no more tokens). A token consists of a reference to an array. The first element in the array is a character indicating the type of the token (S for start tag, E for end tag, T for text, C for comment, and D for a declaration). The remaining elements are the same as the parameters to the appropriate method of the HTML::Parser object.
+* $token = $parser->get_token Returns the next token from the document (or `undef` when there are no more tokens). A token consists of a reference to an array. The first element in the array is a character indicating the type of the token (S for start tag, E for end tag, T for text, C for comment, and D for a declaration). The remaining elements are the same as the parameters to the appropriate method of the HTML::Parser object.
 
 * $parser->unget\_token You can’t know what kind of token you will get next until you have received it. If you find that you don’t need it yet, you can call this method to return it to the token stack to be given to you again the next time you call get_token.
 
-* $tag = $parser->get\_tag($tag) Returns the next start or end tag in the document. The parameter is optional and, if it is used, the method will return the next tag of the given type. The method returns undef if no more tokens (or no more tokens of the given type) are found. The tag is returned as a reference to an array. The elements of the array are similar to the elements in the array returned from the get_token method, but the character indicating the token type is missing and the name of an end tag will have a / character prepended.
+* $tag = $parser->get\_tag($tag) Returns the next start or end tag in the document. The parameter is optional and, if it is used, the method will return the next tag of the given type. The method returns `undef` if no more tokens (or no more tokens of the given type) are found. The tag is returned as a reference to an array. The elements of the array are similar to the elements in the array returned from the get_token method, but the character indicating the token type is missing and the name of an end tag will have a / character prepended.
 
 * $text = $parser->get\_text($endtag) Returns all text at the current position of the document. If the optional parameter is omitted it returns the text up to the next tag. If an end tag is given then it returns all text up to the next end tag of the given type.
 
@@ -697,4 +697,4 @@ contents. The return value varies according to the style chosen.
 * $parser->setHandlers(%handlers) Overrides the current set of
 handlers with a new set. The parameters are interpreted as a hash in
 exactly the same format as the one passed to new. By including an
-empty string or undef, the associated handler can be switched off.
+empty string or `undef`, the associated handler can be switched off.

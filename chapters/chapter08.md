@@ -359,8 +359,8 @@ code in your programs.
 	 # WARNING: This code doesn't work
 	 use strict;
 	 while (<STDIN>) {
-	 s/<.*>//;
-	 print;
+	   s/<.*>//;
+	   print;
 	 }
 
 Nothing too difficult there. Just read in the file a line at a time
@@ -554,7 +554,7 @@ the subject and the object are noun phrases and a noun phrase is
 defined as either a pronoun, a proper noun, or an article followed
 by a noun. In the last rule, pronouns, proper nouns, articles, and
 nouns are all terminals. Notice that the vertical bars in the
-definition of a noun_phrase indicate alternatives, i.e., a noun
+definition of a noun_phrase indicate alternatives, *i.e.*, a noun
 phrase rule can be matched by one of three different forms. Each of
 these alternatives is called a *production*.
 

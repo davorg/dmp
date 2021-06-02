@@ -100,7 +100,7 @@ general rules for XML documents. Basically, these rules say this:
 
 * All elements must have opening and closing tags (except in the special case of empty tags where the opening tag is also used as the closing tag).
 
-* Opening and closing tags must be nested correctly (i.e., nested tags must be closed in the reverse of the order in which they were opened).
+* Opening and closing tags must be nested correctly (*i.e.*, nested tags must be closed in the reverse of the order in which they were opened).
 
 * All attributes must be quoted and cannot contain a < or an & (except as the first character of a reference).
 
@@ -201,9 +201,9 @@ data is encountered. In each case the first parameter to the function
 will be a reference to the underlying Expat object which is doing the
 parsing. In the StartTag and EndTag functions the second parameter is
 the name of the tag which is being started or ended. The complete
-original tag is stored in $\_. Additionally, in the StartTag function,
-the list of attributes is stored in %\_. In the Text function, the
-text that has been found is stored in $\_.
+original tag is stored in `$_`. Additionally, in the StartTag function,
+the list of attributes is stored in `%_`. In the Text function, the
+text that has been found is stored in `$_`.
 
 This may all make a bit more sense if we look at the example code in
 more detail. The main part of the program defines some global
@@ -829,7 +829,7 @@ Specialized parsers—XML::RSS
 -------
 
 Some of the subclasses of XML::Parser are specialized to deal with
-particular types of XML documents, i.e., documents which conform to a
+particular types of XML documents, *i.e.*, documents which conform to a
 particular DTD. As an example we will look at one of the most popular
 of these parsers, XML::RSS.
 
@@ -1534,7 +1534,7 @@ simply the text =pod, and for text it is the title of the document
 underlined. Notice that we use the expression $tree->[1]->[4]->[2] to
 get the title of the document. We can take this kind of shortcut
 because we know the structure of our document. $tree->[1] is the
-content of the first node in the tree (i.e., everything within the
+content of the first node in the tree (*i.e.*, everything within the
 `<README>` element). $tree->[1]->[4] is the content of the second node
 contained within the `<README>` element. The first node within this
 element is the text node containing the newline character immediately
@@ -1544,7 +1544,7 @@ presence of this ignorable white space is a serious limitation of this
 script, and if you wanted to use a script like this in earnest you
 would need to design something a little more robust. !!!  The second
 node is the `<NAME>` element. $tree->[1]->[4]->[2] is the content of the
-first node within the `<NAME>` element, i.e., the name text, which we
+first node within the `<NAME>` element, *i.e.*, the name text, which we
 will use as a title.
 
 Line 30 calls the process\_node function which is defined in lines 34
@@ -1604,7 +1604,7 @@ same way as the process_node function.
 Having described the script in detail, let’s run it in the various
 modes on our sample document and see what output we get. The script
 takes the input file as an argument and writes its output to
-STDOUT. We can, therefore, call the script like this:
+`STDOUT`. We can, therefore, call the script like this:
 
 	format_xml.pl -f p doc.xml > doc.pod
 	format_xml.pl -f h doc.xml > doc.html

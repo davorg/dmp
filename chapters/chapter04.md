@@ -14,7 +14,7 @@ What this chapter covers:
 A lot of data munging involves the use of pattern matching. In fact,
 it’s probably fair to say that the vast majority of data munging uses
 pattern matching in one way or another. Most pattern matching in Perl
-is carried out using regular expressions. !!!Footnote: 1 In fact, it’s often suggested that regular expressions in Perl are overused.!!! It is
+is carried out using regular expressions. It is
 therefore very important that you understand how to use them. In this
 chapter we take an overview of regular expressions in Perl and how
 they can be used in data munging, but we start with a brief look at a
@@ -40,8 +40,7 @@ optional parameters: the length of the required substring and another
 string to replace it with. If the third parameter is omitted, then
 the substring will include all characters in the source string from
 the given offset to the end. The offset of the first character in
-the source string is 0. !!!Footnote 2 Or, more accurately, it is the value of the special \$[ variable, but as that is initially set to zero and there is really no good reason to change it, your strings should always start from position zero.
-!!! If the offset is negative then it counts
+the source string is 0. If the offset is negative then it counts
 from the end of the string. Here are a few simple examples:
 
 	my $string = 'Alas poor Yorick. I knew him Horatio.';
@@ -81,10 +80,10 @@ long string”.
 Two more functions that are useful for this kind of text manipulation
 are index and rindex. These functions do very similar things—index
 finds the first occurrence of a string in another string and rindex
-finds the last occurrence. Both functions return an integer
-indicating the position !!! FOOTNOTE 3 Again, the positions start from 0—or the value of \$[.!!! in the source string where the given substring begins, and both take an optional third parameter which is the
-position where the search should start. Here are some simple
-examples:
+finds the last occurrence. Both functions return an integer indicating
+the position in the source string where the given substring begins,
+and both take an optional third parameter which is the position where
+the search should start. Here are some simple examples:
 
 	my $string = 'To be or not to be.';
 	my $pos1 = index($string, 'be');
@@ -98,14 +97,14 @@ examples:
 	my $pos5 = rindex($string, 'not');
 	# $pos5 is 9
 
-It’s worth noting that \$pos3 is 16 because we don’t start looking
-until position 5; and \$pos4 and \$pos5 are equal because there is
+It’s worth noting that `$pos3` is 16 because we don’t start looking
+until position 5; and `$pos4` and `$pos5` are equal because there is
 only one instance of the string 'not' in our source string.
 
 It is, of course, possible to use these three functions in
 combination to carry out more complex tasks. For example, if you had
 a string and wanted to extract the middle portion that was contained
-between square brackets ([ and ]), you could do something like this:
+between square brackets (`[` and `]`), you could do something like this:
 
 	my $string = 'Text with an [important bit] in brackets';
 	my $start = index($string, '[');
@@ -120,10 +119,10 @@ be more easily understood.
 Another common requirement is to alter the case of a text string,
 either to change the string to all upper case, all lower case, or
 some combination. Perl has functions to handle all of these
-eventualities. The functions are uc (to convert a whole string to
-upper case), ucfirst (to convert the first character of a string to
-upper case), lc (to convert a whole string to lower case), and
-lcfirst (to convert the first character of a string to lower case).
+eventualities. The functions are [uc](https://perldoc.perl.org/functions/uc) (to convert a whole string to
+upper case), [ucfirst](https://perldoc.perl.org/functions/ucfirst) (to convert the first character of a string to
+upper case), [lc](https://perldoc.perl.org/functions/lc) (to convert a whole string to lower case), and
+[lcfirst](https://perldoc.perl.org/functions/lcfirst) (to convert the first character of a string to lower case).
 
 There are a couple of traps that seem to catch unwary programmers who
 use these functions. The first of these is with the ucfirst and
@@ -180,7 +179,7 @@ Among others, Perl regular expressions can match the following:
 
 *  Phrases containing repeated sections
 
-*  Alternate phrases (i.e., either *this* or *that*)
+*  Alternate phrases (*i.e.*, either *this* or *that*)
 
 *  Phrases that must appear at the start or end of a word
 
@@ -201,7 +200,7 @@ see the perlre documentation page.
 ### Regular expression syntax
 
 In Perl you can turn a string of characters into a regular expression
-by enclosing it in slash characters (/). So, for example
+by enclosing it in slash characters (`/`). So, for example
 
 	/regular expression/
 
@@ -209,11 +208,10 @@ is a regular expression which matches the string “regular expression”.
 
 #### Regular expression metacharacters
 
-Within a regular expression most characters will match themselves !!!
-Footnote 4 That is, a letter “a” in a regular expression will match
-the character “a” in the target string.!!! unless their meaning is
-modified by the presence of various metacharacters. The list of
-meta-characters that can be used in Perl regular expressions is
+Within a regular expression most characters will match themselves
+unless their meaning is modified by the presence of various
+metacharacters. The list of meta-characters that can be used in Perl
+regular expressions is
 
 	\ | ( ) [ { ^ $ * + ? .
 
@@ -223,7 +221,7 @@ see that the backslash is itself a metacharacter, so to match a
 literal backslash you’ll need to have two backslashes in your regular
 expression `/foo\\bar/` matches `foo\bar`.
 
-The dot character (.) matches any character.
+The dot character (`.`) matches any character.
 
 The normal escape sequences that are familiar from many programming
 languages are also available. A tab character is matched by `\t`, a
@@ -258,7 +256,7 @@ characters—and even extended ASCII characters like ñ, «, and é).
 
 There are a number of predefined character classes that can be denoted
 using escape sequences. Any digit is matched by `\d`. Any word
-character (i.e., digits, upper and lower case letters, and the
+character (*i.e.*, digits, upper and lower case letters, and the
 underscore character) is matched by `\w` and any white space character
 (space, tab, carriage return, line feed, or form feed) is matched by
 `\s`. The inverses of these classes are also defined. Any nondigit is
@@ -273,7 +271,7 @@ regular expression, such as:
 	/regular expression|regex/
 
 will match either the string “regular expression” or the string
-“regex”. Parentheses (( and )) can be used to group strings, so while
+“regex”. Parentheses (`(` and `)`) can be used to group strings, so while
 
 	/regexes are cool|rubbish/
 
@@ -354,15 +352,16 @@ only at the start of your data you can use a caret (`^`). Similarly, a
 dollar sign (`$`) matches at the end of the data. To match an email
 header line which consists of a string such as “From”, “To”, or
 “Subject” followed by a colon, an optional space and some more text,
-you could use a regular expression like this: !!! FOOTNOTE 5 You could
-also write this as `/^.+?: ?.+$/`, but we don’t cover the syntax for
-nongreedy matching until later in the chapter. !!!
+you could use a regular expression like this:
 
 	/\^[\^:]+: ?.+\$/
 
 which matches the start of the line followed by at least one noncolon
 character, followed by a colon, an optional space, and at least one
 other character before the end of the line.
+
+You could also write this as `/^.+?: ?.+$/`, but we don’t cover the
+syntax for nongreedy matching until later in the chapter.
 
 Other special terms can be used to match at word boundaries. The term
 `\b` matches only at the start or end of a word (*i.e.*, between a `\w`
@@ -420,7 +419,7 @@ The while loop reads in another line from the file each time around
 and stores the line in `$_`. The match operator checks for lines
 beginning with the string “From:” (note the `^` character that matches
 the start of the line) and returns true for lines that match. These
-lines are then printed to STDOUT.
+lines are then printed to `STDOUT`.
 
 One nice touch with the match operator is that in many cases the m is
 optional so we can write the match statement in our scripts as
@@ -474,10 +473,9 @@ into `$2`, and so on. Bracketed groups can be nested, so the order of
 assignment to these variables depends upon the order of the opening
 bracket of the group. Going back to our earlier email header example,
 if we had an email in a text file and wanted to print out all of the
-headers, we could do something like this: !!! FOOTNOTE 6 This
-simplified example conveniently ignores the fact that email headers
-can continue onto more than one  line and that an email body can
-contain the character “:”.!!!
+headers, we could do something like this (conveniently ignoring the
+fact that email headers can continue onto more than one  line and that
+an email body can contain the character “:”):
 
 	open MAIL, 'mail.txt' or die "Can't open mail.txt: $!";
 	while (<MAIL>) {
@@ -508,7 +506,7 @@ before the part that matched the regular expression, and `$'` which is
 set to the part of the string after the part that matched the regular
 expressions. Therefore after executing the following code:
 
-	\$\_ = 'Matching regular expressions';
+	$_ = 'Matching regular expressions';
 	m/regular expression/;
 
 `$&` will contain the string “regular expression”, `` $` `` will contain
@@ -527,7 +525,7 @@ Obviously not every string that you are going to want to match is
 going to be in `$_`, so Perl provides a binding operator which binds
 the match to another variable. The operator looks like this:
 
-	\$string =\~ m/regular expression/
+	$string =~ m/regular expression/
 
 This statement searches for a match for the string “regular
 expression” within the text in the variable `$string`.
@@ -539,7 +537,7 @@ match operator to change the way that it works. These modifiers are
 all placed after the closing delimiter. The most commonly used
 modifier is `i` which forces the match to be case-insensitive, so that
 
- m/hello/i
+	m/hello/i
 
 will match “hello”, “HELLO”, “Hello”, or any other combination of
 cases. Earlier we saw a regular expression for matching vowels that
@@ -590,7 +588,7 @@ The simplest way of using the string replacement operator is to
 replace occurrences of one string with another string. For example
 to replace “Dave” with “David” you would use this code:
 
-	s/Dave/David/;
+	s/Dave/David/
 
 The first expression (Dave) is evaluated as a regular expression. The
 second expression is a string that will replace whatever matched
@@ -639,7 +637,7 @@ executable code. Consider the following code:
 which is a very simple text substitution filter. It takes two strings
 as arguments. The first is a string to search for and the second is a
 string to replace it with. It then reads whatever is passed to it on
-STDIN and replaces one string with the other. This certainly works,
+`STDIN` and replaces one string with the other. This certainly works,
 but it is not very efficient. Each time around, the loop Perl doesn’t
 know that the contents of `$old` haven’t changed so it is forced to
 recompile the regular expression each time. We, however, know that
@@ -651,17 +649,14 @@ substitution line to read
 
 	s/$old/$new/go;
 
-There is one more modifier to explain and that is the e modifier.
-When this modifier is used, the replacement string is treated as
-executable code and is passed to eval. The return value from the
-evaluation is then used as the replacement string. !!! Footnote 7  7
-Actually it isn’t quite that simple, as you can have multiple
-instances of the e modifier and the replacement string is evaluated
-for each one.!!! As an example, here is a fairly strange way to print
-out a table of squares:
+There is one more modifier to explain and that is the e modifier. When
+this modifier is used, the replacement string is treated as executable
+code and is passed to eval. The return value from the evaluation is
+then used as the replacement string. As an example, here is a fairly
+strange way to print out a table of squares:
 
 	foreach (1 .. 12) {
-	  s/(\d+)/print "$1 squared is ", $1*$1, "\\n"/e;
+	  s/(\d+)/print "$1 squared is ", $1*$1, "\n"/e;
 	}
 
  which produces the following output:
@@ -686,11 +681,8 @@ that translates from English to American. To make it easier for
 ourselves we’ll make a few assumptions.
 
 We’ll assume that each English word has just one American translation.
-!!! Footnote 8 We’ll also conveniently ignore situations where an
-English phrase should be replaced by a different phrase in American,
-such as “car park” and “parking lot.” !!! We’ll also store our
-translations in a text file so it is easy to add to them. The program
-will look something like this:
+We’ll also store our translations in a text file so it is easy to add
+to them. The program will look something like this:
 
 	  1: #!/usr/bin/perl -w
 	  2: use strict;
@@ -728,7 +720,7 @@ will look something like this:
 
 Lines 1 and 2 are the standard way to start a Perl script.
 
-The loop starting on line 4 reads from STDIN and puts each line in
+The loop starting on line 4 reads from `STDIN` and puts each line in
 turn in the `$_` variable.
 
 Line 6 does most of the work. It looks for groups of word characters.
@@ -747,10 +739,10 @@ Line 10 defines a caching hash which the translate function uses to
 store words which it already knows how to translate.
 
 The translate function which starts on line 11 uses a caching
-algorithm similar to the Orcish Manoeuvre. If the current word
-doesn’t exist in the `%trans` hash, it
-calls `get_trans` to get a translation of the word. Notice that we
-always work with lower case versions of the word.
+algorithm similar to the Orcish Manoeuvre. If the current word doesn’t
+exist in the `%trans` hash, it calls `get_trans` to get a translation
+of the word. Notice that we always work with lower case versions of
+the word.
 
 Line 17 starts the `get_trans` function, which will read any necessary
 words from the file containing a list of translatable words.
@@ -853,18 +845,18 @@ following examples.
 Let’s start by writing a routine to read the data into internal data
 structures. This routine can then be used by any of the following
 examples. As always, for flexibility, we’ll assume that the data is
-coming in via STDIN.
+coming in via `STDIN`.
 
-	sub read\_passwd {
-	my %users;
-	my @fields = qw/name pword uid gid fullname home shell/;
-	while (\<STDIN\>) {
-	chomp;
-	my %rec;
-	@rec{@fields) = split(/:/);
-	\$users{\$rec-\>{name}} = \\%rec;
-	}
-	return \\%users;
+	sub read_passwd {
+	  my %users;
+	  my @fields = qw/name pword uid gid fullname home shell/;
+	  while (<STDIN>) {
+	    chomp;
+	    my %rec;
+	    @rec{@fields) = split(/:/);
+	      $users{$rec->{name}} = \%rec;
+	  }
+	  return \%users;
 	}
 
 In a similar manner to other input routines we have written, this
@@ -878,10 +870,7 @@ key of the hash? The answer depends on just what we are planning to
 do with the data, but in this case I have chosen the username. In
 other cases the user ID might be a useful choice. All of the other
 columns would be bad choices, as they aren’t guaranteed to be unique
-across all users. !!! FOOTNOTE 11 It seems unlikely that the home
-directory of a user would be nonunique, but it is (just) possible to
-imagine scenarios where it makes sense for two or more users to share
-a home directory. !!!
+across all users.
 
 So, we have decided on a hash where the keys are the usernames. What
 will the values of our hash be? In this case I have chosen to use
@@ -889,7 +878,7 @@ another level of hash where the keys are the names of the various
 data values (as defined in the array `@fields`) and the values are the
 actual values.
 
-Our input routine therefore reads each line from STDIN and splits it
+Our input routine therefore reads each line from `STDIN` and splits it
 on colons and puts the values directly into a hash called `%rec`. A
 reference to `%rec` is then stored in the main `%users` hash. Notice that
 because `%rec` is a lexical variable that is scoped to within the while
@@ -900,7 +889,7 @@ overwriting the same location in memory.
 
 Having created a hash for each line in the input file and assigned it
 to the correct record in `%users`, our routine finally returns a
-reference to %users. We are now ready to start doing some real work.
+reference to `%users`. We are now ready to start doing some real work.
 
 #### Example: listing users
 
@@ -934,20 +923,15 @@ script:
 
 Most of this script is self-explanatory. The key lines are:
 
-Line 6 gets each key in the %users hash in turn.
+Line 6 gets each key in the `%users` hash in turn.
 
 Line 7 skips any record that doesn’t have a full name, thereby
 ignoring the special users.
 
 Line 9 splits the full name on white space. Note that we pass a third
-argument to split.12 !!! Footnote 12 Notice, however, that we are
-making assumptions here about the format of the name. This algorithm
-assumes that the first word in the name is the forename and
-everything else is the surname. If the name is not in this format
-then things will go wrong. For example, think about what would happen
-if the name were “Dame Elizabeth Taylor” or “Randal L. Schwartz.” As
-always, it is very important to know your data. !!! This limits the
-number of elements in the returned list.
+argument to `split`, assuming that the first word in the name is the
+forename and everything else is the surname. This limits the number of
+elements in the returned list.
 
 Line 11 builds the reversed name and pushes it onto another array.
 
@@ -956,7 +940,7 @@ Line 14 prints the array of names in sorted order.
 #### Example: listing particular users
 
 Now suppose we want to get a report on the users that use the Bourne
-shell (/bin/sh). Maybe we want to email them to suggest that they use
+shell (*/bin/sh*). Maybe we want to email them to suggest that they use
 bash instead. We might write something like this:
 
 	1: use strict;
@@ -985,34 +969,34 @@ choose is a matter of personal preference.
 Of course, using regular expressions for transforming data is a very
 powerful technique and, like all powerful techniques, it is open to
 abuse. As an example of what you can do with this technique, let’s
-take a brief look at the Text::Bastardize module which is available
+take a brief look at the [Text::Bastardize](http://metacpan.org/pod/Text::Bastardize) module which is available
 from the CPAN at [http://metacpan.org/pod/Text::Bastardize](http://metacpan.org/pod/Text::Bastardize).
 
 This module will take an innocent piece of text and will abuse it in
 various increasingly bizarre ways. The complete set of
-transformations available in the current version (0.06 as of the
+transformations available in the current version (0.08 as of the
 time of writing) is as follows:
 
-*  rdct—Converts the text to hyperreductionist English. This removes vowels within words, changes “you” to “u” and “are” to “r” and carries out a number of other conversions.
+*  *rdct*—Converts the text to hyperreductionist English. This removes vowels within words, changes “you” to “u” and “are” to “r” and carries out a number of other conversions.
 
-*  pig—Converts the text to Pig Latin. Pig Latin is a bizarre corruption of English in which the first syllable of a word is moved to the end of the word and the sound “ay” is appended.
+*  *pig*—Converts the text to Pig Latin. Pig Latin is a bizarre corruption of English in which the first syllable of a word is moved to the end of the word and the sound “ay” is appended.
 
-*  k3wlt0k—Converts the text to “cool-talk” as used by certain denizens of the Internet (the d00dz who deal in k3wl war3z).
+*  *k3wlt0k*—Converts the text to “cool-talk” as used by certain denizens of the Internet (“the d00dz who deal in k3wl war3z”).
 
-*  rot13—Applies rot13 “encryption” to the text. In this very basic type of encryption, each letter is replaced with one that is thirteen letters past it in the alphabet. This method is often used in newsgroup posts to disguise potential plot spoilers or material which might give offense to casual readers.
+*  *rot13*—Applies rot13 “encryption” to the text. In this very basic type of encryption, each letter is replaced with one that is thirteen letters past it in the alphabet. This method is often used in newsgroup posts to disguise potential plot spoilers or material which might give offense to casual readers.
 
-*  rev—Reverses the order of the letters in the text.
+*  *rev*—Reverses the order of the letters in the text.
 
-*  censor—Censors text which might be thought inappropriate. It does this by replacing some of the vowels with asterisks.
+*  *censor*—Censors text which might be thought inappropriate. It does this by replacing some of the vowels with asterisks.
 
-*  n20e—Performs numerical abbreviations on the text. Words over six letters in length have all but their first and last letters removed and replaced with a number indicating the number of letters removed.
+*  *n20e*—Performs numerical abbreviations on the text. Words over six letters in length have all but their first and last letters removed and replaced with a number indicating the number of letters removed.
 
 It is, of course, unlikely that this module is ever used as anything
 other than an example of a text transformation tool, but it is a very
 good example of one and it can be very instructive to look at the
 code of the module. As an example of the use of the module, here is
 a script that performs all of the transformations in turn on a piece
-of text that is read from STDIN. Notice that the piece of text that
+of text that is read from `STDIN`. Notice that the piece of text that
 is to be transformed is set using the charge function.
 
 	#!/usr/perl/bin/perl -w
@@ -1041,15 +1025,15 @@ installation of Perl. You can access this by typing
 
 on your command line.
 
-You can get more information than you will ever need from *Mastering
-Regular Expressions*, by Jeffrey Friedl (O’Reilly).
+You can get more information than you will ever need from *[Mastering
+Regular Expressions](https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/)*, by Jeffrey Friedl (O’Reilly).
 
 Summary
 ----------
 
 *  Perl has very powerful text matching and processing facilities.
 
-*  Often you can achieve what you want using basic text-processing functions such as substr, index, and uc.
+*  Often you can achieve what you want using basic text-processing functions such as [substr](https://perldoc.perl.org/functions/substr), [index](https://perldoc.perl.org/functions/index), and [uc](https://perldoc.perl.org/functions/uc).
 
 *  Regular expressions are a more powerful method of describing text that you want to match.
 

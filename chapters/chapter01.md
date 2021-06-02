@@ -74,7 +74,7 @@ looks like with the various parts labeled.
 
 ![Sample data file](images/1-1-sample-data-file.png)
 
-Each row of data in the file (i.e., the information about one CD) is
+Each row of data in the file (*i.e.*, the information about one CD) is
 called a data *record*. Each individual item of data (e.g., the CD
 title or year of release) is called a data *field*. In addition to
 records and fields, the data file might contain additional information
@@ -564,7 +564,7 @@ whereas in Perl you can write it like this:
 
     open(FILE, 'file.txt') or die "Can't open file.txt: $!";
 
-This opens a file and assigns it to the file handle FILE which you can later
+This opens a file and assigns it to the filehandle `FILE` which you can later
 use to read data from the file. It also checks for errors and, if anything goes
 wrong, it kills the program with an error message explaining exactly what went
 wrong. And, as a bonus, once more it almost reads like English.

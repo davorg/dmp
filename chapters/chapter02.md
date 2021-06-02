@@ -162,7 +162,7 @@ A complete program to produce counts of CDs by any attribute which is passed in 
     my @CDs;
     sub input {
       my @attrs = qw(artist title label year);
-      while (<STDIN\>) {
+      while (<STDIN>) {
         chomp;
         my %rec;
         @rec{@attrs} = split /\t/;
@@ -371,20 +371,20 @@ UNIX filter programs give us a very good example to follow when it comes to buil
 
 ### Overview of the filter model
 
-Many operating systems, principally UNIX and its variants, support a feature called I/O redirection. This feature is also supported in Microsoft Windows, although as it is a command line feature, it is not used as much as it is in UNIX. I/O redirection gives the user great flexibility over where a program gets its input and sends its output. This is achieved by treating all program input and output as file input and output. The operating system opens three special file handles called STDIN, STDOUT, and STDERR which, by default, are attached to the user’s keyboard and monitor. This means that anything
-typed by the user on the keyboard appears to the program to be read from STDIN and anything that the program writes to STDOUT appears on the user's monitor. STDERR which is a special output file to which error messages are written, but this file can be safely ignored for the purposes of this discussion.
+Many operating systems, principally UNIX and its variants, support a feature called I/O redirection. This feature is also supported in Microsoft Windows, although as it is a command line feature, it is not used as much as it is in UNIX. I/O redirection gives the user great flexibility over where a program gets its input and sends its output. This is achieved by treating all program input and output as file input and output. The operating system opens three special filehandles called `STDIN`, `STDOUT`, and `STDERR` which, by default, are attached to the user’s keyboard and monitor. This means that anything
+typed by the user on the keyboard appears to the program to be read from `STDIN` and anything that the program writes to `STDOUT` appears on the user's monitor. `STDERR` which is a special output file to which error messages are written, but this file can be safely ignored for the purposes of this discussion.
 
 For example, if a user runs the UNIX command
 
     ls
 
-then a list of files in the current directory will be written to STDOUT and will appear on the user's monitor.
+then a list of files in the current directory will be written to `STDOUT` and will appear on the user's monitor.
 
 There are, however a number of special character strings that can be used to redirect these special files. For example, if our user runs the command
 
     ls > files.txt
 
-then anything that would have been written to STDOUT is, instead, written to the file `files.txt`. Similarly, STDIN can be redirected using the `<` character. For example,
+then anything that would have been written to `STDOUT` is, instead, written to the file `files.txt`. Similarly, `STDIN` can be redirected using the `<` character. For example,
 
     sort < files.txt
 
@@ -394,7 +394,7 @@ Another, more powerful, concept is I/O pipes. This is where the output of one pr
 
     ls | sort
 
-then anything written to the STDOUT of the ls command (i.e., the list of files in the current directory) is written directly to the STDIN of the sort command. The sort command processes the data that appears on its STDIN, sorts that data, and writes the sorted data to its STDOUT. The STDOUT for the sort command has not been redirected and therefore the sorted list of files appears on the user's monitor.
+then anything written to the `STDOUT` of the ls command (*i.e.*, the list of files in the current directory) is written directly to the `STDIN` of the sort command. The sort command processes the data that appears on its `STDIN`, sorts that data, and writes the sorted data to its `STDOUT`. The `STDOUT` for the sort command has not been redirected and therefore the sorted list of files appears on the user's monitor.
 
 A summary of the character strings used in basic I/O redirection is given in table 2.1. More complex features are available in some operating systems, but the characters listed are available in all versions of UNIX and Windows.
 
@@ -414,7 +414,7 @@ The filter model is a very useful concept and is fundamental to the way that UNI
 
     ls -1 | grep proj01 | sort
 
-Most UNIX utilities are written to support this mode of usage. They are known as *filters* as they read their input from STDIN, filter the data in a particular way, and write what is left to STDOUT.
+Most UNIX utilities are written to support this mode of usage. They are known as *filters* as they read their input from `STDIN`, filter the data in a particular way, and write what is left to `STDOUT`.
 
 This is a concept that we can make good use of in our data munging programs.
 
@@ -442,7 +442,7 @@ Within the script we would open the files and read from the input, munge the dat
     close(IN) || die "Can't close $input: $!";
     close(OUT) || die "Can't close $output: $!";
 
-This will certainly work well for as long as we receive our input data in a file and are expected to write our output data to another file. Perhaps at some point in the future, the programmers responsible for our data source will announce that they have written a new program called `data_writer`, which we should now use to extract data from their system. This program will write the extracted data to its STDOUT. At the same time the programmers responsible for our data sink announce a new program called data_reader, which we should use to load data into their system and which reads the data to be loaded from STDIN.
+This will certainly work well for as long as we receive our input data in a file and are expected to write our output data to another file. Perhaps at some point in the future, the programmers responsible for our data source will announce that they have written a new program called `data_writer`, which we should now use to extract data from their system. This program will write the extracted data to its `STDOUT`. At the same time the programmers responsible for our data sink announce a new program called data_reader, which we should use to load data into their system and which reads the data to be loaded from `STDIN`.
 
 In order to use our program unchanged we will need to write some extra pieces  of code in the script which drives our program. Our program will need to be called with code like this:
 
@@ -452,14 +452,14 @@ In order to use our program unchanged we will need to write some extra pieces  o
 
 This is already looking a little kludgy, but imagine if we had to make these changes across a large number of systems. Perhaps there is a better way to write the original program.
 
-If we had assumed that the program reads from STDIN and writes to STDOUT, the  program actually gets simpler and more flexible. The rewritten program looks like this:
+If we had assumed that the program reads from `STDIN` and writes to `STDOUT`, the  program actually gets simpler and more flexible. The rewritten program looks like this:
 
     #!/usr/bin/perl -w
     while (<STDIN>) {
       print munge_data($_);
     }
 
-Note that we no longer have to open the input and output files explicitly, as Perl arranges for STDIN and STDOUT to be opened for us. Also, the default file handle to which the print function writes is STDOUT; therefore, we no longer need to pass a file handle to print. This script is therefore much simpler than our original one.
+Note that we no longer have to open the input and output files explicitly, as Perl arranges for `STDIN` and `STDOUT` to be opened for us. Also, the default filehandle to which the print function writes is `STDOUT`; therefore, we no longer need to pass a filehandle to print. This script is therefore much simpler than our original one.
 
 When we're dealing with input and output data files, our program is called like this:
 
@@ -479,14 +479,14 @@ or this:
 
 and everything will still work as expected.
 
-Rather than using the STDIN file handle, Perl allows you to make your program even more flexible with no more work, by reading input from the null file handle like this:
+Rather than using the `STDIN` filehandle, Perl allows you to make your program even more flexible with no more work, by reading input from the null filehandle like this:
 
     #!/usr/bin/perl -w
     while (<>) {
       print munged_data($_);
     }
 
-In this case, Perl will give your program each line of every file that is listed on your command line. If there are no files on the command line, it reads from STDIN. This is exactly how most UNIX filter programs work. If we rewrote our data_munger program using this method we could call it in the following ways:
+In this case, Perl will give your program each line of every file that is listed on your command line. If there are no files on the command line, it reads from `STDIN`. This is exactly how most UNIX filter programs work. If we rewrote our data_munger program using this method we could call it in the following ways:
 
     data_munger input.dat > output.dat
     data_munger input.dat | data reader
@@ -495,11 +495,11 @@ in addition to the methods listed previously.
 
 ### Example: I/O chaining
 
-Another advantage of the filter model is that it makes it easier to add newfunctionality into your processing chain without having to change existing code. Suppose that a system is sending you product data. You are loading this data into the database that drives your company's web site. You receive the data in a file called products.dat and have written a script called load_products. This script reads the data from STDIN, performs various data munging processes, and finally loads the data into the database. The command that you run to load the file looks like this:
+Another advantage of the filter model is that it makes it easier to add newfunctionality into your processing chain without having to change existing code. Suppose that a system is sending you product data. You are loading this data into the database that drives your company's web site. You receive the data in a file called products.dat and have written a script called load_products. This script reads the data from `STDIN`, performs various data munging processes, and finally loads the data into the database. The command that you run to load the file looks like this:
 
     load_products < products.dat
 
-What happens when the department that produces products.dat announces that because of a reorganization of their database they will be changing the format of your input file? For example, perhaps they will no longer identify each product with a unique integer, but with an alphanumeric code. Your first option would be to rewrite `load_products` to handle the new data format, but do you really want to destabilize a script that has worked very well for a long time? Using the UNIX filter model, you don't have to. You can write a new script called `translate_products` which reads the new file format, translates the new product code to the product identifiers that you are expecting, and writes the records in the original format to STDOUT. Your existing `load_products` script can then read records in the format that it accepts from STDIN and can process them in exactly the same way that it always has. The command line would look like this:
+What happens when the department that produces products.dat announces that because of a reorganization of their database they will be changing the format of your input file? For example, perhaps they will no longer identify each product with a unique integer, but with an alphanumeric code. Your first option would be to rewrite `load_products` to handle the new data format, but do you really want to destabilize a script that has worked very well for a long time? Using the UNIX filter model, you don't have to. You can write a new script called `translate_products` which reads the new file format, translates the new product code to the product identifiers that you are expecting, and writes the records in the original format to `STDOUT`. Your existing `load_products` script can then read records in the format that it accepts from `STDIN` and can process them in exactly the same way that it always has. The command line would look like this:
 
     translate_products < products.dat | load_products
 
@@ -520,12 +520,12 @@ At different points in the life of a program, different levels of auditing will 
 
     my $audit_level = $ENV{AUDIT_LEVEL} || 0;
 
-In this example we set the value of `$audit_level` from the environment variable `AUDIT\_LEVEL`. If this level is not set then we default to 0, the minimum level. Later in the script we can write code like:
+In this example we set the value of `$audit_level` from the environment variable `AUDIT_LEVEL`. If this level is not set then we default to 0, the minimum level. Later in the script we can write code like:
 
     print LOG 'Starting processing at ', scalar localtime, "\n"
       if $audit_level > 0;
 
-to print audit information to the previously opened file handle, LOG. Standards for audit trails will typically vary from company to company, but some things that you might consider auditing are:
+to print audit information to the previously opened filehandle, LOG. Standards for audit trails will typically vary from company to company, but some things that you might consider auditing are:
 
 * start and end times of the process
 * source and sink parameters (filenames, database connection parameters, etc.)
@@ -559,7 +559,7 @@ A useful audit trail for a data munging process that takes data from a file and 
 
 ### Using the UNIX system logs
 
-Sometimes you will want to log your audit trail to the UNIX system log. This is a centralized process in which the administrator of a UNIX system can control where the log information for various processes is written. To access the system log from Perl, use the Sys::Syslog module. This module contains four functions called `openlog`, `closelog`, `setlogmask`, and `syslog` which closely mirror the functionality of the UNIX functions with the same names. For more details on these functions, see the Sys::Syslog module's documentation and your UNIX manual. Here is an example of their use:
+Sometimes you will want to log your audit trail to the UNIX system log. This is a centralized process in which the administrator of a UNIX system can control where the log information for various processes is written. To access the system log from Perl, use the [Sys::Syslog](https://metacpan.org/pod/Sys::Syslog) module. This module contains four functions called `openlog`, `closelog`, `setlogmask`, and `syslog` which closely mirror the functionality of the UNIX functions with the same names. For more details on these functions, see the [Sys::Syslog](https://metacpan.org/pod/Sys::Syslog) module's documentation and your UNIX manual. Here is an example of their use:
 
     use Sys::Syslog;
 

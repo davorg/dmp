@@ -48,14 +48,14 @@ that we can do with a file like this.
 ASCII text files
 ----------------
 
-
 An ASCII text file contains data that is readable by a person. It can
 be created in a text editor like vi or emacs in UNIX, Notepad in
 Windows, or edit in DOS. You should note that the files created by
 most word processors are not ASCII text, but some proprietary text
-format. !!! Footnote  1 Most word processors do have a facility to save the document in ASCII text format; however, this will destroy most of the formatting of the document.
-!!! It is also possible that the file could be created by some
-other computer system.
+format (most word processors do have a facility to save the document
+in ASCII text format; however, this will destroy most of the
+formatting of the document). It is also possible that the file could
+be created by some other computer system.
 
 An ASCII text file, like all data files, is nothing but a series of
 bytes of binary data. It is only the software that you use to view
@@ -80,7 +80,7 @@ ordered) to store the data, rather than hashes (which are unordered).
 
 Let’s write an input routine that will read an unstructured text file
 into an array of arrays. As always we will assume that the file is
-coming to us via STDIN.
+coming to us via `STDIN`.
 
 	1: sub read_text {
 	2:
@@ -142,10 +142,10 @@ or, from the original `$file` reference:
 Of course, all of this is only a very good idea if your text file is
 of a reasonable size, as attempting to store the entire text of *War
 and Peace* in memory may cause your computer to start swapping memory
-to disk, which will slow down your program. !!! Footnote 2 Then
+to disk, which will slow down your program. Then
 again, if you have enough memory that you can store the entire text
 of *War and Peace* in it without swapping to disk, that would be the
-most efficient way to process it. !!!
+most efficient way to process it.
 
 
 #### Finer control of input
@@ -162,7 +162,7 @@ scalar variable then you should look at the `$/` variable. This
 variable is the input record separator and its default value is a
 newline character. This means that, by default, data read from a `<>`
 operator will be read until a newline is encountered. Setting this
-variable to undef will read the whole input stream in one go.  !!!
+variable to `undef` will read the whole input stream in one go.  !!!
 Footnote 3 Note that `$/` (like most Perl internal variables) is, by
 default, global, so altering it in one place will affect your whole
 program. For that reason, it is usually a good idea to use local and
@@ -200,8 +200,8 @@ this:
 
 	my $file;
 	{
-	local $/ = undef;
-	$file = <STDIN>;
+	  local $/ = undef;
+	  $file = <STDIN>;
 	}
 	$file =~ s/Windows/Linux/g;
 	print $file;
@@ -266,55 +266,55 @@ Line 2 declares two variables that we will use to keep track of where
 we are in the file.
 
 Lines 5 and 6 declare four variables that we will use to produce the
-statistics. $num_lines and $num_words are the numbers of lines and
-words in the file. %words is a hash that will keep a count of the
-number of times each %word has occurred in the file. Its key will be the word and its value
-%will be the number of times the word has been seen. %lengths is a hash that
+statistics. `$num_lines` and `$num_words` are the numbers of lines and
+words in the file. `%words` is a hash that will keep a count of the
+number of times each `%word` has occurred in the file. Its key will be the word and its value
+`%will` be the number of times the word has been seen. `%lengths` is a hash that
 keeps count of the frequency of word lengths in a similar fashion.
 
-Line 8 calls our read_text function to get the contents of the file.
+Line 8 calls our `read_text` function to get the contents of the file.
 
 Line 10 calculates the number of lines in the file. This is simply the
-number of elements in the $text array.
+number of elements in the `$text` array.
 
 Line 12 starts to loop around each line in the array.
 
-Line 13 increases the $num_words variable with the number of
-elements in the $line array. This is equal to the number of words in
+Line 13 increases the `$num_words` variable with the number of
+elements in the `$line array`. This is equal to the number of words in
 the line.
 
 Line 15 starts to loop around the words on the line.
 
 Lines 16 and 17 increment the relevant entries in the two hashes.
 
-Lines 21 and 22 create two arrays which contain the keys of the %words
-and %lengths hashes, sorted in the order of decreasing hash values.
+Lines 21 and 22 create two arrays which contain the keys of the `%words`
+and `%lengths` hashes, sorted in the order of decreasing hash values.
 
 Lines 24 and 25 print out the total number of words and lines in the
 file.
 
 Lines 27 and 28 print out the five most popular words in the file by
-taking the first five elements in the @sorted_words array and
-printing the value associated with that key in the %words hash. Lines
-30 and 31 do the same thing for the @sorted_lengths array.
+taking the first five elements in the `@sorted_words` array and
+printing the value associated with that key in the `%words hash`. Lines
+30 and 31 do the same thing for the `@sorted_lengths` array.
 
 #### Example: calculating average word length
 
 As a final example of producing text file statistics, let’s calculate
 the average word length in the files. Once again we will use the
-existing read_text function to read in our text.
+existing `read_text` function to read in our text.
 
 	my ($total_length, $num_words);
 	my $text = read_text();
 	my ($word, $line);
 	foreach $line (@{$text}) {
-	$num_words += scalar @{$line};
-	foreach $word (@{$line}) {
-	$total_length += length $word;
+	  $num_words += scalar @{$line};
+	  foreach $word (@{$line}) {
+	    $total_length += length $word;
+	  }
 	}
-	}
-	printf "The average word length is %.2f\n", $total_length /
-	$num_words;
+	printf "The average word length is %.2f\n",
+	  $total_length / $num_words;
 
 Data conversions
 ----------------
@@ -337,48 +337,56 @@ Japan).
 #### Unicode
 
 For multibyte characters, Perl version 5.6 includes some support for
-Unicode via the new utf8 module. This was introduced in order to make
-it easier to work with XML using Perl (XML uses Unicode in UTF-8
-format to define all of its character data). If you have an older
-version of Perl you may find the Unicode::Map8 and Unicode::String
-modules to be interesting.
+Unicode via the new [utf8](https://metacpan.org/pod/utf8) module. This
+was introduced in order to make it easier to work with XML using Perl
+(XML uses Unicode in UTF-8 format to define all of its character
+data). If you have an older version of Perl you may find the
+[Unicode::Map8](https://metacpan.org/pod/Unicode::Map8) and
+[Unicode::String](https://metacpan.org/pod/Unicode::String) modules to
+be interesting.
 
 #### Converting between ASCII and EBCDIC
 
 For converting between ASCII and EBCDIC you can use the
-Convert::EBCDIC module from the CPAN. This module can be used either
-as an object or as a traditional module. As a traditional module, it
-exports two functions called ascii2ebcdic and ebcdic2ascii. Note that
-these functions need to be explicitly imported into your namespace. As
-an object, it has two methods called toascii and toebcdic. The
-following example uses the traditional method to convert the ASCII
-data arriving on STDIN into EBCDIC.
+[Convert::EBCDIC](https://metacpan.org/pod/Convert::EBCDIC) module
+from the CPAN. This module can be used either as an object or as a
+traditional module. As a traditional module, it exports two functions
+called `ascii2ebcdic` and `ebcdic2ascii`. Note that these functions
+need to be explicitly imported into your namespace. As an object, it
+has two methods called `toascii` and `toebcdic`. The following example
+uses the traditional method to convert the ASCII data arriving on
+`STDIN` into EBCDIC.
 
 	use strict;
 	use Convert::EBCDIC qw/ascii2ebcdic/;
 	my $data;
 
-
 	{
 	local $/ = undef;
 	$data = <STDIN>;
 	}
+
 	print ascii2ebcdic($data);
-	The second example uses the object interface to convert EBCDIC data to
-	ASCII.
+
+The second example uses the object interface to convert EBCDIC data to ASCII.
+
 	use strict;
 	use Convert::EBCDIC;
 	my $data;
 	my $conv = Convert::EBCDIC->new;
+
 	my $data;
+
 	{
-	local $/ = undef;
-	$data = <STDIN>;
+	  local $/ = undef;
+	  $data = <STDIN>;
 	}
+
 	print $conv->toascii($data);
 
-The Convert::EBCDIC constructor takes one optional parameter which is
-a 256 character string which defines a translation table.
+The [Convert::EBCDIC](https://metacpan.org/pod/Convert::EBCDIC)
+constructor takes one optional parameter which is a 256-character
+string which defines a translation table.
 
 ### Converting line endings
 
@@ -386,10 +394,10 @@ As I mentioned above, an ASCII text file is no more than a stream of
 binary data. It is only the software that we use to process it that
 interprets the data in such a way that it produces lines of text. One
 important character (or sequence of characters) in a text file is the
-character which separates different lines of text. When, for exam-
-ple, a text editor reaches this character in a file, it will know
-that the following characters must be displayed starting at the
-first column of the following line of the user’s display.
+character which separates different lines of text. When, for example,
+a text editor reaches this character in a file, it will know that the
+following characters must be displayed starting at the first column of
+the following line of the user’s display.
 
 #### Different line end characters
 
@@ -404,7 +412,7 @@ This difference in line endings causes no problems when data files
 are used on the same system on which they were created, but when you
 start to transfer data files between different systems it can lead to
 some confusion. You may have edited a file that was created under
-Windows in a UNIX text editor. If so you will have seen an extra ^M
+Windows in a UNIX text editor. If so you will have seen an extra `^M`
 character at the end of each line of text.!!! Footnote 4 This is becoming less common as many editors will now display the lines without the ^M, and indicate the newline style in the status line. !!! This is the printable
 equivalent of the carriage return character that Windows inserts
 before each line feed. Similarly, a UNIX text file opened in Windows
@@ -428,32 +436,35 @@ The following program can be used as a filter to clean up problem
 files. It takes two parameters, which are the line endings on the
 source and target systems. These are the strings CR, LF, or CRLF.
 
-In the program, instead of using \n and \r we use the ASCII control
-character sequences \cM and \cJ (Ctrl-M and Ctrl-J). This is
+In the program, instead of using `\n` and `\r` we use the ASCII control
+character sequences `\cM` and `\cJ` (Ctrl-M and Ctrl-J). This is
 because Perl is cleverer than we might like it to be in this case.
-Whenever Perl sees a \n sequence in a program it actually converts
+Whenever Perl sees a `\n` sequence in a program it actually converts
 it to the correct end-of-line character sequence for the current
 system. This is very useful most of the time (it means, for example,
-that you don’t need to use print "some text\r\n"; to output text
+that you don’t need to use `print "some text\r\n";` to output text
 when using Perl on a Windows system). But in this situation it masks
 the very problem that we’re trying to solve—so we have to go to a
 lower level representation of the characters.
 
 	#!/usr/local/bin/perl -w
 	use strict;
+
 	(@ARGV == 2) or die "Error: source and target formats not given.";
+
 	my ($src, $tgt) = @ARGV;
-	my %conv = (CR =>
-	"\cM",
-	LF =>
-	"\cJ",
-	CRLF => "\cM\cJ");
+
+	my %conv = (CR => "\cM",
+	            LF => "\cJ",
+	            CRLF => "\cM\cJ");
+
 	$src = $conv{$src};
 	$tgt = $conv{$tgt};
+
 	$/ = $src;
 	while (<STDIN>) {
-	s/$src/$tgt/go;
-	print;
+	  s/$src/$tgt/go;
+	  print;
 	}
 
 Notice that we use the o modifier on the substitution as we know that
@@ -476,7 +487,7 @@ for 1 × 106)? When you answer these questions, you can build a regular
 expression that matches the particular type of number that you need to
 process.
 
-To match natural numbers (i.e., positive integers) you can use a
+To match natural numbers (*i.e.*, positive integers) you can use a
 simple regular expression such as:
 
 	/\d+/
@@ -498,11 +509,10 @@ consider using Perl’s precompiled regular expression feature and
 creating your number-matching regular expressions in advance. You can
 do something like this:
 
-	my $num_re =
-	qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
+	my $num_re = qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
 	my @nums;
 	while ($data =~ /$num_re/g) {
-	push @nums, $1;
+	  push @nums, $1;
 	}
 
 to print out a list of all of the numbers in $data.
@@ -512,7 +522,7 @@ your preferred format then you can use code like this:
 
 	$data =~ s/$num_re/reformat($1)/ge;
 
-which makes use, once more, of the e modifier to execute the
+which makes use, once more, of the `e` modifier to execute the
 replacement string before using it.
 
 #### Reformatting numbers with sprintf
@@ -524,10 +534,12 @@ or left align the number within its field. Here is an example of the
 sort of things that you can do:
 
 	my $number = 123.456789;
+
 	my @fmts = ('0.2f', '.2f', '10.4f', '-10.4f');
+
 	foreach (@fmts) {
 	my $fmt = sprintf "%$_", $number;
-	print "$_: [$fmt]\n";
+	  print "$_: [$fmt]\n";
 	}
 
 which gives the following output:
@@ -546,11 +558,11 @@ field.)
 
 There are, however, a couple of modules available on the CPAN which
 allow you to do far more sophisticated formatting of numbers. They are
-Convert::SciEng and Number::Format.
+[Convert::SciEng](https://metacpan.org/pod/Convert::SciEng) and [Number::Format](https://metacpan.org/pod/Number::Format).
 
 #### Convert::SciEng
 
-Convert::SciEng is a module for converting numbers to and from a
+[Convert::SciEng](https://metacpan.org/pod/Convert::SciEng) is a module for converting numbers to and from a
 format in which they have a postfix letter indicating the magnitude
 of the number. This conversion is called *fixing* and *unfixing*
 the number. The module recognizes two different schemes of fixes, the
@@ -592,7 +604,7 @@ the SI scheme).
 You can also adjust the format in which the results are returned in
 by using the format method and passing it a new format string. The
 format string is simply a string that will be passed to sprintf
-whenever a value is required. The default format is %5.5g.
+whenever a value is required. The default format is `%5.5g`.
 
 There is, of course, also a fix method that takes a number and
 returns a value with the correct postfix letter appended:
@@ -607,13 +619,13 @@ prints “1M”.
 
 #### Number::Format
 
-The Number::Format module is a more general-purpose module for
-formatting numbers in interesting ways. Like Convert::SciEng, it is
+The [Number::Format](https://metacpan.org/pod/Number::Format) module is a more general-purpose module for
+formatting numbers in interesting ways. Like [Convert::SciEng](https://metacpan.org/pod/Convert::SciEng), it is
 accessed through an object-oriented interface. Calling the new method
 creates a new formatter object. This method takes as its argument a
 hash which contains various formatting options. These options are
-detailed in appendix A along with the other object methods contained
-within Number::Format.
+detailed in [Appendix A](ch018.xhtml) along with the other object methods contained
+within [Number::Format](https://metacpan.org/pod/Number::Format).
 
 Here are some examples of using this module:
 
@@ -640,13 +652,13 @@ This results in:
 
 Changing the formatting options slightly:
 
-	my $fmt = Number::Format->new(INTL_CURRENCY_SYMBOL => 'GBP', DECIMAL_DIGITS => 1);
+	my $fmt = Number::Format->new(INTL_CURRENCY_SYMBOL => 'GBP',
+	                              DECIMAL_DIGITS => 1);
 	my $number = 1234567.890;
 	print $fmt->round($number), "\n";
 	print $fmt->format_number($number), "\n";
 	print $fmt->format_negative($number), "\n";
-	print $fmt->format_picture($number, '###########'),
-	"\n";
+	print $fmt->format_picture($number, '###########'), "\n";
 	print $fmt->format_bytes($number), "\n";
 	print $fmt->unformat_number('1,000,000.00'), "\n";
 
@@ -664,8 +676,8 @@ If we were formatting numbers for a German system, we might try
 something like this:
 
 	my $de = Number::Format->new(INT_CURR_SYMBOL => 'DEM ',
-	THOUSANDS_SEP => '.',
-	DECIMAL_POINT => ',');
+	                             THOUSANDS_SEP => '.',
+	                             DECIMAL_POINT => ',');
 	my $number = 1234567.890;
 	print $de->format_number($number), "\n";
 	print $de->format_negative($number), "\n";
@@ -688,38 +700,39 @@ which would give us:
 
 	(12345678.90)
 
-It is, of course, possible to combine Number::Format with some of the
+It is, of course, possible to combine [Number::Format](https://metacpan.org/pod/Number::Format) with some of the
 other techniques that we were using earlier. If we had a text document
 that contained numbers in different formats and we wanted to ensure
 that they were all in our standard format we could do it like this:
 
 	use Number::Format;
 	my $data;
+
 	{
-	local $/ = undef;
-	$data = <STDIN>;
+	  local $/ = undef;
+	  $data = <STDIN>;
 	}
+
 	my $fmt = Number::Format->new;
-	my $num_re =
-	qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
+	my $num_re = qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
 	$data =~ s/$num_re/$fmt->format_number($1)/ge;
 	print $data;
 
 Further information
 -------------------
 
-For more information about input control variables such as $/, see
-the perldoc perlvar manual pages.
+For more information about input control variables such as `$/`, see
+the [perlvar](https://perldoc.perl.org/perlvar) manual page.
 
 For more information about the Unicode support in Perl, see the
-perldoc perlunicode and perldoc utf8 manual pages.
+[perlunicode](https://perldoc.perl.org/perlunicode) and [utf8](https://metacpan.org/pod/utf8) manual pages.
 
-For more information about sprintf, see the perldoc -f sprintf manual
-page. Both Convert::SciEng and Number::Format can be found on the
+For more information about sprintf, see the [sprintf](https://perldoc.perl.org/functions/sprintf) manual
+page. Both [Convert::SciEng](https://metacpan.org/pod/Convert::SciEng) and [Number::Format](https://metacpan.org/pod/Number::Format) can be found on the
 CPAN.
 
 Once you have installed them, their documentation will be available
-using the perldoc command.
+using the `perldoc` command.
 
 Summary
 -------

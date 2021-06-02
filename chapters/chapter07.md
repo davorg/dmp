@@ -230,21 +230,20 @@ for many tasks the amount of data to process makes this unfeasible.
 
 The most efficient way is to use a completely different method of
 reading your data. In addition to the `<FILE>` syntax that reads data
-from file handles one record at a time, Perl supports a more
+from filehandles one record at a time, Perl supports a more
 traditional syntax using the read and seek functions. The read
-function takes three or four arguments. The first three are: a file
-handle to read data from, a scalar variable to read the data into,
+function takes three or four arguments. The first three are: a filehandle to read data from, a scalar variable to read the data into,
 and the maximum number of bytes to read. The fourth, optional,
 argument is an offset into the variable where you want to start
 writing the data (this is rarely used). read returns the number of
 bytes read (which can be less than the requested number if you are
 near the end of a file) and zero when there is no more data to read.
 
-Each open file handle has a current position associated with it
+Each open filehandle has a current position associated with it
 called a file pointer and read takes its data from the file pointer
 and moves the pointer to the end of the data it has read. You can
 also reposition the file pointer explicitly using the seek function.
-seek takes three arguments: the file handle, the offset you wish to
+seek takes three arguments: the filehandle, the offset you wish to
 move to, and a value that indicates how the offset should be
 interpreted. If this value is 0 then the offset is calculated from
 the start of the file, if it is 1 the offset is calculated from the
@@ -429,7 +428,7 @@ spaces then you should use the sprintf or printf functions.
 
 These two functions do very similar things. The only difference is
 that sprintf returns its results in a scalar variable, whereas printf
-will write them directly to a file handle. Both of the functions take
+will write them directly to a filehandle. Both of the functions take
 a format description followed by a list of values which are
 substituted into the format string. The contents of the format string
 control how the values appear in the final result. At each place in
@@ -696,10 +695,10 @@ a number of different chunk types in the PNG specification, but we
 will look only at the IHDR (header) chunk, which is always the first
 chunk in the file and defines certain global attributes of the image.
 
-#### Example: reading a PNG file\
+#### Example: reading a PNG file
 
 A complete program to extract this data from a PNG file (passed in via
-STDIN) looks like this:
+`STDIN`) looks like this:
 
 	binmode STDIN;
 	my $data;
@@ -724,7 +723,7 @@ STDIN) looks like this:
 	}
 
 The first thing to do when dealing with binary data is to put the
-file handle that you will be reading into binary mode by calling
+filehandle that you will be reading into binary mode by calling
 binmode on it. This is necessary on operating systems which
 differentiate between binary and text files (these include DOS and
 Windows). On these operating systems, a \cM\cJ end-of-line marker
@@ -813,7 +812,7 @@ specification and work out how to process each type of chunk.
 
 To test this program I created a simple PNG file that was 100 pixels
 by 50 pixels, containing some simple text on a white background. As
-the program expects to read the PNG file from STDIN, I ran the program
+the program expects to read the PNG file from `STDIN`, I ran the program
 like this: read_png.pl < test.png and the output I got looked like
 this:
 

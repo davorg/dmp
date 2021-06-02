@@ -45,7 +45,7 @@ example:
 	my $page = get('http://www.mag-sol.com/index.html');
 
 will put the contents of the requested page into the variable $page.
-If there is an error, then get will return undef.
+If there is an error, then get will return `undef`.
 
 Two of the most common steps that you will want to take with the data
 returned will be to print it out or to store it in a file.
@@ -54,7 +54,7 @@ single call:
 
 	getprint('http://www.mag-sol.com/index.html');
 
-will print the page directly to STDOUT and
+will print the page directly to `STDOUT` and
 
 	getstore('http://www.mag-sol.com/index.html', 'index.html');
 

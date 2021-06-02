@@ -271,7 +271,7 @@ filter model earlier.
 The Schwartzian transform can be used anywhere that you want to sort a
 list of data structures by one of the data values contained within it,
 but that’s not all it can do. Here’s a three-line script that prints
-out our CD file (read in through STDIN), sorted by the recording
+out our CD file (read in through `STDIN`), sorted by the recording
 label.
 
     print map { $_->[0] }
@@ -425,7 +425,7 @@ it is always a colon-separated string. The first part is the string
 dbi and the second part is always the name of the database system2
 that we are connecting to. In this case the string `mysql` tells DBI
 that we will be talking to a MySQL database, and it should therefore
-load the [DBD::mysql]() module. The third section of the connection string
+load the [DBD::mysql](https://metacpan.org/pod/DBD::mysql) module. The third section of the connection string
 in this case is the particular database that we want to connect to.
 Many database systems (including MySQL) can store many different
 databases on the same database server. In this case we want to connect
@@ -439,7 +439,7 @@ run-time error if a database error occurs.
 
 The `DBI->connect` function returns a database handle, which can then
 be used to access other DBI functions. If there is an error, the
-function returns undef. In the sample program we check for this and,
+function returns `undef`. In the sample program we check for this and,
 if there is a problem, the program dies after printing the value of
 the variable `$DBI::errstr` which contains the most recent database
 error message.
@@ -479,32 +479,32 @@ your chosen DBD modules.
 
 As your data structures get more and more complex it will become more
 and more useful to have an easy way to see what they look like. A very
-convenient way to do this is by using the Data::Dumper module which
-comes as a standard part of the Perl distribution. Data::Dumper takes
+convenient way to do this is by using the [Data::Dumper](https://metacpan.org/pod/Data::Dumper) module which
+comes as a standard part of the Perl distribution. [Data::Dumper](https://metacpan.org/pod/Data::Dumper) takes
 one or more variables and produces a “stringified” version of the data
 contained in the variables.
 
-We’ll see many examples of Data::Dumper throughout the book but, as an
+We’ll see many examples of [Data::Dumper](https://metacpan.org/pod/Data::Dumper) throughout the book but, as an
 example, let’s use it to get a dump of the CD data structure that we
 built in the previous chapter. The data structure was built up using
 code like this:
 
 	my @CDs;
 	my @attrs = qw(artist title label year);
-	while ( <STDIN >) {
+	while ( <STDIN>) {
 	  chomp;
 	  my %rec;
 	  @rec{@attrs} = split /\t/;
 	  push @CDs, \%rec;
 	}
 
-In order to use Data::Dumper we just need to add a use Data::Dumper
-statement and a call to the Dumper function like this:
+In order to use [Data::Dumper](https://metacpan.org/pod/Data::Dumper) we just need to add a use Data::Dumper
+statement and a call to the `Dumper` function like this:
 
 	use Data::Dumper;
 	my @CDs;
 	my @attrs = qw(artist title label year);
-	while ( <STDIN >) {
+	while ( <STDIN>) {
 	  chomp;
 	  my %rec;
 	  @rec{@attrs} = split /\t/;
@@ -787,6 +787,6 @@ DBD module that you have installed, for example “Sybase” or “mysql”.
 
 * Sorting can be very simple in Perl, but for more complex sorts there are a number of methods which can make the sort more efficient.
 * Database access in Perl is very easy using the DBI.
-* Data::Dumper is very useful for seeing what your internal data structures look like.
+* [Data::Dumper](https://metacpan.org/pod/Data::Dumper) is very useful for seeing what your internal data structures look like.
 * Benchmarking is very important, but can be quite tricky to do correctly.
 * Command line scripts can be surprisingly powerful.
