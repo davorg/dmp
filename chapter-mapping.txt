@@ -1,0 +1,23 @@
+# This maps chapters to their filenames inside the ePub. This does not
+# map files onto files but top-level sections onto files.
+
+# ePub file [TAB] markdown file
+ch001.xhtml	front-matter.md (forward)
+ch002.xhtml	front-matter.md (preface)
+ch003.xhtml Part I
+ch004.xhtml chapter01.md
+ch005.xhtml chapter02.md
+ch006.xhtml chapter03.md
+ch007.xhtml chapter04.md
+ch008.xhtml Part II
+ch009.xhtml chapter05.md
+ch010.xhtml chapter06.md
+ch011.xhtml chapter07.md
+ch012.xhtml Part III
+ch013.xhtml chapter08.md
+ch014.xhtml chapter09.md
+ch015.xhtml chapter10.md
+ch016.xhtml chapter11.md
+ch017.xhtml chapter12.md
+ch018.xhtml appendix-a.md
+ch019.xhtml appendix-b.md
