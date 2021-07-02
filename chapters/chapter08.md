@@ -97,11 +97,11 @@ header and footer records also contain important data.
 The header contains information about the data file as a whole,
 telling us whose CD collection it is and the date on which this
 snapshot is valid. It would be inappropriate to list this information
-for each record in the file, so the header is a good place to put it. !!! FOOTNOTE
-1 There are other places where the information could be stored. One
+for each record in the file, so the header is a good place to put it.
+There are other places where the information could be stored. One
 common solution is to store this kind of information in the name of
 the data file, so that a file containing this data might be called
-something like 19990916\_dave.txt. !!!
+something like *19990916\_dave.txt*.
 
 The information in the footer is a little different. In this case we
 are describing the actual shape of the data rather than where (or
@@ -113,13 +113,13 @@ of records is that it acts as a simple check that the file has not
 been corrupted between the time it was created and the time we
 received it. By simply comparing the number of records that we
 processed against the number that the file claims to contain, we can
-easily tell if any went missing in transmission. !!! FOOTNOTE  2 As
-with the header information, including this data within the file isn’t
-the only way to do it. Another common method is to send a second file
-with a similar name that contains the number of records. In the
-example of my CDs, we might have another file called
-19990916\_dave.rec which contains only the number 6. !!!
+easily tell if any went missing in transmission.
 
+As with the header information, including this data within the file
+isn’t the only way to do it. Another common method is to send a second
+file with a similar name that contains the number of records. In the
+example of my CDs, we might have another file called
+*19990916\_dave.rec* which contains only the number 6.
 
 This then demonstrates one important reason for having more complex
 data files. They allow us to include *metadata*—data about the data we
@@ -134,7 +134,7 @@ contain details of the tracks on the CDs as well as the data that we
 already list. At this point our line-per-record approach falls down
 and we are forced to look at something more complicated. Perhaps we
 will indent track records with a tab character or prefix the track
-records with a + character. This would give us a file that looked
+records with a `+` character. This would give us a file that looked
 something like this (listing only the first two tracks):
 
 	Dave's CD Collection
@@ -202,26 +202,17 @@ data structure.
 	12:
 	13: my %rec;
 	14: while (<STDIN>) {
-	15:
-	chomp;
+	15:   chomp;
 	16:
-	17:
-	last if /^\s*$/;
+	17:   last if /^\s*$/;
 	18:
-	19:
-	if (/^\+/) {
-	20:
-	push @{$rec{tracks}}, substr($_, 1);
-	21:
-	} else {
-	22:
-	push @{$data{CDs}}, {%rec} if keys %rec;
-	23:
-	%rec = ();
-	24:
-	@rec{@labels} = unpack($template, $_);
-	25:
-	}
+	19:   if (/^\+/) {
+	20:     push @{$rec{tracks}}, substr($_, 1);
+	21:   } else {
+	22:     push @{$data{CDs}}, {%rec} if keys %rec;
+	23:     %rec = ();
+	24:     @rec{@labels} = unpack($template, $_);
+	25:   }
 	26: }
 	27:
 	28: push @{$data{CDs}}, {%rec} if keys %rec;
@@ -229,24 +220,22 @@ data structure.
 	30: ($data{count}) = (<STDIN> =~ /(\d+)/);
 	31:
 	32: if ($data{count} == @{$data{CDs}}) {
-	33:
-	print "$data{count} records processed successfully\n";
+	33:   print "$data{count} records processed successfully\n";
 	34: } else {
-	35:
-	warn "Expected $data{count} records but received ",
-	36:
-	scalar @{$data{CDs}}, "\n";
+	35:   warn "Expected $data{count} records but received ",
+	36:   scalar @{$data{CDs}}, "\n";
 	37: }
 
 This code is not the best way to achieve this. We’ll see a far better
-way when we examine the module Parse::RecDescent in [Chapter 11](ch016.xhtml), but
-in the meantime let’s take a look at the code in more detail to see
-where it’s a bit kludgy.
+way when we examine the module
+[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent) in
+[Chapter 11](ch016.xhtml), but in the meantime let’s take a look at
+the code in more detail to see where it’s a bit kludgy.
 
 Line 1 defines a hash where we will store the data that we read in.
 
 Lines 3 and 4 read in the first two lines of data and store them in
-$data{title} and $data{date}, respectively.
+`$data{title}` and `$data{date}`, respectively.
 
 Line 5 ignores the next line in the file (which is blank).
 
@@ -274,7 +263,7 @@ because there is a blank line between the CD records and the footer
 data.
 
 Line 19 checks to see if we have a CD record or a track record by
-examining the first character of the data. If it is a + then we have
+examining the first character of the data. If it is a `+` then we have
 a track record, otherwise we assume we have a CD record.
 
 Line 20 deals with the track record by removing the leading + and
@@ -282,23 +271,23 @@ pushing the remaining data onto a list of tracks on our current CD.
 
 Line 22 starts to deal with a new CD. First we need to push the
 previous CD record onto our list of CDs (which is stored in
-$data{CDs}). Notice that we also get to this line of code at the
+`$data{CDs}`). Notice that we also get to this line of code at the
 start of the first CD record. In this case there is no previous CD
 record to store. We take care of this by only storing the record if
-it contains data. Notice also that as we reuse the same %rec
+it contains data. Notice also that as we reuse the same `%rec`
 variable for each CD, we make an anonymous copy of it each time.
 
-Line 23 resets the %rec hash to be empty, and line 24 gets the data
-about the new CD using unpack.
+Line 23 resets the `%rec` hash to be empty, and line 24 gets the data
+about the new CD using [unpack](https://perldoc.perl.org/functions/unpack).
 
 Having found the blank line at the end of the data section, we exit
 from the while loop at line 26. At this point the final CD is still
-stored in $rec, but hasn’t been added to $data{CDs}. We put that
+stored in `$rec`, but hasn’t been added to `$data{CDs}`. We put that
 right on line 28.
 
 Line 30 grabs the number of records from the footer line in the file
 and then, as a sanity check, we compare that number with the number
-of records that we have processed and stored in $data{CDs}.
+of records that we have processed and stored in `$data{CDs}`.
 
 Figure 8.1 shows the data structure that we store the album details
 in.
@@ -318,10 +307,11 @@ common data formats over recent years, and there is every reason to
 believe that they will continue to grow in popularity in the future.
 They are so popular, in fact, that the next two chapters are dedicated
 to ways of dealing with them using dedicated modules such as
-HTML::Parser and XML::Parser. In this section, however, I’d like to
-give you some idea of why these modules are necessary by pointing out
-the limitations in the data parsing methods that we have been using up
-to now.
+[HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
+[XML::Parser](https://metacpan.org/pod/XML::Parser). In this section,
+however, I’d like to give you some idea of why these modules are
+necessary by pointing out the limitations in the data parsing methods
+that we have been using up to now.
 
 ### Removing tags from HTML
 
@@ -364,7 +354,7 @@ code in your programs.
 	 }
 
 Nothing too difficult there. Just read in the file a line at a time
-and remove everything that is between an opening < and a closing >.
+and remove everything that is between an opening `<` and a closing `>`.
 Let’s see what output we get when we run that against our sample
 file.
 
@@ -376,22 +366,22 @@ default, Perl regular expressions are *greedy*. That is, they consume
 as much of the string as possible. What this means is that where we
 have a line like:
 
- <h1>Sample HTML</h1>
+    <h1>Sample HTML</h1>
 
-our regular expression will consume all the data between the first <
-and the last >, effectively removing the whole line.
+our regular expression will consume all the data between the first `<`
+and the last `>`, effectively removing the whole line.
 
-#### Example: another attempt using nongreedy regular expressions\
+#### Example: another attempt using nongreedy regular expressions
 
 We can, of course, correct this by making our regular expression
-nongreedy. We do this by placing a ? after the greedy part of the
-regular expression (.*), meaning our code will now look like this:
+nongreedy. We do this by placing a `?` after the greedy part of the
+regular expression `(.*)`, meaning our code will now look like this:
 
 	 # WARNING: This code doesn't work either
 	 use strict;
 	 while (<STDIN>) {
-	 s/<.*?>//;
-	 print;
+	   s/<.*?>//;
+	   print;
 	 }
 
 and our output looks like this:
@@ -406,7 +396,7 @@ and our output looks like this:
 	And links to the <a href="prev.html">Previous</a> and
 	Next</a> pages.</p>
 
-#### Example: adding the g modifier
+#### Example: adding the /g modifier
 
 The preceding output is obviously an improvement, but instead of
 removing too much data we are now removing too little. We are removing
@@ -418,8 +408,8 @@ code looks like this:
 	use strict;
 
 	while (<STDIN>) {
-	s/<.*?>//g;
-	print;
+	  s/<.*?>//g;
+	  print;
 	}
 
 And the output will look like this:
@@ -465,11 +455,9 @@ tag for example:
 Currently our program will leave this tag untouched. There are, of
 course, ways around this. We could read the whole HTML file into a
 single scalar variable and run our text replacement on that variable.
-!!! FOOTNOTE  3 We would have to add the s modifier to the operator,
-to get the . to match newline characters.!!! The downside of this
-approach is that, while it is not a problem for a small file like our
-example, there may be good reasons for not reading a larger document
-into memory all at once.
+The downside of this approach is that, while it is not a problem for a
+small file like our example, there may be good reasons for not reading
+a larger document into memory all at once.
 
 We have seen a number of reasons why our approach to parsing HTML is
 flawed. We can provide workarounds for all of the problems we have
@@ -558,7 +546,7 @@ definition of a noun_phrase indicate alternatives, *i.e.*, a noun
 phrase rule can be matched by one of three different forms. Each of
 these alternatives is called a *production*.
 
-#### Matching the grammar against input data\
+#### Matching the grammar against input data
 
 Having defined the grammar, the parser now has to match the input data
 against the grammar. First it will break up the input text into
@@ -614,13 +602,17 @@ reasons, this type of parser is also known as a *top-down* parser.
 ### Parsers in Perl
 
 Parsers in Perl come in two types: prebuilt parsers such as
-HTML::Parser and XML::Parser, which are designed to parse a particular
-type of data, and modules such as Parse::Yapp and Parse::RecDescent
-which allow you to create your own parsers from a grammar which you
-have defined. In the next two chapters we will take a longer look at
-the HTML::Parser and XML::Parser families of modules; and in [Chapter
-11](ch016.xhtml) we will examine Parse::RecDescent, in detail,
-which is the most flexible tool for creating your own parsers in Perl.
+[HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
+[XML::Parser](https://metacpan.org/pod/XML::Parser), which are
+designed to parse a particular type of data, and modules such as
+Parse::Yapp and Parse::RecDescent which allow you to create your own
+parsers from a grammar which you have defined. In the next two
+chapters we will take a longer look at the
+[HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
+[XML::Parser](https://metacpan.org/pod/XML::Parser) families of
+modules; and in [Chapter 11](ch016.xhtml) we will examine
+[Parse::RecDescent](), in detail, which is the most flexible tool for
+creating your own parsers in Perl.
 
 Further information
 -------------------
