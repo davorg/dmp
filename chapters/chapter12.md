@@ -72,13 +72,20 @@ model the problem exactly, it follows that you end up with a far
 smaller amount of synthetic code than in many other languages.
 
 If you’re interested in reading more (and you *should* be), Dominus’
-article is at [http://www.perl.com/pub/2000/06/commify.html](https://www.perl.com/pub/2000/06/commify.html/).
+article is at [Return of Program Repair Shop and Red Flags](https://www.perl.com/pub/2000/06/commify.html/).
 
 ### The usefulness of the Perl community
 
-One of the best things about using Perl is the community that goes with it. It seems to attract people who are only too happy to help others—whether by submitting their code to the CPAN, answering a technical question in a newsgroup such as comp.lang.perl.misc, or on a website like Perl Monks, or even writing articles for *The Perl Journal*.
+One of the best things about using Perl is the community that goes
+with it. It seems to attract people who are only too happy to help
+others—whether by submitting their code to the CPAN, answering a
+technical question in a newsgroup such as comp.lang.perl.misc, or on a
+website like Perl Monks, or even writing articles for *The Perl
+Journal*.
 
-If you are going to use Perl, I would certainly encourage you to become part of the Perl community. There are a number of ways to do this:
+If you are going to use Perl, I would certainly encourage you to
+become part of the Perl community. There are a number of ways to do
+this:
 
 *  Join your local Perl Mongers group. These are users’ groups. You can find the contact for your local group at www.pm.org. If there isn’t one for your area, why not form one?
 
@@ -155,7 +162,7 @@ be useful to gather them together in one place.
 
 *  [perldoc perl](https://perldoc.perl.org) *(and others)*—The best Perl documentation installed right on your computer.
 
-*  [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-3rd/0596000278/) (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl book. Make sure you get the 3rd edition.
+*  [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-4th/9781449321451/) (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl book. Make sure you get the 3rd edition.
 
 *  [The Perl Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/) (O’Reilly), Tom Christiansen and Nathan Torkington— The essential Perl book (volume 2).
 

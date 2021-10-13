@@ -38,16 +38,20 @@ grammar, and then pass the text to be parsed to the parser. We’ll see
 more specific examples later, but all the programs will have a basic
 structure which looks like this:
 
-	use Parse::RecDescent;
-	my $grammar = q(
-	# Text that define your grammar
-	);
-	my $parser = Parse::RecDescent->new($grammar);
-	my $text = q(
-	# Scalar which contains the text to be parsed
-	);
-	# top_rule is the name of the top level rule in you grammar.
-	$parser->top_rule($text);
+    use Parse::RecDescent;
+
+    my $grammar = q(
+                   # Text that define your grammar
+                   );
+
+    my $parser = Parse::RecDescent->new($grammar);
+
+    my $text = q(
+                # Scalar which contains the text to be parsed
+                );
+
+    # top_rule is the name of the top level rule in you grammar.
+    $parser->top_rule($text);
 
 ### Example: parsing simple English sentences
 
@@ -55,49 +59,52 @@ For example, if we go back to the example of simple English sentences
 which we used in [Chapter 8](ch013.xhtml), we could write code like this in order to
 check for valid sentences.
 
-	use Parse::RecDescent;
-	my $grammar = q(
-	sentence: subject verb object
-	subject: noun_phrase
-	object: noun_phrase
-	verb: 'wrote' | 'likes' | 'ate'
-	noun_phrase: pronoun | proper_noun | article noun
-	article: 'a' | 'the' | 'this'
-	pronoun: 'it' | 'he'
-	proper_noun: 'Perl' | 'Dave' | 'Larry'
-	noun: 'book' | 'cat'
-	);
-	my $parser = Parse::RecDescent->new($grammar);
-	while (<DATA>) {
-	chomp;
-	print "'$_' is ";
-	print 'NOT ' unless $parser->sentence($_);
-	print "a valid sentencen";
-	}
-	__END__
-	Larry wrote Perl
-	Larry wrote a book
-	Dave likes Perl
-	Dave likes the book
-	Dave wrote this book
-	the cat ate the book
-	Dave got very angry
+    use Parse::RecDescent;
+    my $grammar = q(
+                    sentence: subject verb object
+                    subject: noun_phrase
+                    object: noun_phrase
+                    verb: 'wrote' | 'likes' | 'ate'
+                    noun_phrase: pronoun | proper_noun | article noun
+                    article: 'a' | 'the' | 'this'
+                    pronoun: 'it' | 'he'
+                    proper_noun: 'Perl' | 'Dave' | 'Larry'
+                    noun: 'book' | 'cat'
+                   );
+
+    my $parser = Parse::RecDescent->new($grammar);
+
+    while (<DATA>) {
+      chomp;
+      print "'$_' is ";
+      print 'NOT ' unless $parser->sentence($_);
+      print "a valid sentencen";
+    }
+
+    __END__
+    Larry wrote Perl
+    Larry wrote a book
+    Dave likes Perl
+    Dave likes the book
+    Dave wrote this book
+    the cat ate the book
+    Dave got very angry
 
 Notice that we have expanded the terminals to actually represent a
 (very limited) subset of English words. The output of this script is a
 follows:
 
-	'Larry wrote Perl' is a valid sentence
-	'Larry wrote a book' is a valid sentence
-	'Dave likes Perl' is a valid sentence
-	'Dave likes the book' is a valid sentence
-	'Dave wrote this book' is a valid sentence
-	'the cat ate the book' is a valid sentence
-	'Dave got very angry' is NOT a valid sentence
+    'Larry wrote Perl' is a valid sentence
+    'Larry wrote a book' is a valid sentence
+    'Dave likes Perl' is a valid sentence
+    'Dave likes the book' is a valid sentence
+    'Dave wrote this book' is a valid sentence
+    'the cat ate the book' is a valid sentence
+    'Dave got very angry' is NOT a valid sentence
 
 Which shows that “Dave got very angry” is the only text in our data,
-which is not a valid sentence. !!! FOOTNOTE 1 By the rules of our
-grammar of course—not by the real rules of English.!!!
+which is not a valid sentence (by the rules of our
+grammar of course—not by the real rules of English).
 
 #### Explaining the code
 
@@ -158,17 +165,17 @@ side. Figure 11.2 shows this data structure.
 This means that you can get an individual value very easily using code
 like:
 
-	$input_file = $Config{files}{input};
+    $input_file = $Config{files}{input};
 
 ### Understanding the INI file grammar
 
 Let’s take a look at a grammar that defines an INI file. We’ll use
 the syntax found in Parse::RecDescent.
 
-	file: section(s)
-	section: header assign(s)
-	header: '[' /\w+/ ']'
-	assign: /\w+/ '=' /\w+/
+    file: section(s)
+    section: header assign(s)
+    header: '[' /\w+/ ']'
+    assign: /\w+/ '=' /\w+/
 
 The grammar can be explained in English like this:
 
@@ -210,8 +217,8 @@ The other thing to notice is that we are using regular expressions in
 many places to match our terminals. This is useful because the names
 of the sections and the keys and values in each section can be any
 valid word. In this example we are saying that they must all be a
-string made up of Perl’s word characters. !!! FOOTNOTE 2 That is,
-alphanumeric characters and the underbar character.!!!
+string made up of Perl’s word characters (that is,
+alphanumeric characters and the underbar character).
 
 ### Parser actions and the @item array
 
@@ -224,8 +231,9 @@ list of the values that have been matched in the current rule. The
 value in `$item[0]` is always the name of the rule which has matched.
 For example, when our header rule is matched, the `@item` array will
 contain `header`, `[`, the name of the section, and `]` with elements
-0 to 3 !!!FOOTNOTE 3 The same information is also available in a hash called %item, but I’ll use @item in these examples. For more details on %item see perldoc Parse::RecDescent.
-!!! (figure 11.3).
+0 to 3 (figure 11.3). The same information is also available in a hash called `%item`,
+but I’ll use `@item` in these examples. For more details on `%item` see [Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent).
+.
 
 ![The @item array after matching the header rule for the first time](images/11-3-item-array.png)
 
@@ -234,10 +242,10 @@ code on each of the rules in the grammar like the following code. All
 this code does is print out the contents of the `@item` array each time
 a rule is matched.
 
- file: section(s) { print "$item[0]: $item[1]\n"; }
- section: header assign(s) { print "$item[0]: $item[1] $item[2]\n"; }
- header: '[' /\w+/ ']' { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
- assign: /\w+/ '=' /\w+/ { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
+    file: section(s) { print "$item[0]: $item[1]\n"; }
+    section: header assign(s) { print "$item[0]: $item[1] $item[2]\n"; }
+    header: '[' /\w+/ ']' { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
+    assign: /\w+/ '=' /\w+/ { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
 
 However, Parse::RecDescent provides an easier way to achieve the same
 result, by providing a way to assign a default action to all rules in
@@ -250,21 +258,27 @@ doesn’t have an explicit action.
 Here is a sample program which reads an INI file and displays the
 contents of `@item` for each matched rule.
 
-	 use Parse::RecDescent;
-	 my $grammar = q(
-	 file: section(s)
-	 section: header assign(s)
-	 header: '[' /\w+/ ']'
-	 assign: /\w+/ '=' /\w+/
-	 );
-	 $::RD_AUTOACTION = q { print "$item[0]: @item[1..$#item]\n"; 1 };
-	 $parser = Parse::RecDescent->new($grammar);
-	 my $text;
-	 {
-	 $/ = undef;
-	 $text = <STDIN>;
-	 }
-	 $parser->file($text);
+    use Parse::RecDescent;
+
+    my $grammar = q(
+                    file: section(s)
+                    section: header assign(s)
+                    header: '[' /\w+/ ']'
+                    assign: /\w+/ '=' /\w+/
+                   );
+
+    $::RD_AUTOACTION = q { print "$item[0]: @item[1..$#item]\n"; 1 };
+
+    $parser = Parse::RecDescent->new($grammar);
+
+    my $text;
+
+    {
+      $/ = undef;
+      $text = <STDIN>;
+    }
+
+    $parser->file($text);
 
 The general structure of the code and the grammar should be familiar.
 The only thing new here is the code assigned to `$::RD_AUTOACTION`.
@@ -273,17 +287,17 @@ associated action code is matched. When you run this program using
 our earlier sample INI file as input, the resulting output is as
 follows:
 
-	header: [ files ]
-	assign: input = data_in
-	assign: output = data_out
-	assign: ext = dat
-	section: 1 ARRAY(0x8adc868)
-	header: [ rules ]
-	assign: quotes = double
-	assign: sep = comma
-	assign: spaces = trim
-	section: 1 ARRAY(0x8adc844)
-	file: ARRAY(0x8adc850)
+    header: [ files ]
+    assign: input = data_in
+    assign: output = data_out
+    assign: ext = dat
+    section: 1 ARRAY(0x8adc868)
+    header: [ rules ]
+    assign: quotes = double
+    assign: sep = comma
+    assign: spaces = trim
+    section: 1 ARRAY(0x8adc844)
+    file: ARRAY(0x8adc850)
 
 #### How rule matching works
 
@@ -310,39 +324,45 @@ returned by the top-level rule method when called by our script. We
 can use this fact to ensure that the data structure that we want is
 returned. Here is the script that will achieve this:
 
-	use Parse::RecDescent;
-	my $grammar = q(
-	file: section(s)
-	{ my %file;
-	foreach (@{$item[1]}) {
-	$file{$_->[0]} = $_->[1];
-	}
-	\%file;
-	}
-	section: header assign(s)
-	{ my %sec;
-	foreach (@{$item[2]}) {
-	$sec{$_->[0]} = $_->[1];
-	}
-	[ $item[1], \%sec]
-	}
-	header: '[' /\w+/ ']' { $item[2] }
-	assign: /\w+/ '=' /\w+/
-	{ [$item[1], $item[3]] }
-	);
-	$parser = Parse::RecDescent->new($grammar);
-	my $text;
-	{
-	$/ = undef;
-	$text = <STDIN>;
-	}
-	my $tree = $parser->file($text);
-	foreach (keys %$tree) {
-	print "$_\n";
-	foreach my $key (keys %{$tree->{$_}}) {
-	print "\t$key: $tree->{$_}{$key}\n";
-	}
-	}
+    use Parse::RecDescent;
+
+    my $grammar = q(
+                    file: section(s)
+                      { my %file;
+                        foreach (@{$item[1]}) {
+                          $file{$_->[0]} = $_->[1];
+                        }
+                        \%file;
+                      }
+                    section: header assign(s)
+                      { my %sec;
+                        foreach (@{$item[2]}) {
+                          $sec{$_->[0]} = $_->[1];
+                        }
+                        [ $item[1], \%sec]
+                      }
+                    header: '[' /\w+/ ']' { $item[2] }
+                    assign: /\w+/ '=' /\w+/
+                      { [$item[1], $item[3]] }
+                   );
+
+    $parser = Parse::RecDescent->new($grammar);
+
+    my $text;
+
+    {
+      $/ = undef;
+      $text = <STDIN>;
+    }
+
+    my $tree = $parser->file($text);
+
+    foreach (keys %$tree) {
+      print "$_\n";
+      foreach my $key (keys %{$tree->{$_}}) {
+        print "\t$key: $tree->{$_}{$key}\n";
+      }
+    }
 
 The code that has been added to the previous script is in two places.
 First (and most importantly) in the parser actions and, secondly, at
@@ -383,14 +403,14 @@ The code at the end of the script prints out the values in the
 returned data structure. Running this script against our sample INI
 file gives us the following result:
 
-	rules
-	quotes: double
-	sep: comma
-	spaces: trim
-	files
-	input: data_in
-	ext: dat
-	output: data_out
+    rules
+            quotes: double
+            sep: comma
+            spaces: trim
+    files
+            input: data_in
+            ext: dat
+            output: data_out
 
 which demonstrates that we have built up the data structure that we
 wanted.
@@ -403,31 +423,31 @@ Parse::RecDescent. We’ll take a look at how we’d parse the CD data
 file that we discussed in [Chapter 8](ch013.xhtml). What follows is the data file we
 were discussing:
 
-	Dave's CD Collection
-	16 Sep 1999
+    Dave's CD Collection
+    16 Sep 1999
 
-	Artist        Title              Label          Released
-	--------------------------------------------------------
-	Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-	+She's Got A New Spell
-	+Must I Paint You A Picture
-	Bragg, Billy  Mermaid Avenue     EMI            1998
-	+Walt Whitman's Niece
-	+California Stars
-	Black, Mary   The Holy Ground    Grapevine      1993
-	+Summer Sent You
-	+Flesh And Blood
-	Black, Mary   Circus             Grapevine      1995
-	+The Circus
-	+In A Dream
-	Bowie, David  Hunky Dory         RCA            1971
-	+Changes
-	+Oh You Pretty Things
-	Bowie, David  Earthling          EMI            1997
-	+Little Wonder
-	+Looking For Satellites
+    Artist        Title              Label          Released
+    --------------------------------------------------------
+    Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
+    +She's Got A New Spell
+    +Must I Paint You A Picture
+    Bragg, Billy  Mermaid Avenue     EMI            1998
+    +Walt Whitman's Niece
+    +California Stars
+    Black, Mary   The Holy Ground    Grapevine      1993
+    +Summer Sent You
+    +Flesh And Blood
+    Black, Mary   Circus             Grapevine      1995
+    +The Circus
+    +In A Dream
+    Bowie, David  Hunky Dory         RCA            1971
+    +Changes
+    +Oh You Pretty Things
+    Bowie, David  Earthling          EMI            1997
+    +Little Wonder
+    +Looking For Satellites
 
-	6 Records
+    6 Records
 
 In [Chapter 8](ch013.xhtml) we came up with a rather unsatisfying way to extract the
 data from this file and put it into a data structure. Now that
@@ -441,16 +461,16 @@ for the data file.
 
 Here is the grammar that I have designed for parsing the CD data file.
 
-	file: header body footer
-	header: /.+/ date
-	date: /\d\d?\s+\w+\s+\d{4}/
-	body: col_heads /-+/ cd(s)
-	col_heads: col_head(s)
-	col_head: /\w+/
-	cd: cd_line track_line(s)
-	cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-	track_line: '+' /.*/
-	footer: /\d+/ 'CDs'
+    file: header body footer
+    header: /.+/ date
+    date: /\d\d?\s+\w+\s+\d{4}/
+    body: col_heads /-+/ cd(s)
+    col_heads: col_head(s)
+    col_head: /\w+/
+    cd: cd_line track_line(s)
+    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
+    track_line: '+' /.*/
+    footer: /\d+/ 'CDs'
 
 Let’s take a closer look at the individual rules. Like the parser,
 we’ll take a top-down approach.
@@ -481,27 +501,33 @@ Having defined our grammar, one of the best ways to test it is to
 write a brief program like the one that we used to test the English
 sentences. The program would look like this:
 
-	use Parse::RecDescent;
-	use vars qw(%datas @cols);
-	my $grammar = q(
-	file: header body footer
-	header: /.+/ date
-	date: /\d+\s+\w+\s+\d{4}/
-	body: col_heads /-+/ cd(s)
-	col_heads: col_head(s)
-	col_head: /\w+/
-	cd: cd_line track_line(s)
-	cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-	track_line: '+' /.+/ { $item[2] }
-	footer: /\d+/ 'CDs'
-	);
-	$parser = Parse::RecDescent->new($grammar);
-	my $text;
-	{
-	local $/ = undef;
-	$text = <STDIN>;
-	}
-	print $parser->file($text) ? "valid" : "invalid";
+    use Parse::RecDescent;
+
+    use vars qw(%datas @cols);
+
+    my $grammar = q(
+                    file: header body footer
+                    header: /.+/ date
+                    date: /\d+\s+\w+\s+\d{4}/
+                    body: col_heads /-+/ cd(s)
+                    col_heads: col_head(s)
+                    col_head: /\w+/
+                    cd: cd_line track_line(s)
+                    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
+                    track_line: '+' /.+/ { $item[2] }
+                    footer: /\d+/ 'CDs'
+                   );
+
+    $parser = Parse::RecDescent->new($grammar);
+
+    my $text;
+
+    {
+      local $/ = undef;
+      $text = <STDIN>;
+    }
+
+    print $parser->file($text) ? "valid" : "invalid";
 
 
 This program will print valid or invalid depending on whether or not
@@ -527,39 +553,46 @@ with writing the rest of the program. As previously, most of the
 interesting code is in the parser actions. Here is the complete
 program:
 
-	use strict;
-	use Parse::RecDescent;
-	use Data::Dumper;
-	use vars qw(@cols);
-	my $grammar = q(
-	file: header body footer
-	{
-	my %rec =
-	(%{$item[1]}, list => $item[2], %{$item[3]});
-	\%rec;
-	}
-	header: /.+/ date
-	{ { title => $item[1], date => $item[2] } }
-	date: /\d+\s+\w+\s+\d{4}/ { $item[1] }
-	body: col_heads /-+/ cd(s) { $item[3] }
-	col_heads: col_head(s) { @::cols = @{$item[1]} }
-	col_head: /\w+/ { $item[1] }
-	cd: cd_line track_line(s)
-	{ $item[1]->{tracks} = $item[2]; $item[1] }
-	cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-	{ my %rec; @rec{@::cols} = @item[1 .. $#item]; \%rec }
-	track_line: '+' /.+/ { $item[2] }
-	footer: /\d+/ 'CDs'
-	{ { count => $item[1] } }
-	);
-	my $parser = Parse::RecDescent->new($grammar);
-	my $text;
-	{
-	local $/ = undef;
-	$text = <DATA>;
-	}
-	my $CDs = $parser->file($text);
-	print Dumper($CDs);
+    use strict;
+    use Parse::RecDescent;
+    use Data::Dumper;
+
+    use vars qw(@cols);
+
+    my $grammar = q(
+                    file: header body footer
+                      {
+                        my %rec =
+                          (%{$item[1]}, list => $item[2], %{$item[3]});
+                        \%rec;
+                      }
+                    header: /.+/ date
+                      { { title => $item[1], date => $item[2] } }
+                    date: /\d+\s+\w+\s+\d{4}/ { $item[1] }
+                    body: col_heads /-+/ cd(s) { $item[3] }
+                    col_heads: col_head(s) { @::cols = @{$item[1]} }
+                    col_head: /\w+/ { $item[1] }
+                    cd: cd_line track_line(s)
+                      { $item[1]->{tracks} = $item[2]; $item[1] }
+                    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
+                      { my %rec; @rec{@::cols} = @item[1 .. $#item]; \%rec }
+                    track_line: '+' /.+/ { $item[2] }
+                    footer: /\d+/ 'CDs'
+                      { { count => $item[1] } }
+    );
+
+    my $parser = Parse::RecDescent->new($grammar);
+
+    my $text;
+
+    {
+      local $/ = undef;
+      $text = <DATA>;
+    }
+
+    my $CDs = $parser->file($text);
+
+    print Dumper($CDs);
 
 As is generally the case, the parser actions will be easier to follow
 if we examine them bottom up.
@@ -610,73 +643,73 @@ The program uses the
 print out a data dump of the data structure that we have built. For
 our sample CD data file, the output from this program look like this:
 
-	$VAR1 = {
-	'list' => [
-	{
-	'Released' => '1988',
-	'Artist' => 'Bragg, Billy',
-	'Title' => 'Workers\' Playtime',
-	'Label' => 'Cooking Vinyl',
-	'tracks' => [
-	'She\'s Got A New Spell',
-	'Must I Paint You A Picture'
-	]
-	},
-	{
-	'Released' => '1998',
-	'Artist' => 'Bragg, Billy',
-	'Title' => 'Mermaid Avenue',
-	'Label' => 'EMI',
-	'tracks' => [
-	'Walt Whitman\'s Niece',
-	'California Stars'
-	]
-	},
-	{
-	'Released' => '1993',
-	'Artist' => 'Black, Mary',
-	'Title' => 'The Holy Ground',
-	'Label' => 'Grapevine',
-	'tracks' => [
-	'Summer Sent You',
-	'Flesh And Blood'
-	]
-	},
-	{
-	'Released' => '1995',
-	'Artist' => 'Black, Mary',
-	'Title' => 'Circus',
-	'Label' => 'Grapevine',
-	'tracks' => [
-	'The Circus',
-	'In A Dream'
-	]
-	},
-	{
-	'Released' => '1971',
-	'Artist' => 'Bowie, David',
-	'Title' => 'Hunky Dory',
-	'Label' => 'RCA',
-	'tracks' => [
-	'Changes',
-	'Oh You Pretty Things'
-	]
-	},
-	{
-	'Released' => '1997',
-	'Artist' => 'Bowie, David',
-	'Title' => 'Earthling',
-	'Label' => 'EMI',
-	'tracks' => [
-	'Little Wonder',
-	'Looking For Satellites'
-	]
-	}
-	],
-	'title' => 'Dave\'s CD Collection',
-	'count' => '6',
-	'date' => '16 Sep 1999'
-	};
+    $VAR1 = {
+             'list' => [
+                        {
+                          'Released' => '1988',
+                          'Artist' => 'Bragg, Billy',
+                          'Title' => 'Workers\' Playtime',
+                          'Label' => 'Cooking Vinyl',
+                          'tracks' => [
+                                        'She\'s Got A New Spell',
+                                        'Must I Paint You A Picture'
+                                      ]
+                        },
+                        {
+                        'Released' => '1998',
+                        'Artist' => 'Bragg, Billy',
+                        'Title' => 'Mermaid Avenue',
+                        'Label' => 'EMI',
+                        'tracks' => [
+                                      'Walt Whitman\'s Niece',
+                                      'California Stars'
+                                    ]
+                        },
+                        {
+                        'Released' => '1993',
+                        'Artist' => 'Black, Mary',
+                        'Title' => 'The Holy Ground',
+                        'Label' => 'Grapevine',
+                        'tracks' => [
+                                      'Summer Sent You',
+                                      'Flesh And Blood'
+                                    ]
+                        },
+                        {
+                        'Released' => '1995',
+                        'Artist' => 'Black, Mary',
+                        'Title' => 'Circus',
+                        'Label' => 'Grapevine',
+                        'tracks' => [
+                                      'The Circus',
+                                      'In A Dream'
+                                    ]
+                        },
+                        {
+                        'Released' => '1971',
+                        'Artist' => 'Bowie, David',
+                        'Title' => 'Hunky Dory',
+                        'Label' => 'RCA',
+                        'tracks' => [
+                                      'Changes',
+                                      'Oh You Pretty Things'
+                                    ]
+                        },
+                        {
+                        'Released' => '1997',
+                        'Artist' => 'Bowie, David',
+                        'Title' => 'Earthling',
+                        'Label' => 'EMI',
+                        'tracks' => [
+                                      'Little Wonder',
+                                      'Looking For Satellites'
+                                    ]
+                        }
+                      ],
+              'title' => 'Dave\'s CD Collection',
+              'count' => '6',
+              'date' => '16 Sep 1999'
+            };
 
 You can see that this structure is the same as the one that we built
 in [Chapter 8](ch013.xhtml). The main part of the structure is a hash, the keys of
