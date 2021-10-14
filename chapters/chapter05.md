@@ -362,8 +362,8 @@ uses the traditional method to convert the ASCII data arriving on
 	my $data;
 
 	{
-	local $/ = undef;
-	$data = <STDIN>;
+	  local $/ = undef;
+	  $data = <STDIN>;
 	}
 
 	print ascii2ebcdic($data);
@@ -408,19 +408,21 @@ used by UNIX (and Linux) systems. Apple Macintoshes use the carriage
 return. DOS and Windows use a combination of both characters, the
 carriage return followed by the line feed.
 
-This difference in line endings causes no problems when data files
-are used on the same system on which they were created, but when you
-start to transfer data files between different systems it can lead to
-some confusion. You may have edited a file that was created under
-Windows in a UNIX text editor. If so you will have seen an extra `^M`
-character at the end of each line of text.!!! Footnote 4 This is becoming less common as many editors will now display the lines without the ^M, and indicate the newline style in the status line. !!! This is the printable
-equivalent of the carriage return character that Windows inserts
-before each line feed. Similarly, a UNIX text file opened in Windows
-Notepad will have no carriage returns before the line feed and,
-therefore, Notepad will not recognize the end of line character
-sequence. All the lines will subsequently be run together, separated
-only by a black rectangle, which is Windows’ way of representing the
-unprintable line feed character.
+This difference in line endings causes no problems when data files are
+used on the same system on which they were created, but when you start
+to transfer data files between different systems it can lead to some
+confusion. You may have edited a file that was created under Windows
+in a UNIX text editor. If so you will have seen an extra `^M`
+character at the end of each line of text (this is
+becoming less common as many editors will now display the lines
+without the ^M, and indicate the newline style in the status line).
+This is the printable equivalent of the carriage return character that
+Windows inserts before each line feed. Similarly, a UNIX text file
+opened in Windows Notepad will have no carriage returns before the
+line feed and, therefore, Notepad will not recognize the end of line
+character sequence. All the lines will subsequently be run together,
+separated only by a black rectangle, which is Windows’ way of
+representing the unprintable line feed character.
 
 There are ways to avoid this problem. Transferring files between
 systems using FTP in ASCII mode, for example, will automatically

@@ -286,6 +286,7 @@ so far and went a step further, by introducing the concept of the
 *packed-default* sort. They started from two premises:
 
 1. Eliminating any hash or array dereferencing would speed up the sort.
+
 2. The default lexical sort (without any sort subroutine or block) is the fastest.
 
 The resulting method is an interesting variation on the Schwartzian
@@ -405,9 +406,9 @@ important DBI concepts and it is worth examining line by line.
 
 Line 1 points to the Perl interpreter. Notice the use of the `-w` flag.
 
-Line 3 switches on the [strict]() pragma.
+Line 3 switches on the [strict](https://perldoc.perl.org/strict) pragma.
 
-Line 4 brings in the [DBI.pm]() module. This allows us to use the DBI
+Line 4 brings in the [DBI.pm](https://metacpan.org/pod/DBI) module. This allows us to use the DBI
 functions.
 
 Lines 6 and 7 define a username and password that we will use to connect

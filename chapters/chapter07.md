@@ -77,14 +77,14 @@ Here’s a first attempt using the substr function to do the work:
 
 	my @cols = qw(5 25 33 39 40 48);
 	while (<STDIN>) {
-	my @rec;
-	my $prev = 0;
-	foreach my $col (@cols) {
-	push @rec, substr($_, $prev, $col - $prev);
-	$prev = $col;
-	}
-	print join('¦', @rec);
-	print "\n";
+	  my @rec;
+	  my $prev = 0;
+	  foreach my $col (@cols) {
+	    push @rec, substr($_, $prev, $col - $prev);
+	    $prev = $col;
+	  }
+	  print join('¦', @rec);
+	  print "\n";
 	}
 
 While this code works, it’s not particularly easy to understand. We
@@ -102,9 +102,9 @@ Perhaps we’d do better if we used regular expressions:
 	 my $regex;
 	 $regex .= "(.{$_})" foreach @widths;
 	 while (<STDIN>) {
-	 my @rec = /$regex/;
-	 print join('¦', @rec);
-	 print "\n";
+	   my @rec = /$regex/;
+	   print join('¦', @rec);
+	   print "\n";
 	 }
 
 In this case we’ve switched from using column start (or end)
@@ -135,12 +135,12 @@ sequence of characters which define the type and size of the
 individual fields. A simple way to break apart our current data would
 be like this:
 
-	my \$template = 'a5a20a8a6aa8';\
-	while (\<STDIN\>) {\
-	my @rec = unpack(\$template, \$\_);\
-	print join('¦', @rec);\
-	print "\\n";\
-	}\
+	my $template = 'a5a20a8a6aa8';
+	while (<STDIN>) {
+	  my @rec = unpack($template, $_);
+	  print join('¦', @rec);
+	  print "\n";
+	}
 
 which returns exactly the same set of data that we have seen in all
 of the examples above. In this case our template consists of the
@@ -180,10 +180,10 @@ identifier and the start of the line denoting which kind of record it
 is. In our example they will be the strings ADD and DEL. Here are some
 sample data:
 
- ADD0101Super Widget   00999901000SUPP01
- ADD0102Ultra Widget   01499900500SUPP01
- DEL0050Basic Widget
- DEL0051Cheap Widget
+    ADD0101Super Widget   00999901000SUPP01
+    ADD0102Ultra Widget   01499900500SUPP01
+    DEL0050Basic Widget
+    DEL0051Cheap Widget
 
 On the day covered by this data, we have added two new widgets to our
 product catalogue. The Super Widget (product code 0101) costs $99.99
@@ -198,13 +198,13 @@ products, the Basic Widget (Product Code 0050) and the Cheap Widget
 A program to read a file such as the previous example might look like
 this:
 
-	my %templates = (ADD => 'a4A14a6a5a6',
-	DEL => 'a4A14');
+	my %templates = (ADD => 'a4A14a6a5a6', DEL => 'a4A14');
+
 	while (<STDIN>) {
-	my ($type, $data) = unpack('a3a*', $_);
-	my @rec = unpack($templates{$type}, $data);
-	print "$type - ", join('¦', @rec);
-	print "\n";
+	  my ($type, $data) = unpack('a3a*', $_);
+	  my @rec = unpack($templates{$type}, $data);
+	  print "$type - ", join('¦', @rec);
+	  print "\n";
 	}
 
 In this case we are storing the two possible templates in a hash and
@@ -225,14 +225,15 @@ therefore, possible to send the data as a stream of bytes and leave it
 up to the receiving program to split the data into individual records.
 
 Perl, of course, has a number of ways to do this. You could read the
-whole file into memory and split the data using substr or unpack, but
+whole file into memory and split the data using `substr` or `unpack`, but
 for many tasks the amount of data to process makes this unfeasible.
 
 The most efficient way is to use a completely different method of
 reading your data. In addition to the `<FILE>` syntax that reads data
 from filehandles one record at a time, Perl supports a more
 traditional syntax using the read and seek functions. The read
-function takes three or four arguments. The first three are: a filehandle to read data from, a scalar variable to read the data into,
+function takes three or four arguments. The first three are: a
+filehandle to read data from, a scalar variable to read the data into,
 and the maximum number of bytes to read. The fourth, optional,
 argument is an offset into the variable where you want to start
 writing the data (this is rarely used). read returns the number of
@@ -263,10 +264,11 @@ once we have read it):
 
 	my $template = 'A5A20A8A6AA8';
 	my $data;
+
 	while (read STDIN, $data, 48) {
-	my @rec = unpack($template, $data);
-	print join('¦', @rec);
-	print "\n";
+	  my @rec = unpack($template, $data);
+	  print join('¦', @rec);
+	  print "\n";
 	}
 
 #### Example: reading multiple record types without end-of-record markers
@@ -276,16 +278,17 @@ using a method similar to this. In this case we read 3 bytes first to
 get the record type and then use this to decide how many more bytes to
 read on a further pass.
 
-	my %templates = (ADD => {len => 35,
-	tem => 'a4A14a6a5a6'},
-	DEL => {len => 18,
-	tem => 'a4A14'});
+	my %templates = (
+	  ADD => {len => 35, tem => 'a4A14a6a5a6'},
+	  DEL => {len => 18, tem => 'a4A14'}
+	);
+
 	my $type;
 	while (read STDIN, $type, 3) {
-	read STDIN, $data, $templates{$type}->{len};
-	my @rec = unpack($templates{$type}->{tem}, $data);
-	print "$type - ", join('¦', @rec);
-	print "\n";
+	  read STDIN, $data, $templates{$type}->{len};
+	  my @rec = unpack($templates{$type}->{tem}, $data);
+	  print "$type - ", join('¦', @rec);
+	  print "\n";
 	}
 
 #### Defining record structure within the data file
@@ -311,18 +314,19 @@ the width of one field. You can, therefore, build up an unpack format
 to use on the rest of the file.
 
 	my $line = <STDIN>;
+
 	# The metadata line
 	my $width = 3;
+
 	# The width of each number in $line;
 	my $fields = length($line) / $width;
 	my $meta_fmt = 'a3' x $fields;
 	my @widths = unpack($meta_fmt, $line);
 
-
 	my $fmt = join('', map { "A$_" } @widths);
 	while (<STDIN>) {
-	my @data = unpack($fmt, $_);
-	# Do something useful with the fields in @data
+	  my @data = unpack($fmt, $_);
+	  # Do something useful with the fields in @data
 	}
 
 Notice that we can calculate the number of fields in each record by
@@ -360,10 +364,11 @@ lengths of the fields:
 	my @fields = split($mark, $line);
 	my @widths = map { length($_) + 1 } @fields;
 	my $fmt = join('', map { "A$_" } @widths);
+
 	while (<STDIN>) {
-	chomp;
-	my @data = unpack($fmt, $_);
-	# Do something useful with the fields in @data
+	  chomp;
+	  my @data = unpack($fmt, $_);
+	  # Do something useful with the fields in @data
 	}
 
 Notice that we add one to the length of each element to get the
@@ -396,6 +401,7 @@ just use the A and a template options. These options have slightly
 different meanings in a pack template than the ones they have in an
 unpack template.
 
+XXX: Table
 	Table 7.1 summarizes these differences.
 	Table 7.1
 	Meanings of A and a in pack and unpack templates
@@ -447,8 +453,9 @@ which demonstrates these options:
 
 	my @formats = qw(%d %5d %05d);
 	my $num = 123;
+
 	foreach (@formats) {
-	printf "¦$_¦\n", $num;
+	  printf "¦$_¦\n", $num;
 	}
 
  Running this code produces the following results:
@@ -467,7 +474,7 @@ decimal point). Here is an example of this:
 	my @formats = qw(%f %6.2f %06.2f);
 	my $num = 12.3;
 	foreach (@formats) {
-	printf "¦$_¦\n", $num;
+	  printf "¦$_¦\n", $num;
 	}
 
  which gives the following results (notice that the default number of
@@ -513,6 +520,8 @@ be useful.
 Putting this all together, we can produce code which can output
 fixed-width financial transaction records like the ones we were
 reading earlier.
+
+XXX:
 
 	my %rec1 = ( txnref => 374,
 	cust

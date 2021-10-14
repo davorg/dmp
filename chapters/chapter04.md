@@ -34,7 +34,7 @@ regular expressions.
 ### Substrings
 
 If you want to extract a particular portion of a string then you can
-use the substr function. This function takes two mandatory
+use the `substr` function. This function takes two mandatory
 parameters: a string to work on and the offset to start at, and two
 optional parameters: the length of the required substring and another
 string to replace it with. If the third parameter is omitted, then
@@ -50,7 +50,7 @@ from the end of the string. Here are a few simple examples:
 	my $sub4 = substr($string, -12, 3);  # $sub4 contains 'him'
 
 Many programming languages have a function that produces substrings in
-a similar manner, but the clever thing about Perl’s substr function is
+a similar manner, but the clever thing about Perl’s `substr` function is
 that the result of the operation can act as an lvalue. That is, you
 can assign values to it, like this:
 
@@ -72,7 +72,7 @@ manipulation of the strings. You can even do something like this:
 	my $long = 'Very, very, very, very long';
 	substr($short, 0, 5) = $long;
 
-which will leave \$short containing the text “Very, very, very, very
+which will leave `$short` containing the text “Very, very, very, very
 long string”.
 
 ### Finding strings within strings (index and rindex)
@@ -125,8 +125,8 @@ upper case), [lc](https://perldoc.perl.org/functions/lc) (to convert a whole str
 [lcfirst](https://perldoc.perl.org/functions/lcfirst) (to convert the first character of a string to lower case).
 
 There are a couple of traps that seem to catch unwary programmers who
-use these functions. The first of these is with the ucfirst and
-lcfirst functions. It is important to note that they do exactly what
+use these functions. The first of these is with the `ucfirst` and
+`lcfirst` functions. It is important to note that they do exactly what
 they say and affect only the first character in the given string. I
 have seen code like this:
 
@@ -461,7 +461,7 @@ or even
 	print if m=/davec/=;
 
 any of which may well be easier to read than the original. Note that
-in all of these cases we have to use the m at the start of the
+in all of these cases we have to use the `m` at the start of the
 expression.
 
 #### More capturing
@@ -779,8 +779,8 @@ As an example of the use of this script, create a file called
 translate. Each line should have the English word followed by a tab
 character and the equivalent American word. For example:
 
-	hello\<TAB\>hiya
-	pavement\<TAB\>sidewalk
+	hello<TAB>hiya
+	pavement<TAB>sidewalk
 
 Create another file containing the text that you want to translate.
 In my test, I used
@@ -790,7 +790,7 @@ In my test, I used
 
 and running the program using the command line
 
-	translate.pl \< in.txt
+	translate.pl < in.txt
 
 produced the output
 
@@ -800,7 +800,7 @@ produced the output
 If you wanted to keep the translated text in another text file then
 you could run the program using the command line
 
-	translate.pl \< in.txt \> out.txt
+	translate.pl < in.txt > out.txt
 
 Once again we make use of the power of the UNIX filter model as
 discussed in [Chapter 2](ch005.xhtml).
@@ -948,8 +948,7 @@ bash instead. We might write something like this:
 	3: my $users = read_passwd();
 	4:
 	6: foreach (keys %{$users}) {
-	7:
-	print "$_\n" if $users->{$_}{shell} eq '/bin/sh';
+	7:   print "$_\n" if $users->{$_}{shell} eq '/bin/sh';
 	8: }
 
 Again we have a very simple script. Most of the real work is being

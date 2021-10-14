@@ -55,6 +55,8 @@ slightly more complex.
 
 Let’s take another look at that first sample data file.
 
+XXX:
+
 	 Dave's CD Collection
 	 16 Sep 1999
 	 Artist
@@ -136,6 +138,8 @@ and we are forced to look at something more complicated. Perhaps we
 will indent track records with a tab character or prefix the track
 records with a `+` character. This would give us a file that looked
 something like this (listing only the first two tracks):
+
+XXX:
 
 	Dave's CD Collection
 	16 Sep 1999

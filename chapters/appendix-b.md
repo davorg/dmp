@@ -112,9 +112,10 @@ automatically makes the translation for you.
     $number = 1;
     $text = "$number ring to rule them all";
 
-After running this code, $text would contain the string “1 ring to
-rule them all”. This also works the other way around (you can always turn a number into a string, but it’s harder to turn
-most strings into numbers).
+After running this code, `$text` would contain the string “1 ring to
+rule them all”. This also works the other way around (you can always
+turn a number into a string, but it’s harder to turn most strings into
+numbers).
 
     $number = '100';
     $big_number = $number * 2; # $big_number now contains the value 200.
@@ -260,8 +261,7 @@ much the same way as you do to an array. Here are some examples:
 
     %rings = (); # Creates an empty hash
     %rings = ('elves', 3, 'dwarves', 7);
-    %rings = (elves => 3, dwarves => 7); # Another way to do the same
-    thing
+    %rings = (elves => 3, dwarves => 7); # Another way to do the samething
     $rings{men} = 9;
     $rings{great} = 1;
 

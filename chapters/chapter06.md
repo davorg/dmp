@@ -140,8 +140,8 @@ to define `$line` and we can make use of the fact that
 default. Our code will now look like this:
 
 	while (defined($_ = <FILE>)) {
-	chomp;
-	…
+	  chomp;
+	  …
 	}
 
 The last piece of optimization is one that you wouldn’t be able to
@@ -154,8 +154,8 @@ value is checked to see that it is defined (rather than checking that
 it is true). This means that you can write:
 
 	while (<FILE>)) {
-	chomp;
-	…
+	  chomp;
+	  …
 	}
 
 at which point we are back with our original code (but, hopefully,
@@ -823,10 +823,10 @@ relatively easy as we can go back to using [split](https://perldoc.perl.org/func
 fields. In this case the field separator is a newline character so
 that is what we need to split on.
 
-	local \$/ = "\\n%%\\n";
-	while (\<STDIN\>) {
+	local $/ = "\n%%\n";
+	while (<STDIN>) {
 	  chomp;
-	  print join('|', split(/\\n/)), "\\n";
+	  print join('|', split(/\n/)), "\n";
 	}
 
 This code will print each of the records on one line with the fields
@@ -1198,6 +1198,8 @@ but certain character sequences will be replaced by various parts of
 the date and time. The actual set of sequences supported will vary
 from system to system, but most systems should support the sequences
 shown in table 6.1.
+
+XXX:
 
 |      |                              |
 |------|------------------------------|
