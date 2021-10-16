@@ -536,14 +536,14 @@ grammar. In this case it does, but if it doesn’t and you want to find
 out where the errors are, there are two useful variables which
 Parse::RecDescent uses to help you follow what it is doing.
 
-#### Debugging the grammar with $::RD\_TRACE and $::RD\_HINT
+#### Debugging the grammar with `$::RD_TRACE` and `$::RD_HINT`
 
-Setting `$::RD\_TRACE` to true will display a trace of the parsing
+Setting `$::RD_TRACE` to true will display a trace of the parsing
 process as it progresses, allowing you to see where your grammar and
 the structure of the file disagree. If the problems are earlier in the
 process and there are syntax errors in your grammar, then setting
-`$::RD\_HINT` to true will provide hints on how you could fix the
-problems. Setting `$::RD\_AUTOACTION` to a snippet of code which prints
+`$::RD_HINT` to true will provide hints on how you could fix the
+problems. Setting `$::RD_AUTOACTION` to a snippet of code which prints
 out the values in @item can also be a useful debugging tool.
 
 ### Adding parser actions
@@ -605,23 +605,23 @@ makes it easier to combine parts into a data structure.
 
 The track rule returns the name of the track.
 
-The `cd\_line` rule builds a hash where the keys are the column headings
+The `cd_line` rule builds a hash where the keys are the column headings
 and the values are the associated values from the CD line in the file.
 In order to do this, it makes use of the global @cols array which is
-created by the `col\_heads` rule.
+created by the `col_heads` rule.
 
-The cd rule takes the hash reference which is returned by the `cd\_line`
+The cd rule takes the hash reference which is returned by the `cd_line`
 rule and creates another element in the same hash where the key is
 tracks, and the value is a reference to the array of multiple track
 records which is returned by the `track(s)` subrule. The rule then
 returns this hash reference.
 
-The `col\_head` rule matches one individual column heading and returns
+The `col_head` rule matches one individual column heading and returns
 that value.
 
-The `col\_heads` rule takes the array which is returned by the
-`col\_head(s)` subrule and assigns this array to the global array `@cols`,
-so that it can later be used by the `cd\_line` rule.
+The `col_heads` rule takes the array which is returned by the
+`col_head(s)` subrule and assigns this array to the global array `@cols`,
+so that it can later be used by the `cd_line` rule.
 
 The body rule returns the array returned by the cd(s) subrule. Each
 element of this array is the hash returned by one occurrence of the cd
@@ -767,6 +767,6 @@ Summary
 
 *  Parser action code can be associated with grammar rules. The associated code is called when the rule matches.
 
-*  The @item array contains details of the tokens which have matched in a given rule.
+*  The `@item` array contains details of the tokens which have matched in a given rule.
 
 *  Parser actions can change the value that will be returned by a rule. This is how you can build up parse tree data structures.

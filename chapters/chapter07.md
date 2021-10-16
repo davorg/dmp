@@ -434,55 +434,55 @@ spaces then you should use the sprintf or printf functions.
 
 These two functions do very similar things. The only difference is
 that sprintf returns its results in a scalar variable, whereas printf
-will write them directly to a filehandle. Both of the functions take
-a format description followed by a list of values which are
-substituted into the format string. The contents of the format string
-control how the values appear in the final result. At each place in
-the format string where you want a value to be substituted you place a
-format specifier in the format
-%m.nx, where m and n control the size of the field and x controls how
-the value should be interpreted. Full details of the syntax for format
-specifiers can be found in your Perl documentation but, for our
-current purposes, a small subset will suffice.
+will write them directly to a filehandle. Both of the functions take a
+format description followed by a list of values which are substituted
+into the format string. The contents of the format string control how
+the values appear in the final result. At each place in the format
+string where you want a value to be substituted you place a format
+specifier in the format `%m.nx`, where `m` and `n` control the size of
+the field and `x` controls how the value should be interpreted. Full
+details of the syntax for format specifiers can be found in your Perl
+documentation but, for our current purposes, a small subset will
+suffice.
 
-To put integers into the string, use the format specifier %d; !!! FOOTNOTE  2 %d is actually for a signed integer. If you need an unsigned value, use %u.
-!!! to
-force the field to be five characters wide, use the format specifier
-%5d; and to prepad the field with zeroes, use %05d. Here is an example
-which demonstrates these options:
+To put integers into the string, use the format specifier `%d` (`%d`
+is actually for a signed integer. If you need an unsigned value, use
+`%u`) to force the field to be five characters wide, use the format
+specifier `%5d`; and to prepad the field with zeroes, use `%05d`. Here
+is an example which demonstrates these options:
 
-	my @formats = qw(%d %5d %05d);
-	my $num = 123;
+    my @formats = qw(%d %5d %05d);
+    my $num = 123;
 
-	foreach (@formats) {
-	  printf "¦$_¦\n", $num;
-	}
+    foreach (@formats) {
+      printf "¦$_¦\n", $num;
+    }
 
- Running this code produces the following results:
+Running this code produces the following results:
 
-	¦123¦
-	¦
-	123¦
-	¦00123¦
+    ¦123¦
+    ¦
+    123¦
+    ¦00123¦
 
-You can do similar things with floating point numbers using %f. In
+You can do similar things with floating point numbers using `%f`. In
 this case you can control the total width of the field and also the
 number of characters after the decimal point by using notation such
-as %6.2f (for a 6 character field with two characters after the
+as `%6.2f` (for a 6 character field with two characters after the
 decimal point). Here is an example of this:
 
-	my @formats = qw(%f %6.2f %06.2f);
-	my $num = 12.3;
-	foreach (@formats) {
-	  printf "¦$_¦\n", $num;
-	}
+    my @formats = qw(%f %6.2f %06.2f);
+    my $num = 12.3;
+    foreach (@formats) {
+      printf "¦$_¦\n", $num;
+    }
 
- which gives the following results (notice that the default number of
+which gives the following results (notice that the default number of
 decimal places is six):
 
-	 ¦12.300000¦
-	 ¦ 12.30¦
-	 ¦012.30¦
+     ¦12.300000¦
+     ¦ 12.30¦
+     ¦012.30¦
 
 For strings we can use the format specifier %s. Again, we can use a
 number within the specifier to define the size of the field. You’ll

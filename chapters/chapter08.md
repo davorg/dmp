@@ -615,7 +615,7 @@ chapters we will take a longer look at the
 [HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
 [XML::Parser](https://metacpan.org/pod/XML::Parser) families of
 modules; and in [Chapter 11](ch016.xhtml) we will examine
-[Parse::RecDescent](), in detail, which is the most flexible tool for
+[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent), in detail, which is the most flexible tool for
 creating your own parsers in Perl.
 
 Further information

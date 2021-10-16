@@ -128,7 +128,7 @@ The following functions are all called via a valid statement handle.
 
 * `$sth->finish` Disposes of the statement handle and frees up any memory associated with it.
 
-* `$sth->bind_col($column_number, \\$var_to_bind)` Binds a column in a return set to a Perl variable. Note that you must pass a reference to the variable. This means that each time a row is fetched, the variable is automatically updated to contain the value of the bound column in the newly fetched row. See the code example under `bind_columns` for more details.
+* `$sth->bind_col($column_number, \$var_to_bind)` Binds a column in a return set to a Perl variable. Note that you must pass a reference to the variable. This means that each time a row is fetched, the variable is automatically updated to contain the value of the bound column in the newly fetched row. See the code example under `bind_columns` for more details.
 
 * `$sth->bind_columns(@list_of_refs_to_vars)` Binds each variable in the list to a column in the result set (the first variable in the list is bound to the first column in the result set, and so on). Note that the list must contain references to the variables. For example:
 
