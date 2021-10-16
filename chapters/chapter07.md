@@ -33,16 +33,17 @@ In a fixed-width data record, there is nothing to distinguish one data
 item from the next one. Each data item is simply written immediately
 after the preceding one, after padding it to a defined width. This
 padding can either be with zeroes or with spaces and can be before or
-after the data. !!!FOOTNOTE  1 Although it is most common to find numerical data prepadded with zeroes and text data postpadded with spaces.
-!!! In order to interpret the data, we need more
-information about the way it has been written. This is normally sent
-separately from the data itself but, as we shall see later, it is also
-possible to encode this data within the files.
+after the data (although it is most common to find numerical data
+prepadded with zeroes and text data postpadded with spaces). In order
+to interpret the data, we need more information about the way it has
+been written. This is normally sent separately from the data itself
+but, as we shall see later, it is also possible to encode this data
+within the files.
 
 Here is an example of two fixed-width data records:
 
-	 00374Bloggs & Co        19991105100103+00015000
-	 00375Smith Brothers     19991106001234-00004999
+     00374Bloggs & Co        19991105100103+00015000
+     00375Smith Brothers     19991106001234-00004999
 
 As you can see, it’s tricky to understand exactly what is going on
 here. It looks as though there is an ascending sequence number at the
@@ -70,22 +71,22 @@ November 5, 1999, we received a check (number 100103) for $150.00
 from Bloggs & Co. and on November 6, 1999, we paid $49.99 to Smith
 Brothers in response to their invoice number 1234.
 
-#### Example: extracting fixed-width data fields with substr\
+#### Example: extracting fixed-width data fields with substr
 
 So how do we go about extracting that information from the data?
 Here’s a first attempt using the substr function to do the work:
 
-	my @cols = qw(5 25 33 39 40 48);
-	while (<STDIN>) {
-	  my @rec;
-	  my $prev = 0;
-	  foreach my $col (@cols) {
-	    push @rec, substr($_, $prev, $col - $prev);
-	    $prev = $col;
-	  }
-	  print join('¦', @rec);
-	  print "\n";
-	}
+    my @cols = qw(5 25 33 39 40 48);
+    while (<STDIN>) {
+      my @rec;
+      my $prev = 0;
+      foreach my $col (@cols) {
+        push @rec, substr($_, $prev, $col - $prev);
+        $prev = $col;
+      }
+      print join('¦', @rec);
+      print "\n";
+    }
 
 While this code works, it’s not particularly easy to understand. We
 use an array of column positions to tell us where each column ends.
@@ -94,18 +95,18 @@ rather than end. This is because the column definitions that we were
 given start from column one, whereas Perl arrays start from zero—all
 in all, not the most maintainable piece of code.
 
-#### Example: extracting fixed-width data with regular expressions\
+#### Example: extracting fixed-width data with regular expressions
 
 Perhaps we’d do better if we used regular expressions:
 
-	 my @widths = qw(5 20 8 6 1 8);
-	 my $regex;
-	 $regex .= "(.{$_})" foreach @widths;
-	 while (<STDIN>) {
-	   my @rec = /$regex/;
-	   print join('¦', @rec);
-	   print "\n";
-	 }
+     my @widths = qw(5 20 8 6 1 8);
+     my $regex;
+     $regex .= "(.{$_})" foreach @widths;
+     while (<STDIN>) {
+       my @rec = /$regex/;
+       print join('¦', @rec);
+       print "\n";
+     }
 
 In this case we’ve switched from using column start (or end)
 positions to using column widths. It’s not very difficult to build
@@ -115,7 +116,7 @@ our data file in turn. The regular expression that we build looks
 like this:
 
 
-	(.{5})(.{20})(.{8})(.{6})(.{1})(.{8})
+    (.{5})(.{20})(.{8})(.{6})(.{1})(.{8})
 
 which is really a very simple regular expression. For each column in
 the data record, there is an element of the form (.{x}), where x is
@@ -135,12 +136,12 @@ sequence of characters which define the type and size of the
 individual fields. A simple way to break apart our current data would
 be like this:
 
-	my $template = 'a5a20a8a6aa8';
-	while (<STDIN>) {
-	  my @rec = unpack($template, $_);
-	  print join('¦', @rec);
-	  print "\n";
-	}
+    my $template = 'a5a20a8a6aa8';
+    while (<STDIN>) {
+      my @rec = unpack($template, $_);
+      print join('¦', @rec);
+      print "\n";
+    }
 
 which returns exactly the same set of data that we have seen in all
 of the examples above. In this case our template consists of the
@@ -150,13 +151,13 @@ The a designates each field as an ASCII string, but the template can
 contain many other options. For reference, here is one of the data
 lines that was produced by the previous example:
 
-	00374¦Bloggs & Co           ¦19991105¦100103¦+¦00015000
+    00374¦Bloggs & Co           ¦19991105¦100103¦+¦00015000
 
 Notice that the numbers are still prepadded with zeroes and the string
 is still postpadded with spaces. Now see what happens if we replace
 each a in the template with an A.
 
-	00374¦Bloggs & Co¦19991105¦100103¦+¦00015000
+    00374¦Bloggs & Co¦19991105¦100103¦+¦00015000
 
 The spaces at the end of the string are removed. Depending on your
 application, this may or may not be what you want. Perl gives you the
@@ -198,14 +199,14 @@ products, the Basic Widget (Product Code 0050) and the Cheap Widget
 A program to read a file such as the previous example might look like
 this:
 
-	my %templates = (ADD => 'a4A14a6a5a6', DEL => 'a4A14');
+    my %templates = (ADD => 'a4A14a6a5a6', DEL => 'a4A14');
 
-	while (<STDIN>) {
-	  my ($type, $data) = unpack('a3a*', $_);
-	  my @rec = unpack($templates{$type}, $data);
-	  print "$type - ", join('¦', @rec);
-	  print "\n";
-	}
+    while (<STDIN>) {
+      my ($type, $data) = unpack('a3a*', $_);
+      my @rec = unpack($templates{$type}, $data);
+      print "$type - ", join('¦', @rec);
+      print "\n";
+    }
 
 In this case we are storing the two possible templates in a hash and
 unpacking the data in two stages. In the first stage we separate the
@@ -262,14 +263,14 @@ newlines, we could use code like this to read it (obviously we could
 use any of the previously discussed techniques to split the record up
 once we have read it):
 
-	my $template = 'A5A20A8A6AA8';
-	my $data;
+    my $template = 'A5A20A8A6AA8';
+    my $data;
 
-	while (read STDIN, $data, 48) {
-	  my @rec = unpack($template, $data);
-	  print join('¦', @rec);
-	  print "\n";
-	}
+    while (read STDIN, $data, 48) {
+      my @rec = unpack($template, $data);
+      print join('¦', @rec);
+      print "\n";
+    }
 
 #### Example: reading multiple record types without end-of-record markers
 
@@ -278,18 +279,18 @@ using a method similar to this. In this case we read 3 bytes first to
 get the record type and then use this to decide how many more bytes to
 read on a further pass.
 
-	my %templates = (
-	  ADD => {len => 35, tem => 'a4A14a6a5a6'},
-	  DEL => {len => 18, tem => 'a4A14'}
-	);
+    my %templates = (
+      ADD => {len => 35, tem => 'a4A14a6a5a6'},
+      DEL => {len => 18, tem => 'a4A14'}
+    );
 
-	my $type;
-	while (read STDIN, $type, 3) {
-	  read STDIN, $data, $templates{$type}->{len};
-	  my @rec = unpack($templates{$type}->{tem}, $data);
-	  print "$type - ", join('¦', @rec);
-	  print "\n";
-	}
+    my $type;
+    while (read STDIN, $type, 3) {
+      read STDIN, $data, $templates{$type}->{len};
+      my @rec = unpack($templates{$type}->{tem}, $data);
+      print "$type - ", join('¦', @rec);
+      print "\n";
+    }
 
 #### Defining record structure within the data file
 
@@ -313,21 +314,21 @@ unpack the record into an array of numbers. Each of these numbers is
 the width of one field. You can, therefore, build up an unpack format
 to use on the rest of the file.
 
-	my $line = <STDIN>;
+    my $line = <STDIN>;
 
-	# The metadata line
-	my $width = 3;
+    # The metadata line
+    my $width = 3;
 
-	# The width of each number in $line;
-	my $fields = length($line) / $width;
-	my $meta_fmt = 'a3' x $fields;
-	my @widths = unpack($meta_fmt, $line);
+    # The width of each number in $line;
+    my $fields = length($line) / $width;
+    my $meta_fmt = 'a3' x $fields;
+    my @widths = unpack($meta_fmt, $line);
 
-	my $fmt = join('', map { "A$_" } @widths);
-	while (<STDIN>) {
-	  my @data = unpack($fmt, $_);
-	  # Do something useful with the fields in @data
-	}
+    my $fmt = join('', map { "A$_" } @widths);
+    while (<STDIN>) {
+      my @data = unpack($fmt, $_);
+      # Do something useful with the fields in @data
+    }
 
 Notice that we can calculate the number of fields in each record by
 dividing the length of the metadata record by the width of each
@@ -335,11 +336,11 @@ number in it. It might be useful to add a sanity check at that point
 to ensure that this calculation gives an integer answer as it should.
 Using this method our financial data file would look like this:
 
-	005020008006001008
-	00374Bloggs & Co
-	19991105100103+00015000
-	00375Smith Brothers
-	19991106001234-00004999
+    005020008006001008
+    00374Bloggs & Co
+    19991105100103+00015000
+    00375Smith Brothers
+    19991106001234-00004999
 
 The first line contains the field widths (5, 20, 8, 6, 1, and 8), all
 padded out to three digit numbers.
@@ -350,26 +351,26 @@ In this method, the first row in the file is a blank row that contains
 a marker (perhaps a | character) wherever a field will end in the
 following rows. In other words, our example file would look like this:
 
-		|                 |       |     ||       |
-	00374Bloggs & Co       19991105100103+00015000
-	00375Smith Brothers    19991106001234-00004999
+        |                 |       |     ||       |
+    00374Bloggs & Co       19991105100103+00015000
+    00375Smith Brothers    19991106001234-00004999
 
 To deal with this metadata, we can split the row on the marker
 character and use the length of the various elements to calculate the
 lengths of the fields:
 
-	my $line = <STDIN>; # The metadata line
-	chomp $line;
-	my $mark = '|'; # The field marker
-	my @fields = split($mark, $line);
-	my @widths = map { length($_) + 1 } @fields;
-	my $fmt = join('', map { "A$_" } @widths);
+    my $line = <STDIN>; # The metadata line
+    chomp $line;
+    my $mark = '|'; # The field marker
+    my @fields = split($mark, $line);
+    my @widths = map { length($_) + 1 } @fields;
+    my $fmt = join('', map { "A$_" } @widths);
 
-	while (<STDIN>) {
-	  chomp;
-	  my @data = unpack($fmt, $_);
-	  # Do something useful with the fields in @data
-	}
+    while (<STDIN>) {
+      chomp;
+      my @data = unpack($fmt, $_);
+      # Do something useful with the fields in @data
+    }
 
 Notice that we add one to the length of each element to get the
 width. This is because the marker character is not included in the
@@ -399,28 +400,22 @@ the rules given by the template. Once again the full power of pack
 will be useful when we look at binary data, but for ASCII data we will
 just use the A and a template options. These options have slightly
 different meanings in a pack template than the ones they have in an
-unpack template.
+unpack template. Table 7.1 summarizes these differences.
 
-XXX: Table
-	Table 7.1 summarizes these differences.
-	Table 7.1
-	Meanings of A and a in pack and unpack templates
-	A
-	a
-	pack
-	Pad string with spaces
-	Pad string with null characters
-	unpack
-	Strip trailing nulls and spaces
-	Leave trailing nulls and spaces
+| function | A                               | a                               |
+|----------|---------------------------------|---------------------------------|
+| pack     | Pad string with spaces          | Pad string with null characters |
+| unpack   | Strip trailing nulls and spaces | Leave trailing nulls and spaces |
+
+Table: Meanings of A and a in pack and unpack templates
 
 Therefore, if we have a number of strings and wish to pack them into
 a fixed-width data record, we can do something like this:
 
-	my @strings = qw(Here are a number of strings);
-	my $template = 'A6A6A3A8A4A10';
+    my @strings = qw(Here are a number of strings);
+    my $template = 'A6A6A3A8A4A10';
 
-	print pack($template, @strings), "\n";
+    print pack($template, @strings), "\n";
 
 and our strings will all be space padded to the sizes given in the
 pack template. There is, however, a problem padding numbers using
@@ -494,22 +489,22 @@ seen previously, text is often left justified and postpadded with
 spaces. In order to left justify the text we can prepend a minus sign
 to the size specifier. Here are some examples:
 
- my @formats = qw(%s %10s %010s %-10s %-010s);
- my $str = 'Text';
- foreach (@formats) {
- printf "¦$_¦\n", $str;
- }
+    my @formats = qw(%s %10s %010s %-10s %-010s);
+    my $str = 'Text';
+    foreach (@formats) {
+      printf "¦$_¦\n", $str;
+    }
 
 which gives the following output:
 
-	 ¦Text¦
-	 ¦
-	 Text¦
-	 ¦000000Text¦
-	 ¦Text
-	 ¦
-	 ¦Text
-	 ¦
+     ¦Text¦
+     ¦
+     Text¦
+     ¦000000Text¦
+     ¦Text
+     ¦
+     ¦Text
+     ¦
 
 Notice that we can prepad strings with zeroes just as we can for
 numbers, but it’s difficult to think of a situation where that would
@@ -521,81 +516,64 @@ Putting this all together, we can produce code which can output
 fixed-width financial transaction records like the ones we were
 reading earlier.
 
-XXX:
+    my %rec1 = ( txnref => 374,
+                 cust   => 'Bloggs & Co',
+                 date   => 19991105,
+                 extref => 100103,
+                 dir    => '+',
+                 amt    => 15000 );
 
-	my %rec1 = ( txnref => 374,
-	cust
-	=> 'Bloggs & Co',
-	date
-	=> 19991105,
-	extref => 100103,
-	dir
-	=> '+',
-	amt
-	=> 15000 );
-	my %rec2 = ( txnref => 375,
-	cust
-	=> 'Smith Brothers',
-	date
-	=> 19991106,
-	extref => 1234,
-	dir
-	=> '-',
-	amt
-	=> 4999 );
-	my @cols = (
-	{ name
-	=> 'txnref',
-	width => 5,
-	num
-	=> 1 },
-	{ name
-	=> 'cust',
+    my %rec2 = ( txnref => 375,
+                 cust   => 'Smith Brothers',
+                 date   => 19991106,
+                 extref => 1234,
+                 dir    => '-',
+                 amt    => 4999 );
 
+    my @cols = (
+                { name  => 'txnref',
+                  width => 5,
+                  num   => 1 },
+                { name  => 'cust',
+                  width => 20,
+                  num   => 0 },
+                { name  => 'date',
+                  width => 8,
+                  num   => 1 },
+                { name  => 'extref',
+                  width => 6,
+                  num   => 1 },
+                { name  => 'dir',
+                  width => 1,
+                  num   => 0 },
+                { name  => 'amt',
+                  width => 8,
+                  num   => 1 } );
 
-	width => 20,
-	num
-	=> 0 },
-	{ name
-	=> 'date',
-	width => 8,
-	num
-	=> 1 },
-	{ name
-	=> 'extref',
-	width => 6,
-	num
-	=> 1 },
-	{ name
-	=> 'dir',
-	width => 1,
-	num
-	=> 0 },
-	{ name
-	=> 'amt',
-	width => 8,
-	num
-	=> 1 } );
-	my $format = build_fmt(\@cols);
-	print fixed_rec(\%rec1, \@cols, $format);
-	print fixed_rec(\%rec2, \@cols, $format);
-	sub build_fmt {
-	my $cols = shift;
-	my $fmt;
-	foreach (@$cols) {
-	if ($_->{num}) {
-	$fmt .= "%0$_->{width}s";
-	} else {
-	$fmt .= "%-$_->{width}s";
-	}
-	}
-	return $fmt;
-	}
-	sub fixed_rec {
-	my ($rec, $cols, $fmt) = @_;
-	my @vals = map { $rec->{$_->{name}} } @$cols;
-	sprintf("$fmt\n", @vals);
-	}
+    my $format = build_fmt(\@cols);
+
+    print fixed_rec(\%rec1, \@cols, $format);
+    print fixed_rec(\%rec2, \@cols, $format);
+
+    sub build_fmt {
+      my $cols = shift;
+      my $fmt;
+      foreach (@$cols) {
+        if ($_->{num}) {
+          $fmt .= "%0$_->{width}s";
+        } else {
+          $fmt .= "%-$_->{width}s";
+        }
+      }
+
+    return $fmt;
+    }
+
+    sub fixed_rec {
+      my ($rec, $cols, $fmt) = @_;
+      my @vals = map { $rec->{$_->{name}} } @$cols;
+      sprintf("$fmt\n", @vals);
+    }
 
 In this program, we use an array of hashes (@cols) to define the
 characteristics of each data field in our record. These
@@ -603,7 +581,7 @@ characteristics include the name of the column together with the
 width that we want it to be in the output, and a flag indicating
 whether or not it is a numeric field. We then use the data in this
 array to build a suitable sprintf format string in the function
-build\_fmt. The fixed\_rec function then extracts the relevant data
+`build_fmt`. The `fixed_rec` function then extracts the relevant data
 from the record (which is stored in a hash) into an array and feeds
 that array to sprintf along with the format. This creates our
 fixed-width record. As expected, the results of running this program
@@ -616,9 +594,9 @@ Binary data
 All of the data that we have looked at so far has been ASCII data.
 That is, it has been encoded using a system laid down by the
 American Standards Committee for Information Interchange. In this
-code, 128 characters !!!FOOTNOTE  3 There are a number of extensions
+code, 128 characters (there are a number of extensions
 to the ASCII character set which define 256 characters, but the fact
-that they are nonstandard can make dealing with them problematic. !!!
+that they are nonstandard can make dealing with them problematic)
 have been given a numerical equivalent value from 0 to 127. For
 example, the space character is number 32, the digits 0 to 9 have
 the numbers 48 to 57, and the letters of the alphabet appear from 65
@@ -657,13 +635,14 @@ across the Internet) is the CompuServe *Graphics Interchange Format*
 (or GIF). Unfortunately for us, this file format uses a patented data
 compression technique and the owners of the patent (Unisys) are
 trying to ensure that only properly licensed software is used to
-create GIF files.!!!FOOTNOTE  4 You can read more about this dispute
-in Lincoln Stein’s excellent article at:
-http://www.webtechniques.com/archives/1999/12/webm/. !!! As Perl is
+create GIF files (you can read more about this dispute in Lincoln Stein’s excellent article at
+[http://www.webtechniques.com/archives/1999/12/webm/](http://www.webtechniques.com/archives/1999/12/webm/).
+). As Perl is
 Open Source, it does not fall into this category, and you shouldn’t
 use it to create GIFs. I believe that using Perl to read GIFs would
 not violate the licensing terms, but to be sure we’ll look at the
 *Portable Network Graphics* (PNG) format instead.
+
 
 ### Reading PNG files
 
@@ -673,26 +652,24 @@ Perl & GNU Software* by Shawn P. Wallace (O’Reilly), but you can get
 the definitive version from the PNG group home page at
 http://www.cdrom.com/pub/png/.
 
-#### Reading the file format signature\
+#### Reading the file format signature
 
 Most binary files start with a *signature*, that is a few bytes that
 identify the format of the file. This is so that applications that are
 reading the file can easily check that the file is in a format that
 they can understand. In the case of PNG files, the first 8 bytes
-always contain the hex value 0x89 followed by the string
-PNG\cM\cJ\cZ\cM. In order to check that a file is a valid PNG file,
+always contain the hex value `0x89` followed by the string
+`PNG\cM\cJ\cZ\cM`. In order to check that a file is a valid PNG file,
 you should do something like this:
 
-XXX: odd looking program (p140)
+    my $data;
+    read(PNG, $data, 8);
+    die "Not a valid PNG\n" unless $data eq "\x89PNG\cM\cJ\cZ\cM";
 
-	my $data;
-	read(PNG, $data, 8);
-	die "Not a valid PNG\n" unless $data eq '\x89PNG\cM\cJ\cZ\cM';
-
-Note that we use \x89 to match the hex number 0x89 and \cZ to match
+Note that we use `\x89` to match the hex number `0x89` and `\cZ` to match
 Control-Z.
 
-#### Reading the data chunks\
+#### Reading the data chunks
 
 After this header sequence, a PNG file is made up of a number of
 *chunks*. Each chunk contains an 8-byte header, some amount of data,
@@ -709,49 +686,50 @@ chunk in the file and defines certain global attributes of the image.
 A complete program to extract this data from a PNG file (passed in via
 `STDIN`) looks like this:
 
-	binmode STDIN;
-	my $data;
-	read(STDIN, $data, 8);
-	die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cM";
-	while (read(STDIN, $data, 8)) {
-	my ($size, $type) = unpack('Na4', $data);
-	print "$type ($size bytes)\n";
-	read(STDIN, $data, $size);
-	if ($type eq 'IHDR') {
-	my ($w, $h, $bitdepth, $coltype, $comptype, $filtype,
-	$interlscheme) =
-	unpack('NNCCCCC', $data);
-	print << "END";
-	Width: $w, Height: $h
-	Bit Depth: $bitdepth, Color Type: $coltype
-	Compression Type: $comptype, Filtering Type: $filtype
-	Interlace Scheme: $interlscheme
-	END
-	}
-	read(STDIN, $data, 4);
-	}
+    binmode STDIN;
+    my $data;
+
+    read(STDIN, $data, 8);
+    die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cM";
+
+    while (read(STDIN, $data, 8)) {
+      my ($size, $type) = unpack('Na4', $data);
+      print "$type ($size bytes)\n";
+      read(STDIN, $data, $size);
+      if ($type eq 'IHDR') {
+        my ($w, $h, $bitdepth, $coltype, $comptype, $filtype, $interlscheme) =
+          unpack('NNCCCCC', $data);
+        print << "END";
+      Width: $w, Height: $h
+      Bit Depth: $bitdepth, Color Type: $coltype
+      Compression Type: $comptype, Filtering Type: $filtype
+      Interlace Scheme: $interlscheme
+    END
+      }
+    read(STDIN, $data, 4);
+    }
 
 The first thing to do when dealing with binary data is to put the
 filehandle that you will be reading into binary mode by calling
 binmode on it. This is necessary on operating systems which
 differentiate between binary and text files (these include DOS and
-Windows). On these operating systems, a \cM\cJ end-of-line marker
-in a text file gets translated to \n as it is read in. If this
+Windows). On these operating systems, a `\cM\cJ` end-of-line marker
+in a text file gets translated to `\n` as it is read in. If this
 sequence appears in a binary file, it needs to be left untouched.
 Operating systems, such as UNIX, don’t make this binary/text
-differentiation, so under them binmode has no effect. For reasons of
+differentiation, so under them `binmode` has no effect. For reasons of
 portability it is advisable to always call this function.
 
-Having called binmode, we can then start reading our binary data. As
+Having called `binmode`, we can then start reading our binary data. As
 we saw before, the first thing that we do is to read the first 8
 bytes and check them against the signature for PNG files. If it
 matches we continue, otherwise we terminate the program.
 
-We then go into a while loop, reading the header of each chunk in the
+We then go into a `while` loop, reading the header of each chunk in the
 file. We read 8 bytes of raw data and convert it into something
-easier to understand using unpack. Notice that we use N to extract
+easier to understand using unpack. Notice that we use `N` to extract
 the 4-byte integer and a4 to extract the 4-character string. The
-full set of options that you can use in an unpack format string is
+full set of options that you can use in an `unpack` format string is
 given in the documentation that came with your Perl distribution. It
 is in the perlfunc manual page (and notice that the full set of
 options is listed under the pack function). Having established the
@@ -763,47 +741,36 @@ The type of the chunk determines how we process the data we have
 read. In our case, we are only dealing with the IHDR chunk, and that
 is defined as two 4-byte integers followed by five single-character
 strings. We can, therefore, split the data apart using the unpack
-format NNCCCCC. The definition of these fields is in the PNG
+format `NNCCCCC`. The definition of these fields is in the PNG
 documentation but there is a *précis* in table 7.2.
 
-XXX: Format table
+----------------------------------------------------------------------------
+Field               Type                Description
+------------------  --------------      ------------------------------------
+Width               4-byte integer      The width of the image in pixels
 
-	Table 7.2\
-	Elements of a PNG IHDR chunk\
-	Field\
-	Type\
-	Description\
-	Width\
-	4-byte integer\
-	The width of the image in pixels\
-	Height\
-	4-byte integer\
-	The height of the image in pixels\
-	Bit Depth\
-	1-byte character\
-	The number of bits used to represent the color of each pixel\
-	Color Type\
-	1-byte character\
-	Code indicating how colors are encoded within the image.\
-	Valid values are:\
-	0: A number from 0–255 indicating the greyscale value\
-	2: Three numbers from 0–255 indicating the amount of red,\
-	green, and blue\
-	3: A number which is an index into a color table\
-	4: A greyscale value (0–255) followed by an alpha mask\
-	6: An RGB triplet (as is 2, above) followed by an alpha mask\
-	Compression Type\
-	1-byte character\
-	The type of compression used (always 0 in PNG version 1.0)\
-	Filtering Type\
-	1-byte character\
-	The type of filtering applied to the data (always 0 in PNG ver-\
-	sion 1.0)\
-	Interlacing Scheme\
-	1-byte character\
-	The interlacing scheme used to store the data. For PNG ver-\
-	sion 1.0 this is either 0 (for no interlacing) or 1 (for Adam7\
-	interlacing)\
+Height              4-byte integer      The height of the image in pixels
+
+Bit Depth           1-byte character    The number of bits used to represent the color of each pixel
+
+Color Type          1-byte character    Code indicating how colors are encoded within the image.
+                                        Valid values are:
+                                          0: A number from 0–255 indicating the greyscale value
+                                          2: Three numbers from 0–255 indicating the amount of red, green, and blue
+                                          3: A number which is an index into a color table
+                                          4: A greyscale value (0–255) followed by an alpha mask
+                                          6: An RGB triplet (as is 2, above) followed by an alpha mask
+
+Compression Type    1-byte character    The type of compression used (always 0 in PNG version 1.0)
+
+Filtering Type      1-byte character    The type of filtering applied to the data (always 0 in PNG version 1.0)
+
+Interlacing Scheme  1-byte character    The interlacing scheme used to store the data.
+                                        For PNG version 1.0 this is either 0 (for no interlacing)
+                                        or 1 (for Adam7 interlacing)
+----------------------------------------------------------------------------
+
+Table: Elements of a PNG IHDR chunk
 
 Having unpacked this data into more useable chunks we can display it.
 It may be more useful to translate some of the numbers to descriptive
@@ -817,24 +784,27 @@ process them, it simply displays the type and size of each chunk it
 finds. A more complex program would need to read the PNG
 specification and work out how to process each type of chunk.
 
-#### Testing the PNG file reader\
+#### Testing the PNG file reader
 
 To test this program I created a simple PNG file that was 100 pixels
 by 50 pixels, containing some simple text on a white background. As
 the program expects to read the PNG file from `STDIN`, I ran the program
-like this: read_png.pl < test.png and the output I got looked like
-this:
+like this:
 
-	IHDR (13 bytes)
-	Width: 100, Height: 50
-	Bit Depth: 8, Color Type: 2
-	Compression Type: 0, Filtering Type: 0
-	Interlace Scheme: 0
-	tEXt (21 bytes)
-	tIME (7 bytes)
-	pHYs (9 bytes)
-	IDAT (1135 bytes)
-	IEND (0 bytes)
+    read_png.pl < test.png
+
+and the output I got looked like this:
+
+    IHDR (13 bytes)
+      Width: 100, Height: 50
+      Bit Depth: 8, Color Type: 2
+      Compression Type: 0, Filtering Type: 0
+      Interlace Scheme: 0
+    tEXt (21 bytes)
+    tIME (7 bytes)
+    pHYs (9 bytes)
+    IDAT (1135 bytes)
+    IEND (0 bytes)
 
 From this we can see that my file was, indeed, 100 pixels by 50
 pixels. There were 8 bits per pixel and they were in RGB triplets. No
@@ -842,7 +812,7 @@ compression, filtering, or interlacing was used. After the IHDR
 chunk, you can see various other chunks. The important one is the
 IDAT chunk which contains the actual image data.
 
-#### CPAN modules\
+#### CPAN modules
 
 There are, of course, easier ways to get to this information than by
 writing your own program. In particular, Gisle Aas has written a
@@ -855,8 +825,8 @@ files using Perl.
 ### Reading and writing MP3 files
 
 Another binary file format that has been getting a lot of publicity
-recently is the MP3 !!! FOOTNOTE  5 Short for MPEG3 or Motion
-Pictures Experts Group—Audio Level 3. !!! file. These files store
+recently is the MP3 (short for MPEG3 or Motion
+Pictures Experts Group—Audio Level 3) file. These files store
 near-CD quality sound in typically a third of the space required by
 raw CD data. This has led to a whole new drain on Internet bandwidth
 as people upload their favorite tracks to their web sites.
@@ -877,31 +847,35 @@ available from the CPAN. Using the module is very simple. Here is a
 sample program which displays all of the ID3 data that it can find in
 a given MP3 file:
 
-	use MPEG::MP3Info;\
-	my \$file = shift;\
-	my \$tag = get\_mp3tag(\$file);\
-	my \$info = get\_mp3info(\$file);\
-	print "Filename: \$file\\n";\
-	print "MP3 Tags\\n";\
-	foreach (sort keys %\$tag) {\
-	print "\$\_ : \$tag-\>{\$\_}\\n";\
-	}\
-	print "MP3 Info\\n";\
-	foreach (sort keys %\$info) {\
-	print "\$\_ : \$info-\>{\$\_}\\n";\
-	}\
+    use MPEG::MP3Info;
+
+    my $file = shift;
+
+    my $tag = get_mp3tag($file);
+    my $info = get_mp3info($file);
+
+    print "Filename: $file\n";
+    print "MP3 Tags\n";
+    foreach (sort keys %$tag) {
+      print "$_ : $tag->{$_}\n";
+    }
+
+    print "MP3 Info\n";
+    foreach (sort keys %$info) {
+      print "$_ : $info->{$_}\n";
+    }
 
 Notice that there are two separate parts of the ID3 data. The data
-returned in $tag is the data about the sound contained in the
+returned in `$tag` is the data about the sound contained in the
 file—like track name, artist, and year of release. The data returned
-in $info tend to be more physical data about the actual data in the
+in `$info` tend to be more physical data about the actual data in the
 file—the bit-rate, frequency, and whether the recording is stereo or
 mono. For this reason, the module currently (and I’m looking at
-version 0.71) contains a set\_mp3tag function, but not a set\_mp3info
+version 0.71) contains a `set_mp3tag` function, but not a `set_mp3info`
 function. It is likely that you’ll have good reasons to change the
 ID3 tags which defined the track and artist, but less likely that
 you’ll ever need to change the physical recording parameters. There
-is also a remove\_mp3tag function which removes the ID3 data from the
+is also a `remove_mp3tag` function which removes the ID3 data from the
 end of the file.
 
 As with Image::Info which we discussed earlier, it is very
@@ -912,9 +886,9 @@ Further information
 ----------
 
 This chapter has discussed a number of built-in Perl functions. These
-include pack, unpack, read, printf, and sprintf. For more information
+include `pack`, `unpack`, `read`, `printf`, and `sprintf`. For more information
 about any built-in Perl function see the perldoc perlfunc manual
-page. The list of type specifiers supported by sprintf and printf is
+page. The list of type specifiers supported by `sprintf` and `printf` is
 system-dependent, so you can get this information from your system
 documentation.
 
@@ -926,10 +900,10 @@ at your command line.
 Summary
 ----------
 
-*  The easiest way to split apart a fixed-width data record is by using the unpack function.
+*  The easiest way to split apart a fixed-width data record is by using the `unpack` function.
 
-*  Conversely, the easiest way to create a fixed-width data record is by using the pack function.
+*  Conversely, the easiest way to create a fixed-width data record is by using the `pack` function.
 
-*  If your data doesn’t have distinct end-of-record markers, you can read a certain number of bytes from your input data stream using the read function.
+*  If your data doesn’t have distinct end-of-record markers, you can read a certain number of bytes from your input data stream using the `read` function.
 
-*  Once you have used the binmode function on a binary data stream it can be processed using exactly the same techniques as a text data stream.
+*  Once you have used the `binmode` function on a binary data stream it can be processed using exactly the same techniques as a text data stream.
