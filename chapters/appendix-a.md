@@ -322,105 +322,90 @@ which are called when the parser encounters certain constructs in the
 HTML document. You can define handlers for the events shown in table
 A.1.
 
-XXX: Format table
+| Handler    | Called when …                        |
+|------------|--------------------------------------|
+|declaration | an HTML DOCTYPE declaration is found |
+|start       | the start of an HTML tag is found    |
+|end         | the end of an HTML tag is found      |
+|text        | plain text is found                  |
+|comment     | an HTML comment is found             |
+|process     | a processing instruction is found    |
 
-	 Table A.1
-	 **HTML::Parser** handlers
-	 Handler
-	 Called when …
-	 declaration
-	 an HTML DOCTYPE declaration is found
-	 start
-	 the start of an HTML tag is found
-	 end
-	 the end of an HTML tag is found
-	 text
-	 plain text is found
-	 comment
-	 an HTML comment is found
-	 process
-	 a processing instruction is found
-	 Each of these handlers can be defined in two ways. Either you can pass
-	details of
-	 the handler to the new method or you can use the handler method after
-	creating
-	the parser object, but before parsing the document. Here are examples of
-	both uses.
-	 my $parser = HTML::Parser->new(start_h => [\&start,
-	'tagname,attr']);
-	 $parser->handler(start => [\&start, 'tagname,attr']);
-	 In both examples we have set the start handler to be a function called
-	start which
-	must be defined somewhere within our program. The only difference
-	between the
-	two versions is that when using new, the event name (i.e., start) must
-	have the
-	string _h appended to it. In both examples the actual subroutine to be
-	called is
-	 defined in a two-element array. The first element of the array is a
-	reference to the
-	subroutine to be called and the second element is a string defining the
-	arguments
-	which the subroutine expects. The various values that this string can
-	contain are
-	listed in table A.2.
-	 Table A.2
-	 Argument specification strings
-	 Name
-	 Description
-	 Data type
-	 self
-	 The current parser object
-	 Reference to the object
-	 tokens
-	 The list of tokens which makes up the current event
-	 Reference to an array
-	 tokenpos
-	 A list of the positions of the tokens in the original text. Each token
-	 Reference to an array
-	 has two numbers; the first is the offset of the start of the token,
-	and the second is the length of the token.
-	 token0
-	 The text of the first token (this is the same as $tokens->[0])
-	 Scalar value
-	 tagname
-	 The name of the current tag
-	 Scalar value
-	 attr
-	 The name and values of the attributes of the current tag
-	 Reference to a hash
-	 attrseq
-	 A list of the names of the attributes of the current tag in the order
-	 Reference to an array
-	 that they appear in the original document
-	 text
-	 The source text for this event
-	 Scalar value
-	 dtest
-	 The same as “text” but with any HTML entities (e.g., &amp;) decoded
-	 Scalar value
-	 is_cdata
-	 True if event is in a CDATA section
-	 Scalar value
-	 offset
-	 The offset (in bytes) of the start of the current event from the start
-	 Scalar value
-	 of the HTML document
-	 length
-	 Length (in bytes) of the original text which constitutes the event
-	 Scalar value
-	 event
-	 The name of the current event
-	 Scalar value
-	 line
-	 The number of the line in the document where this event started
-	 Scalar value
-	 ' '
-	 Any literal string is passed to the handler unchanged
-	 Scalar value
-	 undef
-	 An undef value
-	 Scalar value
+Table: **HTML::Parser** handlers
+
+Each of these handlers can be defined in two ways. Either you can pass
+details of the handler to the new method or you can use the handler
+method after creating the parser object, but before parsing the
+document. Here are examples of both uses.
+
+    my $parser = HTML::Parser->new(start_h => [\&start,	'tagname,attr']);
+    $parser->handler(start => [\&start, 'tagname,attr']);
+
+In both examples we have set the start handler to be a function
+called start which must be defined somewhere within our program. The
+only difference between the two versions is that when using new, the
+event name (*i.e.*, `start`) must have the string `_h` appended to it. In
+both examples the actual subroutine to be called is defined in a
+two-element array. The first element of the array is a reference to
+the subroutine to be called and the second element is a string
+defining the arguments which the subroutine expects. The various
+values that this string can contain are listed in table A.2.
+
+----------------------------------------------------------------------------
+Name        Description                              Data type
+--------    -------------------------------------    -----------------------
+self        The current parser object                Reference to the object
+
+tokens      The list of tokens which makes up        Reference to an array
+            the current event
+
+tokenpos    A list of the positions of the tokens    Reference to an array
+            in the original text. Each token
+	        has two numbers; the first is the
+	        offset of the start of the token,
+	        and the second is the length of the
+	        token.
+
+token0      The text of the first token (this is     Scalar value
+            the same as `$tokens->[0]`)
+
+tagname     The name of the current tag              Scalar value
+
+attr        The name and values of the attributes    Reference to a hash
+            of the current tag
+
+attrseq     A list of the names of the attributes    Reference to an array
+            of the current tag in the order
+	        that they appear in the original
+	        document
+
+text        The source text for this event           Scalar value
+
+dtest       The same as “text” but with any HTML     Scalar value
+            entities (*e.g.*, `&amp;`) decoded
+
+
+is_cdata    True if event is in a CDATA section      Scalar value
+
+offset      The offset (in bytes) of the start of    Scalar value
+            the current event from the start
+	        of the HTML document
+
+length      Length (in bytes) of the original        Scalar value
+            text which constitutes the event
+
+event       The name of the current event            Scalar value
+
+line        The number of the line in the            Scalar value
+            document where this event started
+
+' '         Any literal string is passed to          Scalar value
+            the handler unchanged
+
+undef       An undef value                           Scalar value
+----------------------------------------------------------------------------
+
+Table: Argument specification strings
 
 HTML::LinkExtor
 ---------------
@@ -484,68 +469,42 @@ book. Here is a brief reference to its most commonly used methods.
 
 * `$parser = XML::Parser->new(Style => $style, Handlers => \%handlers, Pkg => $package)` Creates an XML::Parser object. It takes a number of optional named parameters. The Style parameter indicates which of a number of canned parsing styles you would like to use. Table A.3 lists the available styles along with the results of choosing a particular style.
 
-XXX Format table
+----------------------------------------------------------------------------------------------------------------
+Style
+name    Results
+------- --------------------------------------------------------------------------------------------------------
+Debug   Prints out a stylized version of the document outline.
 
-	 Table A.3
-	 **XML::Parser** Styles
-	 Style
-	 Results
-	 name
-	 Debug
-	 Prints out a stylized version of the document outline.
-	 Subs
-	 When the start of an XML tag is found, the parser calls a subroutine
-	with the same name as
-	the tag. When the end of an XML tag is found, the parser calls a
-	subroutine with the same
-	names as the tag with an underscore character prepended. Both of these
-	subroutines are
-	presumed to exist in the package denoted by the Pkg parameter. The
-	parameters passed to
-	these subroutines are the same as those passed to the Start and End
-	handler routines.
+Subs    When the start of an XML tag is found, the parser calls a subroutine
+        with the same name as the tag. When the end of an XML tag is found, the parser calls a
+        subroutine with the same names as the tag with an underscore character prepended. Both of these
+        subroutines are presumed to exist in the package denoted by the Pkg parameter. The
+        parameters passed to these subroutines are the same as those passed to the `Start` and `End`
+	    handler routines.
 
+Tree    The parse method will return a parse tree representing the document.
+	    Each node is represented by a reference to a two-element array. The first element in the
+        list is either the tag name or “0” if it is a text node. The second element is the content of
+        the tag. The content is a reference to another array. The first element of this array is a
+        reference to a (possibly empty) hash containing attribute/value pairs. The rest of this array is made up
+        of pair of elements representing the type and content of the contained nodes. See section
+	    9.2.3 for examples.
 
-	 Table A.3
-	 **XML::Parser** Styles (continued)
-	 Style
-	 Results
-	 name
-	 Tree
-	 The parse method will return a parse tree representing the document.
-	Each node is repre-
-	sented by a reference to a two-element array. The first element in the
-	list is either the tag
-	name or “0” if it is a text node. The second element is the content of
-	the tag. The content is
-	a reference to another array. The first element of this array is a
-	reference to a (possibly empty)
-	hash containing attribute/value pairs. The rest of this array is made up
-	of pair of elements
-	representing the type and content of the contained nodes. See section
-	9.2.3 for examples.
-	 Objects
-	 The parse method returns a parse tree representing the object. Each
-	node in the tree is a
-	hash which has been blessed into an object. The object type names are
-	created by append-
-	ing the type of each tag to the value of the Pkg parameter followed by
-	::. A text node is
-	blessed into the class ::Characters. Each node will have a kids
-	attribute which will be a
-	reference to an array containing each of the node’s children.
-	 Stream
-	 This style works in a manner similar to the Subs style. Whenever the
-	parser finds particular
-	XML objects, it calls various subroutines. These subroutines are all
-	assumed to exist in the
-	package denoted by the Pkg parameter. The subroutines are called
-	StartDocument,
-	 StartTag, EndTag, Text, PI, and EndDocument. The only one of these
-	names which
-	doesn’t make it obvious when the subroutine is called is PI. This is
-	called when the parser
-	encounters a processing instruction in the document.
+Objects The parse method returns a parse tree representing the object. Each
+	    node in the tree is a hash which has been blessed into an object. The object type names are
+	    created by appending the type of each tag to the value of the Pkg parameter followed by
+	    `::`. A text node is blessed into the class ::Characters. Each node will have a kids
+	    attribute which will be a reference to an array containing each of the node’s children.
+
+Stream  This style works in a manner similar to the Subs style. Whenever the
+	    parser finds particular XML objects, it calls various subroutines. These subroutines are all
+	    assumed to exist in the	package denoted by the Pkg parameter. The subroutines are called
+	    `StartDocument`, `StartTag`, `EndTag`, `Text`, `PI`, and `EndDocument`. The only one of these
+	    names which doesn’t make it obvious when the subroutine is called is PI. This is
+	    called when the parser encounters a processing instruction in the document.
+----------------------------------------------------------------------------------------------------------------
+
+Table: **XML::Parser** Styles
 
 The Handlers parameter is a reference to a hash. The keys of this
 hash are the names of the events that the parser triggers while
@@ -559,125 +518,92 @@ its own methods which you can use to gain even more precise control
 over the parsing process. For details of these, see the manual page
 for XML::Parser::Expat.
 
-XXX: Format Table
+----------------------------------------------------------------------------------------------------------------
+Handler         When called                                         Subroutine parameters
+--------------  ------------------------------------------------    --------------------------------------------
+Init            Before the parser starts processing the document    Reference to the Expat object
 
-	 Table A.4
-	 **XML::Parser** Handlers
-	 Handler
-	 When called
-	 Subroutine parameters
-	 Init
-	 Before the parser starts processing the document
-	 Reference to the Expat object
-	 Final
-	 After the parser finishes processing the document
-	 Reference to the Expat object
-	 Start
-	 When the parser finds the start of a tag
-	 Reference to the Expat object
-	Name of the tag found
-	List of name/value pairs for
-	the attributes
+Final           After the parser finishes processing the            Reference to the Expat object
+                document
 
+Start           When the parser finds the start of a tag            Reference to the Expat object
+                                                                    Name of the tag found
+	                                                                List of name/value pairs for the attributes
 
-	 Table A.4
-	 **XML::Parser** Handlers (continued)
-	 Handler
-	 When called
-	 Subroutine parameters
-	 End
-	 When the parser finds the end of a tag
-	 Reference to the Expat Object
-	 Char
-	 When the parser finds character data
-	 Reference to the Expat Object
-	The character string
-	 Proc
-	 When the parser finds a processing instruction
-	 Reference to the Expat Object
-	The name of the PI target
-	The PI data
-	 Comment
-	 When the parser finds a comment
-	 Reference to the Expat Object
-	The comment data
-	 CdataStart
-	 When the parser finds the start of a CDATA section
-	 Reference to the Expat Object
-	 CdataEnd
-	 When the parser finds the end of a CDATA section
-	 Reference to the Expat Object
-	 Default
-	 When the parser finds any data that doesn’t have an Reference to the
-	Expat Object
-	assigned handler
-	 The data string
-	 Unparsed
-	 When the parser finds an unparsed entity declaration
-	 Reference to the Expat Object
-	Name of the Entity
-	Base URL to use when resolving the
-	address
-	The system ID
-	The public ID
-	 Notation
-	 When the parser finds a notation declaration
-	 Reference to the Expat Object
-	Name of the Notation
-	Base URL to use when resolving the
-	address
-	The system ID
-	The public ID
-	 ExternEnt
-	 When the parser finds an external entity declaration
-	 Reference to the Expat Object.
-	Base URL to use when resolving the
-	address
-	The system ID.
-	The public ID.
-	 Entity
-	 When the parser finds an entity declaration
-	 Reference to the Expat Object
-	Name of the Entity
-	The value of the Entity
-	The system ID
-	The public ID
-	The notation for the entity
-	 Element
-	 When the parser finds an element declaration
-	 Reference to the Expat Object
-	Name of the Element
-	The Content Model
+End             When the parser finds the end of a tag              Reference to the Expat Object
+
+Char            When the parser finds character data                Reference to the Expat Object
+	                                                                The character string
+
+Proc            When the parser finds a processing instruction      Reference to the Expat Object
+                                                                    The name of the PI target
+	                                                                The PI data
+
+Comment         When the parser finds a comment                     Reference to the Expat Object
+	                                                                The comment data
+
+CdataStart      When the parser finds the start of a CDATA          Reference to the Expat Object
+                section
 
 
-	 Table A.4
-	 **XML::Parser** Handlers (continued)
-	 Handler
-	 When called
-	 Subroutine parameters
-	 Attlist
-	 When the parser finds an attribute declaration
-	 Reference to the Expat Object
-	Name of the Element
-	Name of the Attribute
-	The Attribute Type
-	Default Value
-	String indicating whether the
-	attribute is fixed
-	 Doctype
-	 When the parser finds a DocType declaration
-	 Reference to the Expat Object
-	Name of the Document Type
-	System ID
-	Public ID
-	The Internal Subset
-	 XMLDecl
-	 When the parser finds an XML declaration
-	 Reference to the Expat Object
-	Version of XML
-	Document Encoding
-	String indication whether or not the
-	DTD is standalone
+CdataEnd        When the parser finds the end of a CDATA            Reference to the Expat Object
+                section
+
+
+Default         When the parser finds any data that doesn’t         Reference to the Expat Object
+                have an assigned handler                            The data string
+
+
+Unparsed        When the parser finds an unparsed entity            Reference to the Expat Object
+                declaration                                         Name of the Entity
+	                                                                Base URL to use when resolving the address
+	                                                                The system ID
+	                                                                The public ID
+
+Notation        When the parser finds a notation declaration        Reference to the Expat Object
+	                                                                Name of the Notation
+	                                                                Base URL to use when resolving the address
+	                                                                The system ID
+	                                                                The public ID
+
+ExternEnt       When the parser finds an external entity            Reference to the Expat Object
+                declaration                                         Base URL to use when resolving the address
+	                                                                The system ID
+	                                                                The public ID
+
+Entity          When the parser finds an entity declaration         Reference to the Expat Object
+	                                                                Name of the Entity
+	                                                                The value of the Entity
+	                                                                The system ID
+	                                                                The public ID
+	                                                                The notation for the entity
+
+Element         When the parser finds an element declaration        Reference to the Expat Object
+	                                                                Name of the Element
+	                                                                The Content Model
+	                                                                Subroutine parameters
+
+Attlist         When the parser finds an attribute declaration      Reference to the Expat Object
+	                                                                Name of the Element
+	                                                                Name of the Attribute
+	                                                                The Attribute Type
+	                                                                Default Value
+	                                                                String indicating whether the attribute is fixed
+
+Doctype         When the parser finds a DocType declaration         Reference to the Expat Object
+	                                                                Name of the Document Type
+	                                                                System ID
+	                                                                Public ID
+	                                                                The Internal Subset
+
+XMLDecl         When the parser finds an XML declaration            Reference to the Expat Object
+	                                                                Version of XML
+	                                                                Document Encoding
+	                                                                String indication whether or not the
+	                                                                DTD is standalone
+----------------------------------------------------------------------------------------------------------------
+
+Table: **XML::Parser** Handlers
 
 `Pkg` is the name of a package. All handlers are assumed to be in this
 package and all styles which rely on user-defined subroutines also

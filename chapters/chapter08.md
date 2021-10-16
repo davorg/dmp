@@ -55,39 +55,16 @@ slightly more complex.
 
 Let’s take another look at that first sample data file.
 
-XXX:
-
 	 Dave's CD Collection
 	 16 Sep 1999
-	 Artist
-	 Title
-	 Label
-	 Released
+	 Artist        Title              Label          Released
 	 --------------------------------------------------------
-	 Bragg, Billy
-	 Workers' Playtime
-	 Cooking Vinyl
-	 1987
-	 Bragg, Billy
-	 Mermaid Avenue
-	 EMI
-	 1998
-	 Black, Mary
-	 The Holy Ground
-	 Grapevine
-	 1993
-	 Black, Mary
-	 Circus
-	 Grapevine
-	 1996
-	 Bowie, David
-	 Hunky Dory
-	 RCA
-	 1971
-	 Bowie, David
-	 Earthling
-	 EMI
-	 1987
+	 Bragg, Billy  Workers' Playtime  Cooking Vinyl  1987
+	 Bragg, Billy  Mermaid Avenue     EMI            1998
+	 Black, Mary   The Holy Ground    Grapevine      1993
+	 Black, Mary   Circus             Grapevine      1996
+	 Bowie, David  Hunky Dory         RCA            1971
+	 Bowie, David  Earthling          EMI            1987
 	 6 Records
 
 As you can see, the data consists of three clearly delimited
@@ -139,52 +116,29 @@ will indent track records with a tab character or prefix the track
 records with a `+` character. This would give us a file that looked
 something like this (listing only the first two tracks):
 
-XXX:
-
 	Dave's CD Collection
 	16 Sep 1999
-	Artist
-	Title
-	Label
-	Released
+	Artist        Title              Label          Released
 	--------------------------------------------------------
-	Bragg, Billy
-	Workers' Playtime
-	Cooking Vinyl
-	1988
+	Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
 	+She's Got A New Spell
 	+Must I Paint You A Picture
-	Bragg, Billy
-	Mermaid Avenue
-	EMI
-	1998
+	Bragg, Billy  Mermaid Avenue     EMI            1998
 	+Walt Whitman's Niece
 	+California Stars
-	Black, Mary
-	The Holy Ground
-	Grapevine
-	1993
+	Black, Mary   The Holy Ground    Grapevine      1993
 	+Summer Sent You
 	+Flesh And Blood
-	Black, Mary
-	Circus
-	Grapevine
-	1995
+	Black, Mary   Circus             Grapevine      1995
 	+The Circus
 	+In A Dream
-	Bowie, David
-	Hunky Dory
-	RCA
-	1971
+	Bowie, David  Hunky Dory         RCA            1971
 	+Changes
-	+Oh You Pretty Things\
-	Bowie, David\
-	Earthling\
-	EMI\
-	1997\
-	+Little Wonder\
-	+Looking For Satellites\
-	6 Records\
+	+Oh You Pretty Things
+	Bowie, David  Earthling          EMI            1997
+	+Little Wonder
+	+Looking For Satellites
+	6 Records
 
 ### Example: reading the expanded CD file
 

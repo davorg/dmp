@@ -1199,8 +1199,6 @@ the date and time. The actual set of sequences supported will vary
 from system to system, but most systems should support the sequences
 shown in table 6.1.
 
-XXX:
-
 |      |                              |
 |------|------------------------------|
 |	%a |  short day name (Sun to Sat) |
@@ -1221,6 +1219,8 @@ XXX:
 |	%Y |  year (0000 to 9999) |
 |	%Z |  time zone string (e.g., GMT) |
 |	%% |  a percent character |
+
+Table: POSIX::strftime character sequences
 
 Here is a simple script which uses strftime.
 
