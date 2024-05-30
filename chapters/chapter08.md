@@ -250,7 +250,7 @@ of records that we have processed and stored in `$data{CDs}`.
 Figure 8.1 shows the data structure that we store the album details
 in.
 
-![Data structure modeling the complex CD data file](images/8-1-data-structure-modeling-the-complex-cd-data-file.png)
+![Data structure modeling the complex CD data file](../images/8-1-data-structure-modeling-the-complex-cd-data-file.png)
 
 As you can see, while this approach gets the job done, it is far from
 elegant. A better way to achieve this would be using a real parser.
@@ -491,7 +491,7 @@ makes up the token. This may all become a bit clearer if we look at a
 simple grammar. Figure 8.2 shows a grammar which defines a particular
 type of simple English sentence.
 
-![Simple grammar](images/8-2-simple-grammar.png)
+![Simple grammar](../images/8-2-simple-grammar.png)
 
 This grammar says that a sentence is made up of a subject followed
 by a verb and an object. The verb is a *terminal* (in capital
@@ -528,7 +528,7 @@ was successful; otherwise the parse has failed. If at any point the
 parser finds a token which does not match the successor states of its
 current state, then the parse also fails.
 
-![LR Parser](images/8-3-lr-parser.png)
+![LR Parser](../images/8-3-lr-parser.png)
 
 At any point, if the finite state machine cannot find a matching
 successor state, it will go back a state and try an alternative
@@ -547,7 +547,7 @@ it knows that has matched that rule. Figure 8.4 shows the route that
 an LL parser would take when trying to match an input stream against
 out sample grammar.
 
-![LL Parser](images/8-4-ll-parser.png)
+![LL Parser](../images/8-4-ll-parser.png)
 
 Matching all of the subrules in a production means that it has
 matched the production and, therefore, the rule that the production

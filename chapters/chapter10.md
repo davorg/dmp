@@ -374,7 +374,7 @@ the exception that a text item has a special element type of `0`.
 If you’re the sort of person who thinks that a picture is worth a
 thousand words, then Figure 10.1 might have saved me a lot of typing.
 
-![Output from XML::Parser Tree style](images/10-1-output-from-xml-parser-tree-style.png)
+![Output from XML::Parser Tree style](../images/10-1-output-from-xml-parser-tree-style.png)
 
 In the figure the variable `$doc` is returned from the parser. You can
 also see the arrays which contain the definitions of the XML content

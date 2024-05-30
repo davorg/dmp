@@ -28,9 +28,9 @@ Obviously, each of these three subtasks will need to be broken down into greater
 
 Suppose that we are combining data from several systems into one database. In  this case our different data sources may well provide us with data in very different formats, but they all need to be converted into the same format to be passed on to our data sink. Our lives will be made much easier if we can write one output routine that handles writing the output from all of our data inputs. In order for this to be possible, the data structures in which we store our data just before we call the combined output routines will need to be in the same format. This means that the data munging routines need to leave the data in the same format, no matter which of the data sinks we are dealing with. One easy way to ensure this is to use the same data munging routines for each of our data sources. In order for this to be possible, the data structures that are output from the various data input routines must be in the same format. It may be tempting to try to take this a step further and reuse our input routines, but as our data sources can be in completely different formats, this is not likely to be possible. As Figures 2.1 and 2.2 show, instead of writing three routines for each data source, we now need only write an input routine for each source with common munging and output routines.
 
-![Separate munging and output processes](images/2-1-separate-munging-and-output-processes.png)
+![Separate munging and output processes](../images/2-1-separate-munging-and-output-processes.png)
 
-![Combined munging and output processes](images/2-2-combined-munging-and-output-processes.png)
+![Combined munging and output processes](../images/2-2-combined-munging-and-output-processes.png)
 
 A very similar argument can be made if we are taking data from one source and writing it to a number of different data sinks. In this case, only the data output routines need to vary from sink to sink and the input and munging routines can be shared.
 
@@ -65,7 +65,7 @@ The immediately obvious solution is to use a hash in which the keys are years an
 
 This provides a solution to our problem in a reasonably efficient manner. The data structure that we build is very simple and is shown in Figure 2.3.
 
-![Initial data structure design](images/2-3-initial-data-structure-design.png)
+![Initial data structure design](../images/2-3-initial-data-structure-design.png)
 
 #### Solution 2: adding flexibility
 
@@ -94,7 +94,7 @@ As you can see, this change has entailed an almost complee rewrite of the script
 Notice that the hash stores the CD's label even though we don't use it in the output from the script. Although the label isn't required in our current version, it is quite possible that it will become necessary to add it to the output at some point in the future. If this happens we will no longer need to
 make any changes to the input section of our script as we already have the data available in our hash. This is, in itself, an important data munging principle - if you're reading in a data item, you may as well store it in your data structure. This can be described more succinctly as "Don't throw anything away". This improved data structure is shown in Figure 2.4.
 
-![Improved data structure design](images/2-4-improved-data-structure-design.png)
+![Improved data structure design](../images/2-4-improved-data-structure-design.png)
 
 #### Solution 3: separating parsing from munging
 
@@ -118,7 +118,7 @@ to model our list of records and we have the same choices to model each individu
 
 This third and final data structure is shown in Figure 2.5.
 
-![Final data structure](images/2-5-final-data-structure-design.png)
+![Final data structure](../images/2-5-final-data-structure-design.png)
 
 #### More examples: using our flexible data structure
 

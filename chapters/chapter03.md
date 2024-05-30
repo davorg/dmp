@@ -194,7 +194,7 @@ decided that we would read the data file into an array of hashes, where each has
 contained the details of each CD. Figure 3.1 is a slightly simplified
 diagram of the `@CDs` array (each hash has only two fields).
 
-![The unsorted array of CD hashes](images/3-1-the-unsorted-array-of-cd-hashes.png)
+![The unsorted array of CD hashes](../images/3-1-the-unsorted-array-of-cd-hashes.png)
 
 Suppose that now we want to produce a list of CDs arranged in order of
 release date. The naïve way to write this using sort would be like this:
@@ -218,7 +218,7 @@ very easily using map.
 
 Figure 3.2 shows what this new array would look like.
 
-![`@CD_and_year` contains references to a two-element array](images/3-2-cd_and_year-contains-references-to-a-two-element-array.png)
+![`@CD_and_year` contains references to a two-element array](../images/3-2-cd_and_year-contains-references-to-a-two-element-array.png)
 
 The year field in each hash has been extracted only once, which will
 save us a lot of time. We can now sort our new array on the first element of the array.
@@ -229,7 +229,7 @@ this:
 
 Figure 3.3 shows this new array.
 
-![`@sorted_CD_and_year` is `@CD_and_year` sorted by the first element of the array](images/3-3-sorted-by-first-element-of-array.png)
+![`@sorted_CD_and_year` is `@CD_and_year` sorted by the first element of the array](../images/3-3-sorted-by-first-element-of-array.png)
 
 Now in `@sorted_CD_and_year` we have an array of references to arrays.
 The important thing, however, is that the array is ordered by year. In
@@ -240,7 +240,7 @@ to our original hash. Using map it is simple to strip out the parts that we need
 
 Figure 3.4 shows what this array would look like.
 
-![`@CDs_sorted_by_year` contains just the hash references from `@sorted_CD_and_year`](images/3-4-just-the-hash-references.png)
+![`@CDs_sorted_by_year` contains just the hash references from `@sorted_CD_and_year`](../images/3-4-just-the-hash-references.png)
 
 Let’s put those three stages together.
 

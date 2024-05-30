@@ -143,7 +143,7 @@ number of named sections. Each of these sections contain a number of
 assignment statements. Figure 11.1 shows an example INI together with
 the various parts that make up the file structure.
 
-![INI File Structure](images/11-1-ini-file-structure.png)
+![INI File Structure](../images/11-1-ini-file-structure.png)
 
 In this example we have sections called “files” and “rules.” The
 files section lists the names of the input and output files together
@@ -160,7 +160,7 @@ Within these second-level hashes the keys would be the left-hand side
 of the assignment statement and the values would be the right-hand
 side. Figure 11.2 shows this data structure.
 
-![INI file data structure](images/11-2-ini-file-data-structure.png)
+![INI file data structure](../images/11-2-ini-file-data-structure.png)
 
 This means that you can get an individual value very easily using code
 like:
@@ -235,7 +235,7 @@ contain `header`, `[`, the name of the section, and `]` with elements
 but I’ll use `@item` in these examples. For more details on `%item` see [Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent).
 .
 
-![The @item array after matching the header rule for the first time](images/11-3-item-array.png)
+![The @item array after matching the header rule for the first time](../images/11-3-item-array.png)
 
 In order to see what values are being matched, you could put action
 code on each of the rules in the grammar like the following code. All
