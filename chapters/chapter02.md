@@ -405,7 +405,7 @@ Table 2.1 - Common I/O redirection
 | `>`     | `cmd > file`  | Runs cmd and writes the output to file, overwriting whatever was in file. |
 | `>>`    | `cmd >> file` | Runs cmd and appends the output to the end of file. |
 | `<`     | `cmd < file`  | Runs cmd, taking input from file. |
-| `|`     | `cmd | file`  | Runs cmd1 and passes any output as input to cmd2 |
+| `\|`     | `cmd \| file`  | Runs cmd1 and passes any output as input to cmd2 |
 
 
 ### Advantages of the filter model
