@@ -72,7 +72,7 @@ the file will contain information on the date on which it was generated
 and the number of records in the file. Figure 1.1 shows what this file
 looks like with the various parts labeled.
 
-![Sample data file](images/1-1-sample-data-file.png)
+![Sample data file](../images/1-1-sample-data-file.png)
 
 Each row of data in the file (*i.e.*, the information about one CD) is
 called a data *record*. Each individual item of data (e.g., the CD
