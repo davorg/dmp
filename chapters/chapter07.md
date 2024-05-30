@@ -749,10 +749,10 @@ documentation but there is a *précis* in table 7.2.
 |Width | 4-byte integer | The width of the image in pixels |
 |Height | 4-byte integer | The height of the image in pixels |
 |Bit Depth | 1-byte character | The number of bits used to represent the color of each pixel |
-|Color Type | 1-byte character | Code indicating how colors are encoded within the image.\nValid values are:\n0: A number from 0–255 indicating the greyscale value\n2: Three numbers from 0–255 indicating the amount of red, green, and blue\n                         3: A number which is an index into a color table\n4: A greyscale value (0–255) followed by an alpha mask\nAn RGB triplet (as is 2, above) followed by an alpha mask |
+|Color Type | 1-byte character | Code indicating how colors are encoded within the image.<br>Valid values are:<br>0: A number from 0–255 indicating the greyscale value<br>2: Three numbers from 0–255 indicating the amount of red, green, and blue<br>3: A number which is an index into a color table<br>4: A greyscale value (0–255) followed by an alpha mask<br>An RGB triplet (as is 2, above) followed by an alpha mask |
 |Compression Type  | 1-byte character  | The type of compression used (always 0 in PNG version 1.0) |
 | Filtering Type | 1-byte character | The type of filtering applied to the data (always 0 in PNG version 1.0) |
-| Interlacing Scheme | 1-byte character | The interlacing scheme used to store the data.\nFor PNG version 1.0 this is either 0 (for no interlacing) or 1 (for Adam7 interlacing) |
+| Interlacing Scheme | 1-byte character | The interlacing scheme used to store the data.<br>For PNG version 1.0 this is either 0 (for no interlacing) or 1 (for Adam7 interlacing) |
 
 Table: Elements of a PNG IHDR chunk
 
