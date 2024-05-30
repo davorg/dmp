@@ -351,59 +351,24 @@ the subroutine to be called and the second element is a string
 defining the arguments which the subroutine expects. The various
 values that this string can contain are listed in table A.2.
 
-----------------------------------------------------------------------------
-Name        Description                              Data type
---------    -------------------------------------    -----------------------
-self        The current parser object                Reference to the object
-
-tokens      The list of tokens which makes up        Reference to an array
-            the current event
-
-tokenpos    A list of the positions of the tokens    Reference to an array
-            in the original text. Each token
-	        has two numbers; the first is the
-	        offset of the start of the token,
-	        and the second is the length of the
-	        token.
-
-token0      The text of the first token (this is     Scalar value
-            the same as `$tokens->[0]`)
-
-tagname     The name of the current tag              Scalar value
-
-attr        The name and values of the attributes    Reference to a hash
-            of the current tag
-
-attrseq     A list of the names of the attributes    Reference to an array
-            of the current tag in the order
-	        that they appear in the original
-	        document
-
-text        The source text for this event           Scalar value
-
-dtest       The same as “text” but with any HTML     Scalar value
-            entities (*e.g.*, `&amp;`) decoded
-
-
-is_cdata    True if event is in a CDATA section      Scalar value
-
-offset      The offset (in bytes) of the start of    Scalar value
-            the current event from the start
-	        of the HTML document
-
-length      Length (in bytes) of the original        Scalar value
-            text which constitutes the event
-
-event       The name of the current event            Scalar value
-
-line        The number of the line in the            Scalar value
-            document where this event started
-
-' '         Any literal string is passed to          Scalar value
-            the handler unchanged
-
-undef       An undef value                           Scalar value
-----------------------------------------------------------------------------
+| Name | Description | Data type |
+|------|-------------|-----------|
+| self | The current parser object | Reference to the object |
+| tokens | The list of tokens which makes up the current event | Reference to an array |
+| tokenpos | A list of the positions of the tokens in the original text. Each token has two numbers; the first is the offset of the start of the token, and the second is the length of the token. | Reference to an array |
+| token0 | The text of the first token (this is the same as `$tokens->[0]`) | Scalar value |
+| tagname | The name of the current tag | Scalar value |
+| attr | The name and values of the attributes of the current tag | Reference to a hash |
+| attrseq | A list of the names of the attributes of the current tag in the order that they appear in the original document | Reference to an array |
+| text | The source text for this event | Scalar value |
+| dtest | The same as “text” but with any HTML entities (*e.g.*, `&amp;`) decoded | Scalar value |
+| is_cdata | True if event is in a CDATA section | Scalar value |
+| offset | The offset (in bytes) of the start of the current event from the start of the HTML document | Scalar value |
+| length | Length (in bytes) of the original text which constitutes the event | Scalar value |
+| event | The name of the current event | Scalar value |
+| line | The number of the line in the document where this event started | Scalar value |
+| ' ' | Any literal string is passed to the handler unchanged | Scalar value |
+| undef | An undef value | Scalar value |
 
 Table: Argument specification strings
 
