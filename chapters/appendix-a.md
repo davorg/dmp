@@ -434,40 +434,13 @@ book. Here is a brief reference to its most commonly used methods.
 
 * `$parser = XML::Parser->new(Style => $style, Handlers => \%handlers, Pkg => $package)` Creates an XML::Parser object. It takes a number of optional named parameters. The Style parameter indicates which of a number of canned parsing styles you would like to use. Table A.3 lists the available styles along with the results of choosing a particular style.
 
-----------------------------------------------------------------------------------------------------------------
-Style
-name    Results
-------- --------------------------------------------------------------------------------------------------------
-Debug   Prints out a stylized version of the document outline.
-
-Subs    When the start of an XML tag is found, the parser calls a subroutine
-        with the same name as the tag. When the end of an XML tag is found, the parser calls a
-        subroutine with the same names as the tag with an underscore character prepended. Both of these
-        subroutines are presumed to exist in the package denoted by the Pkg parameter. The
-        parameters passed to these subroutines are the same as those passed to the `Start` and `End`
-	    handler routines.
-
-Tree    The parse method will return a parse tree representing the document.
-	    Each node is represented by a reference to a two-element array. The first element in the
-        list is either the tag name or “0” if it is a text node. The second element is the content of
-        the tag. The content is a reference to another array. The first element of this array is a
-        reference to a (possibly empty) hash containing attribute/value pairs. The rest of this array is made up
-        of pair of elements representing the type and content of the contained nodes. See section
-	    9.2.3 for examples.
-
-Objects The parse method returns a parse tree representing the object. Each
-	    node in the tree is a hash which has been blessed into an object. The object type names are
-	    created by appending the type of each tag to the value of the Pkg parameter followed by
-	    `::`. A text node is blessed into the class ::Characters. Each node will have a kids
-	    attribute which will be a reference to an array containing each of the node’s children.
-
-Stream  This style works in a manner similar to the Subs style. Whenever the
-	    parser finds particular XML objects, it calls various subroutines. These subroutines are all
-	    assumed to exist in the	package denoted by the Pkg parameter. The subroutines are called
-	    `StartDocument`, `StartTag`, `EndTag`, `Text`, `PI`, and `EndDocument`. The only one of these
-	    names which doesn’t make it obvious when the subroutine is called is PI. This is
-	    called when the parser encounters a processing instruction in the document.
-----------------------------------------------------------------------------------------------------------------
+| Style name | Results |
+|------------|---------|
+| Debug | Prints out a stylized version of the document outline. |
+| Subs | When the start of an XML tag is found, the parser calls a subroutine with the same name as the tag. When the end of an XML tag is found, the parser calls a subroutine with the same names as the tag with an underscore character prepended. Both of these subroutines are presumed to exist in the package denoted by the Pkg parameter. The parameters passed to these subroutines are the same as those passed to the `Start` and `End` handler routines. |
+| Tree | The parse method will return a parse tree representing the document. Each node is represented by a reference to a two-element array. The first element in the list is either the tag name or “0” if it is a text node. The second element is the content of the tag. The content is a reference to another array. The first element of this array is a reference to a (possibly empty) hash containing attribute/value pairs. The rest of this array is made up of pair of elements representing the type and content of the contained nodes. See section 9.2.3 for examples. |
+|Objects | The parse method returns a parse tree representing the object. Each node in the tree is a hash which has been blessed into an object. The object type names are created by appending the type of each tag to the value of the Pkg parameter followed by `::`. A text node is blessed into the class ::Characters. Each node will have a kids attribute which will be a reference to an array containing each of the node’s children. |
+| Stream | This style works in a manner similar to the Subs style. Whenever the parser finds particular XML objects, it calls various subroutines. These subroutines are all assumed to exist in the package denoted by the Pkg parameter. The subroutines are called `StartDocument`, `StartTag`, `EndTag`, `Text`, `PI`, and `EndDocument`. The only one of these names which doesn’t make it obvious when the subroutine is called is PI. This is called when the parser encounters a processing instruction in the document. |
 
 Table: **XML::Parser** Styles
 
@@ -483,90 +456,26 @@ its own methods which you can use to gain even more precise control
 over the parsing process. For details of these, see the manual page
 for XML::Parser::Expat.
 
-----------------------------------------------------------------------------------------------------------------
-Handler         When called                                         Subroutine parameters
---------------  ------------------------------------------------    --------------------------------------------
-Init            Before the parser starts processing the document    Reference to the Expat object
-
-Final           After the parser finishes processing the            Reference to the Expat object
-                document
-
-Start           When the parser finds the start of a tag            Reference to the Expat object
-                                                                    Name of the tag found
-	                                                                List of name/value pairs for the attributes
-
-End             When the parser finds the end of a tag              Reference to the Expat Object
-
-Char            When the parser finds character data                Reference to the Expat Object
-	                                                                The character string
-
-Proc            When the parser finds a processing instruction      Reference to the Expat Object
-                                                                    The name of the PI target
-	                                                                The PI data
-
-Comment         When the parser finds a comment                     Reference to the Expat Object
-	                                                                The comment data
-
-CdataStart      When the parser finds the start of a CDATA          Reference to the Expat Object
-                section
-
-
-CdataEnd        When the parser finds the end of a CDATA            Reference to the Expat Object
-                section
-
-
-Default         When the parser finds any data that doesn’t         Reference to the Expat Object
-                have an assigned handler                            The data string
-
-
-Unparsed        When the parser finds an unparsed entity            Reference to the Expat Object
-                declaration                                         Name of the Entity
-	                                                                Base URL to use when resolving the address
-	                                                                The system ID
-	                                                                The public ID
-
-Notation        When the parser finds a notation declaration        Reference to the Expat Object
-	                                                                Name of the Notation
-	                                                                Base URL to use when resolving the address
-	                                                                The system ID
-	                                                                The public ID
-
-ExternEnt       When the parser finds an external entity            Reference to the Expat Object
-                declaration                                         Base URL to use when resolving the address
-	                                                                The system ID
-	                                                                The public ID
-
-Entity          When the parser finds an entity declaration         Reference to the Expat Object
-	                                                                Name of the Entity
-	                                                                The value of the Entity
-	                                                                The system ID
-	                                                                The public ID
-	                                                                The notation for the entity
-
-Element         When the parser finds an element declaration        Reference to the Expat Object
-	                                                                Name of the Element
-	                                                                The Content Model
-	                                                                Subroutine parameters
-
-Attlist         When the parser finds an attribute declaration      Reference to the Expat Object
-	                                                                Name of the Element
-	                                                                Name of the Attribute
-	                                                                The Attribute Type
-	                                                                Default Value
-	                                                                String indicating whether the attribute is fixed
-
-Doctype         When the parser finds a DocType declaration         Reference to the Expat Object
-	                                                                Name of the Document Type
-	                                                                System ID
-	                                                                Public ID
-	                                                                The Internal Subset
-
-XMLDecl         When the parser finds an XML declaration            Reference to the Expat Object
-	                                                                Version of XML
-	                                                                Document Encoding
-	                                                                String indication whether or not the
-	                                                                DTD is standalone
-----------------------------------------------------------------------------------------------------------------
+| Handler | When called | Subroutine parameters |
+|---------|-------------|-----------------------|
+| Init | Before the parser starts processing the document | Reference to the Expat object |
+| Final | After the parser finishes processing the document | Reference to the Expat object |
+| Start | When the parser finds the start of a tag | Reference to the Expat object<br>Name of the tag found<br>List of name/value pairs for the attributes |
+| End | When the parser finds the end of a tag | Reference to the Expat Object |
+| Char | When the parser finds character data | Reference to the Expat Object<br>The character string |
+| Proc | When the parser finds a processing instruction | Reference to the Expat Object<br>The name of the PI target<br>The PI data |
+| Comment | When the parser finds a comment | Reference to the Expat Object<br>The comment data |
+| CdataStart | When the parser finds the start of a CDATA section | Reference to the Expat Object |
+| CdataEnd | When the parser finds the end of a CDATA section | Reference to the Expat Object |
+| Default | When the parser finds any data that doesn’t have an assigned handler | Reference to the Expat Object<br>The data string |
+| Unparsed  | When the parser finds an unparsed entity declaration | Reference to the Expat Object<br>Name of the Entity<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
+| Notation | When the parser finds a notation declaration | Reference to the Expat Object<br>Name of the Notation<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
+| ExternEnt | When the parser finds an external entity declaration | Reference to the Expat Object<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
+| Entity | When the parser finds an entity declaration | Reference to the Expat Object<br>Name of the Entity<br>The value of the Entity<br>The system ID<br>The public ID<br> The notation for the entity
+| Element | When the parser finds an element declaration | Reference to the Expat Object<br>Name of the Element<br>The Content Model<br>Subroutine parameters
+| Attlist | When the parser finds an attribute declaration | Reference to the Expat Object<br>Name of the Element<br>Name of the Attribute<br>The Attribute Type<br>Default Value<br>String indicating whether the attribute is fixed
+| Doctype | When the parser finds a DocType declaration | Reference to the Expat Object<br>Name of the Document Type<br>System ID<br>Public ID<br>The Internal Subset
+| XMLDecl | When the parser finds an XML declaration | Reference to the Expat Object<br>Version of XML<br>Document Encoding<br>String indication whether or not the<br>DTD is standalone
 
 Table: **XML::Parser** Handlers
 
