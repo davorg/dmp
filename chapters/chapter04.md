@@ -684,8 +684,9 @@ We’ll assume that each English word has just one American translation.
 We’ll also store our translations in a text file so it is easy to add
 to them. The program will look something like this:
 
-	  1: #!/usr/bin/perl -w
+	  1: #!/usr/bin/perl
 	  2: use strict;
+         use warnings;
 	  3:
 	  4: while (<STDIN>) {
 	  5:
@@ -998,9 +999,12 @@ a script that performs all of the transformations in turn on a piece
 of text that is read from `STDIN`. Notice that the piece of text that
 is to be transformed is set using the charge function.
 
-	#!/usr/perl/bin/perl -w
+	#!/usr/perl/bin/perl
 	use strict;
+    use warnings;
+
 	use Text::Bastardize;
+
 	my $text = Text::Bastardize->new;
 	print 'Say something: ';
 	while (<STDIN>) {

@@ -595,8 +595,9 @@ or, finally, use `sprintf`:
 In order to calculate which of these methods is the fastest, you would
 write a script like this
 
-	#!/usr/bin/perl -w
+	#!/usr/bin/perl
 	use strict;
+    use warnings;
 	use Benchmark qw(timethese);
 
 	my  $x = 'x' x 100;

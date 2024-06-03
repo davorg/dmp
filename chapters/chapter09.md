@@ -414,8 +414,9 @@ Here is a simple script which uses
 [HTML::TreeBuilder](https://metacpan.org/pod/HTML::TreeBuilder) to
 parse an HTML document.
 
-	#!/usr/bin/perl -w
+	#!/usr/bin/perl
 	use strict;
+    use warnings;
 	use HTML::TreeBuilder;
 	my $h = HTML::TreeBuilder->new;
 	$h->parse_file(shift);

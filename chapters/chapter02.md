@@ -157,8 +157,10 @@ In fact these two routines are so similar, that it is possible to write a generi
 
 A complete program to produce counts of CDs by any attribute which is passed in on the command line would look like this:
 
-    #!/usr/bin/perl -w
+    #!/usr/bin/perl
     use strict;
+    use warnings;
+
     my @CDs;
     sub input {
       my @attrs = qw(artist title label year);
@@ -428,9 +430,10 @@ Suppose, for example, that we had written a program called data_munger which mun
 
 Within the script we would open the files and read from the input, munge the data, and then write to the output file. In Perl, the program might look something like:
 
-    #!/usr/bin/perl -w
+    #!/usr/bin/perl
 
     use strict;
+    use warnings;
 
     my ($input, $output) = @ARGV;
     open(IN, $input) || die "Can't open $input for reading: $!";
@@ -454,7 +457,10 @@ This is already looking a little kludgy, but imagine if we had to make these cha
 
 If we had assumed that the program reads from `STDIN` and writes to `STDOUT`, the  program actually gets simpler and more flexible. The rewritten program looks like this:
 
-    #!/usr/bin/perl -w
+    #!/usr/bin/perl
+    use strict;
+    use warnings;
+
     while (<STDIN>) {
       print munge_data($_);
     }
@@ -481,7 +487,11 @@ and everything will still work as expected.
 
 Rather than using the `STDIN` filehandle, Perl allows you to make your program even more flexible with no more work, by reading input from the null filehandle like this:
 
-    #!/usr/bin/perl -w
+    #!/usr/bin/perl
+
+    use strict;
+    use warnings;
+
     while (<>) {
       print munged_data($_);
     }

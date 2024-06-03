@@ -214,8 +214,9 @@ simply to indicate that these methods will work on any filehandle. To
 finish this section, here is a very short example using `STDIN` that
 will add line numbers to any file passed to it.
 
-	#!/usr/local/bin/perl -w
+	#!/usr/local/bin/perl
 	use strict;
+    use warnings;
 
 	print "$.: $_" while <STDIN>;
 
@@ -535,7 +536,11 @@ then we would be wasting a lot of our time.
 The solution to our problem is to cache the exchange rates that we
 have already read from the database. Look at this script:
 
-	#!/usr/bin/perl -w
+	#!/usr/bin/perl
+
+    use strict;
+    use warnings;
+
 	my $target_curr = shift;
 	my %rates;
 	while (<STDIN>) {
@@ -1376,9 +1381,10 @@ As an example, look at this benchmark program which compares the speed
 of the [Date::Manip](http://metacpan.org/pod/Date::Manip) `ParseDate` function with that of a piece of custom
 Perl code which builds up the same string using [localtime](https://perldoc.perl.org/functions/localtime).
 
-	#!/usr/bin/perl -w
+	#!/usr/bin/perl
 
 	use strict;
+    use warnings;
 
 	use Date::Manip;
 	use Benchmark;

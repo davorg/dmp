@@ -449,8 +449,9 @@ when using Perl on a Windows system). But in this situation it masks
 the very problem that we’re trying to solve—so we have to go to a
 lower level representation of the characters.
 
-	#!/usr/local/bin/perl -w
+	#!/usr/local/bin/perl
 	use strict;
+    use warnings;
 
 	(@ARGV == 2) or die "Error: source and target formats not given.";
 

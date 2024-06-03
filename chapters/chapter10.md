@@ -977,8 +977,9 @@ page of the site.
 also be used to create an RSS file. Here is the script that I used to
 create the file given above:
 
-     #!/usr/bin/perl -w
+     #!/usr/bin/perl
      use strict;
+     use warnings;
      use XML::RSS;
 
      my $rss = XML::RSS->new;
@@ -1149,9 +1150,10 @@ module’s *README* file.
 Here is the script that we will use to transform it into other
 formats.
 
-      1: #!/usr/bin/perl -w
+      1: #!/usr/bin/perl
       2:
       3: use strict;
+         use warnings;
       4:
       5: use XML::Parser;
       6: use Getopt::Std;
