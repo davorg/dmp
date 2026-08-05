@@ -50,9 +50,9 @@ show, instead of writing three routines for each data source, we now need
 only write an input routine for each source with common munging and output
 routines.
 
-![Separate munging and output processes](../images/2-1-separate-munging-and-output-processes.png)
+![Separate munging and output processes](images/2-1-separate-munging-and-output-processes.png)
 
-![Combined munging and output processes](../images/2-2-combined-munging-and-output-processes.png)
+![Combined munging and output processes](images/2-2-combined-munging-and-output-processes.png)
 
 A very similar argument can be made if we are taking data from one source
 and writing it to a number of different data sinks. In this case, only the
@@ -106,7 +106,7 @@ something like this:
 This provides a solution to our problem in a reasonably efficient manner.
 The data structure that we build is very simple and is shown in Figure 2.3.
 
-![Initial data structure design](../images/2-3-initial-data-structure-design.png)
+![Initial data structure design](images/2-3-initial-data-structure-design.png)
 
 ### Solution 2: adding flexibility
 
@@ -152,7 +152,7 @@ principle - if you're reading in a data item, you may as well store it in
 your data structure. This can be described more succinctly as "Don't throw
 anything away". This improved data structure is shown in Figure 2.4.
 
-![Improved data structure design](../images/2-4-improved-data-structure-design.png)
+![Improved data structure design](images/2-4-improved-data-structure-design.png)
 
 ### Solution 3: separating parsing from munging
 
@@ -189,7 +189,7 @@ natural to me. Our input routine will therefore look like this:
 
 This third and final data structure is shown in Figure 2.5.
 
-![Final data structure](../images/2-5-final-data-structure-design.png)
+![Final data structure](images/2-5-final-data-structure-design.png)
 
 ### More examples: using our flexible data structure
 

@@ -18,9 +18,6 @@ epub: book $(bookname).epub
 .PHONY: book
 book: chapters.txt bookname.txt title.txt chapters
 
-.PHONY: mobi
-mobi: book $(bookname).mobi
-
 .PHONY: pdf
 pdf: book $(bookname).pdf
 
@@ -28,19 +25,23 @@ build/front-matter.md: chapters/front-matter.md
 	mkdir -p build
 	sed 's/__BUILD_DATE__/$(BUILD_DATE)/' chapters/front-matter.md > build/front-matter.md
 
-$(bookname).mobi: $(bookname).epub
-	kindlegen -verbose $(bookname).epub
-
 $(bookname).epub: $(chapters) epub.css build/front-matter.md
 	pandoc -o $(bookname).epub title.txt $(build_chapters) \
-		--resource-path=.:chapters \
+		--resource-path=. \
 		--epub-metadata=metadata.xml --toc --toc-depth=2 \
 		--css=epub.css -f markdown-tex_math_dollars
 
-$(bookname).pdf: $(bookname).epub
-	ebook-convert $(bookname).epub $(bookname).pdf
+# Built straight from the markdown with WeasyPrint, rather than via the
+# EPUB -- avoids depending on Calibre's ebook-convert, and WeasyPrint's
+# CSS Paged Media support (see print.css) gives us proper running page
+# numbers and forced page breaks between chapters.
+$(bookname).pdf: $(chapters) print.css build/front-matter.md
+	pandoc -o $(bookname).pdf title.txt $(build_chapters) \
+		--resource-path=. \
+		--pdf-engine=weasyprint --toc --toc-depth=2 \
+		--css=print.css -f markdown-tex_math_dollars
 
 clean:
-	rm -f $(bookname).epub $(bookname).mobi $(bookname).pdf
+	rm -f $(bookname).epub $(bookname).pdf
 	rm -rf build
 

@@ -13,7 +13,8 @@ Findings from a full read-through of `Data Munging with Perl (2ed).pdf` (234 pag
 - [x] **Fixed the EPUB build.** `make epub` wasn't resolving `../images/*.png` paths from the repo root, so every image silently failed to embed. Added `--resource-path=.:chapters` to the Makefile's pandoc invocation — verified a clean build with zero warnings and every image embedded.
 - [x] **Copyright page now has a self-dating WIP version line.** Added a Copyright section to `chapters/front-matter.md` with `Work in progress version: __BUILD_DATE__`. The Makefile generates `build/front-matter.md` with that token substituted for today's date (`date +%Y-%m-%d`) on every build, so you never have to remember to hand-edit it. `build/` is gitignored.
 - [ ] **Needs your review:** the actual copyright wording (publisher, rights language, years) — flagged with a `TODO(Dave)` comment right above it in `front-matter.md` rather than guessing.
-- [ ] **`make pdf` is untested** — it needs `ebook-convert` (Calibre), which isn't available in the sandbox this work was done in. Please confirm it still works on your machine before Friday. (A pandoc+`xelatex` direct-to-PDF alternative was tried as a fallback and hit a LaTeX escaping error partway through the book — not chased down since Calibre is the path you asked for, but worth knowing about if `ebook-convert` turns out to be unavailable too.)
+- [x] ~~`make pdf` is untested~~ — **confirmed working.** Switched `pdf` from Calibre's `ebook-convert` to `pandoc --pdf-engine=weasyprint` straight from the markdown (lighter dependency, easier for CI later, avoids the LaTeX escaping issue mentioned below). Added `print.css` for page size/margins/running page numbers/forced chapter breaks. Dropped `.mobi`/`kindlegen` support entirely — Amazon deprecated kindlegen years ago.
+- [x] ~~Image references broke under WeasyPrint~~ — WeasyPrint resolves relative image paths against the current directory rather than honoring pandoc's `--resource-path` the way the EPUB builder does. All 17 `../images/...` references (chapters 1, 2, 3, 8, 10, 11) changed to root-relative `images/...`, `--resource-path` simplified to `.`. Both `make epub` and `make pdf` confirmed working.
 
 ## Sync PDF (Google Docs) ↔ Markdown — findings from full diff
 
@@ -69,10 +70,16 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - [ ] **Audit all `use` statements for core vs. CPAN** — annotate which modules ship with Perl and which need installing, and make sure things like `say`, `state`, and signatures are explicitly enabled where used.
 - [ ] **Audit `my $foo = shift` idioms** — replace with subroutine signatures where the target Perl version supports it (5.36+).
 - [ ] **Closing appendix: glossary of modern CPAN modules**, grouped by purpose (logging, JSON, web, OO, date/time, etc.) — natural companion to the existing Appendix A module reference.
-- [ ] **Decide XML's fate precisely.** The backlog's item 6 says *modernize* XML with `XML::LibXML` rather than drop it — worth confirming whether that means "replace the chapter with JSON/YAML, full stop" or "replace the chapter, but keep a trimmed/modernized XML section for interop reasons."
+- [x] ~~Decide XML's fate precisely.~~ **Decided (2026-08-05):** the new chapter is JSON/YAML/XML, not a straight swap — XML stays, trimmed down and modernized (`XML::LibXML` rather than `XML::Parser`/`XML::DOM`), because "some poor souls still use it." Working title: **Chapter 10 — JSON, YAML, and XML** (or similar). This is tomorrow's starting point.
+
+## Artwork
+
+- [ ] **Redraw the figures.** :-) All 19 images in `images/` are 1st-edition-era diagrams (data structure sketches, parser trees, etc.) — worth a fresh pass once the content settles, both for a visual refresh and because at least one is now stale: `11-3-item-array.png` (the old `@item` array diagram) is no longer referenced anywhere now that Chapter 11 doesn't use Parse::RecDescent's `@item`/`%item` — either repurpose it for a new "shape of `%/`" diagram or drop it.
 
 ## Next session
 
-- Confirm `make pdf` works on your machine (needs Calibre), review the copyright wording in `front-matter.md`, and pick a weather-example draft for Chapter 9.
-- Biggest lever for the next update after this one: the JSON/YAML chapter to replace Chapter 10.
-- Once `make pdf`/`make epub` are confirmed solid locally, next automation step is a GitHub Actions workflow to build on push (deferred for now).
+**2026-08-06 plan:** work out the shape of the new Chapter 10 — JSON, YAML, *and* a trimmed, modernized remnant of XML (`XML::LibXML`, not the old `XML::Parser`/`XML::DOM`/`XML::RSS` trio). That's the main event; below is everything else still open.
+
+- Review the copyright wording in `front-matter.md`, and pick a weather-example draft for Chapter 9.
+- Once the Chapter 10 rewrite is settled, redraw the figures (see Artwork above) and revisit the Chapter 3 backlog items.
+- Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
