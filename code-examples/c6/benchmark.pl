@@ -1,17 +1,19 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl
 
-use strict; 
-use Date::Manip; 
-use Benchmark; 
+use strict;
+use warnings;
 
-timethese(5000, {'localtime' => \&ltime, date_manip => \&dmanip}); 
+use Time::Piece;
+use Benchmark;
 
-sub ltime { 
-  my @now = localtime; 
-  sprintf("%4d%02d%02d%02d:%02d:%02d", 
-	  $now[5] + 1900, ++$now[4], $now[3], $now[2], $now[1], $now[0]); 
-} 
+timethese(100_000, {'localtime' => \&ltime, time_piece => \&time_piece});
 
-sub dmanip { 
-  ParseDate('now'); 
+sub ltime {
+  my @now = localtime;
+  sprintf("%4d%02d%02d%02d:%02d:%02d",
+          $now[5] + 1900, ++$now[4], $now[3], $now[2], $now[1], $now[0]);
+}
+
+sub time_piece {
+  localtime->strftime('%Y%m%d:%H:%S');
 }

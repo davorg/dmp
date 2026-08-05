@@ -119,10 +119,14 @@ be more easily understood.
 Another common requirement is to alter the case of a text string,
 either to change the string to all upper case, all lower case, or
 some combination. Perl has functions to handle all of these
-eventualities. The functions are [uc](https://perldoc.perl.org/functions/uc) (to convert a whole string to
-upper case), [ucfirst](https://perldoc.perl.org/functions/ucfirst) (to convert the first character of a string to
-upper case), [lc](https://perldoc.perl.org/functions/lc) (to convert a whole string to lower case), and
-[lcfirst](https://perldoc.perl.org/functions/lcfirst) (to convert the first character of a string to lower case).
+eventualities. The functions are [uc](https://perldoc.perl.org/functions/uc)
+(to convert a whole string to upper case),
+[ucfirst](https://perldoc.perl.org/functions/ucfirst)
+(to convert the first character of a string to upper case),
+[lc](https://perldoc.perl.org/functions/lc)
+(to convert a whole string to lower case), and
+[lcfirst](https://perldoc.perl.org/functions/lcfirst)
+(to convert the first character of a string to lower case).
 
 There are a couple of traps that seem to catch unwary programmers who
 use these functions. The first of these is with the `ucfirst` and
@@ -195,7 +199,7 @@ Recent versions of Perl have added a number of extensions to the
 standard regular expression set, some of which are still
 experimental at the time of this writing. For the definitive,
 up-to-date regular expression documentation for your version of Perl
-see the perlre documentation page.
+see the [perlre](https://perldoc.perl.org/perlre) documentation page.
 
 ### Regular expression syntax
 
@@ -380,7 +384,7 @@ other words, we could use:
 
 #### More complex regular expressions
 
-Recent versions of Perl have added more complexity to regular
+Perl also supports some more complex syntax that can be used in regular
 expressions allowing you to define more complex rules against which
 you match your strings. The full explanation of these enhancements is
 in your Perl documentation, but the most important additions are:
@@ -410,9 +414,9 @@ for example, that you have a text file containing email messages and
 you want to print out all of the lines containing “From” headers. You
 could do something like this:
 
-	open MAIL, 'mail.txt' or die "Can’t open mail.txt: \$!";
-	while (\<MAIL\>) {
-	print if m/\^From:/;
+	open my $mail_fh, '<', 'mail.txt' or die "Can’t open mail.txt: \$!";
+	while (<$mail_fh>) {
+  	  print if m/\^From:/;
 	}
 
 The while loop reads in another line from the file each time around
@@ -431,9 +435,9 @@ It is also possible to use delimiters other than the `/` character, but
 in this case the m becomes mandatory. To see why you might want to
 do this, look at this example:
 
-	open FILES 'files.txt' or die "Can't open files.txt: \$!";
-	while (\<FILES\>) {
-	print if /\\/davec\\//;
+	open my $fh, '<', 'files.txt' or die "Can't open files.txt: \$!";
+	while (<$fh>) {
+	  print if /\\/davec\\//;
 	}
 
 In this script we are doing a very similar thing to the previous
@@ -462,7 +466,8 @@ or even
 
 any of which may well be easier to read than the original. Note that
 in all of these cases we have to use the `m` at the start of the
-expression.
+expression because we have moved away from using the default delimiter
+of `/`.
 
 #### More capturing
 
@@ -477,8 +482,8 @@ headers, we could do something like this (conveniently ignoring the
 fact that email headers can continue onto more than one  line and that
 an email body can contain the character “:”):
 
-	open MAIL, 'mail.txt' or die "Can't open mail.txt: $!";
-	while (<MAIL>) {
+	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
+	while (<$mail_fh>) {
 	  if (/^([^:]+): ?(.+)$/) {
 	    print "Header \$1 has the value \$2\\n";
 	  }
@@ -491,7 +496,7 @@ evaluated in an array context, it returns the values of `$1`, `$2`, and
 so forth in a list. We could, therefore, rewrite the previous example
 as:
 
-	open MAIL, 'mail.txt' or die "Can't open mail.txt: \$!";
+	open $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: \$!";
 	my ($header, $value);
 	while (<MAIL>) {
 	  if (($header, $value) = /^([^:]+): ?(.+)$/) {
@@ -705,15 +710,15 @@ to them. The program will look something like this:
 	 18:   my $word = shift;
 	 19:
 	 20:   my $file = 'american.txt';
-	 21:   open(TRANS, $file) || die "Can't open $file: $!";
+	 21:   open my $trans_fh, '<', $file or die "Can't open $file: $!";
 	 22:
-	 23:   my ($line, $english, $american);
-	 24:   while (defined($line = <TRANS>)) {
-	 25:     chomp $line;
-	 26:     ($english, $american) = split(/\t/, $line);
-	 27:     do {$word = $american; last; } if $english eq $word;
+	 23:   my ($english, $american);
+	 24:   while (<$trans_fh>)) {
+	 25:     chomp;
+	 26:     ($english, $american) = split /\t/;
+	 27:     do { $word = $american; last; } if $english eq $word;
 	 28:   }
-	 29:   close TRANS;
+	 29: 
 	 30:   return $word;
 	 31: }
 
@@ -726,7 +731,7 @@ turn in the `$_` variable.
 
 Line 6 does most of the work. It looks for groups of word characters.
 Each time it finds one it stores the word in `$1`. The replacement
-string is the result of executing the code translate(`$1`). Notice
+string is the result of executing the code `translate($1)`. Notice
 the two modifiers: `g` which means that every word in the line will be
 converted, and `e` which forces Perl to execute the replacement string
 before putting it back into the original string.
@@ -969,8 +974,11 @@ choose is a matter of personal preference.
 Of course, using regular expressions for transforming data is a very
 powerful technique and, like all powerful techniques, it is open to
 abuse. As an example of what you can do with this technique, let’s
-take a brief look at the [Text::Bastardize](http://metacpan.org/pod/Text::Bastardize) module which is available
-from the CPAN at [http://metacpan.org/pod/Text::Bastardize](http://metacpan.org/pod/Text::Bastardize).
+take a brief look at the
+[Text::Bastardize](http://metacpan.org/pod/Text::Bastardize)
+module which is available
+from the CPAN at
+[http://metacpan.org/pod/Text::Bastardize](http://metacpan.org/pod/Text::Bastardize).
 
 This module will take an innocent piece of text and will abuse it in
 various increasingly bizarre ways. The complete set of
@@ -999,7 +1007,7 @@ a script that performs all of the transformations in turn on a piece
 of text that is read from `STDIN`. Notice that the piece of text that
 is to be transformed is set using the charge function.
 
-	#!/usr/perl/bin/perl
+	#!/usr/bin/perl
 	use strict;
     use warnings;
 

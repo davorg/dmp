@@ -1,26 +1,16 @@
-package Customer; 
-
 use strict; 
+use warnings;
+use feature 'class';
+no warnings 'experimental::class';
 
-sub new { 
-  my $thing = shift; 
-  my $self = {}; 
+class Customer; 
 
-  bless $self, ref($thing) || $thing; 
+field $name :param;
+field $address :param;
+field $cust_no :param;
+field $sales_person :param;
 
-  $self->init(@_); 
-  return $self; 
-} 
-
-sub init { 
-  my $self = shift; 
-
-  # Extract various interesting things from 
-  # @_ and use them to create a data structure 
-  # that represents a customer. 
-} 
-
-sub validate { 
+method validate { 
   my $self = shift; 
 
   # Call a number of methods, each of which validates 
@@ -28,14 +18,14 @@ sub validate {
 
   return $self->is_valid_sales_ref 
     && $self->is_valid_other_attr 
-      && $self->is_valid_another_attr; 
+    && $self->is_valid_another_attr; 
 } 
 
-sub save { 
+method save { 
   my $self = shift; 
 
   if ($self->validate) { 
-    $self->{cust_no} ||= $self->get_next_cust_no; 
+    $cust_no //= $self->get_next_cust_no; 
 
     return $self->write; 
   } else { 

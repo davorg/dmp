@@ -1,9 +1,7 @@
-open FILE, 'input.txt' or die "Can't open input file: $!\n"; 
+open my $fh, 'input.txt' or die "Can't open input file: $!\n"; 
 
-while (<FILE>) { 
+while (<$fh>) { 
   # do stuff 
 } 
 
 print "$. records processed.\n"; 
-
-close FILE;

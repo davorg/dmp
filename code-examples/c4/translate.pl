@@ -1,5 +1,6 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl 
 use strict; 
+use warnings;
 
 while (<STDIN>) { 
   s/(\w+)/translate($1)/ge;
@@ -18,14 +19,12 @@ sub get_trans {
   
   my $file = 'american.txt'; 
 
-  open(TRANS, $file) || die "Can't open $file: $!"; 
+  open my $trans_fh, '<', $file or die "Can't open $file: $!"; 
 
-  my ($line, $english, $american);
-  while (defined($line = <TRANS>)) { 
+  while (defined(my $line = <$trans_fh>)) { 
     chomp $line; 
-    ($english, $american) = split(/\t/, $line); 
+    my ($english, $american) = split(/\t/, $line); 
     do {$word = $american; last; } if $english eq $word; 
   } 
-  close TRANS; 
   return $word; 
 }

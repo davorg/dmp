@@ -1,4 +1,6 @@
 use strict; 
+use warnings;
+use feature 'say';
 
 my $users = read_passwd(); 
 
@@ -11,4 +13,4 @@ foreach (keys %{$users}) {
   push @names, "$surname, $forename"; 
 } 
 
-print map { "$_\n" } sort @names;
+say for sort @names;

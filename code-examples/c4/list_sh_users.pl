@@ -1,7 +1,9 @@
 use strict;
+use warnings;
+use feature 'say';
 
 my $users = read_passwd();
 
 foreach (keys %{$users}) { 
-  print "$_\n" if $users->{$_}{shell} eq '/bin/sh'; 
+  say if $users->{$_}{shell} eq '/bin/sh'; 
 }

@@ -1,7 +1,10 @@
 my %years; 
-while (<STDIN>) { 
+while (<STDIN>) {
+  next unless /-----/ .. /^$/;
+
   chomp; 
   my $year = (split /\t/)[3]; 
+  next unless $year;
   $years{$year}++; 
 } 
 

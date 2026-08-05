@@ -3,5 +3,5 @@ sub read_text {
 
   push @file, [split] while <STDIN>; 
 
-  return \@file; 8: 
+  return \@file; 
 }

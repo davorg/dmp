@@ -1,14 +1,13 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl 
 
 use strict; 
+use warnings;
 
 my ($input, $output) = @ARGV; 
-open(IN, $input) || die "Can t open $input for reading: $!"; 
-open(OUT, ">$output") || die "Can t open $output for writing: $!"; 
+open(my $in_fh, '<', $input) || die "Can t open $input for reading: $!"; 
+open(my $out_fh, '>', $output) || die "Can t open $output for writing: $!"; 
 
-while (<IN>) { 
-  print OUT munge_data($_); 
+while (<$in_fh>) { 
+  print $out_fh munge_data($_); 
 } 
 
-close(IN) || die "Can't close $input: $!"; 
-close(OUT) || die "Can't close $output: $!";

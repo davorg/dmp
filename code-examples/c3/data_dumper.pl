@@ -1,4 +1,4 @@
-use Data::Dumper; 
+use Data::Printer; 
 my @CDs; 
 
 my @attrs = qw(artist title label year); 
@@ -8,4 +8,4 @@ while (<STDIN>) {
   push @CDs, \%rec; 
 } 
 
-print Dumper(\@CDs);
+p @CDs;

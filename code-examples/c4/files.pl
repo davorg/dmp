@@ -1,5 +1,5 @@
-open FILES 'files.txt' or die "Can't open files.txt: $!"; 
+open my $files_fh, 'files.txt' or die "Can't open files.txt: $!"; 
 
-while (<FILES>) { 
+while (<$files_fh>) { 
   print if m|/davec/|; 
 }

@@ -1,6 +1,7 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl
 
-use strict; 
+use strict;
+use warnings; 
 use Benchmark qw(timethese); 
 
 my $x = 'x' x 100; 

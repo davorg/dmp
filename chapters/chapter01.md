@@ -1,18 +1,11 @@
 Part I - Foundations
 ====================
 
-In which our heroes learn a great deal about the background of the
-data munging beast in all its forms and habitats. Fortunately, they
-are also told of the great power of the mystical Perl which can be used
-to tame the savage beast.
-
-Our heroes are then taught a number of techniques for fighting the
-beast *without* using the Perl. These techniques are useful when
-fighting with any weapon, and once learned, can be combined with the
-power of the Perl to make them even more effective.
-
-Later, our heroes are introduced to additional techniques for using
-the Perl—all of which prove useful as their journey continues.
+In this first section, we will take a high-level look at data
+munging - what it is, why we do it and why we do it using Perl.
+We'll learn some general techniques for munging data that can
+be used in any language before starting to look at how Perl
+can be used in this work.
 
 Chapter 1: Data, data munging, and Perl
 =======================================
@@ -24,14 +17,14 @@ What this chapter covers:
 * Forms data takes
 * Perl and why it is perfect for data munging
 
-## What is data munging?
+# What is data munging?
 
 > **munge** (muhnj) vt. **1.** [derogatory] To imperfectly transform
 > information. **2.** A comprehensive rewrite of a routine, a data
 > structure, or the whole program. **3.** To modify data in some way
 > the speaker doesn’t need to go into right now or cannot describe
 > succinctly (compare mumble).
-> [The Jargon File](http://www.tuxedo.org/\~esr/jargon/html/entry/munge.html)
+> [The Jargon File](http://www.catb.org/jargon/html/M/munge.html)
 
 Data munging is all about taking data that is in one format and
 converting it into another. You will often hear the term being used
@@ -39,7 +32,7 @@ when the speaker doesn’t really know exactly what needs to be done
 to the data.
 
 > We’ll take the data that’s exported by this system, munge it around a
-> bit, and  import it into that system.
+> bit, and import it into that system.
 
 When you think about it, this is a fundamental part of what many (if
 not most) computer systems do all day. Examples of data munging include:
@@ -56,7 +49,7 @@ league table
 * A publisher who needs to convert manuscripts between many different
 text formats
 
-### Data munging processes
+## Data munging processes
 
 More specifically, data munging consists of a number of processes that
 are applied to an initial data set to convert it into a different, but
@@ -64,6 +57,11 @@ related data set. These processes will fall into a number of categories:
 recognition, parsing, filtering, and transformation.
 
 ### Example data: the CD file
+
+[Note: I'm aware that in the since the first edition, things have moved on and these days a
+sizeable proportion of my audience will have never owned a CD. I'm hoping that the
+concepts are well-known enough that I don't need to explain the data. If it helps, think of a
+CD as a smaller and less fragile version of your hipster vinyl collection.]
 
 To discuss these processes, let’s assume that we have a text file
 containing a description of my CD collection. For each CD, we’ll list
@@ -87,7 +85,7 @@ processed (or even received) the whole file.
 We will return to this example throughout the book to demonstrate data
 munging techniques.
 
-### Data recognition
+## Data recognition
 
 You won’t be able to do very much with this data unless you can
 recognize what data you have. Data recognition is about examining
@@ -113,12 +111,12 @@ data items which are in the body of the data.
 It is therefore very important to understand what our input data looks
 like and what we need to do with it.
 
-### Data parsing
+## Data parsing
 
 Having recognized your data you need to be able to do something with
 it. Data parsing is about taking your source data and storing it in data
 structures that make it easier for you to carry out the rest of the
-required processes.
+required processing.
 
 If we are parsing our CD file, we will presumably be storing details of
 each CD in a data structure. Each CD may well be an element in a list
@@ -134,11 +132,11 @@ structures that you use.
 In practice, many data munging programs are written so that the data
 recognition and data parsing phases are combined.
 
-### Data filtering
+## Data filtering
 
-It is quite possible that your source data contains too much information.
-You will therefore have to reduce the amount of data in the data set.
-This can be achieved in a number of ways.
+It is quite possible that your source data contains more information
+than you actually need. You will therefore have to reduce the amount
+of data in the data set. This can be achieved in a number of ways.
 
 * *You can reduce the number of records returned.* For example, you could
 list only CDs by David Bowie or only CDs that were released in the 1990s.
@@ -153,7 +151,7 @@ number of CDs released in a certain year.
 * *You can perform a combination of these processes.* For example, you
 could list the number of CDs by Billy Bragg.
 
-### Data transformation
+## Data transformation
 
 Having recognized, parsed, and filtered our data, it is very likely
 that we need to transform it before we have finished with it. This
@@ -171,11 +169,11 @@ need to be separated by tab characters.
 the name of the artist more accessible by taking the “surname, forename”
 format that we have and converting it to “forename surname.”
 
-### Why is data munging important?
+# Why is data munging important?
 
 As I mentioned previously, data munging is at the heart of what most
 computer systems do. Just about any computer task can be seen as a
-number of data munging tasks. Twenty years ago, before everyone had
+number of data munging tasks. Forty years ago, before everyone had
 a PC on a desk, the computing department of a company would have been
 known as the Data Processing department as that was their role — they
 processed data. Now, of course, we all deal with an Information Systems
@@ -185,7 +183,7 @@ has happened, however, is that the data processing is now being carried
 out by everyone, rather than a small group of computer programmers and
 operators.
 
-### Accessing corporate data repositories
+## Accessing corporate data repositories
 
 Large computer systems still exist. Not many larger companies run their
 payroll system on a PC and most companies will have at least one
@@ -197,7 +195,7 @@ a spreadsheet or a comma-separated text file. Often the data extracted
 will go into another spreadsheet where it will be turned into tables
 of data or graphs.
 
-### Transferring data between multiple systems
+## Transferring data between multiple systems
 
 It is obviously convenient for any organization if its data is held in
 one format in one place. Every time you duplicate a data item, you
@@ -219,13 +217,13 @@ This is where data munging comes in. It lives in the interstices
 between computer systems, ensuring that data produced by one system can
 be used by another.
 
-### Real-world data munging examples
+## Real-world data munging examples
 
 Let’s look at a couple of simple examples where data munging can be
 used. These are simplified accounts of tasks that I carried out for large
 investment banks in the city of London.
 
-#### Loading multiple data formats into a single database
+### Loading multiple data formats into a single database
 
 In the first of these examples, a bank was looking to purchase some company
 accounting data to drive its equities research department. In any large
@@ -247,21 +245,20 @@ input file) which read the different input files and wrote a file in my
 standard format. In this case I was reading from a number of sources and
 writing to one place.
 
-#### Sharing data using a standard data format
+### Sharing data using a standard data format
 
 In the second example I was working on a trading system which needed
 to send details of trades to various other systems. Once more, the
 data was stored in a relational database. In this case the bank had
 made all interaction between systems much easier by designing an XML
 file format for data interchange (we'll talk about DTDs in [Chapter
-10](ch015.xhtml)). Therefore, all we needed to do was to extract our data, create
-the necessary XML file, and send it on to the systems that required
+10](ch015.xhtml)). Therefore, all we needed to do was to extract our data,
+create the necessary XML file, and send it on to the systems that required
 it. By defining a standard data format, the bank ensured that all of
 its systems would only need to read or write one type of file, thereby
 saving a large amount of development time.
 
-Where does data come from? Where does it go?
---------------------------------------------
+# Where does data come from? Where does it go?
 
 As we saw in the previous section, the point of data munging is to take
 data in one format, carry out various transformations on it, and write it
@@ -281,9 +278,9 @@ common ones that you will come across are:
 
 Let’s look at these data sources and sinks in more detail.
 
-### Data files
+## Data files
 
-Probably the most common way to transfer data between systems is in a
+One of the most common way to transfer data between systems is in a
 file. One application writes a file. This file is then transferred to a
 place where your data munging process can pick it up. Your process opens
 the file, reads in the data, and writes a new file containing the transformed
@@ -297,19 +294,19 @@ a disk file. The exact format of the file will vary from system to system
 UNIX and Windows) but handling that is, after all, part of the job of the
 data munger.
 
-#### File transfer methods
+### File transfer methods
 
 Transferring files between different systems is also something that is
 usually very easy to achieve. Many computer systems implement a version
-of the *File Transfer Protocol* (FTP) which can be used to copy files
+of the *Secure Copy Protocol* (SCP) which can be used to copy files
 between two systems that are connected by a network. A more sophisticated
-system is the *Network File System* (NFS) protocol, in which file systems
-from one computer can be viewed as apparently local files systems on another
-computer. Other common methods of transferring files are by using removable
-media (CD-ROMs, floppy disks, or tapes) or even as a MIME attachment to an
-email message.
+system is the *Common Internet File System* (CIFS) protocol, in which file
+systems from one computer can be viewed as apparently local files systems
+on another computer. Other common methods of transferring files are by using
+removable media (CD-ROMs or USB storage devices) or even as a MIME attachment
+to an email message.
 
-#### Ensuring that file transfers are complete
+### Ensuring that file transfers are complete
 
 One difficulty to overcome with file transfer is the problem of knowing if
 a file is complete. You may have a process that sits on one system,
@@ -331,18 +328,15 @@ sent to an accounting system at the end of the day. In a situation where a
 constant flow of data is required, one of the other methods discussed below
 might be more appropriate.
 
-### Databases
+## Databases
 
-Databases are becoming almost as ubiquitous as data files. Of course, the
-term “database” means vastly differing things to different people. Some
-people who are used to a Windows environment might think of dBase or some
-similar nonrelational database system. UNIX users might think of a set of
-DBM files. Hopefully, most people will think of a relational database
-management system (RDBMS), whether it is a single-user product like Microsoft
-Access or Sybase Adaptive Server Anywhere, or a full multi-user product such
-as Oracle or Sybase Adaptive Server Enterprise.
+Databases are as ubiquitous as data files. Historically, the term "database"
+has meant many different things to different people. These days, most people
+will think of a relational database management system (RDBMS) like MySQL or
+Oracle which is queried using the Structured Query Language (SQL). Other
+people might be more used to a "NoSQL" database like Redis or MongoDB.
 
-#### Imposing structure on data
+### Imposing structure on data
 
 Databases have advantages over data files in that they impose structure on
 your data. A database designer will have defined a *database schema*, which
@@ -363,9 +357,9 @@ like to have their own CPU (or CPUs) to run on. Nevertheless, most
 organizations are prepared to pay this price for the extra flexibility that
 they get from a database.
 
-#### Communicating with databases
+### Communicating with databases
 
-Most modern databases use a dialect of Structured Query Language (SQL) for
+Many modern databases use a dialect of Structured Query Language (SQL) for
 all of their data manipulation. It is therefore very likely that if your data
 source or sink is an RDBMS that you will be communicating with it using SQL.
 Each vendor’s RDBMS has its own proprietary interface to get SQL queries into
@@ -374,7 +368,7 @@ the database and data back into your program, but Perl now has a
 to switch processing between different databases (as long as you don’t make
 any use of vendor-specific features).
 
-### Data pipes
+## Data pipes
 
 If you need to constantly monitor data that is being produced by a system and
 transform it so it can be used by another system (perhaps a system that is
@@ -389,7 +383,7 @@ will pick it up from there.
 We will look at this concept in more detail when discussing the UNIX “filter”
 model in [Chapter 2](ch005.xhtml).
 
-### Other sources/sinks
+## Other sources/sinks
 
 There are a number of other types of sources and sinks. Here, briefly, are a
 few more that you might come across. In each of these examples we talk about
@@ -412,24 +406,22 @@ right port. When the source has data to send, it instigates a connection on
 the port. Some kind of (application-defined) handshaking then takes place,
 followed by the source sending the data across to the waiting server.
 
-* *HTTP* —This method is becoming more common. If both programs have access
-to the Internet, they can be on opposite sides of the world and can still
-talk to each other. The source simply writes the data to a file somewhere on
-the publicly accessible Internet. The data munging program uses HTTP to send
-a request for the file to the source’s web server and, in response, the web
-server sends the file. The file could be an HTML file, but it could just as
-easily be in any other format. HTTP also has some basic authentication
-facilities built into it, so it is feasible to protect files to which you
-don’t want the public to have access.
+* *HTTP* — This method is very common. If both programs have access to the
+Internet, they can be on opposite sides of the world and can still talk to
+each other. The source simply makes the data available at an address
+somewhere on the publicly accessible Internet. This could be a data file or,
+for example, a program that returns the results of a database query in a
+well-known format like JSON or XML. The data munging program uses HTTP to send
+a request for the data to the source’s web server and, in response, the web
+server sends the data.
 
-What forms does data take?
---------------------------
+# What forms does data take?
 
 Data comes in many different formats. We will be examining many formats in
 more detail later in the book, but for now we’ll take a brief survey of the
 most popular ones.
 
-### Unstructured data
+## Unstructured data
 
 While there is a great deal of unstructured data in the world, it is unlikely
 that you will come across very much of it, because the job of data munging is
@@ -442,11 +434,12 @@ The best example of unstructured data is plain text. Other than separating
 text into individual lines and words and producing statistics, it is difficult
 to do much useful work with this kind of data.
 
-Nonetheless, we will examine unstructured data in [Chapter 5](ch009.xhtml). This is largely
-because it will give us the chance to discuss some general mechanisms, such
-as reading and writing files, before moving on to better structured data.
+Nonetheless, we will examine unstructured data in [Chapter 5](ch009.xhtml).
+This is largely because it will give us the chance to discuss some general
+mechanisms, such as reading and writing files, before moving on to better
+structured data.
 
-### Record-oriented data
+## Record-oriented data
 
 Most of the simple data that you will come across will be record-oriented.
 That is, the data source will consist of a number of records, each of which
@@ -466,26 +459,30 @@ in width.
 
 We will look at record-oriented data in [Chapter 6](ch010.xhtml).
 
-### Hierarchical data
+## Hierarchical data
 
-This is an area that will be growing in importance in the coming years. The
-best example of hierarchical data is the *Standardized General Mark-up
-Language* (SGML), and its two better known offspring, the *Hypertext Mark-up
-Language* (HTML) and the *Extensible Mark-up Language* (XML). In these systems,
-each data item is surrounded by tags which denote its position in the
-hierarchy of the data. A data item is contained by its parent and contains
-its own children. At this point, the record-at-a-time processing methods
-that we will have been using on simpler data types no longer work and we
-will be forced to find more powerful tools.
+This is an area that has become more important in the years since the first
+edition of this book. The best example of hierarchical data is the
+*Standardized General Mark-up Language* (SGML), and its two better known
+offspring, the *Hypertext Mark-up Language* (HTML) and the *Extensible
+Mark-up Language* (XML). In these systems, each data item is surrounded by
+tags which denote its position in the hierarchy of the data. A data item
+is contained by its parent and contains its own children. At this point,
+the record-at-a-time processing methods that we will have been using on
+simpler data types no longer work and we will be forced to find more
+powerful tools.
 
 This family metaphor can, of course, be taken further. Two nodes which
 have the same parent are known as *sibling* nodes, although I’ve never yet
 heard two nodes with the same grandparents described as *cousins*.
-We will look at hierarchical data (specifically HTML and XML) in [Chapters 9](ch014.xhtml)
-and [10](ch015.xhtml).
+We will look at hierarchical data (specifically HTML and XML) in
+[Chapters 9](ch014.xhtml) and [10](ch015.xhtml).
+
+Since the first edition, new hierarchical data formats have emerged and have largely taken
+over from XML. We will look in some detail at YAML and JSON.
 
 
-### Binary data
+## Binary data
 
 Finally, there is binary data. This is data that you cannot successfully use
 without software which has been specially designed to handle it. Without
@@ -496,8 +493,7 @@ data out of them.
 
 We will look at binary data in [Chapter 7](ch011.xhtml).
 
-What is Perl?
--------------
+# What is Perl?
 
 Perl is a computer programming language that has been in use since 1987. It
 was initially developed for use on the UNIX operating system, but it has
@@ -562,15 +558,35 @@ like this:
 
 whereas in Perl you can write it like this:
 
-    open(FILE, 'file.txt') or die "Can't open file.txt: $!";
+    open(my $file, '<', 'file.txt') or die "Can't open file.txt: $!";
 
-This opens a file and assigns it to the filehandle `FILE` which you can later
+This opens a file and assigns it to the filehandle `$file` which you can later
 use to read data from the file. It also checks for errors and, if anything goes
 wrong, it kills the program with an error message explaining exactly what went
 wrong. And, as a bonus, once more it almost reads like English.
 
+***
+
+In older Perl code, you might find "bareword" filehandles, where the
+filehandle is stored in a (usually all uppercase) string, instead of a
+variable. It looks like this:
+
+    open(FILEHANDLE, '<', 'file.txt') or die "...";
+
+You might also come across where the mode indicator (`<` or `>` - for
+reading or writing to the file) is attached directly to the filename
+like this:
+
+    open(FILEHANDLER, '<file.txt') or die "...";
+
+Both mechanisms still work, but the modern version (using variables to
+store the filehandle and using a separate parameter for the mode) is
+generally considered to be safer and more flexible.
+
+***
+
 Perl is not for everyone. Some people enjoy the verbosity of some other
-lan guages or the rigid syntax of others. Those who do make an effort to
+languages or the rigid syntax of others. Those who do make an effort to
 understand Perl typically become much more effective programmers.
 
 Perl is not for every task. Many speed-critical routines are better written
@@ -579,7 +595,7 @@ sections into separate modules so that the majority of the program can still
 be written in Perl if desired.
 
 
-### Getting Perl
+## Getting Perl
 
 One of the advantages of Perl is that it is free (as in both "free
 speech" and "free beer"). The source code for Perl is available for
@@ -594,11 +610,10 @@ utility—[Gnu's gcc](https://gcc.gnu.org) should work for you.
 Downloading source code and compiling your own tools is a common procedure
 on UNIX systems. Many Windows developers, however, are more used to installing
 prepackaged software. This is not a problem, as they can get a prebuilt binary
-called [ActivePerl](https://www.activestate.com/products/perl/downloads/) from
-[ActiveState](https://www.activestate.com). As with other
-versions of Perl, this distribution is free.
+called [Strawberry Perl](https://strawberryperl.com/). Ss with other versions
+of Perl, this distribution is free.
 
-### Why is Perl good for data munging?
+## Why is Perl good for data munging?
 
 Perl has a number of advantages that make it particularly useful as a data
 munging language. Let’s take a look at a few of them.
@@ -645,21 +660,21 @@ remains that I have seen jaded C programmers become fired up with enthusiasm
 for their jobs once they’ve been introduced to Perl. I’m not going to try to
 explain it, I’m just going to suggest that you give it a try.
 
-### Further information
+## Further information
 
 The best place to get up-to-date information about Perl is the Perl home page
-at www.perl.com.
+at [www.perl.org](https://www.perl.org/).
 
 Appendix B contains a brief overview of the Perl language, but if you want to
-learn Perl you should look at one of the many Perl tutorial books. If you are
-a non-programmer then *Elements of Programming with Perl* by Andrew Johnson
-(Manning) would be a good choice. Programmers looking to learn a new language
-should look at *Learning Perl (7th edition)* by Randal Schwartz, brian d foy, and Tom
-Christiansen (O’Reilly) or *Perl: The Programmer’s Companion* by Nigel Chapman
-(Wiley).
+learn Perl you should look at a Perl tutorial book. The standard tutorial is
+*Learning Perl (8th edition)* by Randal Schwartz, brian d foy, and Tom
+Phoenix (O’Reilly). Absolute beginners might want to start with my own
+*Perl Taster* (Perl School).
 
 The definitive Perl reference book is *Programming Perl (4th edition)*
-by Tom Christiansen, brian d foy, Larry  Wall, and Jon Orwant (O’Reilly).
+by Tom Christiansen, brian d foy, Larry  Wall, and Jon Orwant (O’Reilly) and
+you can keep up to date with Perl by reading *Perl New Features* by brian d
+foy (Perl School).
 
 Perl itself comes with a huge amount of documentation. Once you have installed
 Perl, you can type perldoc perl at your command line to get a list of the

@@ -1,15 +1,18 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl 
 
 use strict; 
+use warnings;
 
 my @CDs; 
 
 sub input { 
   my @attrs = qw(artist title label year); 
   while (<STDIN>) { 
+    next unless /-----/ .. /^$/;
     chomp; 
     my %rec; 
-    @rec{@attrs} = split /\t/; 
+    @rec{@attrs} = split /\t/;
+    next unless $rec{year};
     push @CDs, \%rec; 
   } 
 } 
@@ -28,7 +31,7 @@ sub count_cds_by_attr {
 
 sub output { 
   my $counts = shift; 
-  foreach (sort keys %{$counts}) { 
+  foreach (sort keys $counts->%*) { 
     print "$_: $counts->{$_}\n"; 
   } 
 } 
@@ -37,4 +40,4 @@ my $attr = shift;
 
 input(); 
 my $counts = count_cds_by_attr($attr); 
-output($counts);
+output($counts); 

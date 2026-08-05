@@ -6,13 +6,13 @@ my @out = sort namesort @in;
 
 sub namesort { 
   return $a->{surname} cmp $b->{surname} 
-  || $a->{forename} cmp $b->{forename}; 
+    or $a->{forename} cmp $b->{forename}; 
 }
 
 my @out = sort namesort @in; 
 
 sub namesort { 
   return $a->{surname} cmp $b->{surname} 
-  || $a->{forename} cmp $b->{forename} 
-  || $b->{age} <=> $a->{age}; 
+    or $a->{forename} cmp $b->{forename} 
+    or $b->{age} <=> $a->{age}; 
 }

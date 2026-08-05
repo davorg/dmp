@@ -1,6 +1,7 @@
-#!/usr/local/bin/perl -w 
+#!/usr/local/bin/perl
 
 use strict; 
+use warnings;
 
 (@ARGV == 2) or die "Error: source and target formats not given."; 
 

@@ -346,6 +346,21 @@ This section has only really started to discuss the subject of sorting
 in Perl. If you’d like to know more, Guttman and Rosler’s paper is a
 very good place to start. You can find it online at [archive.org](https://web.archive.org/web/20000818012018/http://www.hpl.hp.com/personal/Larry_Rosler/sort/).
 
+---
+
+All of the sort techniques discussed in this section still work, but there
+are often better options available to you.
+
+(Memoize)[https://metacpan.org/pod/Memoize] was introduced with Perl 5.8. It
+provides an easy way to cache the results from function calls. It can be used
+to simplify the Orciah Manoeuvre.
+
+[List::UtilsBy](https://metacpan.org/pod/List::UtilsBy) provides a number of
+utility functions that can replace the standard `sort` function, making code
+easier to write and maintain.
+
+---
+
 ## Database Interface (DBI)
 
 As discussed in [Chapter 1](ch004.xhtml), a common source or sink for data is a
@@ -378,44 +393,46 @@ whichever database you are using separately from the main DBI module.
 A sample DBI program to read data from a database would look like
 this:
 
-	  1: #!/usr/local/bin/perl –w
+	  1: #!/usr/local/bin/perl
 	  2:
 	  3: use strict;
-	  4: use DBI;
-	  5:
-	  6: my $user = 'dave';
-	  7: my $pass = 'secret';
-	  8: my $dbh = DBI->connect('dbi:mysql:testdb', $user, $pass,
-	  9:                        {RaiseError => 1})
-	 10:  || die "Connect failed: $DBI::errstr";
-	 11:
-	 12: my $sth = $dbh->prepare('select col1, col2, col3 from my_table')
-	 13:
-	 14: $sth->execute;
-	 15:
-	 16: my @row;
-	 17: while (@row = $sth->fetchrow_array) {
-	 18:   print join("\t", @row), "\n";
-	 19: }
-	 20:
-	 21: $sth->finish;
-	 22: $dbh->disconnect;
+	  4: use warnings;
+	  5: use DBI;
+	  6:
+	  7: my $user = 'dave';
+	  8: my $pass = 'secret';
+	  9: my $dbh = DBI->connect('dbi:mysql:testdb', $user, $pass,
+	 10:                        {RaiseError => 1})
+	 11:  or die "Connect failed: $DBI::errstr";
+	 12:
+	 13: my $sth = $dbh->prepare('select col1, col2, col3 from my_table')
+	 14:
+	 15: $sth->execute;
+	 16:
+	 17: my @row;
+	 18: while (@row = $sth->fetchrow_array) {
+	 19:   print join("\t", @row), "\n";
+	 20: }
+	 21:
+	 22: $sth->finish;
+	 23: $dbh->disconnect;
 
 While this is a very simple DBI program, it demonstrates a number of
 important DBI concepts and it is worth examining line by line.
 
 Line 1 points to the Perl interpreter. Notice the use of the `-w` flag.
 
-Line 3 switches on the [strict](https://perldoc.perl.org/strict) pragma.
+Lines 3 and 4 switch on the [strict](https://perldoc.perl.org/strict)
+and [warnings](https://perldoc.perl.org/warnings/) pragmas.
 
-Line 4 brings in the [DBI.pm](https://metacpan.org/pod/DBI) module. This allows us to use the DBI
-functions.
+Line 5 brings in the [DBI.pm](https://metacpan.org/pod/DBI) module.
+This allows us to use the DBI functions.
 
-Lines 6 and 7 define a username and password that we will use to connect
+Lines 7 and 8 define a username and password that we will use to connect
 to the database. Obviously, in a real program you probably wouldn’t want to
 have a password written in a script in plain text.
 
-Line 8 connects us to the database. In this case we are connecting to
+Line 9 connects us to the database. In this case we are connecting to
 a database running MySQL. This free database program is very popular
 for web systems. This is the only line that would need to change if we
 were connecting to a different database system. The connect function
@@ -426,7 +443,8 @@ it is always a colon-separated string. The first part is the string
 dbi and the second part is always the name of the database system2
 that we are connecting to. In this case the string `mysql` tells DBI
 that we will be talking to a MySQL database, and it should therefore
-load the [DBD::mysql](https://metacpan.org/pod/DBD::mysql) module. The third section of the connection string
+load the [DBD::mysql](https://metacpan.org/pod/DBD::mysql) module.
+The third section of the connection string
 in this case is the particular database that we want to connect to.
 Many database systems (including MySQL) can store many different
 databases on the same database server. In this case we want to connect
@@ -445,28 +463,28 @@ if there is a problem, the program dies after printing the value of
 the variable `$DBI::errstr` which contains the most recent database
 error message.
 
-Line 12 prepares an SQL statement for execution against the database.
+Line 13 prepares an SQL statement for execution against the database.
 It does this by calling the DBI function `prepare`. This function
 returns a statement handle which can be used to access another set of
 DBI functions—those that deal with executing queries on the database
 and reading and writing data. This handle is undefined if there is an
 error preparing the statement.
 
-Line 14 executes the statement and dies if there is an error.
+Line 15 executes the statement and dies if there is an error.
 
-Line 16 defines an array variable which will hold each row of data
+Line 17 defines an array variable which will hold each row of data
 returned from the database in turn.
 
-Lines 17 to 19 define a loop which receives each row from the database
-query and prints it out. On line 17 we call `fetchrow_array` which
+Lines 18 to 20 define a loop which receives each row from the database
+query and prints it out. On line 18 we call `fetchrow_array` which
 returns a list containing one element for each of the columns in the
 next row of the result set. When the result set has all been returned,
 the next call to `fetchrow_array` will return the value `undef`.
 
-Line 18 prints out the current row with a tab character between each
+Line 19 prints out the current row with a tab character between each
 element.
 
-Lines 21 and 22 call functions that reclaim the memory used for the
+Lines 22 and 23 call functions that reclaim the memory used for the
 database and statement handles. This memory will be reclaimed
 automatically when the variables go out of scope, but it is tidier to
 clean up yourself.
@@ -476,19 +494,36 @@ number of other functions and the most useful ones are listed in
 [Appendix A](ch018.xhtml). More detailed documentation comes with the DBI module and
 your chosen DBD modules.
 
+---
+
+Although DBI is still a very useful way to interact with databases uses Perl,
+these days there are more powerful options available to us. In particular,
+I would recommend taking a look at
+[DBIx::Class](https://metacpan.org/pod/DBIx::Class) which is an "Object
+Relational Mapper" (ORM) - that is, it builds classes out of your database
+tables and allows you to interact with your databse in a far more natural
+way. Exploring DBIx::Class is outside the scope of this book, but it's well
+worth investigating.
+
+My article [Database Access with DBIx::Class](https://perlhacks.com/articles/modern-perl-programming/database-access-with-dbixclass/)
+is a good place to start.
+
+---
+
 ## Data::Dumper
 
 As your data structures get more and more complex it will become more
 and more useful to have an easy way to see what they look like. A very
-convenient way to do this is by using the [Data::Dumper](https://metacpan.org/pod/Data::Dumper) module which
-comes as a standard part of the Perl distribution. [Data::Dumper](https://metacpan.org/pod/Data::Dumper) takes
+convenient way to do this is by using the [Data::Dumper](https://metacpan.org/pod/Data::Dumper)
+module which comes as a standard part of the Perl distribution.
+[Data::Dumper](https://metacpan.org/pod/Data::Dumper) takes
 one or more variables and produces a “stringified” version of the data
 contained in the variables.
 
-We’ll see many examples of [Data::Dumper](https://metacpan.org/pod/Data::Dumper) throughout the book but, as an
-example, let’s use it to get a dump of the CD data structure that we
-built in the previous chapter. The data structure was built up using
-code like this:
+We’ll see many examples of [Data::Dumper](https://metacpan.org/pod/Data::Dumper)
+throughout the book but, as an example, let’s use it to get a dump of the CD
+data structure that we built in the previous chapter. The data structure was
+built up using code like this:
 
 	my @CDs;
 	my @attrs = qw(artist title label year);
@@ -499,8 +534,9 @@ code like this:
 	  push @CDs, \%rec;
 	}
 
-In order to use [Data::Dumper](https://metacpan.org/pod/Data::Dumper) we just need to add a use Data::Dumper
-statement and a call to the `Dumper` function like this:
+In order to use [Data::Dumper](https://metacpan.org/pod/Data::Dumper)
+we just need to add a use Data::Dumper statement and a call to the `Dumper`
+function like this:
 
 	use Data::Dumper;
 	my @CDs;
@@ -563,6 +599,71 @@ arguments so, if we had passed an array, it would have processed each
 element of the array individually and produced output for each of
 them. By passing a reference we forced it to treat our array as a
 single object.
+
+The newer (Data::Printer)[https://metacpan.org/pod/Data::Printer] module
+(available from CPAN) simplifies this, by allowing you to pass arrays and
+hashes directly to its `p()` function. The output from this module is also
+simpler and (on a correctly configured terminal) in colour.
+
+Replaceing Data::Dumper with Data::Printer in our previous program looks
+like this:
+
+    use Data::Printer;
+    my @CDs;
+    
+    my @attrs = qw(artist title label year);
+    while (<STDIN>) {
+      chomp;
+      my %rec; @rec{@attrs} = split /\t/;
+      push @CDs, \%rec;
+    }
+
+    p @CDs;
+
+And produces the following output:
+
+    [
+        [0] {
+                artist   "Bragg, Billy",
+                label    "Cooking Vinyl",
+                title    "Workers' Playtime",
+                year     1987
+            },
+        [1] {
+                artist   "Bragg, Billy",
+                label    "EMI",
+                title    "Mermaid Avenue",
+                year     1998
+            },
+        [2] {
+                artist   "Black, Mary",
+                label    "Grapevine",
+                title    "The Holy Ground",
+                year     1993
+            },
+        [3] {
+                artist   "Black, Mary",
+                label    "Grapevine",
+                title    "Circus",
+                year     1996
+            },
+        [4] {
+                artist   "Bowie, David",
+                label    "RCA",
+                title    "Hunky Dory",
+                year     1971
+            },
+        [5] {
+                artist   "Bowie, David",
+                label    "EMI",
+                title    "Earthling",
+                year     1987
+            }
+    ]
+
+I believe that's easy to read than the equivalent Data::Dumper output,
+but it doesn't produce valid Perl code (which may or may not be a pronlem
+for you).
 
 ## Benchmarking
 
@@ -648,6 +749,17 @@ seconds of CPU time.
 
 You can then use these figures to help you decide which version of the
 code to use in your application.
+
+---
+
+If you are working with an existing codebase and you're trying to work out
+why a particular part of the code is running slowly, then you can use a
+profiler to give you useful information. The best example is
+[Devel::NYTProf](https://metacpan.org/pod/Devel::NYTProf), which will give
+you a mountain of data which will enable you to determine which specific
+lines of code need further work to make them faster.
+
+---
 
 ## Command line scripts
 
@@ -753,8 +865,41 @@ back to your output line, just use `–l`. For instance, the previous
 
 	perl -a -F':' -nle 'print $F[0]' < /etc/passwd
 
-For more information about these command line options see the [perlrun](https://perldoc.perl.org/perlrun)
+For more information about these command line options see the
+[perlrun](https://perldoc.perl.org/perlrun)
 manual page which is installed when you install Perl.
+
+---
+
+We've used the `-e` command line option in this section. Since Perl 5.10,
+many new Perl features have have to be explicitly turned on in your
+code by using a `use feature` pragma. For example, `use feature 'say'`
+would allow you to start using `say()` in place of `print()`. As a shortcut,
+you can also use `use VERSION` to turn on all of the features upto and
+including the version you list. So `use 5.38` would turn on all of the
+features defined in versions of Perl up to and including version 5.38
+(you can get a list of the available features for each version in the
+`perldoc feature` manual page).
+
+Perl 5.10 also introduced a new `-E` command line option. This works like
+`-e` but also turns on all of the features available to the current version
+of Perl.
+
+So running
+
+    perl -e 'say "hello world"'
+
+would throw an error as `say()` needs to be turned on before you can use it.
+You can do that explicity by using the `-M` option to load the pragma:
+
+    perl -Mfeature=say -e 'say "hello world"'
+
+But it's often easier to just use the `-E` option to turn on all of the
+available features:
+
+    perl -E 'say "hello world"'
+
+---
 
 ## Further information
 

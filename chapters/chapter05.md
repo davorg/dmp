@@ -1,25 +1,18 @@
 Part II: Data munging
 =====================
 
-In which our heroes first come into contact with the data munging
-beast. Three times they battle it, and each time the beast takes on a
-different form.
+In this section, we’ll encounter different forms of data challenges and
+explore methods to overcome them.
 
-At first the beast appears without structure and our heroes fight
-valiantly to impose structure upon it. They learn new techniques for
-finding hidden structure and emerge triumphant.
+First, we’ll focus on working with unstructured data, learning techniques
+to identify and impose structure where none seems apparent. Next, we’ll deal
+with data that’s already divided into records, showing how to break them
+apart and combine them in useful ways. Finally, we’ll tackle more complex,
+highly structured data, and discover advanced techniques to navigate and
+manipulate it effectively.
 
-The second time the beast appears structured into records. Our heroes
-find many ways to split the records apart and recombine them in other
-useful ways.
-
-The third time the beast appears in even more strongly structured
-forms. Once again our heroes discover enough new techniques to see
-through all of their enemies’ disguises.
-
-Our heroes end this section of the tale believing that they can
-handle the beast in all of its guises, but disappointment is soon to
-follow.
+By the end of this section, you’ll have the tools to handle various data
+structures, preparing you for the more advanced topics that follow.
 
 
 Chapter 5: Unstructured Data

@@ -3,9 +3,9 @@ my ($total_length, $num_words);
 my $text = read_text();
 
 my ($word, $line); 
-foreach $line (@{$text}) { 
-  $num_words += scalar @{$line}; 
-  foreach $word (@{$line}) { 
+foreach $line (@$text) { 
+  $num_words += @$line; 
+  foreach $word (@$line) { 
     $total_length += length $word; 
   } 
 } 
