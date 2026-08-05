@@ -1,0 +1,18 @@
+use strict;
+use warnings;
+use Web::Query;
+
+# Fetch the London weather forecast page
+my $wq = Web::Query->new( 'https://www.timeanddate.com/weather/uk/london/ext' );
+
+# Get the first row of the forecast table
+my $row = $wq->find('table.zebra.tb-wt > tbody > tr')->eq(0);
+
+# Extract date, description, high/low temperatures
+my $day   = $row->find('th')->text;
+my $desc  = $row->find('td')->eq(0)->text;
+my $temp  = $row->find('td')->eq(1)->text;
+
+print "London forecast for $day:\n";
+print "  Weather: $desc\n";
+print "  High/Low: $temp\n";
