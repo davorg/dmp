@@ -19,69 +19,113 @@ chapters are, of course, very useful, but there are many times when
 you need to parse data in a format for which a prebuilt parser does
 not exist. In these cases you can create your own parser using a
 number of Perl modules. The most flexible of these is
-Parse::RecDescent, and in this chapter we take a detailed look at its
+Regexp::Grammars, and in this chapter we take a detailed look at its
 use.
 
-Introduction to Parse::RecDescent
+Introduction to Regexp::Grammars
 ---------------------------------
 
-[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent) is a tool for building top-down parsers which was
-written by Damian Conway. It doesn’t form a part of the standard Perl
+[Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars) is a
+powerful and expressive way to build recursive-descent parsers in
+Perl, written by Damian Conway. Unlike Parse::RecDescent, which uses a
+separate grammar language embedded in strings, Regexp::Grammars lets
+you define your grammar directly inside a Perl regular expression.
+This means you can write grammars that look and feel like Perl
+regexes but are capable of parsing complex, nested structures.
+
+Like Parse::RecDescent, it doesn't form a part of the standard Perl
 distribution, so you will need to get it from the CPAN. It can be
-found at [https://metacpan.org/pod/Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent). The module
-comes with copious documentation and more example code than anyone
-would ever want to read.
+found at
+[https://metacpan.org/pod/Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars).
+It comes with excellent documentation and plenty of examples that
+demonstrate its capabilities.
 
-Using Parse::RecDescent is quite simple. In summary you define a
-grammar for the parser to use, create a parser object to process the
-grammar, and then pass the text to be parsed to the parser. We’ll see
-more specific examples later, but all the programs will have a basic
-structure which looks like this:
+Using Regexp::Grammars is fairly straightforward once you understand
+the syntax. You define your grammar as a regular expression with
+embedded rules, and then match your input text against it using
+Perl's usual `=~` operator. If the match succeeds, Perl populates the
+special `%/` hash with the entire parse tree—there's no separate step
+where you build a parser object first.
 
-    use Parse::RecDescent;
+All the examples in this chapter follow a basic structure that looks
+something like this:
 
-    my $grammar = q(
-                   # Text that define your grammar
-                   );
+    use Regexp::Grammars;
 
-    my $parser = Parse::RecDescent->new($grammar);
+    my $grammar = qr{
+      <nocontext:>
+      <top_rule>
+
+      <rule: top_rule>
+        # Your grammar goes here
+    }x;
 
     my $text = q(
-                # Scalar which contains the text to be parsed
-                );
+      # The text to be parsed
+    );
 
-    # top_rule is the name of the top level rule in you grammar.
-    $parser->top_rule($text);
+    if ($text =~ $grammar) {
+      # Access the parse tree through %/
+      use Data::Dumper;
+      print Dumper(\%/);
+    } else {
+      print "Parse failed\n";
+    }
+
+We'll explore this in more detail with practical examples, but the key
+idea is that you can build full-featured parsers using just regex
+syntax—no separate parsing engine required.
 
 ### Example: parsing simple English sentences
 
 For example, if we go back to the example of simple English sentences
-which we used in [Chapter 8](ch013.xhtml), we could write code like this in order to
-check for valid sentences.
+which we used in [Chapter 8](ch013.xhtml), we could write code like
+this in order to check for valid sentences.
 
-    use Parse::RecDescent;
-    my $grammar = q(
-                    sentence: subject verb object
-                    subject: noun_phrase
-                    object: noun_phrase
-                    verb: 'wrote' | 'likes' | 'ate'
-                    noun_phrase: pronoun | proper_noun | article noun
-                    article: 'a' | 'the' | 'this'
-                    pronoun: 'it' | 'he'
-                    proper_noun: 'Perl' | 'Dave' | 'Larry'
-                    noun: 'book' | 'cat'
-                   );
+    use v5.40;
 
-    my $parser = Parse::RecDescent->new($grammar);
+    use Regexp::Grammars;
+
+    my $grammar = qr{
+        <nocontext:>
+        \A <Sentence> \Z
+
+        <rule: Sentence>
+            <Subject> <Verb> <Object>
+
+        <rule: Subject>
+            <NounPhrase>
+
+        <rule: Object>
+            <NounPhrase>
+
+        <rule: Verb>
+            wrote | likes | ate
+
+        <rule: NounPhrase>
+            <Pronoun> | <ProperNoun> | <Article> <Noun>
+
+        <rule: Article>
+            a | the | this
+
+        <rule: Pronoun>
+            it | he
+
+        <rule: ProperNoun>
+            Perl | Dave | Larry
+
+        <rule: Noun>
+            book | cat
+    }x;
 
     while (<DATA>) {
-      chomp;
-      print "'$_' is ";
-      print 'NOT ' unless $parser->sentence($_);
-      print "a valid sentencen";
+        chomp(my $line = $_);
+        print "'$line' is ";
+        print 'NOT ' unless $line =~ $grammar;
+        say "a valid sentence";
     }
 
-    __END__
+    __DATA__
     Larry wrote Perl
     Larry wrote a book
     Dave likes Perl
@@ -91,8 +135,14 @@ check for valid sentences.
     Dave got very angry
 
 Notice that we have expanded the terminals to actually represent a
-(very limited) subset of English words. The output of this script is a
-follows:
+(very limited) subset of English words. Notice too the `use v5.40` at
+the top of the script—recent versions of Perl bundle up a whole set of
+modern features (including `strict`, `warnings`, `say`, and
+subroutine signatures, which we'll use later in the chapter) behind a
+single version declaration, so we don't need to enable them one at a
+time.
+
+The output of this script is as follows:
 
     'Larry wrote Perl' is a valid sentence
     'Larry wrote a book' is a valid sentence
@@ -102,50 +152,66 @@ follows:
     'the cat ate the book' is a valid sentence
     'Dave got very angry' is NOT a valid sentence
 
-Which shows that “Dave got very angry” is the only text in our data,
+Which shows that "Dave got very angry" is the only text in our data,
 which is not a valid sentence (by the rules of our
 grammar of course—not by the real rules of English).
 
 #### Explaining the code
 
 The only complex part of this script is the definition of the grammar.
-The syntax of this definition is similar to one that we used in
-[Chapter 8](ch013.xhtml). The only major difference is that we have replaced the
-arrow `->` with a colon. If you read the rules, replacing the colon with
-the phrase “is made up of” and the vertical bar with the word “or”,
-then these rules are easy to understand.
+The syntax may look like a regular expression—and, in fact, it is
+one—but with embedded rule definitions that extend what Perl regexes
+are normally capable of.
 
-In this example all of our terminals are fixed strings. As we shall
-see later in the chapter, it is quite possible to match Perl regular
-expressions instead.
+Each rule is introduced with a `<rule: name>` block, and rules can
+refer to each other by name using angle brackets (for example,
+`<Subject>` or `<Verb>`). If you read each rule as saying "this is
+made up of" and interpret the vertical bars (`|`) as "or," the
+structure becomes quite readable.
 
-Having defined our grammar, we simply create a parser object using
-this grammar and use that object to see if our sentences are valid.
-Notice that we use the method sentence to validate each sentence in
-turn. This method was created by the Parse::RecDescent object as it
-read our grammar. The sentence method returns true or false depending
-on whether or not the parser object successfully parsed the input
-data.
+In this example, all of the terminals—the bits of text that the
+parser matches directly—are fixed strings. As we shall see later in
+the chapter, it is quite possible to match Perl regular expressions
+instead.
+
+Having defined our grammar, we simply match a string against it using
+Perl's usual `=~` operator. If the match succeeds, it means the input
+matched the top-level rule—in our case, `Sentence`. The full parse
+tree is then available in the special `%/` hash, which is populated
+automatically by Regexp::Grammars. If the match fails, the input
+doesn't conform to the grammar.
 
 Returning parsed data
----------------------
+----------------------
 
 The previous example is all very well if you just want to know
-whether your data meets the criteria of a given grammar, but it
-doesn’t actually produce any useful data structures which represent
-the parsed data. For that we have to look a little deeper into
-Parse::RecDescent.
+whether your data matches the rules defined by a grammar, but it
+doesn't actually produce any useful data structures representing the
+parsed content. To get that, we need to look a little deeper into how
+Regexp::Grammars works.
+
+Unlike Parse::RecDescent, you don't need to write any extra code to
+get a data structure out of Regexp::Grammars. It builds a structured
+parse tree automatically as part of the match, storing it in the
+special `%/` hash. Each rule that successfully matches contributes to
+this structure, with named subrules becoming nested hashes—and, as
+we'll see shortly, repeated subrules becoming arrays.
+
+By inspecting or walking through `%/`, you can extract detailed
+information about what was matched and how it fits into the grammar,
+without having to write any explicit parsing actions. Let's look at a
+more substantial example to see how this works in practice.
 
 ### Example: parsing a Windows INI file
 
-Let’s look at parsing a Windows INI file. These files contain a
+Let's look at parsing a Windows INI file. These files contain a
 number of named sections. Each of these sections contain a number of
 assignment statements. Figure 11.1 shows an example INI together with
 the various parts that make up the file structure.
 
 ![INI File Structure](../images/11-1-ini-file-structure.png)
 
-In this example we have sections called “files” and “rules.” The
+In this example we have sections called "files" and "rules." The
 files section lists the names of the input and output files together
 with their extension; the rules section lists a number of
 configuration options. This file might be used to control the
@@ -167,261 +233,244 @@ like:
 
     $input_file = $Config{files}{input};
 
+As we'll see, the raw parse tree that Regexp::Grammars builds for us
+doesn't *quite* look like this—but it's only a few lines of ordinary
+Perl away from it.
+
 ### Understanding the INI file grammar
 
-Let’s take a look at a grammar that defines an INI file. We’ll use
-the syntax found in Parse::RecDescent.
+Let's take a look at a grammar that defines an INI file, this time
+written using Regexp::Grammars.
 
-    file: section(s)
-    section: header assign(s)
-    header: '[' /\w+/ ']'
-    assign: /\w+/ '=' /\w+/
+    my $grammar = qr{
+        \A <File> \Z
+
+        <nocontext:>
+
+        <rule: File>
+            <[Section]>+
+
+        <rule: Section>
+            <Header> \s* \n
+            <[Assign]>*
+
+        <rule: Header>
+            \[ <Name> \]
+
+        <rule: Name>
+            \w+
+
+        <rule: Assign>
+            \s* <Key> \s* = \s* <Value> \s* \n?
+
+        <rule: Key>
+            \w+
+
+        <rule: Value>
+            [^\n\r]+
+    }x;
 
 The grammar can be explained in English like this:
 
 *  An INI file consists of one or more sections.
 
-*  Each section consists of a header followed by one or more assignments.
+*  Each section consists of a header followed by zero or more assignments.
 
-*  The header consists of a `[` character, one or more word characters, and a `]` character.
+*  The header consists of a `[` character, a name, and a `]` character.
 
-*  An assignment consists of a sequence of one or more word characters, an `=` character, and another sequence of one or more word characters.
+*  A name is a sequence of one or more word characters.
 
-#### Using subrule suffixes
+*  An assignment consists of a key, an `=` character, and a value, each surrounded by optional whitespace.
 
-There are a couple of new features to notice here. First, we have used
-`(s)` after the names of some of our subrules. This means that the
-subrule can appear one or more times in the rule. There are a number
-of other suffixes which can control the number of times that a
-subrule can appear, and the full list is in table 11.1. In this case
-we are saying that a file can contain one or more sections and that
-each section can contain one or more assignment statements.
+#### Repeating subrules and lists
 
-Table 11.1 Optional and repeating subrules
+There are a couple of new features to notice here. First, notice the
+square brackets around `Section` and `Assign` in the `File` and
+`Section` rules: `<[Section]>+` and `<[Assign]>*`. In Regexp::Grammars,
+wrapping a subrule name in square brackets tells the module to collect
+*every* match of that subrule into an array, rather than keeping only
+the most recent one (which is what a plain `<Section>+` would do). The
+quantifiers themselves work exactly as they do in any other Perl
+regular expression: `+` means "one or more" and `*` means "zero or
+more." You'll also see `?` for "optional" and the usual `{n,m}` style
+counted repetition.
 
-| Subrule suffix | Meaning                                                    |
-|----------------|------------------------------------------------------------|
-| (?)            | Optional subrule. Appears zero or one time.                |
-| (s)            | Mandatory repeating subrule. Appears one or more times.    |
-| (s?)           | Optional repeating subrule. Appears zero or more times.    |
-| (N)            | Repeating subgroup. Must appear exactly *N* times.         |
-| (N..M)         | Repeating subgroup. Must appear between *N* and *M* times. |
-| (..M)          | Repeating subgroup. Must appear between 1 and *M* times.   |
-| (N..)          | Repeating subgroup. Must appear at least *N* times.        |
-
-
+Regexp::Grammars also supports a separated-list syntax, `<[NAME]>+ %
+SEPARATOR`, for the common case of repeated items separated by
+something like a comma or a run of whitespace. We'll make use of that
+later in the chapter.
 
 #### Using regular expressions
 
-The other thing to notice is that we are using regular expressions in
-many places to match our terminals. This is useful because the names
-of the sections and the keys and values in each section can be any
-valid word. In this example we are saying that they must all be a
-string made up of Perl’s word characters (that is,
-alphanumeric characters and the underbar character).
+The other thing to notice is that, because a Regexp::Grammars grammar
+*is* a Perl regular expression, every terminal in it can be as simple
+or as sophisticated as you like. Here we're using `\w+` to match a
+name or a key, and a small negated character class, `[^\n\r]+`, to
+match a value—anything up to the end of the line. There's no separate
+mini-language to learn for this, the way there is with
+Parse::RecDescent: it's the same regular expressions you already know.
 
-### Parser actions and the @item array
+From parse tree to data structure
+------------------------------------
 
-In order to extract data, we can make use of parser actions. These
-are pieces of code that you write and then attach to any rule in a
-grammar. Your code is then executed whenever that rule is matched.
-Within the action code a number of special variables are available.
-The most useful of these is probably the `@item` array which contains a
-list of the values that have been matched in the current rule. The
-value in `$item[0]` is always the name of the rule which has matched.
-For example, when our header rule is matched, the `@item` array will
-contain `header`, `[`, the name of the section, and `]` with elements
-0 to 3 (figure 11.3). The same information is also available in a hash called `%item`,
-but I’ll use `@item` in these examples. For more details on `%item` see [Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent).
-.
+With Parse::RecDescent, extracting a useful data structure from a
+successful parse meant attaching your own action code to each rule,
+using the special `@item` array to see what had just been matched.
+Regexp::Grammars does away with all of that: because it builds the
+parse tree for you automatically, there's usually no action code to
+write at all.
 
-![The @item array after matching the header rule for the first time](../images/11-3-item-array.png)
+Here's a short program that parses an INI file and dumps the parse
+tree that Regexp::Grammars builds for us:
 
-In order to see what values are being matched, you could put action
-code on each of the rules in the grammar like the following code. All
-this code does is print out the contents of the `@item` array each time
-a rule is matched.
+    use Regexp::Grammars;
+    use Data::Dumper;
 
-    file: section(s) { print "$item[0]: $item[1]\n"; }
-    section: header assign(s) { print "$item[0]: $item[1] $item[2]\n"; }
-    header: '[' /\w+/ ']' { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
-    assign: /\w+/ '=' /\w+/ { print "$item[0]: $item[1] $item[2] $item[3]\n"; }
+    my $grammar = qr{
+        \A <File> \Z
 
-However, Parse::RecDescent provides an easier way to achieve the same
-result, by providing a way to assign a default action to all rules in
-a grammar. If you assign a string containing code to the variable
-`$::RD_AUTOACTION`, then that code will be assigned to every rule which
-doesn’t have an explicit action.
+        <nocontext:>
 
-### Example: displaying the contents of @item
+        <rule: File>
+            <[Section]>+
 
-Here is a sample program which reads an INI file and displays the
-contents of `@item` for each matched rule.
+        <rule: Section>
+            <Header> \s* \n
+            <[Assign]>*
 
-    use Parse::RecDescent;
+        <rule: Header>
+            \[ <Name> \]
 
-    my $grammar = q(
-                    file: section(s)
-                    section: header assign(s)
-                    header: '[' /\w+/ ']'
-                    assign: /\w+/ '=' /\w+/
-                   );
+        <rule: Name>
+            \w+
 
-    $::RD_AUTOACTION = q { print "$item[0]: @item[1..$#item]\n"; 1 };
+        <rule: Assign>
+            \s* <Key> \s* = \s* <Value> \s* \n?
 
-    $parser = Parse::RecDescent->new($grammar);
+        <rule: Key>
+            \w+
 
-    my $text;
+        <rule: Value>
+            [^\n\r]+
+    }x;
+
+    local $/ = undef;
+    my $text = <STDIN>;
+
+    if ($text =~ $grammar) {
+        print Dumper(\%/);
+    } else {
+        print "Parse failed.\n";
+    }
+
+Run against our sample INI file, this produces a tree that mirrors the
+shape of the grammar: a `File` key holding an array of `Section`
+hashes, each with a `Header` (itself holding a `Name`) and an array of
+`Assign` hashes, each with a `Key` and a `Value`. Every rule name in
+the grammar becomes a hash key in the result; every `<[...]>` subrule
+becomes an array.
+
+That's a completely faithful record of the parse, but it's a little
+more deeply nested than the `$Config{files}{input}`-style structure we
+said we wanted back at the start of this section. Getting from one to
+the other is now just ordinary Perl—no more grammar-writing required:
+
+    my $tree = \%/;
+    my $output = {};
+
+    for my $section ($tree->{File}{Section}->@*) {
+        my $name = $section->{Header}{Name};
+        my $assignments = $section->{Assign};
+        $output->{$name} = {
+            map { $_->{Key} => $_->{Value} } $assignments->@*
+        };
+    }
+
+This walks the array of sections, and for each one builds a hash of
+key/value pairs from its assignments, keyed by the section's name. The
+result is exactly the hash of hashes we designed at the start: you can
+now write `$output->{files}{input}` to get at an individual value.
+
+Putting the whole thing together, and printing the result as JSON
+instead of with Data::Dumper, gives us a complete, modern replacement
+for the original Parse::RecDescent version:
+
+    use v5.40;
+
+    use Regexp::Grammars;
+    use JSON::MaybeXS;
+
+    my $grammar = qr{
+        \A <File> \Z
+
+        <nocontext:>
+
+        <rule: File>
+            <[Section]>+
+
+        <rule: Section>
+            <Header> \s* \n
+            <[Assign]>*
+
+        <rule: Header>
+            \[ <Name> \]
+
+        <rule: Name>
+            \w+
+
+        <rule: Assign>
+            \s* <Key> \s* = \s* <Value> \s* \n?
+
+        <rule: Key>
+            \w+
+
+        <rule: Value>
+            [^\n\r]+
+    }x;
+
+    local $/ = undef;
+    my $text = <STDIN>;
+
+    if ($text =~ $grammar) {
+        my $tree = \%/;
+        my $output = {};
+
+        for my $section ($tree->{File}{Section}->@*) {
+            my $name = $section->{Header}{Name};
+            my $assignments = $section->{Assign};
+            $output->{$name} = {
+                map { $_->{Key} => $_->{Value} } $assignments->@*
+            };
+        }
+
+        say JSON->new->utf8->pretty->encode($output);
+    } else {
+        say "Parse failed.";
+    }
+
+Run against a sample INI file with `files` and `rules` sections, this
+prints something like:
 
     {
-      $/ = undef;
-      $text = <STDIN>;
+       "files" : {
+          "input" : "data_in",
+          "output" : "data_out",
+          "ext" : "dat"
+       },
+       "rules" : {
+          "quote" : "double",
+          "sep" : "comma",
+          "spaces" : "trim"
+       }
     }
-
-    $parser->file($text);
-
-The general structure of the code and the grammar should be familiar.
-The only thing new here is the code assigned to `$::RD_AUTOACTION`.
-This code will be run whenever a rule that doesn’t have its own
-associated action code is matched. When you run this program using
-our earlier sample INI file as input, the resulting output is as
-follows:
-
-    header: [ files ]
-    assign: input = data_in
-    assign: output = data_out
-    assign: ext = dat
-    section: 1 ARRAY(0x8adc868)
-    header: [ rules ]
-    assign: quotes = double
-    assign: sep = comma
-    assign: spaces = trim
-    section: 1 ARRAY(0x8adc844)
-    file: ARRAY(0x8adc850)
-
-#### How rule matching works
-
-The previous example shows us a couple of interesting things about the
-way that Parse::RecDescent works. Look at the order in which the rules
-have been matched and recall what we saw about the workings of
-top-down parsers in [Chapter 8](ch013.xhtml). Here you can clearly see that a rule
-doesn’t match until all of its subrules have been matched
-successfully.
-
- Secondly, look at the output for the section and file rules. Where
- you have matched a repeating subrule, @item contains a reference to
- an array, and where you have matched a nonrepeating subrule, @item
- contains the value 1. This shows us something about what a matched
- rule returns. Each matched rule returns a true value. By default this
- is the number 1, but you can change this in the associated action
- code. Be sure that your code has a true return value, or else the
- parser will think that the match has failed.
-
-### Returning a data structure
-
-The value that is returned from the top-level rule will be the value
-returned by the top-level rule method when called by our script. We
-can use this fact to ensure that the data structure that we want is
-returned. Here is the script that will achieve this:
-
-    use Parse::RecDescent;
-
-    my $grammar = q(
-                    file: section(s)
-                      { my %file;
-                        foreach (@{$item[1]}) {
-                          $file{$_->[0]} = $_->[1];
-                        }
-                        \%file;
-                      }
-                    section: header assign(s)
-                      { my %sec;
-                        foreach (@{$item[2]}) {
-                          $sec{$_->[0]} = $_->[1];
-                        }
-                        [ $item[1], \%sec]
-                      }
-                    header: '[' /\w+/ ']' { $item[2] }
-                    assign: /\w+/ '=' /\w+/
-                      { [$item[1], $item[3]] }
-                   );
-
-    $parser = Parse::RecDescent->new($grammar);
-
-    my $text;
-
-    {
-      $/ = undef;
-      $text = <STDIN>;
-    }
-
-    my $tree = $parser->file($text);
-
-    foreach (keys %$tree) {
-      print "$_\n";
-      foreach my $key (keys %{$tree->{$_}}) {
-        print "\t$key: $tree->{$_}{$key}\n";
-      }
-    }
-
-The code that has been added to the previous script is in two places.
-First (and most importantly) in the parser actions and, secondly, at
-the end of the script to display the returned data structure and
-demonstrate what is returned.
-
-The action code might look a little difficult, but it’s probably a
-bit easier if you read it in reverse order and see how the data
-structure builds up.
-
-The assign rule now returns a reference to a two-element list. The
-first element is the left-hand side of the assignment and the second
-element is the right-hand side. The header rule simply returns the
-name of the section.
-
-The section rule creates a new hash called `%sec`. It then iterates
-across the list returned by the assign subrule. Each element in this
-list is the return value from one assign rule. As we saw in the
-previous paragraph, this is a reference to a two-element list. We
-convert each of these lists to a key/value pair in the `%sec` hash.
-Finally, the rule returns a reference to a two-element `%hash`. The
-first element of this list is the return value from the header rule
-(which is the section name), and the second element is a reference to
-the section hash.
-
-The file rule uses a very similar technique to take the list of
-sections and convert them into a hash called `%file`. It then returns
-the `%file` hash.
-
-This means that the file method returns a reference to a hash. The
-keys to the hash are the names of the sections in the file and the
-values are references to hashes. The keys to the second level hashes
-are the text from the left-hand side of the assignments, and the
-values are the associated strings from the right-hand side of the
-assignment.
-
-The code at the end of the script prints out the values in the
-returned data structure. Running this script against our sample INI
-file gives us the following result:
-
-    rules
-            quotes: double
-            sep: comma
-            spaces: trim
-    files
-            input: data_in
-            ext: dat
-            output: data_out
-
-which demonstrates that we have built up the data structure that we
-wanted.
 
 Another example: the CD data file
----------------------------------
+-----------------------------------
 
-Let’s take a look at another example of parsing a data file with
-Parse::RecDescent. We’ll take a look at how we’d parse the CD data
-file that we discussed in [Chapter 8](ch013.xhtml). What follows is the data file we
-were discussing:
+Let's take a look at another example of parsing a data file, this time
+using Regexp::Grammars. We'll take a look at how we'd parse the CD
+data file that we discussed in [Chapter 8](ch013.xhtml). What follows
+is the data file we were discussing:
 
     Dave's CD Collection
     16 Sep 1999
@@ -449,257 +498,375 @@ were discussing:
 
     6 Records
 
-In [Chapter 8](ch013.xhtml) we came up with a rather unsatisfying way to extract the
-data from this file and put it into a data structure. Now that
-Parse::RecDescent is in our toolkit, we should be able to come up with
-something far more elegant.
+In [Chapter 8](ch013.xhtml) we came up with a rather unsatisfying way
+to extract the data from this file and put it into a data structure.
+Now that Regexp::Grammars is in our toolkit, we should be able to come
+up with something far more elegant.
 
-As with the last example, the best approach is to start with a grammar
-for the data file.
+As with the last example, the best approach is to start with a
+grammar for the data file.
 
 ### Understanding the CD grammar
 
 Here is the grammar that I have designed for parsing the CD data file.
 
-    file: header body footer
-    header: /.+/ date
-    date: /\d\d?\s+\w+\s+\d{4}/
-    body: col_heads /-+/ cd(s)
-    col_heads: col_head(s)
-    col_head: /\w+/
-    cd: cd_line track_line(s)
-    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-    track_line: '+' /.*/
-    footer: /\d+/ 'CDs'
+    my $grammar = qr{
+        \A
+        <File>
+        \Z
 
-Let’s take a closer look at the individual rules. Like the parser,
-we’ll take a top-down approach.
+        <nocontext:>
 
-*  A data file is made up of three sections—a header, a body, and a footer.
+        <rule: File>
+            <Header>
+            <Body>
+            <Footer>
 
-*  The file header is made up of a string of any characters followed by a date.
+        <rule: Header>
+            <Title> \n
+            <Date> \n
 
-*  A date is one or two digits followed by at least one space, any number of word characters, at least one space and four digits. Note that we are assuming that all dates will appear in the same format as the one in our sample file.
+        <rule: Title>
+            [^\n]+
 
-*  The file body contains the column headers followed by a number of characters and one or more CD records.
+        <rule: Date>
+            \d+\s+\w+\s+\d{4}
 
-*  The column headers are made up of one or more headers per individual column.
+        <rule: Body>
+            <ColHeads>
+            <Divider>
+            <[CD]>+
 
-*  A column header consists of a number of word characters.
+        <rule: ColHeads>
+            <[ColName]>+ %\s+ \n
 
-*  A CD record consists of a CD line followed by at least one track record.
+        <rule: ColName>
+            \w+
 
-*  A CD line consists of a number of records, each of which is a particular number of characters long. We have to match in this way, as the CD record is in fixed width format.
+        <rule: Divider>
+            -+ \n
 
-*  A track record contains a + character followed by at least one other character.
+        <rule: CD>
+            <CDLine>
+            <[TrackLine]>*
 
-*  A footer record consists of at least one digit followed by the text “CDs”.
+        <rule: CDLine>
+            <Artist> <TitleField> <Label> <Released> \n
+
+        <rule: Artist>
+            .{14}
+
+        <rule: TitleField>
+            .{19}
+
+        <rule: Label>
+            .{15}
+
+        <rule: Released>
+            \d{4}
+
+        <rule: TrackLine>
+            \+ <Track> \n
+
+        <rule: Track>
+            [^\n]+
+
+        <rule: Footer>
+            <Count> \s+ Records \n?
+
+        <rule: Count>
+            \d+
+    }x;
+
+Let's take a closer look at the individual rules, again taking a
+top-down approach.
+
+*  A data file (`File`) is made up of three sections—a header, a body, and a footer.
+
+*  The `Header` is a `Title` line followed by a `Date` line.
+
+*  The `Title` is any text up to the end of the line.
+
+*  A `Date` is one or more digits followed by whitespace, one or more word characters, more whitespace, and four digits. As before, we're assuming that all dates appear in the same format as the one in our sample file.
+
+*  The `Body` contains the column headings (`ColHeads`), a divider line, and one or more `CD` records.
+
+*  `ColHeads` is one or more `ColName`s, separated by runs of whitespace—the `<[ColName]>+ %\s+` syntax is the separated-list form we mentioned earlier.
+
+*  A `ColName` is a run of word characters.
+
+*  A `Divider` is a run of dashes on a line by itself.
+
+*  A `CD` record consists of a `CDLine` followed by zero or more `TrackLine`s.
+
+*  A `CDLine` consists of four fixed-width fields—`Artist`, `TitleField`, `Label`, and `Released`—matched using `.{n}` rather than a word-based pattern, since the CD record is in fixed-width format.
+
+*  A `TrackLine` is a `+` character followed by a `Track`—the rest of the line.
+
+*  A `Footer` is a `Count`, some whitespace, and the literal text "Records".
+
+Note that, unlike the fixed-width rules we saw in [Chapter 7](ch011.xhtml), we don't
+need to calculate column offsets by hand here—we just describe the
+width of each field and let the regex engine do the counting.
 
 ### Testing the CD file grammar
 
 Having defined our grammar, one of the best ways to test it is to
-write a brief program like the one that we used to test the English
-sentences. The program would look like this:
+write a brief program like the one we used to test the English
+sentences:
 
-    use Parse::RecDescent;
+    use Regexp::Grammars;
 
-    use vars qw(%datas @cols);
+    my $grammar = qr{
+        ... # as above
+    }x;
 
-    my $grammar = q(
-                    file: header body footer
-                    header: /.+/ date
-                    date: /\d+\s+\w+\s+\d{4}/
-                    body: col_heads /-+/ cd(s)
-                    col_heads: col_head(s)
-                    col_head: /\w+/
-                    cd: cd_line track_line(s)
-                    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-                    track_line: '+' /.+/ { $item[2] }
-                    footer: /\d+/ 'CDs'
-                   );
+    local $/ = undef;
+    my $text = <STDIN>;
 
-    $parser = Parse::RecDescent->new($grammar);
+    print $text =~ $grammar ? "valid" : "invalid";
 
-    my $text;
+This program prints `valid` or `invalid` depending on whether or not
+the file passed to it on `STDIN` matches the grammar. If it doesn't,
+and you want to find out where things went wrong, Regexp::Grammars has
+its own built-in debugger to help you.
 
-    {
-      local $/ = undef;
-      $text = <STDIN>;
-    }
+#### Debugging the grammar with `<debug:...>`
 
-    print $parser->file($text) ? "valid" : "invalid";
+Rather than the global variables that Parse::RecDescent uses
+(`$::RD_TRACE` and `$::RD_HINT`), Regexp::Grammars is controlled with
+a `<debug:...>` directive that you place directly inside the grammar.
+Adding
 
+    <debug: on>
 
-This program will print valid or invalid depending on whether or not
-the file passed to it on `STDIN` parses correctly against the given
-grammar. In this case it does, but if it doesn’t and you want to find
-out where the errors are, there are two useful variables which
-Parse::RecDescent uses to help you follow what it is doing.
-
-#### Debugging the grammar with `$::RD_TRACE` and `$::RD_HINT`
-
-Setting `$::RD_TRACE` to true will display a trace of the parsing
-process as it progresses, allowing you to see where your grammar and
-the structure of the file disagree. If the problems are earlier in the
-process and there are syntax errors in your grammar, then setting
-`$::RD_HINT` to true will provide hints on how you could fix the
-problems. Setting `$::RD_AUTOACTION` to a snippet of code which prints
-out the values in @item can also be a useful debugging tool.
+near the top of a grammar turns on a step-by-step trace of the
+matching process, showing you which rules are being tried and where
+they succeed or fail—invaluable for working out where your grammar
+and the structure of your file disagree. You can turn tracing off
+again partway through a grammar with `<debug: off>`, which is useful
+if you only want a detailed trace of one troublesome rule rather than
+the whole grammar.
 
 ### Adding parser actions
 
-Having established that our grammar does what we want, we can proceed
-with writing the rest of the program. As previously, most of the
-interesting code is in the parser actions. Here is the complete
-program:
+As we saw with the INI file example, Regexp::Grammars builds the
+parse tree for us automatically, so there's no need for the kind of
+per-rule action code that Parse::RecDescent requires. Here is the
+complete program for parsing the CD file, including the code that
+turns the raw parse tree into a tidier data structure:
 
     use strict;
-    use Parse::RecDescent;
+    use warnings;
+
+    use builtin qw(trim);
+    no warnings 'experimental::builtin';
+
+    use Regexp::Grammars;
     use Data::Dumper;
 
-    use vars qw(@cols);
+    my $grammar = qr{
+        \A
+        <File>
+        \Z
 
-    my $grammar = q(
-                    file: header body footer
-                      {
-                        my %rec =
-                          (%{$item[1]}, list => $item[2], %{$item[3]});
-                        \%rec;
-                      }
-                    header: /.+/ date
-                      { { title => $item[1], date => $item[2] } }
-                    date: /\d+\s+\w+\s+\d{4}/ { $item[1] }
-                    body: col_heads /-+/ cd(s) { $item[3] }
-                    col_heads: col_head(s) { @::cols = @{$item[1]} }
-                    col_head: /\w+/ { $item[1] }
-                    cd: cd_line track_line(s)
-                      { $item[1]->{tracks} = $item[2]; $item[1] }
-                    cd_line: /.{14}/ /.{19}/ /.{15}/ /\d{4}/
-                      { my %rec; @rec{@::cols} = @item[1 .. $#item]; \%rec }
-                    track_line: '+' /.+/ { $item[2] }
-                    footer: /\d+/ 'CDs'
-                      { { count => $item[1] } }
-    );
+        <nocontext:>
 
-    my $parser = Parse::RecDescent->new($grammar);
+        <rule: File>
+            <Header>
+            <Body>
+            <Footer>
 
-    my $text;
+        <rule: Header>
+            <Title> \n
+            <Date> \n
 
-    {
-      local $/ = undef;
-      $text = <DATA>;
+        <rule: Title>
+            [^\n]+
+
+        <rule: Date>
+            \d+\s+\w+\s+\d{4}
+
+        <rule: Body>
+            <ColHeads>
+            <Divider>
+            <[CD]>+
+
+        <rule: ColHeads>
+            <[ColName]>+ %\s+ \n
+
+        <rule: ColName>
+            \w+
+
+        <rule: Divider>
+            -+ \n
+
+        <rule: CD>
+            <CDLine>
+            <[TrackLine]>*
+
+        <rule: CDLine>
+            <Artist> <TitleField> <Label> <Released> \n
+
+        <rule: Artist>
+            .{14}
+
+        <rule: TitleField>
+            .{19}
+
+        <rule: Label>
+            .{15}
+
+        <rule: Released>
+            \d{4}
+
+        <rule: TrackLine>
+            \+ <Track> \n
+
+        <rule: Track>
+            [^\n]+
+
+        <rule: Footer>
+            <Count> \s+ Records \n?
+
+        <rule: Count>
+            \d+
+    }x;
+
+    local $/ = undef;
+    my $text = <DATA>;
+
+    if ($text =~ $grammar) {
+        my $data = \%/;
+
+        my %output = (
+            title => $data->{File}{Header}{Title},
+            date  => $data->{File}{Header}{Date},
+            count => $data->{File}{Footer}{Count},
+            list  => [],
+        );
+
+        for my $cd (@{ $data->{File}{Body}{CD} }) {
+            push @{ $output{list} }, {
+                artist   => trim($cd->{CDLine}{Artist}),
+                title    => trim($cd->{CDLine}{TitleField}),
+                label    => trim($cd->{CDLine}{Label}),
+                released => $cd->{CDLine}{Released},
+                tracks   => [ map { $_->{Track} } @{ $cd->{TrackLine} || [] } ],
+            };
+        }
+
+        print Dumper(\%output);
+    } else {
+        print "Parse failed\n";
     }
 
-    my $CDs = $parser->file($text);
+    __DATA__
+    Dave's CD Collection
+    16 Sep 1999
 
-    print Dumper($CDs);
+    Artist        Title              Label          Released
+    --------------------------------------------------------
+    Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
+    +She's Got A New Spell
+    +Must I Paint You A Picture
+    Bragg, Billy  Mermaid Avenue     EMI            1998
+    +Walt Whitman's Niece
+    +California Stars
+    Black, Mary   The Holy Ground    Grapevine      1993
+    +Summer Sent You
+    +Flesh And Blood
+    Black, Mary   Circus             Grapevine      1995
+    +The Circus
+    +In A Dream
+    Bowie, David  Hunky Dory         RCA            1971
+    +Changes
+    +Oh You Pretty Things
+    Bowie, David  Earthling          EMI            1997
+    +Little Wonder
+    +Looking For Satellites
 
-As is generally the case, the parser actions will be easier to follow
-if we examine them bottom up.
+    6 Records
 
-The footer rule returns a reference to a hash with only one value. The
-key to this hash is count and the value is `$item[1]`, which is the
-number that is matched on the footer line. As we’ll see when we get to
-the file rule, I chose to return this as a hash reference since it
-makes it easier to combine parts into a data structure.
+Working through this bottom up: `$data->{File}{Body}{CD}` is the array
+of CD records built for us by the `<[CD]>+` subrule. For each one, we
+build a small hash with the artist, title, label, and release year
+taken straight from the fixed-width fields, and a list of track names
+taken from its `TrackLine` array (if there is one—the `|| []` guards
+against a CD with no listed tracks). The `title`, `date`, and `count`
+come straight from the corresponding parts of the tree.
 
-The track rule returns the name of the track.
-
-The `cd_line` rule builds a hash where the keys are the column headings
-and the values are the associated values from the CD line in the file.
-In order to do this, it makes use of the global @cols array which is
-created by the `col_heads` rule.
-
-The cd rule takes the hash reference which is returned by the `cd_line`
-rule and creates another element in the same hash where the key is
-tracks, and the value is a reference to the array of multiple track
-records which is returned by the `track(s)` subrule. The rule then
-returns this hash reference.
-
-The `col_head` rule matches one individual column heading and returns
-that value.
-
-The `col_heads` rule takes the array which is returned by the
-`col_head(s)` subrule and assigns this array to the global array `@cols`,
-so that it can later be used by the `cd_line` rule.
-
-The body rule returns the array returned by the cd(s) subrule. Each
-element of this array is the hash returned by one occurrence of the cd
-rule.
-
-The date rule returns the date that was matched. The header rule works
-similarly to the footer rule. It returns a reference to a two-element
-hash. The keys in this hash are “title” and “date” and the values are
-the respective pieces of matched text.
-
-The file rule takes the three pieces of data returned by the header,
-body, and footer rules and combines them into a single hash. It then
-returns a reference to this hash.
+Notice the calls to `trim`, from Perl's `builtin` namespace: because
+the artist, title, and label fields are fixed-width, the text
+Regexp::Grammars hands us still has the padding spaces attached, and
+`trim` strips them off. This is a good example of a small but genuine
+win from writing this code today rather than twenty-five years ago—the
+original Parse::RecDescent version of this program left that padding
+in the data, and you'd only have noticed it if you'd looked closely at
+its `Data::Dumper` output.
 
 #### Checking the output with Data::Dumper
 
-The program uses the
-[Data::Dumper](https://www.metacpan.org/pod/Data::Dumper) module to
-print out a data dump of the data structure that we have built. For
-our sample CD data file, the output from this program look like this:
+For our sample CD data file, the output from this program looks like
+this:
 
     $VAR1 = {
              'list' => [
                         {
-                          'Released' => '1988',
-                          'Artist' => 'Bragg, Billy',
-                          'Title' => 'Workers\' Playtime',
-                          'Label' => 'Cooking Vinyl',
+                          'released' => '1988',
+                          'artist' => 'Bragg, Billy',
+                          'title' => 'Workers\' Playtime',
+                          'label' => 'Cooking Vinyl',
                           'tracks' => [
                                         'She\'s Got A New Spell',
                                         'Must I Paint You A Picture'
                                       ]
                         },
                         {
-                        'Released' => '1998',
-                        'Artist' => 'Bragg, Billy',
-                        'Title' => 'Mermaid Avenue',
-                        'Label' => 'EMI',
+                        'released' => '1998',
+                        'artist' => 'Bragg, Billy',
+                        'title' => 'Mermaid Avenue',
+                        'label' => 'EMI',
                         'tracks' => [
                                       'Walt Whitman\'s Niece',
                                       'California Stars'
                                     ]
                         },
                         {
-                        'Released' => '1993',
-                        'Artist' => 'Black, Mary',
-                        'Title' => 'The Holy Ground',
-                        'Label' => 'Grapevine',
+                        'released' => '1993',
+                        'artist' => 'Black, Mary',
+                        'title' => 'The Holy Ground',
+                        'label' => 'Grapevine',
                         'tracks' => [
                                       'Summer Sent You',
                                       'Flesh And Blood'
                                     ]
                         },
                         {
-                        'Released' => '1995',
-                        'Artist' => 'Black, Mary',
-                        'Title' => 'Circus',
-                        'Label' => 'Grapevine',
+                        'released' => '1995',
+                        'artist' => 'Black, Mary',
+                        'title' => 'Circus',
+                        'label' => 'Grapevine',
                         'tracks' => [
                                       'The Circus',
                                       'In A Dream'
                                     ]
                         },
                         {
-                        'Released' => '1971',
-                        'Artist' => 'Bowie, David',
-                        'Title' => 'Hunky Dory',
-                        'Label' => 'RCA',
+                        'released' => '1971',
+                        'artist' => 'Bowie, David',
+                        'title' => 'Hunky Dory',
+                        'label' => 'RCA',
                         'tracks' => [
                                       'Changes',
                                       'Oh You Pretty Things'
                                     ]
                         },
                         {
-                        'Released' => '1997',
-                        'Artist' => 'Bowie, David',
-                        'Title' => 'Earthling',
-                        'Label' => 'EMI',
+                        'released' => '1997',
+                        'artist' => 'Bowie, David',
+                        'title' => 'Earthling',
+                        'label' => 'EMI',
                         'tracks' => [
                                       'Little Wonder',
                                       'Looking For Satellites'
@@ -711,62 +878,100 @@ our sample CD data file, the output from this program look like this:
               'date' => '16 Sep 1999'
             };
 
-You can see that this structure is the same as the one that we built
-in [Chapter 8](ch013.xhtml). The main part of the structure is a hash, the keys of
-which are “list,” “title,” “count,” and “date.” Of these, all but
-“list” is associated with a scalar containing data from the header or
-the footer of the file. The key “list” is associated with a reference
-to an array. Each element of that array contains the details of one CD
-in a hash. This includes a reference to a further list that contains
-the tracks from each CD.
+This is the same structure we built with Parse::RecDescent earlier in
+the chapter (give or take the trimmed whitespace), which is worth
+pausing on: the grammar-writing effort has moved almost entirely into
+*describing the shape of the data*, and almost out of *writing code to
+extract it*.
 
-Other features of Parse::RecDescent
------------------------------------
+If you'd rather have this as JSON—handy if you're feeding it to
+another program or a web page rather than to a Perl script—swap the
+`Data::Dumper` call for `JSON::MaybeXS`, and pull the per-CD
+hash-building out into a small subroutine using subroutine signatures:
 
-That completes our detailed look at using Parse::RecDescent. It
-should give you enough information to parse some rather complex file
-formats into equally complex data structures. We have, however, only
-scratched the surface of what Parse::RecDescent can do. Here is an
+    use v5.40;
+    use builtin qw(trim);
+    no warnings 'experimental::builtin';
+
+    use Regexp::Grammars;
+    use JSON::MaybeXS;
+
+    my $grammar = qr{ ... }x;   # as above
+
+    local $/ = undef;
+    my $text = <DATA>;
+
+    if ($text =~ $grammar) {
+        my $data = \%/;
+
+        my $output = {
+            title => $data->{File}{Header}{Title},
+            date  => $data->{File}{Header}{Date},
+            count => $data->{File}{Footer}{Count},
+            list  => [ map { cd_record($_) } $data->{File}{Body}{CD}->@* ],
+        };
+
+        say JSON->new->utf8->pretty->encode($output);
+    } else {
+        say "Parse failed";
+    }
+
+    sub cd_record ($cd) {
+        return {
+            artist   => trim($cd->{CDLine}{Artist}),
+            title    => trim($cd->{CDLine}{TitleField}),
+            label    => trim($cd->{CDLine}{Label}),
+            released => $cd->{CDLine}{Released},
+            tracks   => [ map { $_->{Track} } $cd->{TrackLine}->@* ],
+        };
+    }
+
+    __DATA__
+    ... # as above
+
+We'll be looking at JSON in much more detail in the next chapter.
+
+Other features of Regexp::Grammars
+------------------------------------
+
+That completes our detailed look at using Regexp::Grammars. It should
+give you enough information to parse some rather complex file formats
+into equally complex data structures. We have, however, only
+scratched the surface of what Regexp::Grammars can do. Here is an
 overview of some of its other features. For further details see the
 documentation that comes with the module.
 
-*  *Autotrees*—This is a method by which you can get the parser to automatically build a parse tree for your input data. If you don’t have a specific requirement for your output data structure, then this functionality might be of use to you.
+*  *Tokens vs. rules*—Every rule we've defined in this chapter has used `<rule: name>`, which automatically skips whitespace between subrules. If you need precise control over whitespace instead (for example, when parsing something whitespace-sensitive), you can define a `<token: name>` instead, which behaves like an ordinary Perl regex with no automatic whitespace skipping.
 
-*  *Lookahead rules*—Sometimes the data that you are parsing can be more complex than the examples that we have covered. In particular, if a token can change its meaning depending on what follows it, you should make use of lookahead rules. These allow you to specify text in the rule which must be matched, but is not consumed by the match. This is very similar to the (?= …) construct in Perl regular expressions.
+*  *Semantic predicates*—The `<require: (?{ CODE })>` directive lets you fail a match based on arbitrary Perl code, not just on what the text looks like—useful for things like checking that a value falls within an expected range.
 
-*  *Error handling*—Parse::RecDescent has a powerful functionality to allow you to output error messages when a rule fails to match.
+*  *Custom error messages*—The `<error:...>` and `<fatal:...>` directives let you queue up a helpful error message when part of a grammar fails to match, rather than leaving the caller to guess why the whole match failed.
 
-*  *Dynamic rules*—Because terminals are either text strings or regular expressions and both of these can contain variables which are evaluated at run time, it is possible to create rules which change their meaning as the parse progresses.
+*  *Blessing results into objects*—The `<objrule:...>` and `<objtoken:...>` directives let you have Regexp::Grammars bless the hash it builds for a rule into a class of your choosing, so a successful parse can hand you back real objects instead of plain hashes.
 
-*  *Subrule argument*—It is possible for a rule to pass arguments down into its subrule and, therefore, alter the way that they work.
+*  *Named, reusable grammars*—The `<grammar:...>` and `<extends:...>` directives let you define a grammar once and reuse or extend it from other grammars, which is handy if you're parsing several related formats.
 
-*  *Incremental parsing*—It is possible to change the definition of a grammar which a program is running, using two methods called Extend and Replace.
-
-*  *Precompiling parsers*—Using the Precompile method it is possible to create a new module that will parse a particular grammar. This new module can then be used in programs without Parse::RecDescent being present.
+*  *Free lookahead and backreferences*—Because a Regexp::Grammars grammar is a real Perl regular expression under the hood, all of the usual regex tools—lookahead, lookbehind, backreferences, and so on—are available to you directly, without needing special support from the module.
 
 Further information
 -------
 
-The best place to get more information about Parse::RecDescent is in
-the manual pages that come with the module. Typing perldoc
-Parse::RecDescent at any command line will show you this
-documentation. The distribution also contains almost forty demo
-programs and an HTML version of Damian Conway’s article for the
-Winter 1998 issue of *The Perl Journal* titled [The man(1) of descent](http://www.foo.be/docs/tpj/issues/vol3_4/tpj0304-0010.html),
-which is a useful introduction to parsing in general and
-Parse::RecDescent in particular.
+The best place to get more information about Regexp::Grammars is in
+the manual page that comes with the module. Typing `perldoc
+Regexp::Grammars` at any command line will show you this
+documentation, including a substantial cookbook of worked examples.
 
 Summary
 -------
 
-*  Parse::RecDescent is a Perl module for building recursive descent parsers.
+*  Regexp::Grammars is a Perl module for building recursive descent parsers, using ordinary Perl regular expressions extended with named rules.
 
-*  Parsers are created by passing the new method the definition of a grammar.
+*  Grammars are defined as a `qr{}` pattern, using `<rule: name>` (or `<token: name>`) to introduce each named subrule.
 
-*  The parser is run by passing the text to be parsed to a method named after the top-level rule in the grammar.
+*  A grammar is matched against text using Perl's usual `=~` operator.
 
-*  Parser action code can be associated with grammar rules. The associated code is called when the rule matches.
+*  On a successful match, Regexp::Grammars automatically builds a parse tree and makes it available in the special `%/` hash—there's no need to write parser actions to extract a data structure.
 
-*  The `@item` array contains details of the tokens which have matched in a given rule.
+*  Wrapping a subrule name in square brackets, as in `<[Name]>`, collects every match of that subrule into an array rather than keeping only the last one.
 
-*  Parser actions can change the value that will be returned by a rule. This is how you can build up parse tree data structures.
+*  Turning the raw parse tree into a shape that suits your program is usually just a few lines of ordinary Perl.

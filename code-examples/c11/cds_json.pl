@@ -1,11 +1,10 @@
-use strict;
-use warnings;
-
+use v5.40;
 use builtin qw(trim);
-no warnings 'experimental::builtin';
+use feature 'signatures';
+no warnings 'experimental::signatures';
 
 use Regexp::Grammars;
-use Data::Dumper;
+use JSON::MaybeXS;
 
 my $grammar = qr{
     \A
@@ -81,26 +80,26 @@ my $text = <DATA>;
 if ($text =~ $grammar) {
     my $data = \%/;
 
-    my %output = (
+    my $output = {
         title => $data->{File}{Header}{Title},
         date  => $data->{File}{Header}{Date},
         count => $data->{File}{Footer}{Count},
-        list  => [],
-    );
+        list  => [ map { cd_record($_) } $data->{File}{Body}{CD}->@* ],
+    };
 
-    for my $cd (@{ $data->{File}{Body}{CD} }) {
-        push @{ $output{list} }, {
-            artist   => trim($cd->{CDLine}{Artist}),
-            title    => trim($cd->{CDLine}{TitleField}),
-            label    => trim($cd->{CDLine}{Label}),
-            released => $cd->{CDLine}{Released},
-            tracks   => [ map { $_->{Track} } @{ $cd->{TrackLine} || [] } ],
-        };
-    }
-
-    print Dumper(\%output);
+    say JSON->new->utf8->pretty->encode($output);
 } else {
-    print "Parse failed\n";
+    say "Parse failed";
+}
+
+sub cd_record ($cd) {
+    return {
+        artist   => trim($cd->{CDLine}{Artist}),
+        title    => trim($cd->{CDLine}{TitleField}),
+        label    => trim($cd->{CDLine}{Label}),
+        released => $cd->{CDLine}{Released},
+        tracks   => [ map { $_->{Track} } $cd->{TrackLine}->@* ],
+    };
 }
 
 __DATA__
@@ -127,5 +126,5 @@ Bowie, David  Hunky Dory         RCA            1971
 Bowie, David  Earthling          EMI            1997
 +Little Wonder
 +Looking For Satellites
-7 Records
+6 Records
 

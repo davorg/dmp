@@ -1,28 +1,54 @@
-use Parse::RecDescent; 
+use v5.40;
+use builtin qw(trim);
+use feature 'signatures';
+no warnings 'experimental::signatures';
 
-my $grammar = q(sentence: subject verb object 
-	        subject: noun_phrase 
-	        object: noun_phrase 
-	        verb: 'wrote' | 'likes' | 'ate' 
-	        noun_phrase: pronoun | proper_noun | article noun 
-	        article: 'a' | 'the' | 'this' 
-	        pronoun: 'it' | 'he' 
-	        proper_noun: 'Perl' | 'Dave' | 'Larry'
-	        noun: 'book' | 'cat' ); 
+use Regexp::Grammars;
 
-my $parser = Parse::RecDescent->new($grammar); 
+my $grammar = qr{
+    <nocontext:>
+    \A <Sentence> \Z
 
-while (<DATA>) { 
-  chomp; 
-  print "'$_' is "; 
-  print 'NOT ' unless $parser->sentence($_); 
-  print "a valid sentence\n"; 
-} 
-__END__ 
-Larry wrote Perl 
-Larry wrote a book 
-Dave likes Perl 
-Dave likes the book 
-Dave wrote this book 
-the cat ate the book 
+    <rule: Sentence>
+        <Subject> <Verb> <Object>
+
+    <rule: Subject>
+        <NounPhrase>
+
+    <rule: Object>
+        <NounPhrase>
+
+    <rule: Verb>
+        wrote | likes | ate
+
+    <rule: NounPhrase>
+        <Pronoun> | <ProperNoun> | <Article> <Noun>
+
+    <rule: Article>
+        a | the | this
+
+    <rule: Pronoun>
+        it | he
+
+    <rule: ProperNoun>
+        Perl | Dave | Larry
+
+    <rule: Noun>
+        book | cat
+}x;
+
+while (<DATA>) {
+    chomp(my $line = $_);
+    print "'$line' is ";
+    print 'NOT ' unless $line =~ $grammar;
+    say "a valid sentence";
+}
+
+__DATA__
+Larry wrote Perl
+Larry wrote a book
+Dave likes Perl
+Dave likes the book
+Dave wrote this book
+the cat ate the book
 Dave got very angry

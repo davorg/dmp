@@ -1,3 +1,27 @@
+Copyright
+=========
+
+*Data Munging with Perl*, Second Edition
+
+Copyright © Dave Cross.
+
+All rights reserved.
+
+**Work in progress version: __BUILD_DATE__**
+
+This is a work in progress. Content, structure, and code examples may
+still change before the final edition. If you spot an error or have a
+suggestion, please raise an issue at
+[github.com/davorg/dmp](https://github.com/davorg/dmp).
+
+<!--
+  TODO(Dave): please check/replace the legal wording above — I didn't
+  want to guess at publisher name, copyright years, or rights-reserved
+  language you haven't confirmed. The __BUILD_DATE__ token is replaced
+  automatically at build time (see the Makefile) with today's date, so
+  every PDF/EPUB you generate is self-dating.
+-->
+
 Foreword
 ========
 

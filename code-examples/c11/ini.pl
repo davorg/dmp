@@ -1,45 +1,53 @@
-use Parse::RecDescent; 
+use v5.40;
 
-my $grammar = q(file: section(s) 
-		{ 
-		  my %file; 
-		  foreach (@{$item[1]}) { 
-		    $file{$_->[0]} = $_->[1]; 
-		  } 
-		  \%file; 
-		} 
+use Regexp::Grammars;
+use JSON::MaybeXS;
 
-	        section: header assign(s) 
-		{ 
-		  my %sec; 
-		  foreach (@{$item[2]}) { 
-		    $sec{$_->[0]} = $_->[1]; 
-		  } 
-		  [ $item[1], \%sec] 
-		} 
+my $grammar = qr{
+    \A <File> \Z
 
-	        header: '[' /\w+/ ']' 
-		{ 
-		 $item[2] 
-		} 
+    <nocontext:>
 
-	        assign: /\w+/ '=' /\w+/ 
-		{ 
-		 [$item[1], $item[3]] 
-		}); 
+    <rule: File>
+        <[Section]>+
 
-$parser = Parse::RecDescent->new($grammar); 
-my $text; 
+    <rule: Section>
+        <Header> \s* \n
+        <[Assign]>*
 
-{ 
-  $/ = undef; 
-  $text = <STDIN>; 
-} 
+    <rule: Header>
+        \[ <Name> \]
 
-my $tree = $parser->file($text); 
-foreach (keys %$tree) { 
-  print "$_\n"; 
-  foreach my $key (keys %{$tree->{$_}}) { 
-    print "\t$key: $tree->{$_}{$key}\n"; 
-  } 
+    <rule: Name>
+        \w+
+
+    <rule: Assign>
+        \s* <Key> \s* = \s* <Value> \s* \n?
+
+    <rule: Key>
+        \w+
+
+    <rule: Value>
+        [^\n\r]+
+}x;
+
+local $/ = undef;
+my $text = <STDIN>;
+
+if ($text =~ $grammar) {
+    my $tree = \%/;
+    my $output = {};
+
+    for my $section ($tree->{File}{Section}->@*) {
+        my $name = $section->{Header}{Name};
+        my $assignments = $section->{Assign};
+        $output->{$name} = {
+            map { $_->{Key} => $_->{Value} } $assignments->@*
+        };
+    }
+
+    say JSON->new->utf8->pretty->encode($output);
+} else {
+    say "Parse failed.";
 }
+
