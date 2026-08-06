@@ -6,6 +6,8 @@ Findings from a full read-through of `Data Munging with Perl (2ed).pdf` (234 pag
 
 **LeanPub note (2026-08-05):** updates reach the LeanPub WIP edition via manual upload — no GitHub sync is configured, so a built EPUB/PDF from this repo has to be produced and uploaded by hand each time.
 
+**Completion estimate (2026-08-06):** for the LeanPub "percentage complete" field, set to **65%**. My own read was 75–80% — every chapter is structurally complete and readable, and the worst staleness (dead XML chapter, broken weather example, ancient parser tooling) is fixed — but Dave's going with the more pessimistic figure given what's still open below: real rewrites still needed for Ch5 (Unicode) and Ch6 (dates), the Appendix A drift found today, and the smaller polish items (copyright wording, artwork, Appendix B). Worth revisiting this number each time a chapter from the "Outdated code / modules" or "New topics" lists below gets closed out.
+
 ## 2026-08-05 pre-release sprint — done
 
 - [x] **Chapter 11 rewritten for `Regexp::Grammars`.** All three examples (English sentences, INI file, CD data file) now use `Regexp::Grammars` throughout, replacing the leftover `Parse::RecDescent` sections. New material covers array-capturing subrules (`<[Name]>`), the separated-list syntax (`<[Name]>+ %sep`), the `<debug:...>` directive (replacing `$::RD_TRACE`/`$::RD_HINT`), and a rewritten "Other features" list (tokens vs. rules, `<require:>`, `<error:>`/`<fatal:>`, `<objrule:>`/`<objtoken:>`, `<grammar:>`/`<extends:>`). The CD example now also uses `trim()` from `builtin` to strip fixed-width padding, which the old version silently left in.
@@ -50,6 +52,20 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 - [x] ~~Ch11 — Building your own parsers.~~ **Done (2026-08-05).** Optional future polish: a one-line nod to `Marpa::R2` as another modern alternative.
 - [ ] **Appendix B — Essential Perl** teaches the `-w` command-line flag but never mentions `use strict; use warnings;`, which is the standard opening for any Perl script today. Odd gap in a basics appendix.
 - [x] **Ch2 — OO section is already solid.** Uses Moo, and accurately describes Perl's new core `class` feature as one to watch (confirmed still experimental as of Perl 5.42, the current stable release). No action needed.
+- [ ] **Appendix A (Modules Reference) is now behind the chapters it documents** (found 2026-08-06, while estimating completion %). It has detailed sections on `DBI`, `Number::Format`, `Date::Calc`, `Date::Manip`, `LWP::Simple`, `HTML::Parser`/`HTML::LinkExtor`/`HTML::TokeParser`/`HTML::TreeBuilder`, and `XML::Parser` — but nothing on `XML::LibXML`, `JSON::MaybeXS`, `YAML::PP`, `Regexp::Grammars`, or `HTTP::Tiny`, all of which the narrative chapters now lean on. Today's Ch10/Ch11 rewrites have actually made this gap worse, not better. Needs a pass once Ch5/Ch6 are also modernized, so it only has to be done once.
+
+## Audit coverage — what hasn't been checked yet
+
+Worth knowing when trusting the completion estimate above: the "no
+modernization flags" chapters haven't all had the same level of
+scrutiny. Ch5, Ch6, Ch7, Ch9, Ch10, and Ch11 have been actively
+checked against current Perl/CPAN practice (that's where the open
+items above come from). Ch1, Ch2, and Ch4 got a full read during the
+original July 2026 pass. **Ch3 and Ch8 got the PDF-sync diff but not
+a fresh modernity audit; Ch12 (Looking Back and Ahead) and Appendix B
+haven't been specifically checked for datedness at all** — Ch12 is
+mostly reflective prose so risk is low, but worth a pass rather than
+assuming.
 
 ## New topics to consider for relevance
 
@@ -75,6 +91,7 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 ## Artwork
 
 - [ ] **Redraw the figures.** :-) All 19 images in `images/` are 1st-edition-era diagrams (data structure sketches, parser trees, etc.) — worth a fresh pass once the content settles, both for a visual refresh and because at least one is now stale: `11-3-item-array.png` (the old `@item` array diagram) is no longer referenced anywhere now that Chapter 11 doesn't use Parse::RecDescent's `@item`/`%item` — either repurpose it for a new "shape of `%/`" diagram or drop it.
+- [ ] **Three images now orphaned** (found via a `make epub` image-count check, 2026-08-06): `11-3-item-array.png`, `10-1-output-from-xml-parser-tree-style.png` (both above), plus `foreword-diagram-key.png`, which isn't referenced anywhere in the current text at all — worth checking whether the foreword ever pointed to it, or whether it can just be dropped.
 
 ## 2026-08-06 — Chapter 10 capstone example rewritten
 
