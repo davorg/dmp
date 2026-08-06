@@ -29,7 +29,7 @@ Compared every chapter's PDF text against its `.md` file. Most chapters matched 
 The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted work ready to fold in:
 
 - [x] ~~`new-code/c11/*`~~ — promoted into `code-examples/c11/` and wired into the rewritten Chapter 11 (2026-08-05).
-- [ ] **Two competing weather-example drafts for Chapter 9** — `weather_scrape_2025` (top-level, oddly placed) uses `HTTP::Tiny` + `JSON::MaybeXS` to pull the JSON blob embedded in Yahoo's weather page (`__NEXT_DATA__`) rather than screen-scraping HTML. `new-code/c09/weather` instead scrapes timeanddate.com with `Web::Query`. Need to pick one — leaning toward the JSON-based approach since it fits the book's new JSON emphasis, though scraping a site's internal JSON blob is still fragile long-term; a genuine public API (e.g. Open-Meteo) might be a more durable and equally good JSON example.
+- [x] ~~Two competing weather-example drafts for Chapter 9~~ — **resolved (2026-08-06):** neither used. Both deleted; replaced with a live Open-Meteo API example in Chapter 10's new JSON section, cross-linked from Chapter 9. See the 2026-08-06 JSON/YAML sprint entry below.
 - [x] ~~`code-examples/c3/data_printer.pl` + `cd.txt`~~ — not orphaned, just uncommitted: companion code for the `Data::Printer` section already written into `chapter03.md` (lines 603–611). Just needs to be committed.
 - [x] ~~14 `chapters/*.docx` files~~ — **deleted (2026-08-05)**. Spot-checked `chapter11.docx` word-for-word against `chapter11.md`: 19 words different out of 4,500. They were just Word exports of the markdown, not a separate source of content.
 - Noise, not content: `index.html` (your personal site's homepage, davecross.co.uk — copied in by accident) and `.vscode/` (VS Code's Perl language-server cache). Neither was deleted; worth binning `index.html` and adding `.vscode/` to `.gitignore` when convenient.
@@ -39,21 +39,21 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 
 - [x] ~~Chapter 4 (pattern matching) is missing.~~ **Resolved** — `chapters/chapter04.md` exists in the `dmp` repo, complete (~1050 lines, substr/index/case functions through regular expressions, with summary). It's wired into `chapters.txt` and the build. The standalone PDF was just out of sync with the repo — last repo commit touching chapter 4 is 2024-06-03, which is also the most recent commit in the whole repo, so the PDF was likely exported before that, or via a separate path that dropped it.
 - [ ] **"Part IV" is referenced but doesn't exist.** The preface says "PART IV concludes our tour..." but Chapter 12 just follows Part III directly, with no Part IV divider in the actual document.
-- [ ] **Front matter is ahead of the chapter it describes.** The preface already says YAML/JSON "have largely taken over from XML," but Chapter 10 is still pure XML content (XML::Parser, XML::DOM, XML::RSS). The intro copy has been updated; the chapter hasn't.
+- [x] ~~Front matter is ahead of the chapter it describes.~~ **Resolved (2026-08-06):** Chapter 10 is now "Common Data Interchange Formats," covering XML, JSON, and YAML; front matter's TOC blurb updated to match.
 
 ## Outdated code / modules, by chapter
 
 - [ ] **Ch5 — Unicode section** says "Perl version 5.6 includes some support for Unicode" (5.6 was released in 2000). Needs a rewrite around `use utf8` and the core `Encode` module.
 - [ ] **Ch6 — Dates** covered only via `Date::Calc` and `Date::Manip`. `Date::Manip` is now considered legacy; `DateTime` is the current standard, with `Time::Piece` (core since 5.10) as the lightweight option. Neither is mentioned anywhere in the book. Note: your own dev.to post "Processing dates and times with Perl" covers this exact ground and could feed the rewrite directly.
 - [ ] **Ch7 — Binary data** examples use `Image::Info` (cited at v0.04) and `MPEG::MP3Info`. Both look old/likely under-maintained on CPAN — check current status before reusing as examples.
-- [ ] **Ch9 — Extended example ("weather forecasts")** scrapes a Yahoo! page you've already flagged yourself as `[ed: this page is no longer active]`. Good candidate to replace with a call to a JSON weather API — would also cross-link nicely into the new JSON chapter.
+- [x] ~~Ch9 — Extended example ("weather forecasts")~~ **Resolved (2026-08-06):** added a closing note that the Yahoo! page is gone entirely, pointing to Chapter 10's live weather-API example. The HTML::TokeParser teaching content itself is left as-is — still a fine scraping lesson, just not something to build new code against.
 - [x] ~~Ch11 — Building your own parsers.~~ **Done (2026-08-05).** Optional future polish: a one-line nod to `Marpa::R2` as another modern alternative.
 - [ ] **Appendix B — Essential Perl** teaches the `-w` command-line flag but never mentions `use strict; use warnings;`, which is the standard opening for any Perl script today. Odd gap in a basics appendix.
 - [x] **Ch2 — OO section is already solid.** Uses Moo, and accurately describes Perl's new core `class` feature as one to watch (confirmed still experimental as of Perl 5.42, the current stable release). No action needed.
 
 ## New topics to consider for relevance
 
-- [ ] **JSON/YAML chapter to replace XML** (per your existing plan). Candidates: `JSON::MaybeXS` (XS backend with pure-Perl fallback) and `YAML::PP` (or `YAML::XS`).
+- [x] ~~JSON/YAML chapter to replace XML~~ — **done (2026-08-06)**, using `JSON::MaybeXS` and `YAML::PP` as planned. See sprint entries below for the full rewrite.
 - [ ] **DateTime / Time::Piece** modernization of the dates section (see Ch6 above).
 - [ ] **REST/HTTP APIs as a data source**, more generally — the book only touches HTTP in passing right now. Ties together the JSON chapter and the dead weather-scraping example.
 - [ ] **Modern HTTP client note** — `LWP::Simple` still works but lacks HTTPS/header/error-handling support that `HTTP::Tiny` (core) or `LWP::UserAgent` provide.
@@ -70,7 +70,7 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - [ ] **Audit all `use` statements for core vs. CPAN** — annotate which modules ship with Perl and which need installing, and make sure things like `say`, `state`, and signatures are explicitly enabled where used.
 - [ ] **Audit `my $foo = shift` idioms** — replace with subroutine signatures where the target Perl version supports it (5.36+).
 - [ ] **Closing appendix: glossary of modern CPAN modules**, grouped by purpose (logging, JSON, web, OO, date/time, etc.) — natural companion to the existing Appendix A module reference.
-- [x] ~~Decide XML's fate precisely.~~ **Decided (2026-08-05):** the new chapter is JSON/YAML/XML, not a straight swap — XML stays, trimmed down and modernized (`XML::LibXML` rather than `XML::Parser`/`XML::DOM`), because "some poor souls still use it." Working title: **Chapter 10 — JSON, YAML, and XML** (or similar). This is tomorrow's starting point.
+- [x] ~~Decide XML's fate precisely.~~ **Decided (2026-08-05), done (2026-08-06):** the chapter is JSON/YAML/XML, not a straight swap — XML stays, trimmed down and modernized (`XML::LibXML` rather than `XML::Parser`/`XML::DOM`), because "some poor souls still use it." Retitled **Chapter 10: Common Data Interchange Formats**.
 
 ## Artwork
 
@@ -88,10 +88,21 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - [ ] **Untested** — same caveat as everything else this sprint: no CPAN access in this sandbox. Please run the `weather.xml` examples before publishing.
 - [ ] **Orphaned image:** `images/10-1-output-from-xml-parser-tree-style.png` (the Tree-style diagram) is no longer referenced anywhere — same situation as `11-3-item-array.png`, candidate for the "redraw the figures" pass.
 
+## 2026-08-06 — Chapter 10 renamed, XML markup style, JSON/YAML sections written
+
+- [x] **Chapter 10 renamed "Common Data Interchange Formats."** Intro rewritten: HTML's shortcomings (kept), then XML/JSON/YAML each explained in turn using the same weather-forecast example rendered in all three formats, closing with a "reach for JSON talking to an API, YAML when a human edits the file, expect XML in older/document-centric systems" summary. XML's DTD/valid-vs-well-formed material trimmed to two paragraphs. Front matter TOC blurb updated to match.
+- [x] **All-caps XML tags lowercased.** You flagged `<FORECAST>`/`<OUTLOOK>`/`<TEMPERATURE>` etc. as hard to read — swept to lowercase across `chapter10.md`, `weather.xml`, and `weather_xpath.pl`. Attribute values (`MAX`/`MIN`/`C`) left as-is; nothing else in the repo had the same problem.
+- [x] **New "Working with JSON" section.** `JSON::MaybeXS` intro, then a live example calling the [Open-Meteo](https://open-meteo.com/) weather API (free, no key) for London's current conditions and today's high/low — this is the real, working replacement for Chapter 9's dead Yahoo! scraper, cross-linked both ways. Verified the actual JSON response shape against Open-Meteo's own docs rather than guessing.
+- [x] **New "Working with YAML" section.** `YAML::PP` reading a small hand-written `cities.yaml` (name/lat/long per city), looping over it to call the same API per city — YAML as human-edited config, JSON as wire format, same data shape either way once parsed.
+- [x] **Chapter 9 updated** with a closing note that the Yahoo! page is now gone entirely, pointing to Chapter 10. Deleted the two superseded draft scripts (`new-code/weather_scrape_2025`, `new-code/c09/weather`).
+- [x] **Ch10 "What this chapter covers" and Summary** updated for JSON/YAML; "Further information" corrected — `HTTP::Tiny` is core Perl (5.14+), unlike the other modules in the chapter.
+- [ ] **Untested, and this one makes real HTTP calls** — `code-examples/c10/weather_api.pl` and `cities_weather.pl` hit the live Open-Meteo API. Worth running before publishing, both to confirm the code works and that the response shape hasn't changed.
+- [ ] **XML::RSS not touched.** Still uses `XML::Parser` internally (that's fine, it's a stable dependency, not something the chapter teaches directly) — worth a quick look now everything else in the chapter is modernized, but not urgent.
+
 ## Next session
 
-- Write the JSON and YAML sections for Chapter 10 — the chapter is now short and needs padding back out.
-- Decide XML::RSS's fate (not touched yet — still uses `XML::Parser` under the hood, which is fine, but worth a look once JSON/YAML sections exist).
-- Review the copyright wording in `front-matter.md`, and pick a weather-example draft for Chapter 9.
-- Once the Chapter 10 rewrite is settled, redraw the figures (see Artwork above) and revisit the Chapter 3 backlog items.
+- Review the copyright wording in `front-matter.md`.
+- Run and check the new Ch10 weather examples (`weather_xpath.pl`, `weather_walk.pl`, `weather_api.pl`, `cities_weather.pl`, `cds.pl`) and the Ch11 `cds.pl` — see "Untested" notes above and in prior sprints.
+- Redraw the figures (see Artwork above), including the two now-orphaned images (`10-1-output-from-xml-parser-tree-style.png`, `11-3-item-array.png`).
+- Revisit the Chapter 3 backlog items.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
