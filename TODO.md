@@ -79,7 +79,7 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 ## 2026-08-06 — Chapter 10 capstone example rewritten
 
 - [x] **"Producing different document formats" replaced.** The old ~570-line section (258-line `XML::Parser`-based dispatch script converting a README into POD/HTML/text) is gone. New "one dataset, three formats" example: parses the book's 6-CD collection from `cds.xml` via `XML::LibXML` + XPath, emits JSON (`JSON::MaybeXS`) and YAML (`YAML::PP`) from the same in-memory structure — ~17 lines of code total, plus a short "Going back the other way" subsection covering XML round-tripping in prose only (no code, per your request). Files promoted to `code-examples/c10/cds.xml` and `cds.pl`; the old `readme.xml`/`transform.pl` example files are now orphaned and were deleted.
-- [ ] **Untested** — same caveat as the Chapter 11 rewrite: no CPAN access in this sandbox, so `cds.pl` hasn't actually been run. Worth a quick `perl cds.pl` check before this goes out.
+- [x] ~~Untested~~ — **confirmed working** by Dave, pushed.
 - [ ] **Still outstanding for the full Ch10 rewrite:** this is one example, not the whole chapter restructure. Still need: dedicated JSON section, dedicated YAML section, and a decision on how much of the remaining `XML::Parser`/`XML::DOM`/`XML::RSS` content gets trimmed down to `XML::LibXML` vs. cut outright. Chapter title/intro ("What this chapter covers") not yet updated to reflect JSON/YAML.
 
 ## Next session
