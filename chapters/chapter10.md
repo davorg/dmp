@@ -478,13 +478,14 @@ a basis for your scripts.
 Working with JSON
 -------
 
-Perl has no built-in JSON support, but CPAN has plenty of modules that
-add it. The one to reach for is
+Perl has had JSON support in core since 5.14, via
+[JSON::PP](https://metacpan.org/pod/JSON::PP) -- but being pure Perl,
+it's not particularly fast. The module to reach for instead is
 [JSON::MaybeXS](https://metacpan.org/pod/JSON::MaybeXS): it automatically
-uses the fastest JSON backend installed on your system (`Cpanel::JSON::XS`
-or `JSON::XS`), and falls back to a pure-Perl implementation if neither
-is available, so your code works everywhere without you having to
-think about which backend it's actually running on.
+uses a fast XS backend if one's installed (`Cpanel::JSON::XS` or
+`JSON::XS`), and falls straight back to the core `JSON::PP` if neither
+is, so your code is never left without JSON support, and gets a speed
+boost for free wherever one's available.
 
 ### Example: today's weather, live from an API
 
@@ -728,7 +729,7 @@ can subscribe via the web interface at:
 Most of the modules discussed in this chapter -- `XML::LibXML`,
 `XML::RSS`, `JSON::MaybeXS`, `YAML::PP` -- are not installed as part
 of the standard Perl installation, and you'll need to get them from
-the CPAN. The exception is `HTTP::Tiny`, which has been part of core
+the CPAN. The exceptions are `HTTP::Tiny` and `JSON::PP`, both part of core
 Perl since 5.14.
 
 Summary
