@@ -542,6 +542,13 @@ This has been a particularly simple example, but similar techniques
 can be used to extract just about any information that you can find on
 the World Wide Web.
 
+By the time you read this, in fact, the Yahoo! page has disappeared
+entirely -- which rather proves the point about scraping pages
+written for people rather than programs. If you need real weather
+data today, the modern equivalent is to call a weather API that
+returns JSON directly, with none of this HTML-archaeology required.
+[Chapter 10](ch015.xhtml) does exactly that.
+
 Further information
 -------------------
 

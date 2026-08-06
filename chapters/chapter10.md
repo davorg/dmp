@@ -9,6 +9,8 @@ What this chapter covers:
 
 * Parsing XML with XML::LibXML, using XPath and the Document Object Model
 
+* Working with JSON and YAML, including a live weather API example
+
 * Producing JSON, YAML, and XML from the same data
 
 This chapter is about getting structured data into and out of your
@@ -473,6 +475,143 @@ page instead of text. There are a number of example scripts in the
 [XML::RSS](https://metacpan.org/pod/XML::RSS) distribution which you can use as
 a basis for your scripts.
 
+Working with JSON
+-------
+
+Perl has no built-in JSON support, but CPAN has plenty of modules that
+add it. The one to reach for is
+[JSON::MaybeXS](https://metacpan.org/pod/JSON::MaybeXS): it automatically
+uses the fastest JSON backend installed on your system (`Cpanel::JSON::XS`
+or `JSON::XS`), and falls back to a pure-Perl implementation if neither
+is available, so your code works everywhere without you having to
+think about which backend it's actually running on.
+
+### Example: today's weather, live from an API
+
+Back in [Chapter 9](ch014.xhtml) we scraped a Yahoo! weather page for a forecast.
+That page is long gone now, which is really the whole problem with
+scraping HTML in the first place: it was written for people to read,
+not programs, and it can change or disappear without warning. The
+modern equivalent is to call a weather *API* -- a service that returns
+data, not a page designed for a browser. Here's the same job done
+properly, using [Open-Meteo](https://open-meteo.com/), a free weather
+API that needs no signup or API key:
+
+    use v5.40;
+    use HTTP::Tiny;
+    use JSON::MaybeXS;
+
+    my %description = (
+        0 => 'Clear sky',        1 => 'Mainly clear',
+        2 => 'Partly cloudy',    3 => 'Overcast',
+        45 => 'Fog',             48 => 'Depositing rime fog',
+        51 => 'Light drizzle',   53 => 'Moderate drizzle',
+        55 => 'Dense drizzle',   61 => 'Slight rain',
+        63 => 'Moderate rain',   65 => 'Heavy rain',
+        71 => 'Slight snow',     73 => 'Moderate snow',
+        75 => 'Heavy snow',      80 => 'Rain showers',
+        95 => 'Thunderstorm',
+    );
+
+    my ($lat, $lon) = (51.5072, -0.1276);   # Central London
+    my $url = 'https://api.open-meteo.com/v1/forecast'
+        . "?latitude=$lat&longitude=$lon"
+        . '&current=temperature_2m,weather_code'
+        . '&daily=temperature_2m_max,temperature_2m_min,weather_code'
+        . '&timezone=Europe%2FLondon';
+
+    my $res = HTTP::Tiny->new->get($url);
+    die "Request failed: $res->{status} $res->{reason}\n" unless $res->{success};
+
+    my $forecast = decode_json($res->{content});
+
+    my $now = $forecast->{current};
+    say "Now: $description{$now->{weather_code}}, $now->{temperature_2m}C";
+
+    my $today = $forecast->{daily};
+    say "Today: $description{$today->{weather_code}[0]}, "
+      . "$today->{temperature_2m_min}[0]C to $today->{temperature_2m_max}[0]C";
+
+Running it gives something like:
+
+    Now: Partly cloudy, 19C
+    Today: Partly cloudy, 14C to 22C
+
+`HTTP::Tiny` -- a core module, so nothing extra to install -- fetches
+the URL, and `decode_json` (exported by `JSON::MaybeXS`) turns the
+response body straight into a Perl data structure: `current` is a
+hash of conditions right now, and `daily` is a hash of arrays, one
+entry per forecast day, of which we only look at today (index `0`).
+The API reports weather as a numeric
+[WMO code](https://open-meteo.com/en/docs) rather than a text
+description, so `%description` translates the codes we're likely to
+see into something readable.
+
+Compare this with the `weather.xml` example earlier in the chapter:
+there's no separate parsing step followed by pulling values out
+attribute by attribute. `decode_json` hands you the finished data
+structure in a single call, because a JSON document already has the
+same shape as the Perl value it describes -- that's the main reason
+it's so much less code than the equivalent XML handling. The reverse
+operation, turning a data structure back into JSON text, is just as
+direct; we'll use it in the next example.
+
+Working with YAML
+-------
+
+JSON is a great fit for talking to an API, but it's not a format
+people enjoy hand-editing -- every key needs quoting, commas have to
+be exactly right, and you can't leave yourself a comment. YAML's
+whole reason for existing is to be pleasant for humans to write and
+read, which makes it a natural choice for configuration: rather than
+hard-coding one city's coordinates into the script, let's read a list
+of cities from a YAML file.
+
+Here's `cities.yaml`:
+
+    - name: London
+      latitude: 51.5072
+      longitude: -0.1276
+    - name: Manchester
+      latitude: 53.4808
+      longitude: -2.2426
+    - name: Glasgow
+      latitude: 55.8642
+      longitude: -4.2518
+
+And the script that reads it:
+
+    use v5.40;
+    use HTTP::Tiny;
+    use JSON::MaybeXS;
+    use YAML::PP;
+
+    my %description = ( ... );   # as before
+
+    my $cities = YAML::PP->new->load_file('cities.yaml');
+
+    for my $city (@$cities) {
+        my $url = 'https://api.open-meteo.com/v1/forecast'
+            . "?latitude=$city->{latitude}&longitude=$city->{longitude}"
+            . '&current=temperature_2m,weather_code';
+
+        my $res = HTTP::Tiny->new->get($url);
+        next unless $res->{success};
+
+        my $now = decode_json($res->{content})->{current};
+        say "$city->{name}: $description{$now->{weather_code}}, "
+          . "$now->{temperature_2m}C";
+    }
+
+`YAML::PP->new->load_file` reads the file straight into an array of
+hashes -- exactly the structure `decode_json` would have built from
+the equivalent JSON. That's the point worth taking away from seeing
+JSON and YAML side by side: they mostly differ in how the data is
+*written down*, not in what shape it ends up in once parsed. Adding a
+fourth city means editing a text file, not touching the program,
+which is exactly the job YAML is suited for and JSON, with its
+stricter and less forgiving syntax, is not.
+
 Producing different document formats
 -------------------------------------
 
@@ -579,21 +718,23 @@ if you need it.
 Further information
 -------------------
 
-The XML and Perl world is a very exciting place at the moment. Things are
-changing all the time. The best way to keep abreast of the latest news is to
-read the [Perl-XML mailing list](https://lists.perl.org/list/perl-xml.html). You
+If you want to go deeper on the XML side specifically, the best way to
+keep abreast of the latest news is to read the
+[Perl-XML mailing list](https://lists.perl.org/list/perl-xml.html). You
 can subscribe via the web interface at:
 
     https://lists.perl.org/list/perl-xml.html
 
-None of the modules that we have discussed in this chapter are
-installed as part of the standard Perl installation. You will need to
-get them from the CPAN and install them yourself.
+Most of the modules discussed in this chapter -- `XML::LibXML`,
+`XML::RSS`, `JSON::MaybeXS`, `YAML::PP` -- are not installed as part
+of the standard Perl installation, and you'll need to get them from
+the CPAN. The exception is `HTTP::Tiny`, which has been part of core
+Perl since 5.14.
 
 Summary
 -------
 
-* XML is becoming a very common data format, particularly for exchanging data between different computer systems.
+* XML, JSON, and YAML all solve the same underlying problem -- getting structured data into and out of your programs -- with different trade-offs between formality, brevity, and human-friendliness.
 
 * XML documents can be either valid or well-formed. Currently, no Perl XML parser checks for validity.
 
@@ -602,3 +743,9 @@ Summary
 * Older modules such as [XML::Parser](https://metacpan.org/pod/XML::Parser) and [XML::DOM](https://metacpan.org/pod/XML::DOM) are still around and you'll meet them in older code, but [XML::LibXML](https://metacpan.org/pod/XML::LibXML) does everything they do, more directly and in less code.
 
 * Specialized parsers such as [XML::RSS](https://metacpan.org/pod/XML::RSS) can be used to parse documents conforming to specific DTDs.
+
+* [JSON::MaybeXS](https://metacpan.org/pod/JSON::MaybeXS) is the standard choice for JSON in Perl -- it's fast where a fast backend is installed, and works everywhere regardless.
+
+* JSON is close to the default format for talking to web APIs, and decodes straight into ordinary Perl data structures with no separate parsing step.
+
+* [YAML::PP](https://metacpan.org/pod/YAML::PP) reads and writes YAML, which is worth reaching for when a human, not just a program, needs to read or edit the file -- configuration being the classic case.

@@ -1,0 +1,9 @@
+- name: London
+  latitude: 51.5072
+  longitude: -0.1276
+- name: Manchester
+  latitude: 53.4808
+  longitude: -2.2426
+- name: Glasgow
+  latitude: 55.8642
+  longitude: -4.2518
