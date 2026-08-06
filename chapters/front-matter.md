@@ -180,9 +180,10 @@ introduction to parsing theory.
 marked up with HTML. We cover a number of HTML parsing tools available for
 Perl and discuss their suitability to particular tasks.
 
-*[Chapter 10](ch015.xhtml)* discusses XML. First, we consider the limitations of HTML
-and the advantages of XML. Then, we look at XML parsers available for
-use with Perl.
+*[Chapter 10](ch015.xhtml)* looks at common data interchange formats: XML, JSON,
+and YAML. We consider the limitations of HTML that XML was designed to
+address, why JSON and YAML have displaced XML for most everyday use,
+and how to parse and produce all three with Perl.
 
 *[Chapter 11](ch016.xhtml)* demonstrates how to write parsers for your own data
 structures using a parser-building tool available for Perl.

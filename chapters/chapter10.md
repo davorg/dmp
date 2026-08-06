@@ -1,20 +1,30 @@
-Chapter 10: XML
-===============
+Chapter 10: Common Data Interchange Formats
+============================================
 
 What this chapter covers:
 
-* What is XML and what’s wrong with HTML?
+* What's wrong with HTML as a data format, and what problem XML was designed to solve
+
+* JSON and YAML, and why they've displaced XML for most everyday data interchange
 
 * Parsing XML with XML::LibXML, using XPath and the Document Object Model
 
 * Producing JSON, YAML, and XML from the same data
 
-Over the next few years, it looks as though XML will become the data
-exchange format of choice for a vast number of computer systems. In
-this chapter we will take a look at some of the tools available for
-parsing XML with Perl.
+This chapter is about getting structured data into and out of your
+programs in a format that other systems -- and other programmers --
+can also read. Three formats dominate this space: XML, JSON, and
+YAML. XML arrived first and largely defined the problem; JSON and
+YAML came later and, for most day-to-day work, have taken over. All
+three are still worth knowing: you'll meet XML in older systems and
+in some corners of the enterprise world where it never went away,
+JSON is close to the default for web APIs, and YAML turns up
+everywhere configuration files are hand-written. We'll look at what
+problem each format solves and why people ended up preferring one
+over another, then spend the rest of the chapter parsing and
+producing all three in Perl.
 
-XML overview
+Data interchange formats
 -------
 
 One of the problems we had when extracting the weather information
@@ -27,90 +37,111 @@ design of the page was changed, we would have to rework our program.
 ### What’s wrong with HTML?
 
 The reason this was so difficult was that HTML was designed to model
-the logical  structure of a document, not the meaning of the various
-elements. For example, an  HTML document makes it easy to recognize
-headings at various levels, paragraphs,  lists, and various other
-publishing elements. You can tell when an element should  be printed
-in bold, but the problem is that you don’t know *why* that particular
-element was bold. It could be purely for emphasis, it could be
-because it is a row heading in a table, or it could be because it
-is the temperature on a weather page.
+the logical structure of a document, not the meaning of the various
+elements. An HTML document makes it easy to recognize headings,
+paragraphs, lists, and other publishing elements. You can tell when
+an element should be printed in bold, but you don't know *why* it was
+bold -- for emphasis, because it's a table row heading, or because
+it's the temperature on a weather page.
 
 Our task would be a lot easier if the mark-up in a document told us
-more about   the actual meaning of the data. In our weather example,
-it would be nice if there was  a `<FORECAST>` … `</FORECAST>` element that
-surrounded the actual forecast description and perhaps a
-`<TEMPERATURE>` … `</TEMPERATURE>` element which surrounded  each of the
-temperature figures in which we were interested. Even better, the
-`<TEMPERATURE>` element could have attributes which told us whether it
-was a maximum or minimum temperature and whether it was in degrees
-Fahrenheit or Celsius.
+more about the actual meaning of the data. In our weather example, it
+would be nice if there was a `<FORECAST>` … `</FORECAST>` element that
+surrounded the forecast description, and a `<TEMPERATURE>` …
+`</TEMPERATURE>` element around each temperature figure -- ideally
+with attributes telling us whether it was a maximum or minimum, and
+in which units.
 
-### What is XML?
+### XML
 
-This is exactly the kind of problem that XML was designed to solve.
-XML is the  *Extensible Mark-up Language*. In fact it isn’t really a
-mark-up language at all, it is a  method to define new mark-up
-languages which are better suited to particular tasks.  The way it
-works is by defining a syntax for *Document Type Definitions* (DTDs).
-A  DTD defines the set of elements that are allowed in a document,
-together with their  attributes and relationships to each other. It
-will define which elements are mandatory or optional, whether there
-is any defined order, and which elements can (or  must) contain other
-elements. The exact syntax of DTDs is beyond the scope of this  book,
-but there are a number of specialized books which cover it in some
-detail (for  example [XML Pocket Reference](https://learning.oreilly.com/library/view/xml-pocket-reference/9780596100506/) by Robert Eckstein and
-published by O’Reilly).  Going back to our weather forecast example,
-we could design a DTD that defined a  file format for weather
-forecasts. Let’s keep it very simple and say that a sample  would look
-like this:
+XML -- the *Extensible Mark-up Language* -- was designed to solve
+exactly this problem. It isn't really a mark-up language itself, but
+a way of defining new mark-up languages suited to particular tasks.
+Applied to our weather example, we might end up with something like
+this:
 
-     <FORECAST>
-     <OUTLOOK>
-     Partly Cloudy
-     </OUTLOOK>
-     <TEMPERATURE TYPE="MAX" DEGREES="C">12</TEMPERATURE>
-     <TEMPERATURE TYPE="MIN" DEGREES="C">6</TEMPERATURE>
-     </FORECAST>
+    <FORECAST>
+    <OUTLOOK>
+    Partly Cloudy
+    </OUTLOOK>
+    <TEMPERATURE TYPE="MAX" DEGREES="C">12</TEMPERATURE>
+    <TEMPERATURE TYPE="MIN" DEGREES="C">6</TEMPERATURE>
+    </FORECAST>
 
-If Yahoo! (or any other information provider) made a file available
-in this format then we could download it from the Internet and parse
-it using Perl to extract the relevant information. If the parser that
-we wrote was sophisticated enough, Yahoo! could reorder the contents
-of the source file and we would still be able to access the data.
-This is because the file is marked up to show what each data element
-is, not how it should be displayed.
+Now the data is marked up to show what each piece of information
+*is*, rather than how it should be displayed, so a program can pull
+out the values it needs without caring how the document happens to be
+laid out.
 
-#### Valid vs. well-formed
+XML also has a formal side that JSON and YAML mostly do without:
+elements and attributes can be constrained by a *Document Type
+Definition* (DTD) or an XML Schema, which defines exactly which
+elements are allowed, in what order, and with what attributes. A
+document that merely follows XML's own syntax rules -- one top-level
+element, every tag closed, attributes quoted, and so on -- is called
+*well-formed*; one that also conforms to a DTD or schema is *valid*.
+Most of the XML you'll encounter day to day is only ever checked for
+well-formedness, and that's the only property Perl's XML tools verify
+by default.
 
-It’s worth stopping at this point to discuss a couple of XML concepts.
-There are two levels of XML correctness. A correct XML document can be
-said to be *valid* or it can be said to be *well-formed*. Well-formed
-is the easier criterion to adhere to. This means that the document is
-syntactically correct or, in other words, it follows all of the
-general rules for XML documents. Basically, these rules say this:
+### JSON
 
-* The document must have one top-level element.
+[JSON](https://www.json.org/) -- *JavaScript Object Notation* -- describes
+the same kind of data with far less ceremony. It has exactly two
+structures, objects (`{ }`, unordered key/value pairs) and arrays
+(`[ ]`, ordered lists), built out of strings, numbers, booleans, and
+`null`. Our weather forecast looks like this in JSON:
 
-* All elements must have opening and closing tags (except in the special case of empty tags where the opening tag is also used as the closing tag).
+    {
+      "outlook": "Partly Cloudy",
+      "temperatures": [
+        { "type": "MAX", "degrees": "C", "value": 12 },
+        { "type": "MIN", "degrees": "C", "value": 6 }
+      ]
+    }
 
-* Opening and closing tags must be nested correctly (*i.e.*, nested tags must be closed in the reverse of the order in which they were opened).
+Two things explain why JSON overtook XML for most data-interchange
+work. First, it maps directly onto the data structures Perl (and
+almost every other language) already has -- objects become hashes,
+arrays become arrays -- so there's no impedance mismatch to think
+about, unlike XML's tree of elements and attributes, which needs
+translating into a hash or array before you can do anything useful
+with it. Second, it's simply less to write and read: no closing tags,
+no attribute-vs-element distinction, no DTD required. It also grew up
+alongside the web, where it's now the default format returned by
+practically every API you'll ever call.
 
-* All attributes must be quoted and cannot contain a `<` or an `&` (except as the first character of a reference).
+### YAML
 
-Our sample weather document fulfills all of these constraints and is,
-therefore, well-formed. It cannot, however, be described as valid. A
-valid document is one that follows the rules laid down in a DTD. This
-means that it must have all of the correct elements in the right
-order and any nesting of elements must also be in combinations
-sanctioned by the DTD. If we wrote a weather DTD and wrote our
-weather document to conform with that DTD then we could call it
-valid. Currently, we don’t have such a DTD so there is no way that
-our document can be valid.
+[YAML](https://yaml.org/) -- *YAML Ain't Markup Language* -- takes a
+different approach again: instead of brackets and braces, structure
+comes from indentation, in the same spirit as Python. The same data
+looks like this:
 
-XML parsers fall into two types. Validating parsers will check the
-document’s structure against its DTD and nonvalidating parsers only
-check that the document is well-formed.
+    outlook: Partly Cloudy
+    temperatures:
+      - type: MAX
+        degrees: C
+        value: 12
+      - type: MIN
+        degrees: C
+        value: 6
+
+YAML was designed with humans doing the reading and writing, not just
+programs. Keys don't need quoting, commas aren't required between
+list items, and, unlike JSON, YAML allows comments -- all of which
+makes it a popular choice for files people edit by hand, such as
+configuration files (this is also why so many CI and deployment tools
+use it). It's less commonly used than JSON as a wire format between
+programs, but the two are close relatives: YAML 1.2 was deliberately
+designed as a superset of JSON, so any valid JSON document is also
+valid YAML.
+
+In short: reach for JSON when you're talking to a web API or another
+program, YAML when a human needs to read or edit the file, and expect
+to meet XML when you're dealing with an older or more document-centric
+system, or one with a genuine need for a formal schema. The rest of
+this chapter shows how to work with all three in Perl.
 
 Parsing XML with XML::LibXML
 -------
