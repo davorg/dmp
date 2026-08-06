@@ -82,9 +82,16 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - [x] ~~Untested~~ — **confirmed working** by Dave, pushed.
 - [ ] **Still outstanding for the full Ch10 rewrite:** this is one example, not the whole chapter restructure. Still need: dedicated JSON section, dedicated YAML section, and a decision on how much of the remaining `XML::Parser`/`XML::DOM`/`XML::RSS` content gets trimmed down to `XML::LibXML` vs. cut outright. Chapter title/intro ("What this chapter covers") not yet updated to reflect JSON/YAML.
 
+## 2026-08-06 — XML::Parser / XML::DOM replaced with XML::LibXML
+
+- [x] **"Parsing XML with XML::Parser" (5 styles: Stream/Debug/Subs/Tree/Objects) and "XML::DOM" sections replaced.** ~760 lines covering two legacy modules cut down to one "Parsing XML with XML::LibXML" section (~125 lines): XPath-based parsing (`findvalue`/`findnodes`) using the same `weather.xml` example as before, a short generic tree-walker, the same `eval`-based error handling, a note on `XML::LibXML::Reader` for streaming huge files, and a closing paragraph naming `XML::Parser`/`XML::DOM` for readers who meet them in old code — no worked examples for either. Chapter's "What this chapter covers" bullets and Summary updated to match — they still described the old structure. Chapter now ~575 lines, down from ~1215; will be padded back out once JSON/YAML sections exist.
+- [ ] **Untested** — same caveat as everything else this sprint: no CPAN access in this sandbox. Please run the `weather.xml` examples before publishing.
+- [ ] **Orphaned image:** `images/10-1-output-from-xml-parser-tree-style.png` (the Tree-style diagram) is no longer referenced anywhere — same situation as `11-3-item-array.png`, candidate for the "redraw the figures" pass.
+
 ## Next session
 
-- Decide the rest of the Chapter 10 shape: JSON section, YAML section, and how much of the remaining XML content (`XML::Parser`/`XML::DOM`/`XML::RSS`) gets trimmed to `XML::LibXML` vs. cut.
+- Write the JSON and YAML sections for Chapter 10 — the chapter is now short and needs padding back out.
+- Decide XML::RSS's fate (not touched yet — still uses `XML::Parser` under the hood, which is fine, but worth a look once JSON/YAML sections exist).
 - Review the copyright wording in `front-matter.md`, and pick a weather-example draft for Chapter 9.
 - Once the Chapter 10 rewrite is settled, redraw the figures (see Artwork above) and revisit the Chapter 3 backlog items.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
