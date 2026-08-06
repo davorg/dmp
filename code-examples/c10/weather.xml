@@ -1,7 +1,7 @@
-<FORECAST>
-  <OUTLOOK> 
+<forecast>
+  <outlook> 
     Partly Cloudy
-  </OUTLOOK>
-  <TEMPERATURE TYPE="MAX" DEGREES="C">12</TEMPERATURE> 
-  <TEMPERATURE TYPE="MIN" DEGREES="C">6</TEMPERATURE> 
-</FORECAST>
+  </outlook>
+  <temperature type="MAX" degrees="C">12</temperature> 
+  <temperature type="MIN" degrees="C">6</temperature> 
+</forecast>

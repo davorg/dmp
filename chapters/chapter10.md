@@ -46,9 +46,9 @@ it's the temperature on a weather page.
 
 Our task would be a lot easier if the mark-up in a document told us
 more about the actual meaning of the data. In our weather example, it
-would be nice if there was a `<FORECAST>` … `</FORECAST>` element that
-surrounded the forecast description, and a `<TEMPERATURE>` …
-`</TEMPERATURE>` element around each temperature figure -- ideally
+would be nice if there was a `<forecast>` … `</forecast>` element that
+surrounded the forecast description, and a `<temperature>` …
+`</temperature>` element around each temperature figure -- ideally
 with attributes telling us whether it was a maximum or minimum, and
 in which units.
 
@@ -60,13 +60,13 @@ a way of defining new mark-up languages suited to particular tasks.
 Applied to our weather example, we might end up with something like
 this:
 
-    <FORECAST>
-    <OUTLOOK>
+    <forecast>
+    <outlook>
     Partly Cloudy
-    </OUTLOOK>
-    <TEMPERATURE TYPE="MAX" DEGREES="C">12</TEMPERATURE>
-    <TEMPERATURE TYPE="MIN" DEGREES="C">6</TEMPERATURE>
-    </FORECAST>
+    </outlook>
+    <temperature type="MAX" degrees="C">12</temperature>
+    <temperature type="MIN" degrees="C">6</temperature>
+    </forecast>
 
 Now the data is marked up to show what each piece of information
 *is*, rather than how it should be displayed, so a program can pull
@@ -166,12 +166,12 @@ Here's `XML::LibXML` reading our sample weather document:
 
     my $dom = XML::LibXML->load_xml(location => shift);
 
-    (my $outlook = $dom->findvalue('/FORECAST/OUTLOOK')) =~ s/^\s+|\s+$//g;
+    (my $outlook = $dom->findvalue('/forecast/outlook')) =~ s/^\s+|\s+$//g;
     say "Outlook: $outlook";
 
-    for my $temp ($dom->findnodes('/FORECAST/TEMPERATURE')) {
-        say $temp->getAttribute('TYPE'), ': ', $temp->textContent,
-            ' ', $temp->getAttribute('DEGREES');
+    for my $temp ($dom->findnodes('/forecast/temperature')) {
+        say $temp->getAttribute('type'), ': ', $temp->textContent,
+            ' ', $temp->getAttribute('degrees');
     }
 
 Running this against our sample weather XML document gives the same
@@ -183,8 +183,8 @@ result as before:
 
 `load_xml` reads and parses the file in one step and hands back a
 document object. `findvalue` runs an XPath expression and returns the
-text it matches -- here, `/FORECAST/OUTLOOK` means "the `OUTLOOK`
-child of the top-level `FORECAST` element." `findnodes` works the same
+text it matches -- here, `/forecast/outlook` means "the `outlook`
+child of the top-level `forecast` element." `findnodes` works the same
 way but returns a list of matching elements instead of text, which we
 can then query directly with `getAttribute` and `textContent`. There's
 no need to track which element we're currently inside, as the old
@@ -218,12 +218,12 @@ supports that too, using the same node-by-node model as the DOM:
 
 Run against the weather document, this prints:
 
-    FORECAST []
-      OUTLOOK []
+    forecast []
+      outlook []
         Partly Cloudy
-      TEMPERATURE [TYPE: MAX, DEGREES: C]
+      temperature [type: MAX, degrees: C]
         12
-      TEMPERATURE [TYPE: MIN, DEGREES: C]
+      temperature [type: MIN, degrees: C]
         6
 
 `documentElement` gets us the top-level element to start from, and
