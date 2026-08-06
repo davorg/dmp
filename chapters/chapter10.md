@@ -5,13 +5,9 @@ What this chapter covers:
 
 * What is XML and what’s wrong with HTML?
 
-* Parsing XML
+* Parsing XML with XML::LibXML, using XPath and the Document Object Model
 
-* Using handlers to control the parser
-
-* Parsing XML using the Document Object Model
-
-* Converting an XML document to POD, HTML, or plain text
+* Producing JSON, YAML, and XML from the same data
 
 Over the next few years, it looks as though XML will become the data
 exchange format of choice for a vast number of computer systems. In
@@ -116,766 +112,131 @@ XML parsers fall into two types. Validating parsers will check the
 document’s structure against its DTD and nonvalidating parsers only
 check that the document is well-formed.
 
-Parsing XML with XML::Parser
+Parsing XML with XML::LibXML
 -------
 
-Of course there are Perl XML parsers available. The most generalized one is the
-CPAN module [XML::Parser](https://metacpan.org/pod/XML::Parser). This module is
-based on an XML parser called [Expat](https://libexpat.github.io). Expat is a
-nonvalidating parser, so in Perl you will generally only be interested in the
-well-formedness of documents.
-
-I hope this explains my reluctance to go into the details of
-DTDs—[XML::Parser](https://metacpan.org/pod/XML::Parser) makes no use of them.
-There is, however, an experimental subclass of [XML::Parser](https://metacpan.org/pod/XML::Parser), called
-[XML::Checker::Parser](https://metacpan.org/pod/XML::Checker::Parser), which does validate an XML document against a DTD.
-
-[XML::Parser](https://metacpan.org/pod/XML::Parser) works in a similar way to
-[HTML::Parser](https://metacpan.org/pod/HTML::Parser), but as XML is more
-complex than HTML, [XML::Parser](https://metacpan.org/pod/XML::Parser) needs to
-be more complex than [HTML::Parser](https://metacpan.org/pod/HTML::Parser).
+There are a number of Perl XML parsers on CPAN, but for years now the
+one almost everyone reaches for is
+[XML::LibXML](https://metacpan.org/pod/XML::LibXML). It's a Perl
+binding for `libxml2`, the C library that also powers XML support in
+GNOME, PHP, and a long list of other tools -- so it's fast, actively
+maintained, and standards-compliant. It also does two jobs at once
+that used to belong to separate modules: it builds a full Document
+Object Model (DOM) of a document, and it lets you query that DOM with
+[XPath](https://en.wikipedia.org/wiki/XPath), a small language for
+picking out the parts of an XML document you actually care about.
 
 ### Example: parsing weather.xml
 
-As an example of using [XML::Parser](https://metacpan.org/pod/XML::Parser), here
-is a simple script to parse our weather XML file:
+Here's `XML::LibXML` reading our sample weather document:
 
-    use strict;
-    use XML::Parser;
-    my %forecast;
-    my @curr;
-    my $type;
+    use v5.40;
+    use XML::LibXML;
 
-    my $p = XML::Parser->new(Style => 'Stream');
-    $p->parsefile(shift);
-    print "Outlook: $forecast{outlook}n";
+    my $dom = XML::LibXML->load_xml(location => shift);
 
-    foreach (keys %forecast) {
-      next if /outlook/;
-      print "$_: $forecast{$_}->{val} $forecast{$_}->{deg}n";
+    (my $outlook = $dom->findvalue('/FORECAST/OUTLOOK')) =~ s/^\s+|\s+$//g;
+    say "Outlook: $outlook";
+
+    for my $temp ($dom->findnodes('/FORECAST/TEMPERATURE')) {
+        say $temp->getAttribute('TYPE'), ': ', $temp->textContent,
+            ' ', $temp->getAttribute('DEGREES');
     }
 
-    sub StartTag {
-      my ($p, $tag) = @_;
-      push @curr, $tag;
-      if ($tag eq 'TEMPERATURE') {
-        $type = $_{TYPE};
-        $forecast{$type}->{deg} = $_{DEGREES};
-      }
-    }
-
-    sub EndTag {
-      pop @curr;
-    }
-
-    sub Text {
-      my ($p) = shift;
-      return unless /S/;
-      s/^s+//;
-      s/s+$//;
-      if ($curr[-1] eq 'OUTLOOK') {
-        $forecast{outlook} .= $_;
-      } elsif ( $curr[-1] eq 'TEMPERATURE') {
-        $forecast{$type}->{val} = $_;
-      }
-    }
-
-Running this script against our sample weather XML document gives the
-following result:
+Running this against our sample weather XML document gives the same
+result as before:
 
     Outlook: Partly Cloudy
     MAX: 12 C
     MIN: 6 C
 
-### Using XML::Parser
+`load_xml` reads and parses the file in one step and hands back a
+document object. `findvalue` runs an XPath expression and returns the
+text it matches -- here, `/FORECAST/OUTLOOK` means "the `OUTLOOK`
+child of the top-level `FORECAST` element." `findnodes` works the same
+way but returns a list of matching elements instead of text, which we
+can then query directly with `getAttribute` and `textContent`. There's
+no need to track which element we're currently inside, as the old
+`Stream`-style parser required -- we just ask for the nodes we want.
 
-There are a number of different ways to use [XML::Parser](https://metacpan.org/pod/XML::Parser). In this
-example we are using it in a very similar manner to [HTML::Parser](https://metacpan.org/pod/HTML::Parser).
-When we create the parser object we pass it a hash containing various
-configuration options. In this case, the hash consists of one key
-(`Style`) and an associated value, which is the string `Stream`. The
-`Style` parameter tells [XML::Parser](https://metacpan.org/pod/XML::Parser) that we want to use one of a number
-of built-in parsing methods. The one that we want to use in this
-example is called Stream. In this mode [XML::Parser](https://metacpan.org/pod/XML::Parser) works very
-similarly to [HTML::Parser](https://metacpan.org/pod/HTML::Parser). There are a number of predefined methods
-which the parser will call when encountering various parts of the XML
-document. For this example we need to define three of these methods.
-`StartTag` is called when the start of an XML tag is found, `EndTag` is
-called when the end of a tag is seen, and `Text` is called when text
-data is encountered. In each case the first parameter to the function
-will be a reference to the underlying Expat object which is doing the
-parsing. In the `StartTag` and `EndTag` functions the second parameter is
-the name of the tag which is being started or ended. The complete
-original tag is stored in `$_`. Additionally, in the `StartTag` function,
-the list of attributes is stored in `%_`. In the `Text` function, the
-text that has been found is stored in `$_`.
+### Walking a document you don't know the shape of
 
-This may all make a bit more sense if we look at the example code in
-more detail. The main part of the program defines some global
-variables, creates the parser, parses the file, and displays the
-information which has been extracted. The global variables which it
-defines are: `%forecast`, which will store the forecast data that we
-want to display, `@curr` which is a list of all of the current elements
-that we are in, and `$type` which stores the current temperature type.
-All of the real work goes on in the parsing functions which are called
-by the parser as it processes the file.
+XPath is the right tool when you know what you're looking for. Some
+tasks, though -- writing a generic pretty-printer, say -- need to walk
+a document without knowing its structure in advance. `XML::LibXML`
+supports that too, using the same node-by-node model as the DOM:
 
-The `StartTag` function pushes the new tag on to the end of the `@curr` array,
-and if the tag starts a `TEMPERATURE` element, it stores the values of the
-`TYPE` and `DEGREES` attributes (which it finds in `%_`). The `EndTag` function
-simply pops the last element from the `@curr` array. You might think that we
-should check whether the tag that we are ending is of the same type as the
-current end of this list but, if it wasn’t the case, the document wouldn’t be
-well-formed and would, therefore, fail the parsing process. This always throws a
-fatal exception, but there are ways to prevent your program from dying if you
-give it non-well-formed XML, as we will see later.
+    use v5.40;
+    use XML::LibXML;
 
-The Text function checks whether there is useful data in the text
-string (which is stored in `$_`) and returns if it can’t find at least
-one nonspace character. It then strips leading and trailing spaces
-from the data. If the current element we are processing (given by
-`$curr[-1]`) is the `OUTLOOK` element, then the text must be the outlook
-description and we store it in the appropriate place in the
-`%forecast` variable. If the current element is a `TEMPERATURE` element,
-`%then` the text
-will be the temperature data and that is also stored in the %forecast
-hash (making use of the current temperature type which is stored in
-the global `$type` variable).
+    my $dom = XML::LibXML->load_xml(location => shift);
+    walk($dom->documentElement, 0);
 
-Once the parsing is complete the data is all stored in the `%forecast`
-hash and we can traverse the hash to display the required data. Notice
-that the method that we use for this makes no assumptions about the
-list of temperature types used. If we were to add average temperature
-data to the weather document, our program would still display this.
+    sub walk ($node, $depth) {
+        if ($node->nodeType == XML_ELEMENT_NODE) {
+            my $attrs = join ', ',
+                map { $_->name . ': ' . $_->value } $node->attributes;
+            say '  ' x $depth, $node->nodeName, " [$attrs]";
+            walk($_, $depth + 1) for $node->childNodes;
+        }
+        elsif ($node->nodeType == XML_TEXT_NODE) {
+            (my $text = $node->textContent) =~ s/^\s+|\s+$//g;
+            say '  ' x $depth, $text if length $text;
+        }
+    }
 
-#### Parsing failures
+Run against the weather document, this prints:
 
-[XML::Parser](https://metacpan.org/pod/XML::Parser) (and the other parsers which are based on it) have a
-somewhat harsh approach to non-well-formed XML documents. They will
-always throw a fatal exception when they encounter non-well-formed
-XML. Unfortunately, this behavior is defined in the XML
-specifications, so they have no choice about this, but it can still
-take beginners by surprise as they often expect the `parse` or
-`parsefile` method to return an error code, but instead their entire
-program is halted.
+    FORECAST []
+      OUTLOOK []
+        Partly Cloudy
+      TEMPERATURE [TYPE: MAX, DEGREES: C]
+        12
+      TEMPERATURE [TYPE: MIN, DEGREES: C]
+        6
 
-It’s difficult to see what processing you might want to proceed with
-if your XML document is incorrect, so in many cases dying is the
-correct approach for a program to take. If, however, you have a case
-where you want to recover a little more gracefully you can catch the
-fatal exception. You do this using `eval`. If the code that is passed
-to `eval` causes an exception, the program does not `die`, but the error
-message is put in the variable `$@`. You can therefore parse your XML
-documents using code like this:
+`documentElement` gets us the top-level element to start from, and
+`attributes` and `childNodes` return plain lists directly, rather than
+the `NodeList` objects with their own `getLength`/`item` methods that
+older DOM-style modules used -- one of several places where
+`XML::LibXML`'s API is just less ceremony for the same job.
 
-    eval { $p->parsefile($file) };
+### Handling parse errors
+
+`XML::LibXML` is no more forgiving of broken XML than any other
+standards-compliant parser: a document that isn't well-formed throws a
+fatal exception. Catching it works exactly as you'd expect:
+
+    eval { XML::LibXML->load_xml(location => $file) };
     if ($@) {
       die "Bad XML Document: $file\n";
     } else {
-      print "Good XML!\n";
+      say "Good XML!";
     }
 
-### Other XML::Parser styles
-
-The `Stream` style is only one of a number of styles which [XML::Parser](https://metacpan.org/pod/XML::Parser)
-supports.
-
-Depending on your requirements, another style might be better suited
-to the task.
-
-#### Debug
-
-The `Debug` style simply prints out a stylized version of your XML
-document. Parsing our weather example file using the `Debug` style gives
-us the following output:
-
-     \\ ()
-     FORECAST || #10;
-     FORECAST ||
-     FORECAST \\ ()
-     FORECAST OUTLOOK || #10;
-     FORECAST OUTLOOK ||
-     Partly Cloudy
-     FORECAST OUTLOOK || #10;
-     FORECAST OUTLOOK ||
-     FORECAST //
-     FORECAST || #10;
-     FORECAST ||
-     FORECAST \\ (TYPE MAX DEGREES C)
-     FORECAST TEMPERATURE || 12
-     FORECAST //
-     FORECAST || #10;
-     FORECAST ||
-     FORECAST \\ (TYPE MIN DEGREES C)
-     FORECAST TEMPERATURE || 6
-     FORECAST //
-     FORECAST || #10;
-     //
-
-If you look closely, you will see the structure of our weather
-document in this display. A line containing the opening tag of a new
-element contains the character sequence `\\` and the attributes of the
-element appear in brackets. A line containing the character sequence
-`//` denotes an element’s closing tag, and a line containing the
-character sequence `||` denotes the text contained within an element.
-The `#10` sequences denote the end of each line of text in the original
-document.
-
-#### Subs
-
-The `Subs` style works in a very similar manner to the `Stream` style,
-except that instead of the same functions being called for the start
-and end tags of each element, a different pair of functions is called
-for each element type. For example, in our weather document, the
-parser would expect to find functions called `FORECAST` and `OUTLOOK` that
-it would call when it found `<FORECAST>` and `<OUTLOOK>` tags. For the
-closing tags, it would look for functions called `_FORECAST` and
-`_OUTLOOK`. This method prevents the program from having to check which
-element type is being processed (although this information is still
-passed to the function as the second parameter).
-
-#### Tree
-
-All of the styles that we have seen so far have been *stream-based*.
-That is, they move through the document and call certain functions in
-your code when they come across particular events in the document. The
-Tree style does things differently. It parses the document and builds
-a data structure containing a logical model of the document. It then
-returns a reference to this data structure.
-
-The data structure generated by our weather document looks like this:
-
-    [ 'FORECAST', [ {}, 0, "\n
-    ",
-    'OUTLOOK', [ {}, 0, "\n
-    Partly Cloudy\n
-    "], 0, "\n
-    ",
-    'TEMPERATURE', [ ( 'DEGREES' => 'C', 'TYPE' => 'MAX' }, 0, '12' ], 0,
-    "\n ",
-    'TEMPERATURE', [ ( 'DEGREES' => 'C', 'TYPE' => 'MAX' }, 0, '6'
-    ], 0, "\n"
-    ] ]
-
-It’s probably a little difficult to follow, so let’s look at it in
-detail.
-
-Each element is represented by a list. The first item is the element
-type and the second item is a reference to another list which
-represents the contents of the element. The first element of this
-second level list is a reference to a hash which contains the
-attributes for the element. If the element has no attributes then the
-reference to the hash still exists, but the hash itself is empty. The
-rest of the list is a series of pairs of items, which represent the
-text, and elements that are contained within the element. These pairs
-of items have the same structure as the original two-item list, with
-the exception that a text item has a special element type of `0`.
-
-If you’re the sort of person who thinks that a picture is worth a
-thousand words, then Figure 10.1 might have saved me a lot of typing.
-
-![Output from XML::Parser Tree style](images/10-1-output-from-xml-parser-tree-style.png)
-
-In the figure the variable `$doc` is returned from the parser. You can
-also see the arrays which contain the definitions of the XML content
-and the hashes which contain the attributes.
-
-#### Example: using XML::Parser in Tree style
-
-This may become clearer still if we look at some sample code for
-dealing with one of these structures. The following program will print
-out the structure of an XML document. Using it to process our weather
-document will give us the following output:
-
-     FORECAST []
-     OUTLOOK []
-     Partly Cloudy
-     TEMPERATURE [DEGREES: C, TYPE: MAX]
-     12
-     TEMPERATURE [DEGREES: C, TYPE: MIN]
-     6
-
- Here is the code:
-
-    use strict;
-    use XML::Parser;
-
-    my $p = XML::Parser->new(Style => 'Tree');
-    my $doc = $p->parsefile(shift);
-    my $level = 0;
-
-    process_node(@$doc);
-
-    sub process_node {
-      my ($type, $content) = @_;
-      my $ind = ' ' x $level;
-      if ($type) { # element
-        my $attrs = shift @$content;
-        print $ind, $type, ' [';
-        print join(', ', map { "$_: $attrs->{$_}" } keys %{$attrs});
-        print "]\n";
-        ++$level;
-        while (my @node = splice(@$content, 0, 2)) {
-          process_node(@node); # Recursively call this subroutine
-        }
-        --$level;
-      } else { # text
-        $content =~ s/\n/ /g;
-        $content =~ s/^\s+//;
-        $content =~ s/\s+$//;
-        print $ind, $content, "\n";
-      }
-    }
-
-Let’s look at the code in more detail.
-
-The start of the program looks similar to any number of other parsing programs
-that we’ve seen in this chapter. The only difference is that we create our
-[XML::Parser](https://metacpan.org/pod/XML::Parser) object with the `Tree`
-style. This means that the `parsefile` method returns us a reference to our tree
-structure.
-
-As we’ve seen above, this is a reference to a list with two items in it. We’ll
-call one of these two-item lists a *node* and write a function called
-`process_node` which will handle one of these lists. Before calling
-`process_node`, we initialize a global variable to keep track of the current
-element nesting level.
-
-In the `process_node` function, the first thing that we do is determine the type
-of node we are dealing with. If it is an element, then the first item in the
-node list will have a true value. Text nodes have the value `0` in this
-position, which will evaluate as false. If we are dealing with an element, then
-shifting the first element off of the content list will give us a reference to
-the attribute hash. We can then print out the element type and attribute list
-indented to the correct level.
-
-Having dealt with the element and its attributes we can process its
-contents. One advantage of using shift to get the attribute hash
-reference is that it now leaves the content list with an even number
-of items in it. Each pair of items is another node. We can simply use
-splice to pull the nodes off the array one at a time and pass them
-recursively to `process_node`, pausing only to increment the level
-before processing the content and decrementing it again when finished.
-If the node is text, then the second item in the node list will be the
-actual text. In this case we just clean it up a bit and print it out.
-
-#### Example: parsing weather.xml using the Tree style
-
-This program will work with any tree structure that is generated by
-[XML::Parser](https://metacpan.org/pod/XML::Parser) using the `Tree` style.
-However, more often you will want to do something a little more specific to the
-document with which you are dealing. In our case, this will be printing out a
-weather forecast. Here is a `Tree`-based program for printing the forecast in
-our usual format.
-
-    use strict;
-    use XML::Parser;
-
-    my $p = XML::Parser->new(Style => 'Tree');
-    my $doc = $p->parsefile(shift);
-
-    process_node(@$doc);
-
-    sub process_node {
-      my ($type, $content) = @_;
-      if ($type eq 'OUTLOOK') {
-        print 'Outlook: ', trim($content->[2]), "\n";
-      } elsif ($type eq 'TEMPERATURE') {
-        my $attrs = $content->[0];
-        my $temp = trim($content->[2]);
-        print "$attrs->{TYPE}: $temp $attrs->{DEGREES}\n";
-      }
-      if ($type) {
-        while (my @node = splice @$content, 1, 2) {
-          process_node(@node)
-        }
-      }
-    }
-
-    sub trim {
-      local $_ = shift;
-      s/\n/ /g;
-      s/^\s+//;
-      s/\s+$//;
-      return $_;
-    }
-
-The basic structure of this program is quite similar to the previous
-one. All of the work is still done in the `process_node` function. In
-this version, however, we are on the lookout for particular element
-types which we know we want to process. When we find an `OUTLOOK`
-element or a `TEMPERATURE` element we know exactly what we need to do.
-All other elements are simply ignored. In the case of an `OUTLOOK`
-element we simply extract the text from the element and print it out.
-Notice that the text contained within the element is found at
-`$content->[2]`, the third item in the content array. This is true for
-any element that only contains text, as the first two items in the
-content list will always be a reference to the attribute hash and the
-character `0`.
-
-The processing for the `TEMPERATURE` element type is only slightly more
-complex as we need to access the attribute hash to find out the type
-of the temperature (minimum or maximum) and the kind of degrees in
-which is it measured.
-
-Notice that we still need to process any child elements and that this
-is still done in the same way as in the previous program—by removing
-nodes from the `@$content` list. In this case we haven’t removed the
-attribute hash from the front of the list, so we start the splice from
-the second item in the list (the second item has the index `0`).
-
-#### Objects
-
-The `Objects` style works very much like the `Tree` style, except that
-instead of arrays and hashes, the document tree is presented as a
-collection of objects. Each element type becomes a different object
-class. The name of the class is created by appending `main::` to the
-front of the element’s name.
-
-This is the default
-behavior. You can create your objects within other packages by using
-the `Pkg` option to `XML::Parser->new`. For example:
-
-    my $p = XML::Parser->new(
-      Style => 'Objects',
-      Pkg => 'Some_Other_Package'
-    );
-
-Text data is turned into an object of class `main::Characters`. The
-value that is returned by the parse method is a reference to an array
-of such objects. As a well-formed XML object can only have one
-top-level element, this array will only have one element.
-
-Attributes of the element are stored in the element hash. This hash
-also contains a special key, `Kids`. The value associated with this key
-is a reference to an array which contains all of the children of the
-element.
-
-#### Example: parsing XML with XML::Parser using the Objects style
-
-Here is a program that displays the structure of any given XML
-document using the `Objects` style:
-
-    use strict;
-    use XML::Parser;
-
-    my $p = XML::Parser->new(Style => 'Objects');
-
-    my $doc = $p->parsefile(shift);
-
-    my $level = 0;
-
-    process_node($doc->[0]);
-
-    sub process_node {
-      my ($node) = @_;
-
-      my $ind = ' ' x $level;
-
-      my $type = ref $node;
-      $type =~ s/^.*:://;
-
-      if ($type ne 'Characters') {
-        my $attrs = {%$node};
-        delete $attrs->{Kids};
-
-        print $ind, $type, ' [';
-        print join(', ', map { "$_: $attrs->{$_}" } keys %{$attrs});
-        print "]\n";
-
-        ++$level;
-        foreach my $node (@{$node->{Kids}}) {
-          process_node($node);
-        }
-        --$level;
-      } else {
-        my $content = $node->{Text};
-        $content =~ s/\n/ /g;
-        $content =~ s/^\s+//;
-        $content =~ s/\s+$//;
-        print $ind, $content, "\n" if $content =~ /\S/;
-      }
-    }
-
-This program is very similar to the example that we wrote using the
-Tree style. Once again, most of the processing is carried out in the
-`process_node` function. In this case each node is represented by a
-single reference rather than a two-item list. The first thing that we
-do in `process_node` is to work out the type of element with which we
-are dealing. We do this by using the standard Perl function [ref](https://perldoc.perl.org/functions/ref). This
-function takes one parameter, which is a reference, and returns a
-string containing the type of object that the reference refers to. For
-example, if you pass it a reference to an array, it will return the
-string `ARRAY`. This is a good way to determine the object type a
-reference has been blessed into. In our case, each reference that we
-pass to it will be of type `main::Element`, where `Element` is the name of
-one of our element types. We remove the `main::` from the front of the
-string to leave us with the specific element with which we are dealing.
-
-If we are dealing with an element (rather than character data) we then take a
-copy of the object hash which we will use to get the list of attributes. Notice
-that we don’t use the more obvious `$attrs = $node` as this only copies the
-reference and still leaves it pointing to the same original hash. As the next
-line of the code deletes the `Kids` array reference from this hash, we use the
-slightly more complex `$attrs = {%$node}` as this takes a copy of the original
-hash and returns a reference to the new copy. We can then delete the `Kids`
-reference without doing any lasting damage to the original object.
-
-Having retrieved the attribute hash, we display the element type along
-with its attributes. We then need to process all of the element’s
-children. We do this by iterating across the `Kids` array (which is
-why it’s a good idea that we didn’t delete the original earlier),
-passing each object in turn to `process_node`.
-
-If the object with which we are dealing is of the class `Characters`
-then it contains character data and we can access the actual text by
-using the special `Text` key.
-
-#### Choosing between Tree and Object styles
-
-The `Tree` and `Object` styles can both be used to address the same set of
-problems. You would usually use one of these two styles when your
-document processing requires multiple passes over the document
-structure. Whether you choose the `Tree` or `Objects` style for your
-tree-based parsing requirements is simply a matter of personal taste.
-
-### XML::Parser handlers
-
-The [XML::Parser](https://metacpan.org/pod/XML::Parser) styles that we have been
-discussing are a series of prebuilt methods for parsing XML documents in a
-number of popular ways. If none of these styles meet your requirements, there is
-another way that you can use [XML::Parser](https://metacpan.org/pod/XML::Parser)
-which gives even more control over the way it works. This is accomplished by
-setting up a series of *handlers* which can respond to various events that are
-triggered while parsing a document. This is very similar to the way we used
-[HTML::Parser](https://metacpan.org/pod/HTML::Parser) or the `Stream` style of
-[XML::Parser](https://metacpan.org/pod/XML::Parser).
-
-Handlers can be set to process a large number of XML constructs. The most
-obvious ones are the start and end of an XML element or character data, but you
-can also set handlers for the XML declaration, various DTD definitions, XML
-comments, processing instructions, and any other construct that you find in an
-XML document.
-
-You set handlers either by using the `Handlers` parameter when you create a
-parser object, or by using the `setHandlers` method later on. If you use the
-`Handlers` parameter then the value associated with the parameter should be a
-reference to a hash. In this hash the keys will be handler names, and each value
-will be a reference to the appropriate function.
-
-Different handler functions receive different sets of parameters. The full set
-of handlers and their parameters can be found in the
-[XML::Parser](https://metacpan.org/pod/XML::Parser) documentation, but here is a
-brief summary of the most frequently used ones:
-
-* *Init*—Called before parsing of a document begins. It is passed a reference to the `Expat` parser object.
-
-* *Final*—Called after parsing of a document is complete. It is passed a reference to the `Expat` parser object.
-
-* *Start*—Called when the opening tag of an XML element is encountered. It is passed a reference to the `Expat` parser object, the name of the element, and a series of pairs of values which represents the name and value of the element’s attributes.
-
-* *End*—Called when the closing tag of an XML element is encountered. It is passed a reference to the `Expat` parser object and the name of the element.
-
-* *Char*—Called when character data is encountered. It is passed a reference to the `Expat` parser object and the string of characters that has been found. All of these subroutines are passed a reference to the `Expat` parser object. This is the actual object that [XML::Parser](https://metacpan.org/pod/XML::Parser) uses to parse your XML document. It is useful in some more complex parsing techniques, but at this point you can safely ignore it.
-
-#### Example: parsing XML using XML::Parser handlers
-
-Here is an example of our usual program for displaying the document
-structure, rewritten to use handlers.
-
-    use strict;
-    use XML::Parser;
-
-    my $p = XML::Parser->new( Handlers => {
-      Init  => \&init,
-      Start => \&start,
-      End   => \&end,
-      Char  => \&char});
-
-    my ($level, $ind);
-    my $text;
-
-    $p->parsefile(shift);
-
-    sub init {
-      $level = 0;
-      $text = '';
-    }
-
-    sub start {
-      my ($p, $tag) = (shift, shift);
-
-      my %attrs = @_ if @_;
-
-      print $ind, $tag, ' [';
-      print join ', ', map { "$_: $attrs{$_}" } keys %attrs;
-      print "]\n";
-
-      $level++;
-      $ind = ' ' x $level;
-    }
-
-    sub end {
-      print $ind, $text, "\n";
-      $level--;
-      $ind = ' ' x $level;
-      $text = '';
-    }
-
-    sub char {
-      my ($p, $str) = (shift, shift);
-
-      return unless $str =~ /\S/;
-
-      $str =~ s/^\s+//;
-      $str =~ s/\s+$//;
-
-      $text .= $str;
-    }
-
-In this case we only need to define four handlers for `Init`, `Start`,
-`End`, and `Char`. The Init handler only exists to allow us to set `$level`
-and `$text` to initial values.
-
-In the `Start` handler we do very similar processing to the previous
-examples. That is, we print the element’s name and attributes. In this
-case it is very easy to get these values as they are passed to us as
-parameters. We also increment `$level` and use the new value to
-calculate an indent string which we will print before any output.
-
-In the `End` handler we print out any text that has been built up in
-`$text`, decrement `$level`, recalculate `$ind`, and reset `$text` to an empty
-string.
-
-In the `Char` handler we do the usual cleaning that strips any leading
-and trailing white space and appends the string to `$text`. Notice that
-it is possible that because of the way the parser works, any
-particular sequence of character data can be split up and processed in
-a number of calls to this handler. This is why we build up the string
-and print it out only when we find the closing element tag. This would
-be even more important if we were applying some kind of formatting to
-the text before displaying it.
-
-XML::DOM
--------
-
-As we have seen, [XML::Parser](https://metacpan.org/pod/XML::Parser) is a very
-powerful and flexible module, and one that can be used to handle just about any
-XML processing requirement. However, it’s well known that one of the Perl
-mottoes is that there’s more than one way to do it, and one of the cardinal
-virtues of a programmer is Laziness (the other two being Impatience and Hubris,
-according to Larry Wall). It should not therefore come as a surprise that there
-are many other XML parser modules available from the CPAN. Some of these are
-specialized to deal with XML that conforms to a particular DTD (we will look at
-one of these a bit later), but many others present yet more ways to handle
-general XML parsing tasks. Probably the most popular of these is
-[XML::DOM](https://metacpan.org/pod/XML::DOM). This is a tree-based parser which
-returns a radically different view of an XML document.
-
-[XML::DOM](https://metacpan.org/pod/XML::DOM) implements the Document Object
-Model. DOM is a way to access arbitrary parts of an XML document. DOM has been
-defined by the World Wide Web Consortium (W3C), and is rapidly becoming a
-standard method to parse and access XML documents.
-
-[XML::DOM](https://metacpan.org/pod/XML::DOM) is a subclass of
-[XML::Parser](https://metacpan.org/pod/XML::Parser), so
-all[XML::Parser](https://metacpan.org/pod/XML::Parser) methods are still
-available, but on top of these methods,
-[XML::DOM](https://metacpan.org/pod/XML::DOM) implements a whole new set of
-methods which allow you to walk the document tree.
-
-### Example: parsing XML using XML::DOM
-
-As an example of [XML::DOM](https://metacpan.org/pod/XML::DOM) in use, here is our usual document structure
-script rewritten to use it.
-
-    use strict;
-    use XML::DOM;
-
-    my $p = XML::DOM::Parser->new;
-
-    my $doc = $p->parsefile(shift);
-
-    my $level = 0;
-
-    process_node($doc->getFirstChild);
-
-    sub process_node {
-      my ($node) = @_;
-
-      my $ind = ' ' x $level;;
-
-      my $nodeType = $node->getNodeType;
-      if ($nodeType == ELEMENT_NODE) {
-        my $type = $node->getTagName;
-
-        my $attrs = $node->getAttributes;
-
-        print $ind, $type, ' [';
-        my @attrs;
-        foreach (0 .. $attrs->getLength - 1) {
-          my $attr = $attrs->item($_);
-          push @attrs, $attr->getNodeName . ': ' . $attr->getValue;
-        }
-        print join (', ', @attrs);
-
-        print "]\n";
-
-        my $nodelist = $node->getChildNodes;
-
-        ++$level;
-        for (0 .. $nodelist->getLength - 1) {
-          process_node($nodelist->item($_));
-        }
-        --$level;
-      } elsif ($nodeType == TEXT_NODE) {
-        my $content = $node->getData;
-        $content =~ s/\n/ /g;
-        $content =~ s/^\s+//;
-        $content =~ s/\s+$//;
-        print $ind, $content, "\n" if $content =~ /\S/;
-      }
-    }
-
-A lot of the structure of this program will be very familiar by now,
-so we will look at only the differences between this version and the
-Tree style version.
-
-You should first notice that the value returned by `parsefile` is a reference to
-an object that represents the whole document. To get the single element which
-contains the whole document, we need to call this object’s `getFirstChild`
-method. We can then pass this reference to the `process_node` function.
-
-Within the `process_node` function we still do exactly the same things that we
-have been doing in previous versions of this script; it is only the way that we
-access the data which is different. To work out the type of the current node, we
-call its `getNodeType` method. This returns an integer defining the type. The
-[XML::DOM](https://metacpan.org/pod/XML::DOM) module exports constants which
-make these values easier to interpret. In this simplified example we only check
-for `ELEMENT_NODE` or `TEXT_NODE`, but there are a number of other values listed
-in the module’s documentation.
-
-Having established that we are dealing with an element node, we get
-the tag’s name using the `getTagName` method and a reference to its list
-of attributes using the `getAttributes` method. The value returned by
-getAttributes is a reference to a `NodeList` object. We can get the
-number of nodes in the list with the `getLength` method and retrieve
-each node in the list in turn, using the item method. For each of the
-nodes returned we can get the attribute name and value using the
-`getNodeName` and `getValue` methods, respectively.
-
-Having retrieved and displayed the node attributes we can deal with
-the node’s children. The `getChildNodes` method returns a NodeList of
-child nodes which we can iterate over (using `getLength` and `item`
-again), recursively passing each node to process_node.
-
-If the node that we are dealing with is a text node, we get the actual text
-using the `getData` method, and process the text in exactly the same way we have
-before.
-
-This description has barely scratched the surface of
-[XML::DOM](https://metacpan.org/pod/XML::DOM), but it is something that you will
-definitely come across if you process XML data.
+### A note on very large documents
+
+Loading a whole document into a DOM is convenient, but it means
+holding the entire thing in memory -- fine for a weather forecast, less
+fine for a multi-gigabyte export file. For cases like that,
+`XML::LibXML::Reader` provides a pull-parser interface: it steps
+through the document one node at a time, letting you process and
+discard each part as you go, without ever building the full tree. It's
+worth knowing about if you outgrow the DOM approach, though most of
+the documents you'll meet day to day are small enough that it's not
+something you need to reach for.
+
+### Older modules you may still meet
+
+Before `XML::LibXML` became the default choice, Perl's XML parsing was
+mostly built around [XML::Parser](https://metacpan.org/pod/XML::Parser)
+(a wrapper around the Expat C library, with several different parsing
+styles -- Stream, Tree, Objects, and Handlers, among others) and
+[XML::DOM](https://metacpan.org/pod/XML::DOM), which added a separate
+DOM layer on top of it. Both are still on CPAN and you'll come across
+them in older code, but neither is actively developed any more, and
+everything they do is covered -- more directly, and usually in less
+code -- by `XML::LibXML`.
 
 Specialized parsers—XML::RSS
 -------
@@ -1205,10 +566,8 @@ Summary
 
 * XML documents can be either valid or well-formed. Currently, no Perl XML parser checks for validity.
 
-* XML parsing in Perl is very easy using [XML::Parser](https://metacpan.org/pod/XML::Parser) and its various subclasses.
+* XML parsing in Perl is very easy using [XML::LibXML](https://metacpan.org/pod/XML::LibXML), which combines the industry-standard Document Object Model with XPath for picking out just the data you need.
 
-* [XML::Parser](https://metacpan.org/pod/XML::Parser) has a number of different styles which can be used to solve particular types of parsing tasks. If none of the standard styles suit your requirements, you can use handlers for even more control over how the parser works.
-
-* [XML::DOM](https://metacpan.org/pod/XML::DOM) brings the industry-standard Document Object Model to the Perl/XML community.
+* Older modules such as [XML::Parser](https://metacpan.org/pod/XML::Parser) and [XML::DOM](https://metacpan.org/pod/XML::DOM) are still around and you'll meet them in older code, but [XML::LibXML](https://metacpan.org/pod/XML::LibXML) does everything they do, more directly and in less code.
 
 * Specialized parsers such as [XML::RSS](https://metacpan.org/pod/XML::RSS) can be used to parse documents conforming to specific DTDs.
