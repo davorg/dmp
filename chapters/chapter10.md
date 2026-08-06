@@ -1082,575 +1082,107 @@ page instead of text. There are a number of example scripts in the
 a basis for your scripts.
 
 Producing different document formats
--------
+-------------------------------------
 
-One of the best uses of XML is producing different outputs from the
-same input file. As an example of this kind of processing, in this
-section we will look at producing a number of different document
-formats from a single XML document. The example that we will look at
-is the documentation for Perl modules. Traditionally, when a Perl
-module is released to the CPAN the accompanying documentation is
-written in *plain old documentation* (POD). POD is a very simple
-markup language which can be embedded within Perl code. The Perl
-interpreter knows to ignore it, and there are a number of
-documentation tools which can be used to extract the POD from a Perl
-script and present it in a number of formats.
+One of the most useful things about parsing a document into a plain
+Perl data structure is that, once you've done it, you're no longer
+tied to the format you started in. That's really the point of this
+chapter: JSON, YAML, and XML are just three different ways of writing
+down the same data, and once it's sitting in memory as an ordinary
+Perl array or hash, converting between them is almost an afterthought.
 
-In this example we will put the documentation for a Perl module in an
-XML file and use a Perl script to convert this XML document to POD,
-HTML, or plain text.
-
-### Sample XML input file
-
-Here is an example of the XML document we will use.
+As an example, let's go back to the CD collection data we've used
+throughout the book -- but imagine it's arriving from an older system
+as an XML feed:
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <README>
-      <NAME>Test README File</NAME>
-
-      <SYNOPSIS>
-        This is a summary of the file.
-        It should appear in PRE tags
-      </SYNOPSIS>
-
-      <DESCRIPTION>
-        <TEXT>This is the full description of the file</TEXT>
-        <SUBSECTION>
-          <HEAD>Subsection Title</HEAD>
-          <TEXT>Subsection text</TEXT>
-        </SUBSECTION>
-        <SUBSECTION>
-          <HEAD>Another Subsection Title</HEAD>
-          <TEXT>More Subsection text</TEXT>
-          <LIST TYPE='bullet'>
-            <ITEM>List item 1</ITEM>
-            <ITEM>List item 2</ITEM>
-          </LIST>
-        </SUBSECTION>
-      </DESCRIPTION>
-
-      <AUTHOR>
-        <ANAME>Dave Cross</ANAME>
-        <EMAIL>dave@mag-sol.com</EMAIL>
-      </AUTHOR>
-
-      <SEE_ALSO>
-        <LIST TYPE='bullet'>
-          <ITEM>Something</ITEM>
-          <ITEM>Something else</ITEM>
-        </LIST>
-      </SEE_ALSO>
-    </README>
-
-This file supports most of the headings that you will see in a Perl
-module’s *README* file.
-
-### XML document transformation script
-
-Here is the script that we will use to transform it into other
-formats.
-
-      1: #!/usr/bin/perl
-      2:
-      3: use strict;
-         use warnings;
-      4:
-      5: use XML::Parser;
-      6: use Getopt::Std;
-      7: use Text::Wrap;
-      8:
-      9: my %formats = (h => {name => 'html'},
-     10:                p => {name => 'pod'},
-     11:                t => {name => 'text'});
-     12:
-     13: my %opts;
-     14: (getopts('f:', \%opts) && @ARGV)
-     15:    || die "usage: format_xml.pl -f h|p|t xml_file\n";
-     16:
-     17: die "Invalid format: $opts{f}\n" unless exists $formats{$opts{f}};
-     18:
-     19: warn "Formatting file as $formats{$opts{f}}->{name}\n";
-     20:
-     21: my $p = XML::Parser->new(Style => 'Tree');
-     22: my $tree = $p->parsefile(shift);
-     23:
-     24: my $level = 0;
-     25: my $ind = '';
-     26: my $head = 1;
-     27:
-     28: top($tree);
-     29:
-     30: process_node(@$tree);
-     31:
-     32: bot();
-     33:
-     34: sub process_node {
-     35:   my ($type, $content) = @_;
-     36:
-     37:   $ind = ' ' x $level;
-     38:
-     39:   if ($type) {
-     40:
-     41:     local $_ = $type;
-     42:
-     43:     my $attrs = shift @$content;
-     44:
-     45:     /^NAME$/ && name($content);
-     46:     /^SYNOPSIS$/ && synopsis($content);
-     47:     /^DESCRIPTION$/ && description();
-     48:     /^TEXT$/ && text($content);
-     49:     /^CODE$/ && code($content);
-     50:     /^HEAD$/ && head($content);
-     51:     /^LIST$/ && do {list($attrs, $content); @$content = ()};
-     52:     /^AUTHOR$/ && author();
-     53:     /^ANAME$/ && aname($content);
-     54:     /^EMAIL$/ && email($content);
-     55:     /^SEE_ALSO$/ && see_also($content);
-     56:
-     57:     while (my @node = splice @$content, 0, 2) {
-     58:       ++$level;
-     59:       ++$head if $type eq 'SUBSECTION';
-     60:       process_node(@node);
-     61:       --$head if $type eq 'SUBSECTION';
-     62:       --$level;
-     63:     }
-     64:   }
-     65: }
-     66:
-     67: sub top {
-     68:   $tree = shift;
-     69:
-     70:   if ($opts{f} eq 'h') {
-     71:     print "<html>\n";
-     72:     print "<head>\n";
-     73:     print "<title>$tree->[1]->[4]->[2]</title>\n";
-     74:     print "</head>\n<body>\n";
-     75:   } elsif ($opts{f} eq 'p') {
-     76:     print "=pod\n\n";
-     77:   } elsif ($opts{f} eq 't') {
-     78:     print "\n", $tree->[1]->[4]->[2], "\n";
-     79:     print '-' x length($tree->[1]->[4]->[2]), "\n\n";
-     80:   }
-     81: }
-     82:
-     83: sub bot {
-     84:   if ($opts{f} eq 'h') {
-     85:     print "</body>\n</html>\n";
-     86:   } elsif ($opts{f} eq 'p') {
-     87:     print "=cut\n\n";
-     88:   } elsif ($opts{f} eq 't') {
-     89:     # do nothing
-     90:   }
-     91: }
-     92:
-     93: sub name {
-     94:   my $content = shift;
-     95:
-     96:  if ($opts{f} eq 'h') {
-     97:    print "<h1>NAME</h1>\n";
-     98:    print "<p>$content->[1]</p>\n"
-     99:  } elsif ($opts{f} eq 'p') {
-    100:    print "=head1 NAME\n\n";
-    101:    print "$content->[1]\n\n";
-    102:  } elsif ($opts{f} eq 't') {
-    103:    print "NAME\n\n";
-    104:    print $ind, "$content->[1]\n\n";
-    105:  }
-    106: }
-    107:
-    108: sub synopsis {
-    109:   my $content = shift;
-    110:
-    111:   if ($opts{f} eq 'h') {
-    112:     print "<h1>SYNOPSIS</h1>\n";
-    113:     print "<pre>$content->[1]</pre>\n"
-    114:   } elsif ($opts{f} eq 'p') {
-    115:     print "=head1 SYNOPSIS\n\n";
-    116:     print "$content->[1]\n";
-    117:   } elsif ($opts{f} eq 't') {
-    118:     print "SYNOPSIS\n";
-    119:     print "$content->[1]\n";
-    120:   }
-    121: }
-    122:
-    123: sub description {
-    124:
-    125:   if ($opts{f} eq 'h') {
-    126:     print "<h1>DESCRIPTION</h1>\n";
-    127:   } elsif ($opts{f} eq 'p') {
-    128:     print "=head1 DESCRIPTION\n\n";
-    129:   } elsif ($opts{f} eq 't') {
-    130:     print "DESCRIPTION\n\n";
-    131:   }
-    132: }
-    133:
-    134: sub text {
-    135:   my $content = shift;
-    136:
-    137:   if ($opts{f} eq 'h') {
-    138:     print "<p>$content->[1]</p>\n"
-    139:   } elsif ($opts{f} eq 'p') {
-    140:     print wrap('', '', trim($content->[1])), "\n\n";
-    141:   } elsif ($opts{f} eq 't') {
-    142:     print wrap($ind, $ind, trim($content->[1])), "\n\n";
-    143:   }
-    144: }
-    145:
-    146: sub code {
-    147:   my $content = shift;
-    148:
-    149:   if ($opts{f} eq 'h') {
-    150:     print "<pre>$content->[1]</pre>\n"
-    151:   } elsif ($opts{f} eq 'p') {
-    152:     print "$content->[1]\n";
-    153:   } elsif ($opts{f} eq 't') {
-    154:     print "$content->[1]\n";
-    155:   }
-    156: }
-    157:
-    158: sub head {
-    159:   my $content = shift;
-    160:
-    161:   if ($opts{f} eq 'h') {
-    162:     print "<h$head>", trim($content->[1]), "</h$head>\n"
-    163:   } elsif ($opts{f} eq 'p') {
-    164:     print "=head$head ", trim($content->[1]), "\n\n";
-    165:   } elsif ($opts{f} eq 't') {
-    166:     print trim($content->[1]), "\n\n";
-    167:   }
-    168: }
-    169:
-    170: sub list {
-    171:   my ($attrs, $content) = @_;
-    172:
-    173:   my %list = (bullet => 'ul', numbered => 'ol');
-    174:
-    175:   my $type = $attrs->{TYPE};
-    176:
-    177:   if ($opts{f} eq 'h') {
-    178:     print "<$list{$type}>\n";
-    179:     while (my @node = splice @$content, 0, 2) {
-    180:     if ($node[0] eq 'ITEM') {
-    181:       print "<li>$node[1]->[2]</li>\n";
-    182:     }
-    183:   }
-    184:   print "</$list{$type}>\n";
-    185:   } elsif ($opts{f} eq 'p') {
-    186:     print "=over 4\n";
-    187:     while (my @node = splice @$content, 0, 2) {
-    188:       my $cnt = 1;
-    189:       if ($node[0] eq 'ITEM') {
-    190:         print "=item *\n$node[1]->[2]\n\n";
-    191:       }
-    192:     }
-    193:     print "=back\n\n";
-    194:   } elsif ($opts{f} eq 't') {
-    195:     while (my @node = splice @$content, 0, 2) {
-    196:     my $cnt = 1;
-    197:     if ($node[0] eq 'ITEM') {
-    198:       print $ind, "* $node[1]->[2]\n";
-    199:     }
-    200:   }
-    201:   print "\n";
-    202:   }
-    203: }
-    204:
-    205: sub author {
-    206:   if ($opts{f} eq 'h') {
-    207:     print "<h1>AUTHOR</h1>\n";
-    208:   } elsif ($opts{f} eq 'p') {
-    209:     print "=head1 AUTHOR\n\n";
-    210:   } elsif ($opts{f} eq 't') {
-    211:     print "AUTHOR\n\n";
-    212:   }
-    213: }
-    214:
-    215: sub aname {
-    216:   my $content = shift;
-    217:
-    218:   if ($opts{f} eq 'h') {
-    219:     print "<p>$content->[1]\n"
-    220:   } elsif ($opts{f} eq 'p') {
-    221:     print trim($content->[1]), ' ';
-    222:   } elsif ($opts{f} eq 't') {
-    223:     print $ind, trim($content->[1]), ' ';
-    224:   }
-    225: }
-    226:
-    227: sub email {
-    228:   my $content = shift;
-    229:
-    230:   if ($opts{f} eq 'h') {
-    231:     print '&lt;', trim($content->[1]), "&gt;</p>\n"
-    232:   } elsif ($opts{f} eq 'p') {
-    233:     print '<', trim($content->[1]), ">\n\n";
-    234:   } elsif ($opts{f} eq 't') {
-    235:     print '<', trim($content->[1]), ">\n\n";
-    236:   }
-    237: }
-    238:
-    239: sub see_also {
-    240:
-    241:   if ($opts{f} eq 'h') {
-    242:     print "<h1>SEE ALSO</h1>\n";
-    243:   } elsif ($opts{f} eq 'p') {
-    244:     print "=head1 SEE ALSO\n\n";
-    245:   } elsif ($opts{f} eq 't') {
-    246:     print "SEE ALSO\n\n";
-    247:   }
-    248: }
-    249:
-    250: sub trim {
-    251:   local $_ = shift;
-    252:
-    253:   s/\n/ /g;
-    254:   s/^\s+//;
-    255:   s/\s+$//;
-    256:
-    257:   $_;
-    258: }
-
-This is the longest script that we have looked at so far, so let’s
-review it a section at a time.
-
-Lines 1 to 3 should be the standard way that you start a Perl script.
-
-Lines 5 to 7 bring in the modules which we will be using. XML::Parser
-will be used to parse the XML input, Getopt::Std is used to process
-command line options, and Text::Wrap is used to reformat lines of
-text.
-
-Lines 9 to 11 define the types of formatting that the script can
-handle in a hash. Each value is another hash containing information
-about the format. Currently, it only lists the name of the format, but
-if there are other attributes of a format that are useful, this would
-be a good place to store them.
-
-Lines 13 to 19 use the function getops from Getopt::Std to process the
-command line flags. In this case there is just one flag that indicates
-the chosen output type. This is stored in $opts{f}. If we are passed
-an unknown format we warn the user and die. On line 19 we let the user
-know what format we are using.
-
-Line 21 creates an XML parser using the Tree style and line 22 uses
-this object to parse the XML document, returning the document tree
-data structure which we store in $tree.
-
-Lines 24 to 26 define some global variables: $level will store the
-nesting level of the current element, $ind will store a string of
-spaces which will be used to indent text, and $head will store the
-current header level.
-
-Line 28 calls the top function which is defined in lines 67 to 81.
-This function prints header information for the chosen format. For
-HTML, this is all of the `<HEAD>` … `</HEAD>` section, for POD it is
-simply the text `=pod`, and for text it is the title of the document
-underlined. Notice that we use the expression `$tree->[1]->[4]->[2]` to
-get the title of the document. We can take this kind of shortcut
-because we know the structure of our document. `$tree->[1]` is the
-content of the first node in the tree (*i.e.*, everything within the
-`<README>` element). `$tree->[1]->[4]` is the content of the second node
-contained within the `<README>` element. The first node within this
-element is the text node containing the newline character immediately
-after the `<README>` tag. Of course, the script now
-relies on this newline character always being there. Relying on the
-presence of this ignorable white space is a serious limitation of this
-script, and if you wanted to use a script like this in earnest you
-would need to design something a little more robust. The second
-node is the `<NAME>` element. `$tree->[1]->[4]->[2]` is the content of the
-first node within the `<NAME>` element, *i.e.*, the name text, which we
-will use as a title.
-
-Line 30 calls the `process_node` function which is defined in lines 34
-to 65. This function is where most of the work goes on. The basic
-structure should be familiar from the previous tree-based parsing
-scripts that we have discussed. The function is passed the type of a
-node together with a reference to its content. If the node is an
-element (remember the value of `$type` is the name of the element or
-zero if it is a text node), we extract the attributes and call the
-relevant subroutine to process each type of element. In most cases we
-pass the element content to the subroutine, but there are two
-exceptions. The `<DESCRIPTION>` element has no useful content (other
-than, of course, its contained elements, which will be handled
-elsewhere). The `<LIST>` element is more complex. First, it is the only
-element with an attribute list which needs to be passed on to the
-subroutine and, second, as the list subroutine processes all of the
-element’s content, we need to set the content to an empty list to
-prevent it being processed again.
-
-Having processed the element, we need to process any child elements.
-This is accomplished in much the same way as we have in previous
-examples. We simply walk the `@$content` list a node at a time (where a
-node is represented by two items in the array), passing the nodes one
-at a time to `process_node`. We pause only to increment the $level and
-`$head` variables before starting to process the list and to decrement
-them after we have finished.
-
-Once the script returns from the main call to `process_node`, the final
-action (line 32) is to call the function bot. The function is defined
-in lines 83 to 91 and simply finishes off the file in that same way
-that top started it (except that in this case the processing is much
-simpler).
-
-The rest of the script consists of definitions of the functions which
-handle the various element types. Most of these are very similar and
-simple. All they do is print out the content of the element
-surrounded by various fixed strings. It is, however, worth taking a
-closer look at the head and list functions.
-
-head is the function which prints out header sections. In its POD and
-HTML sections it needs to know which level of header to display. It
-accomplishes this by using the global `$head` variable which is
-incremented each time a `<SUBSECTION>` element is encountered. Like
-many of the other element functions, `head` also makes use of a helper
-function called `trim` which removes all of the excess white space from
-a text string.
-
-`list` is the most complex of the element functions as it builds up a
-complete list rather than relying on the usual subelement handling
-which we have used for other elements. This is because in the future
-we may well want to support numbered lists, and it will be far easier
-if the list numbers can all be calculated within the same function.
-This function therefore traverses the `@$content` array in much the
-same way as the `process_node` function.
-
-### Using the XML document transformation script
-
-Having described the script in detail, let’s run it in the various
-modes on our sample document and see what output we get. The script
-takes the input file as an argument and writes its output to
-`STDOUT`. We can, therefore, call the script like this:
-
-    format_xml.pl -f p doc.xml > doc.pod
-    format_xml.pl -f h doc.xml > doc.html
-    format_xml.pl -f t doc.xml > doc.txt
-
-to get the POD, HTML, and text outputs. Here are the results.
-
-#### POD file
-
-    =pod
-
-    =head1 NAME
-
-    Test README File
-
-    =head1 SYNOPSIS
-
-      This is a summary of the file.
-      It should appear in PRE tags
-
-    =head1 DESCRIPTION
-
-    This is the full description of the file
-
-    =head2 Subsection Title
-
-    Subsection text
-
-    =head2 Another Subsection Title
-
-    More Subsection text
-
-    =over 4
-
-    =item *
-    List item 1
-
-    =item *
-    List item 2
-
-    =back
-
-    =head1 AUTHOR
-
-    Dave Cross <dave@mag-sol.com>
-
-    =head1 SEE_ALSO
-
-    =over 4
-
-    =item *
-    Something
-
-    =item *
-    Something else
-
-    =back
-
-    =cut
-
-#### HTML file
-
-     <html>
-     <head>
-     <title>Test README File</title>
-     </head>
-     <body>
-     <h1>NAME</h1>
-     <p>Test README File</p>
-     <h1>SYNOPSIS</h1>
-     <pre>
-         This is a summary of the file.
-         It should appear in PRE tags
-     </pre>
-     <h1>DESCRIPTION</h1>
-     <p>This is the full description of the file</p>
-     <h2>Subsection Title</h2>
-     <p>Subsection text</p>
-     <h2>Another Subsection Title</h2>
-     <p>More Subsection text</p>
-     <ul>
-     <li>List item 1</li>
-     <li>List item 2</li>
-     </ul>
-     <h1>AUTHOR</h1>
-     <p>Dave Cross
-     &lt;dave@mag-sol.com&gt;</p>
-     <h1>SEE_ALSO</h1>
-     <ul>
-     <li>Something</li>
-     <li>Something else</li>
-     </ul>
-     </body>
-     </html>
-
- #### Text file
-
-    Test README File
-    ----------------
-    NAME
-
-      Test README File
-
-    SYNOPSIS
-
-        This is a summary of the file.
-        It should appear in PRE tags
-
-    DESCRIPTION
-
-      This is the full description of the file
-
-    Subsection Title
-
-       Subsection text
-
-    Another Subsection Title
-
-       More Subsection text
-
-       * List item 1
-       * List item 2
-
-    AUTHOR
-
-        Dave Cross <dave@mag-sol.com>
-
-    SEE_ALSO
-
-      * Something
-      * Something else
+    <cds>
+      <cd artist="Bragg, Billy" title="Workers' Playtime"
+          label="Cooking Vinyl" released="1988">
+        <track>She's Got A New Spell</track>
+        <track>Must I Paint You A Picture</track>
+      </cd>
+      <cd artist="Bragg, Billy" title="Mermaid Avenue"
+          label="EMI" released="1998">
+        <track>Walt Whitman's Niece</track>
+        <track>California Stars</track>
+      </cd>
+      <cd artist="Black, Mary" title="The Holy Ground"
+          label="Grapevine" released="1993">
+        <track>Summer Sent You</track>
+        <track>Flesh And Blood</track>
+      </cd>
+      <cd artist="Black, Mary" title="Circus"
+          label="Grapevine" released="1995">
+        <track>The Circus</track>
+        <track>In A Dream</track>
+      </cd>
+      <cd artist="Bowie, David" title="Hunky Dory"
+          label="RCA" released="1971">
+        <track>Changes</track>
+        <track>Oh You Pretty Things</track>
+      </cd>
+      <cd artist="Bowie, David" title="Earthling"
+          label="EMI" released="1997">
+        <track>Little Wonder</track>
+        <track>Looking For Satellites</track>
+      </cd>
+    </cds>
+
+We want to work with this data as JSON internally, and hand a copy to
+a colleague who prefers YAML. Here's the whole program:
+
+    use v5.40;
+    use XML::LibXML;
+    use JSON::MaybeXS;
+    use YAML::PP;
+
+    my $dom = XML::LibXML->load_xml(location => 'cds.xml');
+
+    my @cds = map {
+        {
+            artist   => $_->getAttribute('artist'),
+            title    => $_->getAttribute('title'),
+            label    => $_->getAttribute('label'),
+            released => $_->getAttribute('released'),
+            tracks   => [ map { $_->textContent } $_->findnodes('./track') ],
+        }
+    } $dom->findnodes('/cds/cd');
+
+    say JSON->new->utf8->pretty->encode(\@cds);
+    say YAML::PP->new->dump_string(\@cds);
+
+That's the whole thing. `load_xml` reads the file and gives us a DOM
+we can query with XPath; `findnodes('/cds/cd')` returns a list of
+`<cd>` elements, and the `map` turns each one into the same plain
+hash -- with an array of track names -- that we've built for this
+data throughout the book, using `getAttribute` for the attributes and
+a nested `findnodes('./track')` to pick up the tracks. Once `@cds`
+holds that, `JSON::MaybeXS` and `YAML::PP` do the rest: each one is a
+single method call, because by then the hard work -- deciding what
+the data actually *means* -- is already finished.
+
+Compare that with the older, node-by-node approach of walking a
+generic tree: `XML::LibXML`'s XPath support lets us go straight from
+"the things I care about" (`cd` elements, their attributes, their
+`track` children) to a data structure, rather than visiting every
+node in turn and working out which branch we're looking at as we go.
+That's why this version is a fraction of the length of the equivalent
+program from a few years ago.
+
+### Going back the other way
+
+It's just as possible to build XML from `@cds` -- if that colleague's
+system needed to hand data back to the legacy one, we'd create an
+`XML::LibXML::Document`, add a `<cd>` element for each hash with
+`createElement` and `setAttribute`, and append a `<track>` child
+element for each track. It's more code than the JSON or YAML side,
+simply because XML has more ceremony than either of those formats --
+which is as good a reason as any why JSON and YAML have largely
+displaced XML for this kind of everyday data interchange. The full
+recipe is in the documentation for
+[XML::LibXML::Document](https://metacpan.org/pod/XML::LibXML::Document)
+if you need it.
 
 Further information
 -------------------

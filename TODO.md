@@ -76,10 +76,15 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 
 - [ ] **Redraw the figures.** :-) All 19 images in `images/` are 1st-edition-era diagrams (data structure sketches, parser trees, etc.) — worth a fresh pass once the content settles, both for a visual refresh and because at least one is now stale: `11-3-item-array.png` (the old `@item` array diagram) is no longer referenced anywhere now that Chapter 11 doesn't use Parse::RecDescent's `@item`/`%item` — either repurpose it for a new "shape of `%/`" diagram or drop it.
 
+## 2026-08-06 — Chapter 10 capstone example rewritten
+
+- [x] **"Producing different document formats" replaced.** The old ~570-line section (258-line `XML::Parser`-based dispatch script converting a README into POD/HTML/text) is gone. New "one dataset, three formats" example: parses the book's 6-CD collection from `cds.xml` via `XML::LibXML` + XPath, emits JSON (`JSON::MaybeXS`) and YAML (`YAML::PP`) from the same in-memory structure — ~17 lines of code total, plus a short "Going back the other way" subsection covering XML round-tripping in prose only (no code, per your request). Files promoted to `code-examples/c10/cds.xml` and `cds.pl`; the old `readme.xml`/`transform.pl` example files are now orphaned and were deleted.
+- [ ] **Untested** — same caveat as the Chapter 11 rewrite: no CPAN access in this sandbox, so `cds.pl` hasn't actually been run. Worth a quick `perl cds.pl` check before this goes out.
+- [ ] **Still outstanding for the full Ch10 rewrite:** this is one example, not the whole chapter restructure. Still need: dedicated JSON section, dedicated YAML section, and a decision on how much of the remaining `XML::Parser`/`XML::DOM`/`XML::RSS` content gets trimmed down to `XML::LibXML` vs. cut outright. Chapter title/intro ("What this chapter covers") not yet updated to reflect JSON/YAML.
+
 ## Next session
 
-**2026-08-06 plan:** work out the shape of the new Chapter 10 — JSON, YAML, *and* a trimmed, modernized remnant of XML (`XML::LibXML`, not the old `XML::Parser`/`XML::DOM`/`XML::RSS` trio). That's the main event; below is everything else still open.
-
+- Decide the rest of the Chapter 10 shape: JSON section, YAML section, and how much of the remaining XML content (`XML::Parser`/`XML::DOM`/`XML::RSS`) gets trimmed to `XML::LibXML` vs. cut.
 - Review the copyright wording in `front-matter.md`, and pick a weather-example draft for Chapter 9.
 - Once the Chapter 10 rewrite is settled, redraw the figures (see Artwork above) and revisit the Chapter 3 backlog items.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cds>
+  <cd artist="Bragg, Billy" title="Workers' Playtime"
+      label="Cooking Vinyl" released="1988">
+    <track>She's Got A New Spell</track>
+    <track>Must I Paint You A Picture</track>
+  </cd>
+  <cd artist="Bragg, Billy" title="Mermaid Avenue"
+      label="EMI" released="1998">
+    <track>Walt Whitman's Niece</track>
+    <track>California Stars</track>
+  </cd>
+  <cd artist="Black, Mary" title="The Holy Ground"
+      label="Grapevine" released="1993">
+    <track>Summer Sent You</track>
+    <track>Flesh And Blood</track>
+  </cd>
+  <cd artist="Black, Mary" title="Circus"
+      label="Grapevine" released="1995">
+    <track>The Circus</track>
+    <track>In A Dream</track>
+  </cd>
+  <cd artist="Bowie, David" title="Hunky Dory"
+      label="RCA" released="1971">
+    <track>Changes</track>
+    <track>Oh You Pretty Things</track>
+  </cd>
+  <cd artist="Bowie, David" title="Earthling"
+      label="EMI" released="1997">
+    <track>Little Wonder</track>
+    <track>Looking For Satellites</track>
+  </cd>
+</cds>
