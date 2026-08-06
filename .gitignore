@@ -1,3 +1,4 @@
 *.epub
 *.pdf
 /build/
+.*.swp
