@@ -532,6 +532,127 @@ have an easy-to-type keyboard representation at all.
 	print "\N{U+2603}\n";                  # ☃ (Snowman)
 	print "\N{GREEK SMALL LETTER PI}\n";   # π
 
+##### Unicode properties in regular expressions
+
+We already saw, back in "Patrol your borders," that once a string is
+properly decoded, familiar regex shorthands like `\w` and `\b` just
+work correctly against accented and non-Latin text. But `\w` is a
+blunt instrument—it matches letters, digits, *and* underscore, in any
+script, all lumped together. Sometimes you need more precision than
+that, and Perl's regex engine gives it to you through Unicode
+*properties*: `\p{PROPERTY}` matches any character that has the named
+property, and `\P{PROPERTY}` (capital P) matches any character that
+doesn't.
+
+The property you'll reach for most often is `\p{L}`—any letter, in any
+script, and nothing else:
+
+	use strict;
+	use warnings;
+	use utf8;
+
+	my $ident = 'foo_1';
+	print $ident =~ /^\w+$/    ? "matches \\w\n"    : "no match\n";
+	print $ident =~ /^\p{L}+$/ ? "matches \\p{L}\n" : "no match\n";
+
+which prints:
+
+	matches \w
+	no match
+
+`\w` happily matches the underscore and the digit; `\p{L}` only
+matches actual letters, which makes it a better choice for something
+like validating that a name field really is a name.
+
+Properties also let you ask questions that `\w`, `\d`, and `\s` simply
+can't answer at all—like whether a string is written in a particular
+script:
+
+	my $greek = 'χρόνος';
+	print $greek =~ /^\p{Greek}+$/ ? "all Greek\n" : "not all Greek\n";
+
+	print 'café' =~ /^\p{Greek}+$/ ? "all Greek\n" : "not all Greek\n";
+
+which prints:
+
+	all Greek
+	not all Greek
+
+There are hundreds of properties defined—scripts (`Greek`, `Han`,
+`Cyrillic`), general categories (`Nd` for decimal digit, `Lu` for
+uppercase letter), and more besides—see
+[perluniprops](https://perldoc.perl.org/perluniprops) for the full
+list. Negating one with `\P{...}` is a quick way to strip out
+everything that isn't a letter, regardless of script:
+
+	(my $stripped = 'Björk-1975!') =~ s/\P{L}//g;
+	print "$stripped\n";  # Björk
+
+##### Combining characters and canonical representation
+
+There's a wrinkle in all of this that catches people out: the same
+visually identical piece of text can be represented by more than one
+different sequence of Unicode code points. The "é" in "café" can be a
+single, pre-composed code point (U+00E9,
+`LATIN SMALL LETTER E WITH ACUTE`), or it can be two code points: a
+plain "e" (U+0065) followed by a *combining* acute accent (U+0301,
+`COMBINING ACUTE ACCENT`), which visually stacks on top of the
+character before it. Both render identically. Neither is "wrong." But
+as far as Perl (or any program) is concerned, they are different
+strings:
+
+	use strict;
+	use warnings;
+	use utf8;
+
+	my $precomposed = "caf\x{E9}";     # e with acute, one code point
+	my $decomposed   = "cafe\x{301}";  # e, then a combining acute accent
+
+	print "Same string: ", ($precomposed eq $decomposed ? 'yes' : 'no'), "\n";
+	print "Same length: ", (length($precomposed) == length($decomposed) ? 'yes' : 'no'), "\n";
+
+which prints:
+
+	Same string: no
+	Same length: no
+
+even though both print as "café" and look completely indistinguishable
+to a human. This is called *canonical equivalence*, and it's a common
+source of bugs when comparing strings, sorting them, or using them as
+hash keys—two "identical-looking" filenames, usernames, or search
+terms can silently fail to match. (It's also a genuinely common
+real-world gotcha: macOS has historically favored the decomposed form
+for filenames, so text typed on a Mac and text typed almost anywhere
+else can carry the same content in different forms.)
+
+The fix is *normalization*: converting text to one standard
+representation before you compare it. The core module
+[Unicode::Normalize](https://metacpan.org/pod/Unicode::Normalize)
+(bundled with Perl since 5.7.3) provides four standard forms, but the
+one you'll want most often is `NFC`, which composes characters
+together wherever possible:
+
+	use strict;
+	use warnings;
+	use utf8;
+	use Unicode::Normalize;
+
+	my $precomposed = "caf\x{E9}";
+	my $decomposed   = "cafe\x{301}";
+
+	print "Before: ", ($precomposed eq $decomposed ? 'yes' : 'no'), "\n";
+	print "After:  ", (NFC($precomposed) eq NFC($decomposed) ? 'yes' : 'no'), "\n";
+
+which prints:
+
+	Before: no
+	After:  yes
+
+The rule of thumb: normalize with `NFC` at the same border where
+you're already decoding—as part of getting data into a known-good
+state before you do anything else with it, right alongside deciding on
+an encoding in the first place.
+
 ##### Simplifying Unicode with Text::Unidecode
 
 Sometimes you don't need to preserve Unicode text faithfully—you just
