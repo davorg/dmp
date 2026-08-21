@@ -20,7 +20,7 @@ Chapter 5: Unstructured Data
 
 What this chapter covers:
 
-*  Reading an ASCII file
+*  Reading a text file
 
 *  Producing text statistics
 
@@ -34,31 +34,32 @@ data. This is data that has no internal structure imposed on it in
 any way. In some ways this is the most difficult data to deal with as
 there is often very little that you can do with it.
 
-A good example of unstructured data is a plain ASCII file that
-contains text. In this chapter we will look at some of the things
-that we can do with a file like this.
+A good example of unstructured data is a plain text file. In this
+chapter we will look at some of the things that we can do with a file
+like this.
 
-ASCII text files
-----------------
+Text files
+----------
 
-An ASCII text file contains data that is readable by a person. It can
+A text file contains data that is readable by a person. It can
 be created in a text editor like vi or emacs in UNIX, Notepad in
 Windows, or edit in DOS. You should note that the files created by
-most word processors are not ASCII text, but some proprietary text
+most word processors are not plain text, but some proprietary
 format (most word processors do have a facility to save the document
-in ASCII text format; however, this will destroy most of the
+as plain text; however, this will destroy most of the
 formatting of the document). It is also possible that the file could
 be created by some other computer system.
 
-An ASCII text file, like all data files, is nothing but a series of
+A text file, like all data files, is nothing but a series of
 bytes of binary data. It is only the software that you use to view
 the file (an editor perhaps) that interprets the different bytes of
-data as ASCII characters.
+data as characters—we'll look at exactly how that interpretation
+works later in this chapter, when we get to Unicode.
 
 ### Reading the file
 
 
-One of the simplest things that we can do with an ASCII file is to
+One of the simplest things that we can do with a text file is to
 read it into a data structure for later manipulation. The most
 suitable format for the data structure depends, of course, on the
 exact nature of the data in the file and what you are planning to
@@ -319,71 +320,261 @@ conversions that you might need to do.
 
 ### Converting the character set
 
-Most textual data that you will come across will be in ASCII, but
-there may well be occasions when you have to deal with other
-character sets. If you are exchanging data with IBM mainframe systems
-then you will often have to convert data to and from EBCDIC. You may
-also come across multibyte characters if you are dealing with data
-from a country where these characters are commonplace (like China or
-Japan).
+These days, most textual data you come across will already be
+Unicode, usually encoded as UTF-8—but you will still run into other
+character sets and encodings from time to time, especially from older
+systems or specific regional formats. Multibyte characters, in
+particular, are increasingly the norm rather than the exception,
+especially if you are dealing with data from a country where they are
+commonplace (like China or Japan).
 
 #### Unicode
 
-For multibyte characters, Perl version 5.6 includes some support for
-Unicode via the new [utf8](https://metacpan.org/pod/utf8) module. This
-was introduced in order to make it easier to work with XML using Perl
-(XML uses Unicode in UTF-8 format to define all of its character
-data). If you have an older version of Perl you may find the
+For multibyte characters, the modern story is straightforward, but it
+wasn't always. Perl 5.6 (released in 2000) introduced the `utf8`
+pragma, and older editions of this book pointed readers without
+access to it at the
 [Unicode::Map8](https://metacpan.org/pod/Unicode::Map8) and
-[Unicode::String](https://metacpan.org/pod/Unicode::String) modules to
-be interesting.
+[Unicode::String](https://metacpan.org/pod/Unicode::String) modules.
+Both of those are long gone from active use—`utf8` has been part of
+every Perl release for well over two decades, and the tool you
+actually reach for to convert between encodings is
+[Encode](https://metacpan.org/pod/Encode), which has shipped with
+Perl's core distribution since 5.8 (2002).
 
-#### Converting between ASCII and EBCDIC
+It helps to be clear about what each of these actually does, because
+they solve different problems:
 
-For converting between ASCII and EBCDIC you can use the
-[Convert::EBCDIC](https://metacpan.org/pod/Convert::EBCDIC) module
-from the CPAN. This module can be used either as an object or as a
-traditional module. As a traditional module, it exports two functions
-called `ascii2ebcdic` and `ebcdic2ascii`. Note that these functions
-need to be explicitly imported into your namespace. As an object, it
-has two methods called `toascii` and `toebcdic`. The following example
-uses the traditional method to convert the ASCII data arriving on
-`STDIN` into EBCDIC.
+*  [utf8](https://metacpan.org/pod/utf8) tells Perl that *your source
+   code* is written in UTF-8, so that literal Unicode characters in
+   string literals—and, since Perl 5.10, in identifiers—are understood
+   correctly. It has nothing to do with reading or writing files.
+
+*  [Encode](https://metacpan.org/pod/Encode), and the `:encoding(...)`
+   layer it provides for filehandles, is what actually converts bytes
+   on disk (or from a network connection, or `STDIN`) into Perl's
+   internal Unicode strings, and back again.
+
+##### Bytes versus Unicode strings
+
+Before any of this makes sense, it helps to be clear about the
+difference between two things that are easy to conflate: bytes and
+characters.
+
+Outside your program—on disk, in a network packet, on `STDIN`—there is
+no such thing as a "Unicode string." There are only bytes: numbers
+between 0 and 255. A byte doesn't know what character it represents;
+that meaning only exists once you've agreed on an *encoding*, a
+mapping from byte sequences to characters. Inside your program, once
+Perl has decoded those bytes using the right encoding, you have a
+Unicode string—a sequence of *characters* (strictly, code points),
+which Perl represents however it likes internally, and which you never
+need to think about as bytes again until you write it back out.
+
+ASCII was the original encoding: 128 characters, each one byte, values
+0–127. UTF-8 is Unicode's most common encoding, and it was
+deliberately designed to be backwards compatible with ASCII: code
+points 0–127 are represented by the exact same single byte as they
+always were in ASCII. Any byte value 128 or higher signals "this byte
+is part of a multi-byte sequence, keep reading"—real UTF-8 text
+containing, say, "café", uses a two-byte sequence for the é. This is
+why every valid ASCII file is automatically valid UTF-8: for that
+range, the two encodings are identical.
+
+It's also why this doesn't hold for encodings like ISO-8859-1
+(Latin-1) and its relatives. Those are *also* single-byte encodings,
+and they *also* agree with ASCII for 0–127—but for byte values
+128–255, they assign single, specific characters ("é" is byte 233 in
+Latin-1). UTF-8 uses those exact same byte values for a completely
+different purpose: not standalone characters, but signals about
+multi-byte sequences. Feed Latin-1 bytes to something expecting UTF-8
+(or the reverse), and you get either an outright decoding error
+or—worse—something that "successfully" decodes into complete garbage.
+That collision, more than anything else, is where the classic mojibake
+you'll have seen in broken web pages and emails comes from.
+
+This is exactly what the `:encoding(...)` layer in "patrol your
+borders" is for: it's the one place in your program that has to know
+which byte-level encoding your data is actually in, so it can
+translate correctly at the boundary. Get that one fact right, and
+everything inside the border—string functions, regular expressions,
+sorting, comparisons—just works on characters, with no bytes in sight.
+
+##### "Patrol your borders"
+
+The single most useful rule for working with Unicode text, in any
+language, is this: decode incoming data into Unicode as soon as it
+enters your program, work with genuinely decoded Unicode strings
+throughout the body of the program, and encode back into bytes only at
+the point where data leaves your program—printing to a screen, writing
+to a file, sending it across a network. This is sometimes called the
+"Unicode sandwich" (decode, process, encode), but I like to think of
+it as patrolling your borders: control what crosses the boundary in
+and out, and don't worry about encoding anywhere in between.
+
+Here's what that looks like reading a short file of artist names and
+printing them in upper case:
 
 	use strict;
-	use Convert::EBCDIC qw/ascii2ebcdic/;
-	my $data;
+	use warnings;
 
-	{
-	  local $/ = undef;
-	  $data = <STDIN>;
+	open my $in, '<:encoding(UTF-8)', 'artists.txt'
+	    or die "Can't open artists.txt: $!";
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	while (my $artist = <$in>) {
+	  chomp $artist;
+	  print uc($artist), "\n";
 	}
 
-	print ascii2ebcdic($data);
+Given a file containing:
 
-The second example uses the object interface to convert EBCDIC data to ASCII.
+	Björk
+	Sigur Rós
+	Café Tacvba
+	Mötley Crüe
+	Beyoncé
+
+this prints:
+
+	BJÖRK
+	SIGUR RÓS
+	CAFÉ TACVBA
+	MÖTLEY CRÜE
+	BEYONCÉ
+
+Notice that [uc](https://perldoc.perl.org/functions/uc) just works
+correctly on the accented characters, upper-casing "ö" to "Ö" and "é"
+to "É"—and so would a regular expression using `\w` or `\b`, from
+[Chapter 4](ch007.xhtml). That's the entire payoff of getting the
+borders right: once a string has been properly decoded, every built-in
+string operation and every regular expression feature you already know
+behaves exactly as you'd expect against non-ASCII text, with no
+special cases to remember. Skip the `:encoding(UTF-8)` layer on the
+way in, and the same code will silently mangle every accented
+character instead—which is exactly where the classic "mojibake"
+garbage you'll have seen in badly configured web pages and emails
+comes from.
+
+##### A silly example: Unicode in your source code
+
+Because [utf8](https://metacpan.org/pod/utf8) is about your source
+code rather than your data, it lets you do things that have nothing to
+do with file I/O—including, since Perl 5.10, using Unicode characters
+in identifiers:
 
 	use strict;
-	use Convert::EBCDIC;
-	my $data;
-	my $conv = Convert::EBCDIC->new;
+	use warnings;
+	use utf8;
 
-	my $data;
+	binmode STDOUT, ':encoding(UTF-8)';
 
-	{
-	  local $/ = undef;
-	  $data = <STDIN>;
+	my $π = 3.14159;
+	my $r = 5;
+
+	print "A circle of radius $r has an area of ", $π * $r ** 2, "\n";
+
+This prints:
+
+	A circle of radius 5 has an area of 78.53975
+
+I wouldn't recommend actually naming your variables after Greek
+letters in production code—but it's a good illustration of what the
+`utf8` pragma is really for. Leave it out, and Perl doesn't understand
+`$π` as a variable name at all:
+
+	Can't use global $π in "my" at greek_pi.pl line 8, near "my $π"
+
+##### Other ways to represent Unicode characters
+
+Typing a literal character like `π` or `é` straight into your source,
+as in the example above, is the most direct approach, but it isn't
+always practical—your editor or terminal might not make the character
+easy to type, or you might want your source file to stay pure ASCII
+regardless of what data it works with. Perl gives you a few other ways
+to write a specific Unicode character, all of which work inside
+double-quoted strings and regular expressions (though not inside
+single-quoted strings, which never interpolate escapes):
+
+*  `\x{HHHH}`—the character at the given hexadecimal code point.
+   `"\x{3C0}"` is `π`; `"\x{E9}"` is `é`. This is the same `\x` escape
+   Perl has always had, just with braces added so it can go beyond a
+   single byte.
+
+*  `\N{U+HHHH}`—the same thing, written the way the Unicode standard
+   itself usually writes code points. `"\N{U+3C0}"` and `"\x{3C0}"` are
+   identical.
+
+*  `\N{CHARACTER NAME}`—the character's official Unicode name, in full
+   capitals. `"\N{GREEK SMALL LETTER PI}"` and
+   `"\N{LATIN SMALL LETTER E WITH ACUTE}"` are more verbose, but
+   self-documenting: a reader (or a search of the source) doesn't need
+   to decode a hex number to know what character is meant. This has
+   worked without any extra `use` statement since Perl 5.16—older code
+   you come across may still have an explicit `use charnames ':full';`
+   at the top, which is now only needed if you want to define your own
+   custom character aliases.
+
+None of these need `use utf8;`—unlike the `$π` example, they're
+spelled entirely in ASCII in your source file, so there's nothing for
+the source encoding to affect. That makes them a good choice whenever
+you want to embed a specific character without committing the rest of
+the file to being UTF-8, or when the character in question doesn't
+have an easy-to-type keyboard representation at all.
+
+	use strict;
+	use warnings;
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	print "\x{2764}\n";                    # ❤ (Heavy Black Heart)
+	print "\N{U+2603}\n";                  # ☃ (Snowman)
+	print "\N{GREEK SMALL LETTER PI}\n";   # π
+
+##### Simplifying Unicode with Text::Unidecode
+
+Sometimes you don't need to preserve Unicode text faithfully—you just
+need something ASCII-safe to fall back on: a filename, a URL slug, a
+sort key, or output for a system with no Unicode support at all. The
+CPAN module [Text::Unidecode](https://metacpan.org/pod/Text::Unidecode)
+does a rough-and-ready transliteration of Unicode text into plain
+ASCII:
+
+	use strict;
+	use warnings;
+	use utf8;
+	use Text::Unidecode qw(unidecode);
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	my @artists = ('Björk', 'Sigur Rós', 'Café Tacvba', 'Mötley Crüe');
+
+	foreach my $artist (@artists) {
+	  print unidecode($artist), "\n";
 	}
 
-	print $conv->toascii($data);
+which gives you:
 
-The [Convert::EBCDIC](https://metacpan.org/pod/Convert::EBCDIC)
-constructor takes one optional parameter which is a 256-character
-string which defines a translation table.
+	Bjork
+	Sigur Ros
+	Cafe Tacvba
+	Motley Crue
+
+This is a blunt tool—it's context-insensitive, and its own
+documentation is upfront that it does badly on some writing systems
+(Japanese especially)—so treat it as a fallback of last resort, not a
+substitute for handling Unicode properly. Reach for it only once
+you've decided you genuinely don't need the original characters, not
+as a shortcut to avoid learning the borders rule above.
+
+We'll come back to this when we look at JSON and YAML in
+[Chapter 10](ch015.xhtml)—both formats assume UTF-8 by default, and
+getting the borders right here is exactly what makes that just work.
 
 ### Converting line endings
 
-As I mentioned above, an ASCII text file is no more than a stream of
+As I mentioned above, a text file is no more than a stream of
 binary data. It is only the software that we use to process it that
 interprets the data in such a way that it produces lines of text. One
 important character (or sequence of characters) in a text file is the
@@ -721,7 +912,10 @@ For more information about input control variables such as `$/`, see
 the [perlvar](https://perldoc.perl.org/perlvar) manual page.
 
 For more information about the Unicode support in Perl, see the
-[perlunicode](https://perldoc.perl.org/perlunicode) and [utf8](https://metacpan.org/pod/utf8) manual pages.
+[perlunicode](https://perldoc.perl.org/perlunicode) and [utf8](https://metacpan.org/pod/utf8) manual pages,
+and `perldoc Encode` for the module that does the actual encoding and
+decoding work. [Text::Unidecode](https://metacpan.org/pod/Text::Unidecode)
+is available from the CPAN.
 
 For more information about sprintf, see the [sprintf](https://perldoc.perl.org/functions/sprintf) manual
 page. Both [Convert::SciEng](https://metacpan.org/pod/Convert::SciEng) and [Number::Format](https://metacpan.org/pod/Number::Format) can be found on the
@@ -733,7 +927,7 @@ using the `perldoc` command.
 Summary
 -------
 
-*  Most unstructured data is found in ASCII text files.
+*  Most unstructured data is found in plain text files, usually encoded as UTF-8 these days.
 
 *  Perl can be used to extract statistics from text files very easily.
 
