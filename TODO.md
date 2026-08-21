@@ -46,7 +46,7 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 ## Outdated code / modules, by chapter
 
 - [ ] **Ch5 — Unicode section** says "Perl version 5.6 includes some support for Unicode" (5.6 was released in 2000). Needs a rewrite around `use utf8` and the core `Encode` module.
-- [ ] **Ch6 — Dates** covered only via `Date::Calc` and `Date::Manip`. `Date::Manip` is now considered legacy; `DateTime` is the current standard, with `Time::Piece` (core since 5.10) as the lightweight option. Neither is mentioned anywhere in the book. Note: your own dev.to post "Processing dates and times with Perl" covers this exact ground and could feed the rewrite directly.
+- [x] ~~Ch6 — Dates covered only via `Date::Calc` and `Date::Manip`.~~ **Resolved (2026-08-21):** replaced both sections with `Time::Piece` (core) and `DateTime` (CPAN), reworking the same three worked examples (date in x days, previous Saturday, first Monday of the year) using the versions from your dev.to post "Processing dates and times with Perl" (2021). Also updated "Choosing between date modules," "Further information," and the chapter summary to point at the new modules. Dropped the old Date::Manip-vs-localtime benchmark rather than inventing new numbers — worth redoing for real if we want a Time::Piece-vs-DateTime comparison. Appendix A still has full `Date::Calc`/`Date::Manip` reference sections — left alone per the note below, pending the Ch5 pass too.
 - [ ] **Ch7 — Binary data** examples use `Image::Info` (cited at v0.04) and `MPEG::MP3Info`. Both look old/likely under-maintained on CPAN — check current status before reusing as examples.
 - [x] ~~Ch9 — Extended example ("weather forecasts")~~ **Resolved (2026-08-06):** added a closing note that the Yahoo! page is gone entirely, pointing to Chapter 10's live weather-API example. The HTML::TokeParser teaching content itself is left as-is — still a fine scraping lesson, just not something to build new code against.
 - [x] ~~Ch11 — Building your own parsers.~~ **Done (2026-08-05).** Optional future polish: a one-line nod to `Marpa::R2` as another modern alternative.
@@ -70,7 +70,7 @@ assuming.
 ## New topics to consider for relevance
 
 - [x] ~~JSON/YAML chapter to replace XML~~ — **done (2026-08-06)**, using `JSON::MaybeXS` and `YAML::PP` as planned. See sprint entries below for the full rewrite.
-- [ ] **DateTime / Time::Piece** modernization of the dates section (see Ch6 above).
+- [x] ~~DateTime / Time::Piece modernization of the dates section~~ **Resolved (2026-08-21)** — see Ch6 above.
 - [ ] **REST/HTTP APIs as a data source**, more generally — the book only touches HTTP in passing right now. Ties together the JSON chapter and the dead weather-scraping example.
 - [ ] **Modern HTTP client note** — `LWP::Simple` still works but lacks HTTPS/header/error-handling support that `HTTP::Tiny` (core) or `LWP::UserAgent` provide.
 - [ ] **Unicode/encoding handling** as a more general topic — data munging today is rarely pure ASCII.

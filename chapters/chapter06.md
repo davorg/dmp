@@ -1255,185 +1255,198 @@ which can be reproduced using the `POSIX::strftime` templates
 `%Y-%m-%dT%h:%M:%S` (for date and time) or `%Y-%m-%d` (for just the date).
 
 All of the functions that we have just discussed come with every
-distribution of Perl. You should therefore see that it is quite easy
-to carry out complex date manipulation with vanilla Perl. As you might
-suspect, however, on the CPAN there are a number of modules that will
-make your coding life even easier. We will look in some detail at two
-of them: [Date::Calc](http://metacpan.org/pod/Date::Calc) and
-[Date::Manip](http://metacpan.org/pod/Date::Manip).
+distribution of Perl, so it's good to know that you can do useful date
+manipulation with nothing but core Perl. But dealing directly with the
+list of numbers returned by [localtime](https://perldoc.perl.org/functions/localtime) and reassembling them with
+[Time::Local](http://metacpan.org/pod/Time::Local) gets tedious and
+error-prone once a program needs to do much date arithmetic. Modern
+Perl has two much better tools for this: [Time::Piece](http://metacpan.org/pod/Time::Piece),
+a small module that has been part of the core Perl distribution since
+Perl 5.10 (2007), and [DateTime](http://metacpan.org/pod/DateTime), a
+much larger and more capable module from the CPAN. We will look at
+both, using the same three example problems as before.
 
-### Date::Calc
+### Time::Piece
 
-[Date::Calc](http://metacpan.org/pod/Date::Calc) contains a number of functions for carrying out
-calculations using dates.
+[Time::Piece](http://metacpan.org/pod/Time::Piece) replaces Perl's
+built-in [localtime](https://perldoc.perl.org/functions/localtime)
+function with a version that returns an object instead of a plain list
+of numbers. That object gives you methods to do the fiddly parts of
+date arithmetic—like adding days without having to worry about how
+many seconds are in a day—without ever having to think about seconds
+since the epoch yourself.
 
-One important thing to know about [Date::Calc](http://metacpan.org/pod/Date::Calc) is that it represents
-dates differently from Perl’s internal functions. In particular when
-dealing with months, the numbers will be in the range 1 to 12
-(instead of 0 to 11), and when dealing with days of the week the
-numbers will be in the range 1 to 7 instead of 0 to 6.
+Because it ships with every Perl since 5.10, [Time::Piece](http://metacpan.org/pod/Time::Piece)
+is a reasonable modern replacement for hand-rolled
+[localtime](https://perldoc.perl.org/functions/localtime)/[Time::Local](http://metacpan.org/pod/Time::Local)
+code even in situations where you can't install anything from the
+CPAN.
 
-#### Examples: date and time manipulation with Date::Calc
+#### Examples: date and time manipulation with Time::Piece
 
-Let’s look at using [Date::Calc](http://metacpan.org/pod/Date::Calc) for solving the same three problems
-that we discussed in the section on built-in functions.
-
-##### Finding the date in x days time
-
-With [Date::Calc](http://metacpan.org/pod/Date::Calc), this becomes trivial as we simply call `Today` to get
-the current date and then call `Add_Delta_Days` to get the result. Of
-course we can also call `Date_to_Text` to get a more user friendly
-output. The code would look like this:
-
-	# Where $x is the number of days to add
-	print Date_to_Text(Add_Delta_Days(Today(), $x));
-
-##### Finding the date of the previous Saturday
-
-There are a number of different ways to solve this problem but here is
-a reasonably simple one. We find the week number of the current week
-and then calculate the date of Monday in this week. We then subtract
-two days to get to the previous Saturday.
-
-	my ($year, $month, $day) = Today;
-	my $week = Week_Number($year, $month, $day);
-	print Date_to_Text(Add_Delta_Days(Monday_of_Week($week, $year), -2));
-
-##### Finding the date of the first Monday in a given year
-
-This isn’t as simple as it sounds. The obvious way would be to do
-this:
-
-	print Date_to_Text(Monday_of_Week(1, $year));
-
-but if you try this for 2001 you’ll get Mon 31-Dec 2000. The problem
-is in the definition of week one of a year. Week one of a year is
-defined to be the week that contains January 4. You can, therefore,
-see that if the first Monday of the year is January 5, then that day
-is defined as being in week two and the Monday of week one is, in
-fact, December 29 of the previous year. We will need to do something
-a little more sophisticated. If we calculate which week number
-contains January 7 and then find the Monday of that week, we will
-always get the first Monday in the year. The code looks like this:
-
-	my $week = Week_Number($year, 1, 7);
-	print Date_to_Text(Monday_of_Week($week, $year));
-
-### Date::Manip
-
-[Date::Manip](http://metacpan.org/pod/Date::Manip) is, if possible, even bigger and more complex than
-[Date::Calc](http://metacpan.org/pod/Date::Calc). Many of the same functions are available (although,
-obviously, they often have different names).
-
-#### Examples: date and time manipulation with Date::Manip
-
-Let’s once more look at solving our three standard problems.
+Let's revisit our three standard problems.
 
 ##### Finding the date in x days time
 
-With Date::Manip, the code would look like this:
+	use Time::Piece;
+	use Time::Seconds;
 
-	print UnixDate(DateCalc(ParseDateString('now'), "+${x}d"),
-	               "%d/%m/%Y %H:%M:%S");
-	# Where $x is the number of days to add
+	my $days = shift // 10;
+
+	my $now = localtime;
+	print $now + ($days * ONE_DAY);
+
+Notice that [Time::Piece](http://metacpan.org/pod/Time::Piece) overrides
+[localtime](https://perldoc.perl.org/functions/localtime) so that it
+returns a Time::Piece object rather than the list of numbers we saw
+earlier in the chapter. We can then just add seconds to that object—using
+one of the constants exported by [Time::Seconds](http://metacpan.org/pod/Time::Piece)
+(which is bundled with Time::Piece)—to get the date we want. Printing
+the object directly gives a nicely formatted string; if you want a
+different format, the object has a `strftime` method that works just
+like the `POSIX::strftime` function we saw earlier.
 
 ##### Finding the date of the previous Saturday
 
-Again this is very simple with [Date::Manip](http://metacpan.org/pod/Date::Manip). We can use the
-`Date_GetPrev` function to get the date immediately. In the call to
-`Date_GetPrev`, 6 is for Saturday and 0 is the `$curr` flag so it won’t
-return the current date if today is a Saturday.
+	use Time::Piece;
+	use Time::Seconds;
 
-	my $today = ParseDateString('today');
-	my $sat = Date_GetPrev($today, 6, 0);
-	print UnixDate($sat, "%d/%m/%Y");
+	my $now = localtime;
+	my $days = $now->day_of_week + 1;
+	print $now - ($days * ONE_DAY);
+
+`day_of_week` returns a number between 0 and 6, with Sunday as 0—the
+same convention used by the seventh element of the list returned by
+[localtime](https://perldoc.perl.org/functions/localtime). Saturday is
+therefore day 6, so we add one to the current day number to work out
+how many days to go back.
 
 ##### Finding the date of the first Monday in a given year
 
-This is another problem that is much easier with [Date::Manip](http://metacpan.org/pod/Date::Manip). We can
-use `Date_GetNext` to get the date of the first Monday after January 1,
-passing it 1 in the `$curr` flag so it returns the current date if it is
-a Monday.
+	use Time::Piece;
+	use Time::Seconds;
 
-	my $jan_1 = ParseDateString("1 Jan $year");
-	my $mon = Date_GetNext($jan_1, 1, 1);
-	print UnixDate($mon, "%d/%m/%Y");
+	my $year = shift // localtime->year;
+
+	my $first_mon = Time::Piece->strptime("$year Jan 1", '%Y %b %e');
+
+	$first_mon += (8 - $first_mon->day_of_week) % 7 * ONE_DAY;
+
+	print $first_mon;
+
+There's no constructor that lets you build a [Time::Piece](http://metacpan.org/pod/Time::Piece)
+object for an arbitrary date directly, so instead we build one by
+parsing a string with `strptime`—the inverse of `strftime`—and then
+nudge it forward to the first Monday.
+
+### DateTime
+
+[DateTime](http://metacpan.org/pod/DateTime) is a much bigger module
+than [Time::Piece](http://metacpan.org/pod/Time::Piece)—it isn't part
+of the core Perl distribution, so it needs to be installed from the
+CPAN—but it is also much more powerful. It sits at the centre of a
+large ecosystem of related modules covering things like timezones,
+non-Gregorian calendars, and flexible parsing of date strings in
+unknown formats.
+
+#### Examples: date and time manipulation with DateTime
+
+Once more, let's look at our three standard problems.
+
+##### Finding the date in x days time
+
+	use DateTime;
+
+	my $days = shift // 10;
+
+	my $now = DateTime->now;
+	print $now->add(days => $days);
+
+The shape of this is very similar to the [Time::Piece](http://metacpan.org/pod/Time::Piece)
+version. `DateTime->now` gives us an object holding the current date
+and time, and `add` moves it forward by a number of days. Printing a
+[DateTime](http://metacpan.org/pod/DateTime) object directly gives you
+an ISO 8601 formatted string (the format recommended earlier in this
+chapter); as with [Time::Piece](http://metacpan.org/pod/Time::Piece), a
+`strftime` method is available if you want something else.
+
+##### Finding the date of the previous Saturday
+
+	use DateTime;
+
+	my $now = DateTime->now;
+	my $days = $now->day_of_week + 1;
+	print $now->subtract(days => $days);
+
+Again, this is essentially the same logic as the [Time::Piece](http://metacpan.org/pod/Time::Piece)
+version, translated into DateTime's method calls.
+
+##### Finding the date of the first Monday in a given year
+
+	use DateTime;
+
+	my $year = shift // DateTime->now->year;
+
+	my $first_mon = DateTime->new(
+	    year  => $year,
+	    month => 1,
+	    day   => 1,
+	);
+
+	my $days = (8 - $first_mon->day_of_week) % 7;
+
+	print $first_mon->add(days => $days);
+
+Unlike [Time::Piece](http://metacpan.org/pod/Time::Piece),
+[DateTime](http://metacpan.org/pod/DateTime) has a real constructor, so
+we can build an object for an arbitrary date directly instead of
+parsing a string.
+
+One important gotcha with `DateTime->now`: by default it works in the
+UTC timezone, not your local timezone. That's fine as long as you're
+consistent about it, but it's easy to get caught out—for example, a
+script that runs date arithmetic around midnight local time can
+quietly pick the wrong day if part of a calculation assumes UTC and
+part assumes local time. If you want local time, ask for it
+explicitly:
+
+	my $now = DateTime->now(time_zone => 'local');
 
 ### Choosing between date modules
 
-We have seen a number of different ways to handle problems involving
-dates. It might be difficult to see how to choose between these
-various methods. My advice: use built-in Perl functions unless you
-have a really good reason not to.
+Both [Time::Piece](http://metacpan.org/pod/Time::Piece) and
+[DateTime](http://metacpan.org/pod/DateTime) are a big improvement over
+juggling raw lists of numbers from [localtime](https://perldoc.perl.org/functions/localtime),
+so once you're past toy examples, reach for one of them rather than
+hand-rolling the arithmetic yourself. Here are some of the advantages
+that both bring over the built-in functions:
 
-The major reason for this is performance. [Date::Manip](http://metacpan.org/pod/Date::Manip) is a very large
-module which does a number of very complex things and they are all
-implemented in pure Perl code. Most things can be handled much more
-efficiently with custom written Perl code. I hope I’ve demonstrated
-that there are very few date manipulations which can’t be achieved
-with the standard Perl functions and modules. It is a question of
-balancing the ease of writing the program against the speed at which
-it runs.
+*  Your date and time lives in one structured object instead of several separate scalars.
 
-#### Benchmarking date modules
+*  Parsing date and time strings into an object is straightforward.
 
-As an example, look at this benchmark program which compares the speed
-of the [Date::Manip](http://metacpan.org/pod/Date::Manip) `ParseDate` function with that of a piece of custom
-Perl code which builds up the same string using [localtime](https://perldoc.perl.org/functions/localtime).
+*  Producing different output formats is easy, via `strftime` (or DateTime's `format_cldr`, which gives you access to the full CLDR locale data rather than strftime's more limited set of formats).
 
-	#!/usr/bin/perl
+*  Adding and subtracting dates and times is easy and doesn't require you to think about how many seconds are in a day.
 
-	use strict;
-    use warnings;
+*  The objects can be compared directly, so sorting a list of dates is simple.
 
-	use Date::Manip;
-	use Benchmark;
+*  You no longer need to remember that months run 0–11, or that the year is given as an offset from 1900.
 
-	timethese(5000, {'localtime' => \&ltime, date_manip => \&dmanip});
+So which should you use? [Time::Piece](http://metacpan.org/pod/Time::Piece)
+has been in the Perl core since Perl 5.10, so it's a safe choice when
+you can't install anything from the CPAN, and it's lightweight.
+[DateTime](http://metacpan.org/pod/DateTime) has to be installed, and
+it does more work internally to guarantee correctness—particularly
+around timezones and calendar edge cases—so it's a heavier dependency,
+but that thoroughness is exactly what you want once your problem gets
+more complicated than these examples (recurring events, timezone
+conversions, non-Gregorian calendars, and so on).
 
-	sub ltime {
-	  my @now = localtime;
-	  sprintf("%4d%02d%02d%02d:%02d:%02d",
-	          $now[5] + 1900, ++$now[4], $now[3], $now[2], $now[1], $now[0]);
-	}
-
-	sub dmanip {
-	  ParseDate('now');
-	}
-
-Running this script gives the following output:
-
-	Benchmark: timing 5000 iterations of date\_manip, localtime …
-	date_manip: 29 wallclock secs (28.89 usr + 0.00 sys = 28.89 CPU)
-	localtime: 2 wallclock secs ( 2.04 usr + 0.00 sys = 2.04 CPU)
-
-As you can see, the standard Perl version is almost fifteen times
-faster.
-
-Having seen this evidence, you might be wondering if it is ever a good
-idea to use [Date::Manip](http://metacpan.org/pod/Date::Manip). There is one very good reason for using
-[Date::Manip](http://metacpan.org/pod/Date::Manip), and it is the `ParseDate` function itself. If you are ever
-in a position where you are reading in a date and you are not
-completely sure which format it will be in, then `ParseDate` will most
-likely be able to read the date and convert it into a standard form.
-Here are some of the more extreme examples of that in action:
-
-	use Date::Manip;
-	my @times = ('tomorrow',
-	             'next wednesday',
-	             '5 weeks ago');
-
-	foreach (@times) {
-	  print UnixDate(ParseDate($_), '%d %b %Y'), "\n";
-	}
-
-which displays:
-
-	 08 Feb 2000
-	 09 Feb 2000
-	 03 Jan 2000
-
-(or, rather, the equivalent dates for the date when it is run).
+A reasonable rule of thumb: if [Time::Piece](http://metacpan.org/pod/Time::Piece)
+can do the job, use it. Reach for [DateTime](http://metacpan.org/pod/DateTime)
+(or one of the modules built on top of it) once you need the extra
+power.
 
 Extended example: web access logs
 ---------------------------------
@@ -1601,10 +1614,13 @@ For more information about the `POSIX::strftime` function see the
 `perldoc POSIX` manual page and your system’s documentation for a list
 of supported character sequences.
 
-Both the [Date::Manip](http://metacpan.org/pod/Date::Manip) and [Date::Calc](http://metacpan.org/pod/Date::Calc) modules are available from the
-CPAN. Having installed them you can read their full documentation by
-typing `perldoc Date::Manip` or `perldoc Date::Calc` at your command
-line.
+[Time::Piece](http://metacpan.org/pod/Time::Piece) ships with every
+modern Perl, so `perldoc Time::Piece` will always work.
+[DateTime](http://metacpan.org/pod/DateTime) is available from the
+CPAN; once installed, `perldoc DateTime` gives you its full
+documentation, and [metacpan.org](https://metacpan.org/pod/DateTime)
+is a good place to browse the wider DateTime ecosystem of related
+modules.
 
 Summary
 -------
@@ -1617,4 +1633,4 @@ Summary
 
 *  Perl has very powerful built-in date and time processing functions.
 
-*  More complex date and time manipulation can be carried out using modules from CPAN.
+*  [Time::Piece](http://metacpan.org/pod/Time::Piece) (core) and [DateTime](http://metacpan.org/pod/DateTime) (CPAN) make date and time arithmetic far less error-prone than working directly with the values returned by `localtime`.
