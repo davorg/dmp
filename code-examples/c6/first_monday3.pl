@@ -1,5 +1,16 @@
-use Date::Manip;
+use strict;
+use warnings;
+use DateTime;
 
-my $jan_1 = ParseDateString("1 Jan $year"); 
-my $mon = Date_GetNext($jan_1, 1, 1); 
-print UnixDate($mon, "%d/%m/%Y");
+my $year = shift // DateTime->now->year;
+
+my $first_mon = DateTime->new(
+    year  => $year,
+    month => 1,
+    day   => 1,
+);
+
+my $days = (8 - $first_mon->day_of_week) % 7;
+
+print $first_mon->add(days => $days);
+print "\n";

@@ -1,5 +1,8 @@
-use Date::Manip;
+use strict;
+use warnings;
+use DateTime;
 
-my $today = ParseDateString('today'); 
-my $sat = Date_GetPrev($today, 6, 0); 
-print UnixDate($sat, "%d/%m/%Y");
+my $now = DateTime->now;
+my $days = $now->day_of_week + 1;
+print $now->subtract(days => $days);
+print "\n";

@@ -1,4 +1,10 @@
-use Date::Calc;
+use strict;
+use warnings;
+use Time::Piece;
+use Time::Seconds;
 
-print Date_to_Text(Add_Delta_Days(Today(), $x)); # Where $x is the 
-                                                 # number of days to add
+my $days = shift // 10;
+
+my $now = localtime;
+print $now + ($days * ONE_DAY);
+print "\n";

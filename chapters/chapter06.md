@@ -1475,6 +1475,12 @@ which prints:
 
 	6 years and 9 months passed between Perl 1 and Perl 5
 
+[DateTime](http://metacpan.org/pod/DateTime) overloads the `-`
+operator to do the same thing, so `$perl5 - $perl1` works just as well
+as the explicit `subtract_datetime` call, and gives you back the same
+[DateTime::Duration](http://metacpan.org/pod/DateTime::Duration)
+object.
+
 ##### Ready-made parsers with DateTime::Format::HTTP
 
 You don't have to write your own `strptime` patterns for common
@@ -1529,12 +1535,21 @@ otherwise, before relying on it.)
 Not every module in the DateTime family solves a serious business
 problem. [DateTime::Fiction::JRRTolkien::Shire](https://metacpan.org/pod/DateTime::Fiction::JRRTolkien::Shire)
 implements the calendar used by hobbits in *The Lord of the Rings*,
-and—because it's a proper `DateTime`-family calendar—can convert
-today's date straight into it:
+complete with an `on_date` method that reports what happened on a
+given day in Tolkien's own chronology. Asking it about today would
+usually be a bit of an anticlimax—most days in the Shire calendar
+aren't in the story—so let's ask about a day that is: 25 Rethe, SR
+1419, the date of the downfall of Sauron:
 
 	use DateTime::Fiction::JRRTolkien::Shire;
 
-	print DateTime::Fiction::JRRTolkien::Shire->now->on_date;
+	my $shire = DateTime::Fiction::JRRTolkien::Shire->new(
+	    year  => 1419,
+	    month => 'Rethe',
+	    day   => 25,
+	);
+
+	print $shire->on_date;
 
 And [DateTime::Format::Baby](http://metacpan.org/pod/DateTime::Format::Baby)
 formats a [DateTime](http://metacpan.org/pod/DateTime) object the way

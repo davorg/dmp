@@ -1,5 +1,9 @@
-use Date::Calc;
+use strict;
+use warnings;
+use Time::Piece;
+use Time::Seconds;
 
-my ($year, $month, $day) = Today; 
-my $week = Week_Number($year, $month, $day); 
-print Date_to_Text(Add_Delta_Days(Monday_of_Week($week, $year), -2));
+my $now = localtime;
+my $days = $now->day_of_week + 1;
+print $now - ($days * ONE_DAY);
+print "\n";

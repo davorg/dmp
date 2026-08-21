@@ -1,5 +1,9 @@
-use Date::Manip;
+use strict;
+use warnings;
+use DateTime;
 
-print UnixDate(DateCalc(ParseDateString('now'), "+${x}d"), 
-               "%d/%m/%Y %H:%M:%S"); 
-# Where $x is the number of days to add
+my $days = shift // 10;
+
+my $now = DateTime->now;
+print $now->add(days => $days)->strftime('%a %b %d %H:%M:%S %Y');
+print "\n";
