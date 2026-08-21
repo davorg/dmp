@@ -1341,13 +1341,44 @@ nudge it forward to the first Monday.
 
 ### DateTime
 
-[DateTime](http://metacpan.org/pod/DateTime) is a much bigger module
-than [Time::Piece](http://metacpan.org/pod/Time::Piece)—it isn't part
-of the core Perl distribution, so it needs to be installed from the
-CPAN—but it is also much more powerful. It sits at the centre of a
-large ecosystem of related modules covering things like timezones,
-non-Gregorian calendars, and flexible parsing of date strings in
-unknown formats.
+To understand why [DateTime](http://metacpan.org/pod/DateTime) looks
+the way it does, it helps to know why it was written. Before it
+existed, Perl's date and time modules had exactly the problem
+described in a 2003 *perl.com* article by Dave Rolsky, the module's
+author: almost every kind of date functionality you could want already
+existed on the CPAN, but scattered across a large number of
+incompatible modules. [Date::Calc](http://metacpan.org/pod/Date::Calc)
+was fast at date arithmetic. The `TimeDate` distribution
+(`Date::Parse`, `Date::Format`) handled parsing and formatting.
+[Time::Piece](http://metacpan.org/pod/Time::Piece) gave you a
+lightweight object. [Date::Manip](http://metacpan.org/pod/Date::Manip)
+was the one big exception—it tried to do everything itself—but that
+came at the cost of being slow and memory-hungry. None of them agreed
+on an internal representation, so combining them meant writing "glue"
+code to convert one module's output into the next module's input at
+every step.
+
+[DateTime](http://metacpan.org/pod/DateTime), which Rolsky started in
+2003, set out to fix that—not by persuading all the existing module
+authors to agree on a common API (an approach that, by his own
+account, had already been tried and failed), but by building a new
+suite of modules, all named `DateTime::something`, that share one
+common object representation. A module that parses a date hands back a
+[DateTime](http://metacpan.org/pod/DateTime) object; a module that
+formats a date accepts a [DateTime](http://metacpan.org/pod/DateTime)
+object; a module for a completely different calendar system converts
+to and from a [DateTime](http://metacpan.org/pod/DateTime) object.
+Over the two decades since, that shared foundation has grown into a
+large ecosystem—formatters for particular standards, non-Gregorian
+calendars, recurring-event calculations, and more—all able to
+interoperate because they all speak the same object. We'll see some of
+that ecosystem in action at the end of this section.
+
+[DateTime](http://metacpan.org/pod/DateTime) itself isn't part of the
+core Perl distribution, so it needs to be installed from the CPAN, and
+it's a much bigger, heavier module than
+[Time::Piece](http://metacpan.org/pod/Time::Piece)—but that's the
+trade-off for sitting at the centre of that ecosystem.
 
 #### Examples: date and time manipulation with DateTime
 
@@ -1411,6 +1442,118 @@ part assumes local time. If you want local time, ask for it
 explicitly:
 
 	my $now = DateTime->now(time_zone => 'local');
+
+#### Beyond the basics: the DateTime ecosystem
+
+The three examples above only really need the core
+[DateTime](http://metacpan.org/pod/DateTime) module. But
+interoperability is the whole point of the project, so it's worth a
+quick tour of what that buys you. Every module below works because it,
+too, is built around the same shared object.
+
+##### Date math with DateTime::Duration
+
+Whenever you subtract one datetime from another, or add or subtract an
+amount of time, [DateTime](http://metacpan.org/pod/DateTime) hands you
+back a [DateTime::Duration](http://metacpan.org/pod/DateTime::Duration)
+object rather than a plain number—which matters, because "how many
+days" isn't always a well-defined question once months and years are
+involved. Here's a real example, using the release dates of Perl 1 and
+Perl 5:
+
+	use DateTime;
+
+	my $perl1 = DateTime->new(year => 1987, month => 12, day => 18);
+	my $perl5 = DateTime->new(year => 1994, month => 10, day => 17);
+
+	my $gap = $perl5->subtract_datetime($perl1);
+
+	printf "%d years and %d months passed between Perl 1 and Perl 5\n",
+	    $gap->years, $gap->months;
+
+which prints:
+
+	6 years and 9 months passed between Perl 1 and Perl 5
+
+##### Ready-made parsers with DateTime::Format::HTTP
+
+You don't have to write your own `strptime` patterns for common
+formats—there's usually already a `DateTime::Format::*` module for the
+job. [DateTime::Format::HTTP](http://metacpan.org/pod/DateTime::Format::HTTP)
+understands the date format used in HTTP headers (among a few other
+common log and timestamp formats), and can format a
+[DateTime](http://metacpan.org/pod/DateTime) object back into one:
+
+	use DateTime;
+	use DateTime::Format::HTTP;
+
+	my $now = DateTime->now;
+	print DateTime::Format::HTTP->format_datetime($now);
+
+which prints something like:
+
+	Fri, 21 Aug 2026 09:00:00 GMT
+
+##### Other calendars with DateTime::Calendar::Hijri and DateTime::Calendar::Hebrew
+
+Because every calendar module in the ecosystem knows how to convert to
+and from the same shared representation, you can take one
+[DateTime](http://metacpan.org/pod/DateTime) object and view it
+through entirely different calendar systems:
+
+	use DateTime;
+	use DateTime::Calendar::Hijri;
+	use DateTime::Calendar::Hebrew;
+
+	my $today = DateTime->today;
+
+	my $hijri  = DateTime::Calendar::Hijri->from_object(object => $today);
+	my $hebrew = DateTime::Calendar::Hebrew->from_object(object => $today);
+
+	print "Gregorian: ", $today, "\n";
+	print "Hijri:     ", $hijri->datetime, "\n";
+	print "Hebrew:    ", $hebrew->ymd, "\n";
+
+Both calendar modules only had to implement conversion to and from the
+shared representation—`from_object`—to get a working, comparable date
+out of any other [DateTime](http://metacpan.org/pod/DateTime)-family
+object. Neither had to know anything about the other. (Worth noting:
+these two particular calendar modules are thin wrappers with small
+maintainer bases—`Hijri` hasn't been touched since 2003—so treat them
+as a demonstration of the interoperability rather than a recommendation
+for production use. Check the currency of any CPAN module, calendar or
+otherwise, before relying on it.)
+
+##### And the sillier end of the ecosystem
+
+Not every module in the DateTime family solves a serious business
+problem. [DateTime::Fiction::JRRTolkien::Shire](https://metacpan.org/pod/DateTime::Fiction::JRRTolkien::Shire)
+implements the calendar used by hobbits in *The Lord of the Rings*,
+and—because it's a proper `DateTime`-family calendar—can convert
+today's date straight into it:
+
+	use DateTime::Fiction::JRRTolkien::Shire;
+
+	print DateTime::Fiction::JRRTolkien::Shire->now->on_date;
+
+And [DateTime::Format::Baby](http://metacpan.org/pod/DateTime::Format::Baby)
+formats a [DateTime](http://metacpan.org/pod/DateTime) object the way
+a small child might describe a clock face:
+
+	use DateTime;
+	use DateTime::Format::Baby;
+
+	my $baby = DateTime::Format::Baby->new('en');
+	print $baby->format_datetime(DateTime->now);
+
+which might print something like:
+
+	The big hand is on the twelve and the little hand is on the nine
+
+Neither module is something you're likely to reach for in production
+code, but they both exist precisely because
+[DateTime](http://metacpan.org/pod/DateTime) gave every date and time
+module on the CPAN a common language to speak.
 
 ### Choosing between date modules
 
