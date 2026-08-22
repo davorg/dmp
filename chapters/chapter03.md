@@ -352,7 +352,7 @@ very good place to start. You can find it online at [archive.org](https://web.ar
 All of the sort techniques discussed in this section still work, but there
 are often better options available to you.
 
-(Memoize)[https://metacpan.org/pod/Memoize] was introduced with Perl 5.8. It
+[Memoize](https://metacpan.org/pod/Memoize) was introduced with Perl 5.8. It
 provides an easy way to cache the results from function calls. It can be used
 to simplify the Orciah Manoeuvre.
 
