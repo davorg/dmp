@@ -613,6 +613,83 @@ fourth city means editing a text file, not touching the program,
 which is exactly the job YAML is suited for and JSON, with its
 stricter and less forgiving syntax, is not.
 
+### Unicode in JSON and YAML
+
+Both formats assume Unicode text, and both default to UTF-8 as the
+byte encoding used on disk or on the wire. That's good news—it means
+you rarely have to think about encodings at all when working with
+JSON or YAML—but "rarely" isn't "never," and the one place it bites is
+worth understanding, especially now that [Chapter 5](ch009.xhtml) has
+given us the vocabulary (and the borders) to talk about it properly.
+
+`JSON::MaybeXS` actually gives you two interfaces, and they don't
+handle encoding the same way. The convenience functions
+`encode_json`/`decode_json`—the ones we used in the weather example
+above—operate in what the underlying modules call *utf8 mode*:
+`decode_json` expects raw UTF-8 bytes and hands back a fully decoded
+Perl string, and `encode_json` does the reverse. That's exactly why
+`decode_json($res->{content})` worked correctly earlier: `$res->{content}`
+from `HTTP::Tiny` is raw bytes straight off the network, which is
+precisely what `decode_json` wants.
+
+The object-oriented interface—`JSON->new`, as used later in this
+chapter—defaults to the opposite behavior. Without an explicit
+`->utf8`, `encode` returns a decoded Perl string rather than UTF-8
+bytes, and `decode` expects one as input rather than producing one.
+You only get byte-level behavior from the OO form by asking for it
+with `->utf8`, which is exactly why the round-trip example later in
+this chapter calls `JSON->new->utf8->pretty->encode(...)`: it's about
+to print the result straight to `STDOUT`, so it needs actual bytes,
+not decoded characters.
+
+Get this backwards and you get a specific, recognizable failure. Feed
+already-UTF-8-encoded bytes through a decode call that isn't expecting
+bytes (or, equivalently, decode the same bytes twice), and every
+non-ASCII character comes out mangled:
+
+	use strict;
+	use warnings;
+	use utf8;
+	use JSON::MaybeXS;
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	my $bytes = encode_json({ artist => 'Björk' });   # UTF-8 bytes, correctly
+
+	my $right = decode_json($bytes);                  # bytes in, chars out: correct
+	my $wrong = JSON->new->decode($bytes);             # chars expected, bytes given: wrong
+
+	print "Right: $right->{artist} (", length($right->{artist}), " chars)\n";
+	print "Wrong: $wrong->{artist} (", length($wrong->{artist}), " chars)\n";
+
+which prints:
+
+	Right: Björk (5 chars)
+	Wrong: BjÃ¶rk (6 chars)
+
+That's mojibake, from exactly the same cause as in Chapter 5—Perl
+treating a run of UTF-8 bytes as if each byte were already a separate
+character—just arrived at through a mismatched JSON call rather than a
+missing `:encoding(UTF-8)` layer on a filehandle.
+
+`YAML::PP` draws the same line in a different place: its `load_file`
+and `dump_file` methods handle the UTF-8 decoding and encoding for you
+as part of touching the file—exactly what we relied on with
+`cities.yaml` above—while `load_string` and `dump_string` work with
+Perl strings you've already decoded (or still need to encode)
+yourself. Same rule as Chapter 5, just enforced by which method you
+call rather than by a flag.
+
+This is also somewhere [Path::Tiny](ch006.xhtml) earns its keep again.
+If you need raw bytes—to hand to `decode_json`, say, or to a YAML
+`load_string` call you're about to decode yourself—`slurp_raw` gets
+you the file's contents with no decoding at all. If you want
+already-decoded text—for `JSON->new->decode` without `->utf8`, or to
+pass straight to `load_string`—`slurp_utf8` does that in one call.
+Either way, it's the same instinct from Chapter 3: know which side of
+the border you're standing on, and let Path::Tiny do the crossing for
+you.
+
 Producing different document formats
 -------------------------------------
 
@@ -669,6 +746,8 @@ a colleague who prefers YAML. Here's the whole program:
     use JSON::MaybeXS;
     use YAML::PP;
 
+    binmode STDOUT, ':encoding(UTF-8)';
+
     my $dom = XML::LibXML->load_xml(location => 'cds.xml');
 
     my @cds = map {
@@ -681,7 +760,7 @@ a colleague who prefers YAML. Here's the whole program:
         }
     } $dom->findnodes('/cds/cd');
 
-    say JSON->new->utf8->pretty->encode(\@cds);
+    say JSON->new->pretty->encode(\@cds);
     say YAML::PP->new->dump_string(\@cds);
 
 That's the whole thing. `load_xml` reads the file and gives us a DOM
@@ -693,6 +772,19 @@ a nested `findnodes('./track')` to pick up the tracks. Once `@cds`
 holds that, `JSON::MaybeXS` and `YAML::PP` do the rest: each one is a
 single method call, because by then the hard work -- deciding what
 the data actually *means* -- is already finished.
+
+Notice that this version drops the `->utf8` we used in the Unicode
+section above, and adds a `binmode` on `STDOUT` instead.
+`YAML::PP->new->dump_string` always hands back decoded Unicode
+characters, never encoded bytes—there's no `->utf8`-style flag to ask
+it for the other behavior—so it can't be printed safely without an
+encoding layer somewhere. Rather than encode the JSON by hand and
+leave the YAML in character form, it's simpler to decode nothing,
+encode nothing, and let one `:encoding(UTF-8)` layer on `STDOUT`
+handle both outputs the same way. This CD data happens to be
+all-ASCII, so both versions would look identical on screen either
+way—but the `binmode` version is the one that keeps working once
+someone adds a CD by an artist with an accented name.
 
 Compare that with the older, node-by-node approach of walking a
 generic tree: `XML::LibXML`'s XPath support lets us go straight from
