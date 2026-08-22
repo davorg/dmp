@@ -457,6 +457,27 @@ character instead—which is exactly where the classic "mojibake"
 garbage you'll have seen in badly configured web pages and emails
 comes from.
 
+If you followed the [Path::Tiny](https://metacpan.org/pod/Path::Tiny)
+section back in [Chapter 3](ch006.xhtml), you'll be pleased to hear it
+patrols borders too. Its `slurp_utf8` and `spew_utf8` methods decode
+and encode UTF-8 for you, so the same artists example becomes:
+
+	use strict;
+	use warnings;
+	use Path::Tiny;
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	my @artists = path('artists.txt')->lines_utf8({ chomp => 1 });
+
+	print uc($_), "\n" for @artists;
+
+`lines_utf8` (and its sibling `slurp_utf8`, if you want the whole file
+as one string) is exactly equivalent to opening the file with
+`'<:encoding(UTF-8)'`—it's just one method call instead of an `open`
+and an `or die`. The border is still there; Path::Tiny is just
+patrolling it on your behalf.
+
 ##### A silly example: Unicode in your source code
 
 Because [utf8](https://metacpan.org/pod/utf8) is about your source

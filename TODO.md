@@ -84,7 +84,7 @@ assuming.
 
 You'd already drafted an 18-item modernization backlog in this file (with `gh`-based scripts to turn it into GitHub Issues). Most overlaps with the above; these are the ones that don't:
 
-- [ ] **`Path::Tiny`** as a cleaner, safer alternative to manual `opendir`/`glob`/`unlink`/`open` for file and directory ops.
+- [x] ~~`Path::Tiny` as a cleaner, safer alternative to manual `opendir`/`glob`/`unlink`/`open` for file and directory ops.~~ **Resolved (2026-08-22):** added a new "Path::Tiny" section in Ch3 (after "Command line scripts") — `path()`, `lines`/`slurp`/`spew`, `child` for portable path-joining, and `exists`/`touch`/`remove`/`children` as a group, all shown by rewriting the chapter's existing CD-file parsing example. Also added a follow-up in Ch5's "Patrol your borders" section showing `lines_utf8`/`slurp_utf8`/`spew_utf8` as a one-call alternative to `open ... '<:encoding(UTF-8)'`, cross-referencing back to Ch3. New files `code-examples/c3/path_tiny.pl`, `code-examples/c5/path_tiny_borders.pl` — logic verified against a local stub matching Path::Tiny's documented API (module itself can't be installed in this sandbox, no CPAN access).
 - [ ] **`CHI` or `Cache::Memory`** for real-world caching strategies, as a companion/upgrade to the existing `Memoize` coverage.
 - [ ] **New section on testing with `Test2::V0`** — basic tests for file parsing and transformation logic. The book currently has no testing content at all.
 - [ ] **`Benchmark::Timer` or `Time::HiRes`** alongside (or instead of) the existing `Benchmark.pm` coverage, for finer-grained timing.

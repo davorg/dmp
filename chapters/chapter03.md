@@ -8,6 +8,7 @@ What this chapter covers:
 * Database Interface and database driver modules
 * Benchmarking
 * Command line scripts
+* Path::Tiny for file and path handling
 
 There are a number of Perl idioms that will be useful in many data
 munging programs. Rather than introduce them in the text when they are first
@@ -901,6 +902,76 @@ available features:
 
 ---
 
+## Path::Tiny
+
+Perl's built-in file-handling functions—`open`, `close`, `opendir`,
+`unlink`, and the rest—work perfectly well, but they involve a fair
+amount of ceremony: checking every return value, remembering the
+three-argument form of `open`, and building portable path names by
+hand with `File::Spec` rather than just gluing strings together with
+`/` (which breaks the moment someone runs your script on Windows).
+[Path::Tiny](https://metacpan.org/pod/Path::Tiny) is a small,
+dependency-light CPAN module that wraps all of this up into a single,
+convenient object, and it's become a standard part of most modern
+Perl programmers' toolkits.
+
+Everything starts with the `path()` function, which turns a filename
+into a `Path::Tiny` object:
+
+	use Path::Tiny;
+
+	my $file = path('cd.txt');
+
+From there, reading and writing become one-liners. Here's the CD-file
+parsing code from the Data::Dumper section above, rewritten to use
+Path::Tiny instead of `open` and `while (<STDIN>)`:
+
+	use strict;
+	use warnings;
+	use Path::Tiny;
+	use Data::Dumper;
+
+	my $file = path('cd.txt');
+	my @attrs = qw(artist title label year);
+	my @CDs;
+
+	for my $line ($file->lines({ chomp => 1 })) {
+	  my %rec;
+	  @rec{@attrs} = split /\t/, $line;
+	  push @CDs, \%rec;
+	}
+
+	print Dumper(\@CDs);
+
+`lines` reads the whole file and returns it as a list of lines, and
+the `chomp` option strips the line endings for us as it goes—no more
+remembering to `chomp` inside the loop. If you'd rather have the
+whole file as a single string, `slurp` does that job:
+
+	my $whole_file = $file->slurp;
+
+and its counterpart, `spew`, writes a string (or a list of strings)
+straight to a file, taking care of opening and closing the filehandle
+for you:
+
+	path('report.txt')->spew(@lines);
+
+`Path::Tiny` objects are also useful for building paths portably.
+`child` joins path components using whatever separator is correct for
+the platform you're running on, so you never have to hardcode `/` or
+`\`:
+
+	my $config = path('/etc')->child('myapp', 'config.ini');
+	# /etc/myapp/config.ini on Unix; the Windows equivalent elsewhere
+
+and a handful of housekeeping methods—`exists`, `touch`, `remove`, and
+`children` (for listing a directory's contents)—cover most of what
+you'd otherwise reach for `opendir`, `readdir`, and `unlink` to do.
+
+We'll come back to Path::Tiny in [Chapter 5](ch009.xhtml), where its
+`slurp_utf8` and `spew_utf8` methods make the "patrol your borders"
+pattern for Unicode text even shorter.
+
 ## Further information
 
 More discussion of the Schwartzian transform, the Orcish Manoeuvre, and
@@ -930,6 +1001,13 @@ installed DBD module by typing
 at your command line. You should replace `<name>` with the name of the
 DBD module that you have installed, for example “Sybase” or “mysql”.
 
+Full documentation for [Path::Tiny](https://metacpan.org/pod/Path::Tiny),
+including its many other methods, is available by typing
+
+	perldoc Path::Tiny
+
+at your command line, once the module is installed.
+
 ## Summary
 
 * Sorting can be very simple in Perl, but for more complex sorts there are a number of methods which can make the sort more efficient.
@@ -937,3 +1015,4 @@ DBD module that you have installed, for example “Sybase” or “mysql”.
 * [Data::Dumper](https://metacpan.org/pod/Data::Dumper) is very useful for seeing what your internal data structures look like.
 * Benchmarking is very important, but can be quite tricky to do correctly.
 * Command line scripts can be surprisingly powerful.
+* [Path::Tiny](https://metacpan.org/pod/Path::Tiny) makes reading, writing, and manipulating files and paths simpler and more portable than Perl's built-in functions.
