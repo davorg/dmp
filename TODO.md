@@ -42,6 +42,7 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 - [x] ~~Chapter 4 (pattern matching) is missing.~~ **Resolved** — `chapters/chapter04.md` exists in the `dmp` repo, complete (~1050 lines, substr/index/case functions through regular expressions, with summary). It's wired into `chapters.txt` and the build. The standalone PDF was just out of sync with the repo — last repo commit touching chapter 4 is 2024-06-03, which is also the most recent commit in the whole repo, so the PDF was likely exported before that, or via a separate path that dropped it.
 - [ ] **"Part IV" is referenced but doesn't exist.** The preface says "PART IV concludes our tour..." but Chapter 12 just follows Part III directly, with no Part IV divider in the actual document.
 - [x] ~~Front matter is ahead of the chapter it describes.~~ **Resolved (2026-08-06):** Chapter 10 is now "Common Data Interchange Formats," covering XML, JSON, and YAML; front matter's TOC blurb updated to match.
+- [ ] **Check heading order in Chapter 5.** (2026-08-22) The whole Unicode section — bytes vs. strings, patrol your borders, the `$π` demo, character escapes, regex properties, normalization, fold case/collation, Text::Unidecode — currently sits nested under "### Converting the character set," which reads as if it's just one narrow topic among others rather than the bulk of the chapter's substance. Worth revisiting the heading structure once the Unicode content has settled.
 
 ## Outdated code / modules, by chapter
 
