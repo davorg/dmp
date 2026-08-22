@@ -393,6 +393,8 @@ or—worse—something that "successfully" decodes into complete garbage.
 That collision, more than anything else, is where the classic mojibake
 you'll have seen in broken web pages and emails comes from.
 
+![How the same character encodes differently: "A" is byte 0x41 in both ASCII and UTF-8, but "é" (Unicode code point U+00E9) has no ASCII byte at all and takes two bytes, 0xC3 0xA9, in UTF-8](images/5-1-ascii-vs-utf8-encoding.svg)
+
 This is exactly what the `:encoding(...)` layer in "patrol your
 borders" is for: it's the one place in your program that has to know
 which byte-level encoding your data is actually in, so it can

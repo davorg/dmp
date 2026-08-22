@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 430" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="940" height="430" fill="#ffffff"/>
+
+  <text x="470" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a2e">How the same character encodes differently</text>
+
+  <!-- Column headers -->
+  <text x="130" y="70" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">CHARACTER</text>
+  <text x="350" y="70" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">CODE POINT</text>
+  <text x="570" y="70" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">ASCII BYTES</text>
+  <text x="790" y="70" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">UTF-8 BYTES</text>
+
+  <!-- Header chevrons -->
+  <text x="240" y="70" text-anchor="middle" font-size="18" fill="#0f766e">&#8594;</text>
+  <text x="460" y="70" text-anchor="middle" font-size="18" fill="#0f766e">&#8594;</text>
+  <text x="680" y="70" text-anchor="middle" font-size="18" fill="#0f766e">&#8594;</text>
+
+  <!-- ================= Row A: "A" ================= -->
+
+  <!-- Character box -->
+  <rect x="30" y="95" width="200" height="100" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="130" y="158" text-anchor="middle" font-size="46" fill="#1a1a2e">A</text>
+
+  <!-- Code point box -->
+  <rect x="250" y="95" width="200" height="100" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="350" y="153" text-anchor="middle" font-size="22" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">U+0041</text>
+
+  <!-- ASCII box -->
+  <rect x="470" y="95" width="200" height="100" rx="8" fill="#ecfdf5" stroke="#86efac" stroke-width="1.5"/>
+  <text x="570" y="150" text-anchor="middle" font-size="22" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#166534">0x41</text>
+  <text x="570" y="172" text-anchor="middle" font-size="12" fill="#166534">(1 byte)</text>
+
+  <!-- UTF-8 box -->
+  <rect x="690" y="95" width="200" height="100" rx="8" fill="#ecfdf5" stroke="#86efac" stroke-width="1.5"/>
+  <text x="790" y="150" text-anchor="middle" font-size="22" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#166534">0x41</text>
+  <text x="790" y="172" text-anchor="middle" font-size="12" fill="#166534">(1 byte)</text>
+
+  <!-- Row A brace + note -->
+  <path d="M 480 205 L 480 213 L 880 213 L 880 205" fill="none" stroke="#166534" stroke-width="1.5"/>
+  <text x="680" y="230" text-anchor="middle" font-size="13" fill="#166534" font-style="italic">Identical: every ASCII byte is already valid UTF-8</text>
+
+  <!-- ================= Row B: "é" ================= -->
+
+  <!-- Character box -->
+  <rect x="30" y="260" width="200" height="100" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="130" y="323" text-anchor="middle" font-size="46" fill="#1a1a2e">&#233;</text>
+
+  <!-- Code point box -->
+  <rect x="250" y="260" width="200" height="100" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="350" y="318" text-anchor="middle" font-size="22" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">U+00E9</text>
+
+  <!-- ASCII box: can't represent -->
+  <rect x="470" y="260" width="200" height="100" rx="8" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+  <g stroke="#b91c1c" stroke-width="4" stroke-linecap="round">
+    <line x1="558" y1="285" x2="582" y2="309"/>
+    <line x1="582" y1="285" x2="558" y2="309"/>
+  </g>
+  <text x="570" y="335" text-anchor="middle" font-size="12" fill="#b91c1c">can't represent</text>
+
+  <!-- UTF-8 box -->
+  <rect x="690" y="260" width="200" height="100" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="790" y="315" text-anchor="middle" font-size="20" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">0xC3 0xA9</text>
+  <text x="790" y="337" text-anchor="middle" font-size="12" fill="#1a1a2e">(2 bytes)</text>
+
+  <!-- Row B brace + note -->
+  <path d="M 480 370 L 480 378 L 880 378 L 880 370" fill="none" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="680" y="395" text-anchor="middle" font-size="13" fill="#b91c1c" font-style="italic">ASCII has no byte for &#233; &#8212; UTF-8 spends two</text>
+
+</svg>
