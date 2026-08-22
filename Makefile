@@ -21,6 +21,12 @@ book: chapters.txt bookname.txt title.txt chapters
 .PHONY: pdf
 pdf: book $(bookname).pdf
 
+# Phony because this has to regenerate on every build, not just when
+# chapters/front-matter.md changes -- otherwise a build/front-matter.md
+# left over from a previous day is newer than the source file, Make
+# considers it up to date, and the epub/pdf silently gets yesterday's
+# (or older) date baked into the copyright page instead of today's.
+.PHONY: build/front-matter.md
 build/front-matter.md: chapters/front-matter.md
 	mkdir -p build
 	sed 's/__BUILD_DATE__/$(BUILD_DATE)/' chapters/front-matter.md > build/front-matter.md
