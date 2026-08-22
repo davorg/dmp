@@ -653,6 +653,78 @@ you're already decoding—as part of getting data into a known-good
 state before you do anything else with it, right alongside deciding on
 an encoding in the first place.
 
+##### Comparing and sorting Unicode text: fold case and collation
+
+Normalization fixes one kind of comparison problem—the same character
+represented by different code point sequences. But even fully
+normalized Unicode text can trip up the string comparisons you're
+used to, in two different ways: case-insensitive matching, and
+sorting.
+
+Perl's `lc` and `uc` work fine for simple, one-to-one case
+conversion—even on accented Unicode letters—but some languages have
+case relationships that aren't one-to-one at all. German is the
+classic example: the letter "ß" (`LATIN SMALL LETTER SHARP S`)
+has no uppercase form of its own—its uppercase equivalent is the
+two-letter sequence "SS". `lc` doesn't know this, so it fails to match
+things a human reader would consider the same word:
+
+	use strict;
+	use warnings;
+	use utf8;
+	use feature 'fc';
+
+	my @words = ('straße', 'STRASSE');
+
+	print "lc: ", (lc($words[0]) eq lc($words[1]) ? 'equal' : 'not equal'), "\n";
+	print "fc: ", (fc($words[0]) eq fc($words[1]) ? 'equal' : 'not equal'), "\n";
+
+which prints:
+
+	lc: not equal
+	fc: equal
+
+`fc` (case *fold*, rather than case *convert*) implements Unicode's
+full case-folding algorithm, which knows about expansions like this
+one. It's a core function, available since Perl 5.16 with
+`use feature 'fc'` (or simply `use v5.16;` or later). Use `fc` instead
+of `lc` any time you're comparing Unicode text for equality, case
+insensitively—for example, deduplicating usernames or matching search
+terms.
+
+Sorting has a similar problem. Perl's default `sort` (and `cmp`)
+compares strings by code point, and accented characters generally
+have code points well outside the ASCII letters, so they end up in
+the wrong place:
+
+	use strict;
+	use warnings;
+	use utf8;
+	use Unicode::Collate;
+
+	binmode STDOUT, ':encoding(UTF-8)';
+
+	my @words = ('über', 'apple', 'zebra');
+
+	print "Default sort:  ", join(', ', sort @words), "\n";
+
+	my $collator = Unicode::Collate->new;
+	print "Collated sort: ", join(', ', $collator->sort(@words)), "\n";
+
+which prints:
+
+	Default sort:  apple, zebra, über
+	Collated sort: apple, über, zebra
+
+Plain `sort` puts "über" last, because "ü" (U+00FC) sits after every
+plain ASCII letter in code point order—not where a human alphabetizing
+a list would put it. [Unicode::Collate](https://metacpan.org/pod/Unicode::Collate),
+core since Perl 5.8.0, implements the Unicode Collation Algorithm,
+which sorts text the way people actually expect, taking accents,
+language conventions, and much more into account. It's the module to
+reach for any time you're presenting a sorted list of names, titles,
+or other Unicode text to a human reader.
+
 ##### Simplifying Unicode with Text::Unidecode
 
 Sometimes you don't need to preserve Unicode text faithfully—you just
