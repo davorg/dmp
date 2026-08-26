@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 370" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="600" height="370" fill="#ffffff"/>
+
+  <!-- %Config hash: rules/files (hash -> rounded corners), top-aligned
+       with the top target box -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="10" y="20" width="190" height="80" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="10" y1="60" x2="200" y2="60"/>
+    <line x1="80" y1="20" x2="80" y2="100"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="25" y="45">rules</text> <text x="95" y="45" font-style="italic">hashref</text>
+    <text x="25" y="85">files</text> <text x="95" y="85" font-style="italic">hashref</text>
+  </g>
+  <circle cx="180" cy="40" r="4" fill="#7c3aed"/>
+  <circle cx="180" cy="80" r="4" fill="#7c3aed"/>
+
+  <!-- rules -> quotes/sep/spaces hash -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="300" y="20" width="260" height="120" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="300" y1="60" x2="560" y2="60"/>
+    <line x1="300" y1="100" x2="560" y2="100"/>
+    <line x1="370" y1="20" x2="370" y2="140"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="315" y="45">quotes</text> <text x="385" y="45">double</text>
+    <text x="315" y="85">sep</text>    <text x="385" y="85">comma</text>
+    <text x="315" y="125">spaces</text><text x="385" y="125">trim</text>
+  </g>
+
+  <!-- files -> input/ext/output hash -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="300" y="220" width="260" height="120" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="300" y1="260" x2="560" y2="260"/>
+    <line x1="300" y1="300" x2="560" y2="300"/>
+    <line x1="370" y1="220" x2="370" y2="340"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="315" y="245">input</text>  <text x="385" y="245">data_in</text>
+    <text x="315" y="285">ext</text>    <text x="385" y="285">dat</text>
+    <text x="315" y="325">output</text> <text x="385" y="325">data_out</text>
+  </g>
+
+  <g stroke="#7c3aed" stroke-width="1.5" fill="none">
+    <path d="M 184 40 L 293 40"/>
+    <path d="M 184 80 L 240 80 L 240 240 L 293 240"/>
+  </g>
+  <g fill="#7c3aed">
+    <polygon points="300,40 293,36.5 293,43.5"/>
+    <polygon points="300,240 293,236.5 293,243.5"/>
+  </g>
+
+</svg>

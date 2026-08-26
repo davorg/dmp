@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 320" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="680" height="320" fill="#ffffff"/>
+
+  <defs>
+    <marker id="r31" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- @CDs: index | hashref (array -> square corners), unsorted: 1972 before 1971 -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="10" y="20" width="190" height="80"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="10" y1="60" x2="200" y2="60"/>
+    <line x1="50" y1="20" x2="50" y2="100"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="30" y="45" text-anchor="middle">0</text> <text x="65" y="45" font-style="italic">hashref</text>
+    <text x="30" y="85" text-anchor="middle">1</text> <text x="65" y="85" font-style="italic">hashref</text>
+  </g>
+  <circle cx="182" cy="40" r="4" fill="#7c3aed"/>
+  <circle cx="182" cy="80" r="4" fill="#7c3aed"/>
+
+  <!-- index 0 -> Ziggy Stardust / 1972 (hash -> rounded corners), top-aligned with the array -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="360" y="20" width="280" height="80" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="360" y1="60" x2="640" y2="60"/>
+    <line x1="450" y1="20" x2="450" y2="100"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="375" y="45">year</text>  <text x="465" y="45">1972</text>
+    <text x="375" y="85">title</text> <text x="465" y="85">Ziggy Stardust</text>
+  </g>
+
+  <!-- index 1 -> Hunky Dory / 1971 -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="360" y="220" width="280" height="80" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="360" y1="260" x2="640" y2="260"/>
+    <line x1="450" y1="220" x2="450" y2="300"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="375" y="245">year</text>  <text x="465" y="245">1971</text>
+    <text x="375" y="285">title</text> <text x="465" y="285">Hunky Dory</text>
+  </g>
+
+  <g stroke="#7c3aed" stroke-width="1.5" fill="none" marker-end="url(#r31)">
+    <path d="M 186 40 L 360 40"/>
+    <path d="M 186 80 L 300 80 L 300 240 L 360 240"/>
+  </g>
+
+</svg>

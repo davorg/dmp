@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 260" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="700" height="260" fill="#ffffff"/>
+
+  <defs>
+    <marker id="ref5" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- @CDs array: index | hashref (array -> square corners) -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="10" y="20" width="200" height="200"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="10" y1="53.33" x2="210" y2="53.33"/>
+    <line x1="10" y1="86.67" x2="210" y2="86.67"/>
+    <line x1="10" y1="120" x2="210" y2="120"/>
+    <line x1="10" y1="153.33" x2="210" y2="153.33"/>
+    <line x1="10" y1="186.67" x2="210" y2="186.67"/>
+    <line x1="43.33" y1="20" x2="43.33" y2="220"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="26.67" y="43" text-anchor="middle">0</text>  <text x="58.33" y="43" font-style="italic">hashref</text>
+    <text x="26.67" y="76" text-anchor="middle">1</text>  <text x="58.33" y="76" font-style="italic">hashref</text>
+    <text x="26.67" y="110" text-anchor="middle">2</text> <text x="58.33" y="110" font-style="italic">hashref</text>
+    <text x="26.67" y="143" text-anchor="middle">3</text> <text x="58.33" y="143" font-style="italic">hashref</text>
+    <text x="26.67" y="176" text-anchor="middle">4</text> <text x="58.33" y="176" font-style="italic">hashref</text>
+    <text x="26.67" y="210" text-anchor="middle">5</text> <text x="58.33" y="210" font-style="italic">hashref</text>
+  </g>
+  <circle cx="192" cy="38" r="4" fill="#7c3aed"/>
+
+  <!-- Every element is a hashref, so every row gets a reference dot; only
+       row 0 is followed all the way to keep the diagram uncluttered, and
+       the rest fade out to show they point somewhere too. -->
+  <g fill="#7c3aed">
+    <circle cx="192" cy="71" r="4"/>
+    <circle cx="192" cy="105" r="4"/>
+    <circle cx="192" cy="138" r="4"/>
+    <circle cx="192" cy="171" r="4"/>
+    <circle cx="192" cy="205" r="4"/>
+  </g>
+  <!-- Fading dashes (stepped opacity, not a gradient, for more reliable
+       rendering across SVG viewers) to suggest "points somewhere,
+       just not drawn out" for each of these. -->
+  <g stroke="#7c3aed" stroke-width="3" stroke-linecap="round">
+    <g>
+      <line x1="200" y1="71" x2="207" y2="71" stroke-opacity="0.65"/>
+      <line x1="213" y1="71" x2="220" y2="71" stroke-opacity="0.58"/>
+      <line x1="226" y1="71" x2="233" y2="71" stroke-opacity="0.50"/>
+      <line x1="239" y1="71" x2="246" y2="71" stroke-opacity="0.43"/>
+      <line x1="252" y1="71" x2="259" y2="71" stroke-opacity="0.35"/>
+      <line x1="265" y1="71" x2="272" y2="71" stroke-opacity="0.28"/>
+      <line x1="278" y1="71" x2="285" y2="71" stroke-opacity="0.20"/>
+      <line x1="291" y1="71" x2="298" y2="71" stroke-opacity="0.13"/>
+      <line x1="304" y1="71" x2="311" y2="71" stroke-opacity="0.05"/>
+    </g>
+    <g>
+      <line x1="200" y1="105" x2="207" y2="105" stroke-opacity="0.65"/>
+      <line x1="213" y1="105" x2="220" y2="105" stroke-opacity="0.58"/>
+      <line x1="226" y1="105" x2="233" y2="105" stroke-opacity="0.50"/>
+      <line x1="239" y1="105" x2="246" y2="105" stroke-opacity="0.43"/>
+      <line x1="252" y1="105" x2="259" y2="105" stroke-opacity="0.35"/>
+      <line x1="265" y1="105" x2="272" y2="105" stroke-opacity="0.28"/>
+      <line x1="278" y1="105" x2="285" y2="105" stroke-opacity="0.20"/>
+      <line x1="291" y1="105" x2="298" y2="105" stroke-opacity="0.13"/>
+      <line x1="304" y1="105" x2="311" y2="105" stroke-opacity="0.05"/>
+    </g>
+    <g>
+      <line x1="200" y1="138" x2="207" y2="138" stroke-opacity="0.65"/>
+      <line x1="213" y1="138" x2="220" y2="138" stroke-opacity="0.58"/>
+      <line x1="226" y1="138" x2="233" y2="138" stroke-opacity="0.50"/>
+      <line x1="239" y1="138" x2="246" y2="138" stroke-opacity="0.43"/>
+      <line x1="252" y1="138" x2="259" y2="138" stroke-opacity="0.35"/>
+      <line x1="265" y1="138" x2="272" y2="138" stroke-opacity="0.28"/>
+      <line x1="278" y1="138" x2="285" y2="138" stroke-opacity="0.20"/>
+      <line x1="291" y1="138" x2="298" y2="138" stroke-opacity="0.13"/>
+      <line x1="304" y1="138" x2="311" y2="138" stroke-opacity="0.05"/>
+    </g>
+    <g>
+      <line x1="200" y1="171" x2="207" y2="171" stroke-opacity="0.65"/>
+      <line x1="213" y1="171" x2="220" y2="171" stroke-opacity="0.58"/>
+      <line x1="226" y1="171" x2="233" y2="171" stroke-opacity="0.50"/>
+      <line x1="239" y1="171" x2="246" y2="171" stroke-opacity="0.43"/>
+      <line x1="252" y1="171" x2="259" y2="171" stroke-opacity="0.35"/>
+      <line x1="265" y1="171" x2="272" y2="171" stroke-opacity="0.28"/>
+      <line x1="278" y1="171" x2="285" y2="171" stroke-opacity="0.20"/>
+      <line x1="291" y1="171" x2="298" y2="171" stroke-opacity="0.13"/>
+      <line x1="304" y1="171" x2="311" y2="171" stroke-opacity="0.05"/>
+    </g>
+    <g>
+      <line x1="200" y1="205" x2="207" y2="205" stroke-opacity="0.65"/>
+      <line x1="213" y1="205" x2="220" y2="205" stroke-opacity="0.58"/>
+      <line x1="226" y1="205" x2="233" y2="205" stroke-opacity="0.50"/>
+      <line x1="239" y1="205" x2="246" y2="205" stroke-opacity="0.43"/>
+      <line x1="252" y1="205" x2="259" y2="205" stroke-opacity="0.35"/>
+      <line x1="265" y1="205" x2="272" y2="205" stroke-opacity="0.28"/>
+      <line x1="278" y1="205" x2="285" y2="205" stroke-opacity="0.20"/>
+      <line x1="291" y1="205" x2="298" y2="205" stroke-opacity="0.13"/>
+      <line x1="304" y1="205" x2="311" y2="205" stroke-opacity="0.05"/>
+    </g>
+  </g>
+
+  <!-- CD hash: artist/title/label/year -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
+    <rect x="420" y="20" width="270" height="133.33" rx="10" ry="10"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="1">
+    <line x1="420" y1="53.33" x2="690" y2="53.33"/>
+    <line x1="420" y1="86.67" x2="690" y2="86.67"/>
+    <line x1="420" y1="120" x2="690" y2="120"/>
+    <line x1="510" y1="20" x2="510" y2="153.33"/>
+  </g>
+  <g font-size="15" fill="#1a1a2e">
+    <text x="435" y="43">artist</text> <text x="525" y="43">David Bowie</text>
+    <text x="435" y="76">title</text>  <text x="525" y="76">Hunky Dory</text>
+    <text x="435" y="110">label</text> <text x="525" y="110">RCA</text>
+    <text x="435" y="143">year</text>  <text x="525" y="143">1971</text>
+  </g>
+
+  <path d="M 196 38 L 420 38" stroke="#7c3aed" stroke-width="1.5" fill="none" marker-end="url(#ref5)"/>
+
+</svg>

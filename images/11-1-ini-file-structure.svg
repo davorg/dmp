@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 320" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="620" height="320" fill="#ffffff"/>
+
+  <!-- highlight boxes, sized from measured text bounding boxes with a tight,
+       consistent 4px pad on all four sides -->
+  <rect x="96"  y="44"  width="45"  height="24" fill="#bae6fd"/>
+  <rect x="96"  y="92"  width="52"  height="24" fill="#bae6fd"/>
+  <rect x="168" y="92"  width="70"  height="24" fill="#bae6fd"/>
+  <rect x="96"  y="164" width="114" height="96" fill="#bae6fd"/>
+
+  <!-- text lines single-spaced (24px) as they'd appear in the actual file,
+       with one genuine blank line (48px gap) between "ext=dat" and "[rules]" -->
+  <g font-size="16" fill="#1a1a2e">
+    <text x="100" y="60">[files]</text>
+    <text x="100" y="84">input=data_in</text>
+    <text x="100" y="108">output</text>
+    <text x="154" y="108">=</text>
+    <text x="172" y="108">data_out</text>
+    <text x="100" y="132">ext=dat</text>
+
+    <text x="100" y="180">[rules]</text>
+    <text x="100" y="204">quotes=double</text>
+    <text x="100" y="228">sep=comma</text>
+    <text x="100" y="252">spaces=trim</text>
+  </g>
+
+  <!-- callouts: label sits along its arrow, left-justified for the arrows
+       on the left, right-justified for the arrow on the right. Inline
+       triangles instead of <marker> (see TODO note on this sandbox's SVG
+       preview not painting markers). -->
+  <g stroke="#1a1a2e" stroke-width="1.5" fill="none">
+    <path d="M 10 104 L 86 104"/>
+    <path d="M 10 176 L 86 176"/>
+    <path d="M 340 56 L 151 56"/>
+    <path d="M 340 104 L 248 104"/>
+  </g>
+  <g fill="#1a1a2e">
+    <polygon points="93,104 86,100.5 86,107.5"/>
+    <polygon points="93,176 86,172.5 86,179.5"/>
+    <polygon points="144,56 151,52.5 151,59.5"/>
+    <polygon points="241,104 248,100.5 248,107.5"/>
+  </g>
+
+  <g font-size="14" font-weight="bold" fill="#1a1a2e">
+    <text x="10" y="98">Key</text>
+    <text x="10" y="170">Section</text>
+    <text x="340" y="46" text-anchor="end">Section name</text>
+    <text x="340" y="98" text-anchor="end">Value</text>
+  </g>
+
+</svg>

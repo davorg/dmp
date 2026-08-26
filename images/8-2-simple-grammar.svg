@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 260" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="640" height="260" fill="#ffffff"/>
+
+  <!-- highlight boxes behind the productions, drawn first so text sits on top;
+       sized from measured text bounding boxes so the padding is equal on
+       all four sides, not just eyeballed -->
+  <rect x="202" y="52" width="181" height="31" fill="#bae6fd"/>
+  <rect x="269" y="52" width="61" height="31" fill="#0f766e"/>
+  <rect x="203" y="148" width="148" height="95" fill="#bae6fd"/>
+
+  <g font-size="16" fill="#1a1a2e">
+    <text x="40"  y="72">sentence</text>
+    <text x="210" y="72">subject</text>
+    <text x="332" y="72">object</text>
+
+    <text x="40"  y="104">subject</text>
+    <text x="210" y="104">noun_phrase</text>
+
+    <text x="40"  y="136">object</text>
+    <text x="210" y="136">noun_phrase</text>
+
+    <text x="40"  y="168">noun_phrase</text>
+    <text x="210" y="168">PRONOUN</text>
+
+    <text x="210" y="200">|</text>
+    <text x="219" y="200">PROPER_NOUN</text>
+
+    <text x="210" y="232">|</text>
+    <text x="219" y="232">ARTICLE</text>
+    <text x="294" y="232">NOUN</text>
+  </g>
+  <text x="277" y="72" font-size="16" font-weight="bold" fill="#ffffff">VERB</text>
+
+  <!-- short arrows in place of literal "->" strings; arrowheads drawn as
+       inline triangles rather than SVG <marker> elements, because this
+       sandbox's SVG-to-PNG fallback renderer doesn't paint markers, even
+       though real renderers (browsers, EPUB readers, WeasyPrint) do. -->
+  <g stroke="#1a1a2e" stroke-width="1.5" fill="#1a1a2e">
+    <path d="M 155 68 L 175 68" fill="none"/>
+    <polygon points="182,68 175,64.5 175,71.5"/>
+    <path d="M 155 100 L 175 100" fill="none"/>
+    <polygon points="182,100 175,96.5 175,103.5"/>
+    <path d="M 155 132 L 175 132" fill="none"/>
+    <polygon points="182,132 175,128.5 175,135.5"/>
+    <path d="M 155 164 L 175 164" fill="none"/>
+    <polygon points="182,164 175,160.5 175,167.5"/>
+  </g>
+
+  <!-- callout: rule name, directly above "sentence" -->
+  <text x="75" y="20" font-size="14" font-weight="bold" fill="#1a1a2e" text-anchor="middle">Rule name</text>
+  <path d="M 75 28 L 75 51" stroke="#1a1a2e" stroke-width="1.5" fill="none"/>
+  <polygon points="75,58 71.5,51 78.5,51" fill="#1a1a2e"/>
+
+  <!-- callout: terminal -->
+  <text x="297" y="20" font-size="14" font-weight="bold" fill="#1a1a2e" text-anchor="middle">Terminal</text>
+  <path d="M 297 26 L 297 45" stroke="#1a1a2e" stroke-width="1.5" fill="none"/>
+  <polygon points="297,52 293.5,45 300.5,45" fill="#1a1a2e"/>
+
+  <!-- callout: production, label sits along the arrow, right-justified to its far end -->
+  <text x="470" y="58" font-size="14" font-weight="bold" fill="#1a1a2e" text-anchor="end">Production</text>
+  <path d="M 470 68 L 393 68" stroke="#1a1a2e" stroke-width="1.5" fill="none"/>
+  <polygon points="386,68 393,64.5 393,71.5" fill="#1a1a2e"/>
+
+  <!-- callout: alternative productions, label sits along the arrow, right-justified to its far end -->
+  <text x="470" y="168" font-size="14" font-weight="bold" fill="#1a1a2e" text-anchor="end">Alternative</text>
+  <text x="470" y="186" font-size="14" font-weight="bold" fill="#1a1a2e" text-anchor="end">productions</text>
+  <path d="M 470 200 L 361 200" stroke="#1a1a2e" stroke-width="1.5" fill="none"/>
+  <polygon points="354,200 361,196.5 361,203.5" fill="#1a1a2e"/>
+
+</svg>

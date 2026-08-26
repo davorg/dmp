@@ -209,7 +209,7 @@ number of named sections. Each of these sections contain a number of
 assignment statements. Figure 11.1 shows an example INI together with
 the various parts that make up the file structure.
 
-![INI File Structure](images/11-1-ini-file-structure.png)
+![INI File Structure](images/11-1-ini-file-structure.svg)
 
 In this example we have sections called "files" and "rules." The
 files section lists the names of the input and output files together
@@ -226,7 +226,7 @@ Within these second-level hashes the keys would be the left-hand side
 of the assignment statement and the values would be the right-hand
 side. Figure 11.2 shows this data structure.
 
-![INI file data structure](images/11-2-ini-file-data-structure.png)
+![INI file data structure](images/11-2-ini-file-data-structure.svg)
 
 This means that you can get an individual value very easily using code
 like:

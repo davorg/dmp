@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="900" height="400" fill="#ffffff"/>
+
+  <!-- File box -->
+  <rect x="175" y="15" width="480" height="325" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Header region (shaded: this is "one region", the data header) -->
+  <rect x="175" y="16" width="479" height="63" fill="#93c5fd" fill-opacity="0.45" rx="4"/>
+  <text x="190" y="42" font-size="16" fill="#1a1a2e">Dave's Record Collection</text>
+  <text x="190" y="66" font-size="16" fill="#1a1a2e">16 Sep 1999</text>
+  <line x1="175" y1="80" x2="655" y2="80" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Column header row -->
+  <text x="190" y="103" font-size="15" font-weight="bold" fill="#1a1a2e">Artist</text>
+  <text x="335" y="103" font-size="15" font-weight="bold" fill="#1a1a2e">Title</text>
+  <text x="465" y="103" font-size="15" font-weight="bold" fill="#1a1a2e">Label</text>
+  <text x="565" y="103" font-size="15" font-weight="bold" fill="#1a1a2e">Released</text>
+  <line x1="175" y1="112" x2="655" y2="112" stroke="#1a1a2e" stroke-width="1.5"/>
+
+  <!-- Column band: the whole "Label" field, across every record -->
+  <rect x="460" y="112" width="100" height="168" fill="#93c5fd" fill-opacity="0.35"/>
+
+  <!-- Row band: one whole record (Black, Mary / The Holy Ground) -->
+  <rect x="175" y="168" width="480" height="28" fill="#93c5fd" fill-opacity="0.35"/>
+  <!-- where the row and column bands overlap, the two opacities stack and read darker automatically -->
+
+  <!-- Data rows -->
+  <g font-size="14" fill="#1a1a2e">
+    <text x="190" y="132">Bragg, Billy</text>   <text x="335" y="132">Workers' Playtime</text> <text x="465" y="132">Cooking Vinyl</text> <text x="565" y="132">1987</text>
+    <text x="190" y="160">Bragg, Billy</text>   <text x="335" y="160">Mermaid Avenue</text>    <text x="465" y="160">EMI</text>           <text x="565" y="160">1998</text>
+    <text x="190" y="188">Black, Mary</text>    <text x="335" y="188">The Holy Ground</text>   <text x="465" y="188">Grapevine</text>     <text x="565" y="188">1993</text>
+    <text x="190" y="216">Black, Mary</text>    <text x="335" y="216">Circus</text>            <text x="465" y="216">Grapevine</text>     <text x="565" y="216">1996</text>
+    <text x="190" y="244">Bowie, David</text>   <text x="335" y="244">Hunky Dory</text>        <text x="465" y="244">RCA</text>           <text x="565" y="244">1971</text>
+    <text x="190" y="272">Bowie, David</text>   <text x="335" y="272">Earthling</text>         <text x="465" y="272">EMI</text>           <text x="565" y="272">1997</text>
+  </g>
+
+  <!-- Column dividers -->
+  <g stroke="#e2e8f0" stroke-width="1">
+    <line x1="330" y1="86" x2="330" y2="280"/>
+    <line x1="460" y1="86" x2="460" y2="280"/>
+    <line x1="560" y1="86" x2="560" y2="280"/>
+  </g>
+
+  <line x1="175" y1="280" x2="655" y2="280" stroke="#cbd5e1" stroke-width="1.5"/>
+
+  <!-- Footer region (shaded, same as header) -->
+  <rect x="175" y="300" width="479" height="39" fill="#93c5fd" fill-opacity="0.45" rx="4"/>
+  <text x="190" y="320" font-size="16" fill="#1a1a2e">6 Records</text>
+
+  <!-- Callouts -->
+  <g font-size="14" font-weight="bold" fill="#475569">
+    <text x="700" y="182" text-anchor="start">One data record</text>
+    <text x="700" y="117" text-anchor="start">One data field</text>
+    <text x="15" y="45">Data header</text>
+    <text x="15" y="325">Data footer</text>
+  </g>
+
+  <g stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <path d="M 105 41 L 172 41"/>
+    <path d="M 105 316 L 172 316"/>
+    <path d="M 695 178 L 658 182"/>
+    <path d="M 695 112 L 563 112"/>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#475569"/>
+    </marker>
+  </defs>
+
+</svg>

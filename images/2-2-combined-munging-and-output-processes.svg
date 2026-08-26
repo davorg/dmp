@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 380" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="980" height="380" fill="#ffffff"/>
+
+  <defs>
+    <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+      <path d="M0,0 L7,3.5 L0,7 Z" fill="#0f766e"/>
+    </marker>
+  </defs>
+
+  <g fill="#ecfeff" stroke="#0f766e" stroke-width="1.5">
+    <circle cx="80" cy="90" r="55"/>
+    <circle cx="80" cy="290" r="55"/>
+    <circle cx="880" cy="190" r="68"/>
+  </g>
+
+  <g fill="#f8fafc" stroke="#0f766e" stroke-width="1.5">
+    <rect x="190" y="45" width="130" height="90" rx="10"/>
+    <rect x="190" y="245" width="130" height="90" rx="10"/>
+    <rect x="400" y="145" width="140" height="90" rx="10"/>
+    <rect x="615" y="145" width="140" height="90" rx="10"/>
+  </g>
+
+  <g font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">
+    <text x="80" y="83">Data</text><text x="80" y="101">Source A</text>
+    <text x="80" y="283">Data</text><text x="80" y="301">Source B</text>
+    <text x="255" y="83">Data</text><text x="255" y="101">Input A</text>
+    <text x="255" y="283">Data</text><text x="255" y="301">Input B</text>
+    <text x="470" y="183">Data</text><text x="470" y="201">Munge</text>
+    <text x="685" y="183">Data</text><text x="685" y="201">Output</text>
+    <text x="880" y="183">Data</text><text x="880" y="201">Sink</text>
+  </g>
+
+  <g stroke="#0f766e" stroke-width="2" fill="none" marker-end="url(#a2)">
+    <path d="M 135 90 L 190 90"/>
+    <path d="M 135 290 L 190 290"/>
+    <path d="M 320 90 L 370 90 L 370 190 L 400 190"/>
+    <path d="M 320 290 L 370 290 L 370 190 L 400 190"/>
+    <path d="M 540 190 L 615 190"/>
+    <path d="M 755 190 L 812 190"/>
+  </g>
+
+</svg>
