@@ -129,8 +129,12 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 
 ## Next session
 
+**Priority (decided 2026-08-26):** Dave wants to get to a position where every chapter itself — not just appendices/artwork — has been checked and modernized. Ch3 ("Useful Perl idioms"), Ch7 ("Binary data" — need to confirm exact title/scope), and Ch8 ("Complex data formats," Part III opener) are next, since none of the three has had a real modernity audit yet: Ch3 and Ch8 only got the July PDF-sync diff, and Ch7's `Image::Info`/`MPEG::MP3Info` currency was flagged but never actually checked. Suggested order: Ch7 first (narrowest, already has a known concrete question — are those two modules still reasonable to teach), then Ch3 and Ch8 (broader "full modernity read" like the original Ch5/Ch6/Ch9/Ch10/Ch11 passes).
+
+- Audit Chapter 7 (binary data) for outdated modules/techniques, starting with `Image::Info`/`MPEG::MP3Info`.
+- Full modernity audit of Chapter 3 (useful Perl idioms) — last touched content-wise for `Path::Tiny` (2026-08-22) and the four markdown-only asides (2026-08-05, decided no action needed), but never audited chapter-wide the way Ch5/Ch6/Ch9/Ch10/Ch11 were.
+- Full modernity audit of Chapter 8 (complex data formats / Part III opener) — diagrams redrawn 2026-08-26, but the prose itself hasn't been checked.
+- Once Ch3/Ch7/Ch8 are done: Appendix A (module reference) rewrite becomes the next logical step, since it depends on the narrative chapters being settled first — see Artwork/Outdated-code sections above for what it's missing.
 - Review the copyright wording in `front-matter.md`.
 - Run and check the new Ch10 weather examples (`weather_xpath.pl`, `weather_walk.pl`, `weather_api.pl`, `cities_weather.pl`, `cds.pl`) and the Ch11 `cds.pl` — see "Untested" notes above and in prior sprints.
-- Redraw the figures (see Artwork above), including the two now-orphaned images (`10-1-output-from-xml-parser-tree-style.png`, `11-3-item-array.png`).
-- Revisit the Chapter 3 backlog items.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
