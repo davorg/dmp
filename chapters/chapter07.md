@@ -636,10 +636,8 @@ still makes for the better teaching example.)
 ### Reading PNG files
 
 In order to read any binary file, you will need a definition of the
-format. I’m using the definition in *Programming Web Graphics with
-Perl & GNU Software* by Shawn P. Wallace (O’Reilly), but you can get
-the definitive version from the PNG group home page at
-http://www.cdrom.com/pub/png/.
+format. I’m using the definition from the PNG home page at
+http://www.libpng.org/pub/png/.
 
 #### Reading the file format signature
 
@@ -738,7 +736,7 @@ documentation but there is a *précis* in table 7.2.
 |Width | 4-byte integer | The width of the image in pixels |
 |Height | 4-byte integer | The height of the image in pixels |
 |Bit Depth | 1-byte character | The number of bits used to represent the color of each pixel |
-|Color Type | 1-byte character | Code indicating how colors are encoded within the image.<br>Valid values are:<br>0: A number from 0–255 indicating the greyscale value<br>2: Three numbers from 0–255 indicating the amount of red, green, and blue<br>3: A number which is an index into a color table<br>4: A greyscale value (0–255) followed by an alpha mask<br>An RGB triplet (as is 2, above) followed by an alpha mask |
+|Color Type | 1-byte character | Code indicating how colors are encoded within the image.<br>Valid values are:<br>0: A number from 0–255 indicating the greyscale value<br>2: Three numbers from 0–255 indicating the amount of red, green, and blue<br>3: A number which is an index into a color table<br>4: A greyscale value (0–255) followed by an alpha mask<br>6: An RGB triplet (as is 2, above) followed by an alpha mask |
 |Compression Type  | 1-byte character  | The type of compression used (always 0 in PNG version 1.0) |
 | Filtering Type | 1-byte character | The type of filtering applied to the data (always 0 in PNG version 1.0) |
 | Interlacing Scheme | 1-byte character | The interlacing scheme used to store the data.<br>For PNG version 1.0 this is either 0 (for no interlacing) or 1 (for Adam7 interlacing) |
@@ -953,6 +951,22 @@ about any built-in Perl function see the perldoc perlfunc manual
 page. The list of type specifiers supported by `sprintf` and `printf` is
 system-dependent, so you can get this information from your system
 documentation.
+
+A couple of `pack`/`unpack` template letters that we haven't used in this
+chapter are worth knowing about. `n`, `N`, `v`, and `V` (which we
+used to read the PNG chunk headers) only cover unsigned 16- and
+32-bit integers. If you need a portable byte order for something they
+don't handle—a signed integer, a 64-bit integer, or a floating-point
+value—you can append a `<` or `>` modifier to force little- or
+big-endian order on almost any numeric type, for example `l>` for a
+big-endian signed 32-bit integer. Speaking of 64-bit integers, `q` and
+`Q` pack and unpack signed and unsigned 64-bit values directly, which
+is more useful now that 64-bit is the default everywhere than it was
+when 32-bit systems were still common. There's also a `/` template for
+the common case of a length-prefixed field—where a record stores a
+count followed by that many bytes or items—so `unpack("N/a", $data)`
+reads a 4-byte length followed by exactly that many bytes as a string,
+in one step.
 
 The Image::Info and Audio::Scan modules are both available from the
 CPAN. Having installed them, you will be able to read their full
