@@ -667,6 +667,11 @@ read from the file and the type tells you how to process it. There are
 a number of different chunk types in the PNG specification, but we
 will look only at the IHDR (header) chunk, which is always the first
 chunk in the file and defines certain global attributes of the image.
+Figure 7.1 shows how this breaks down: the file as a sequence of
+chunks, one chunk's own length/type/data/trailer anatomy, and the
+seven fields packed into the IHDR chunk's data.
+
+![From file, to chunk, to field: reading a PNG's IHDR chunk](images/7-1-png-chunk-structure.svg)
 
 #### Example: reading a PNG file
 

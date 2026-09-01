@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="960" height="660" fill="#ffffff"/>
+
+  <text x="480" y="30" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a2e">From file, to chunk, to field: reading a PNG's IHDR chunk</text>
+  <text x="480" y="50" text-anchor="middle" font-size="13" font-style="italic" fill="#475569">Chunk sizes and field values are from the 100&#215;50-pixel test file used earlier in the chapter</text>
+
+  <!-- ================= Tier 1: the whole file ================= -->
+  <text x="480" y="82" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">THE FILE (a sequence of chunks)</text>
+
+  <!-- boxes: Signature, IHDR, tEXt, tIME, pHYs, IDAT, IEND -->
+  <g font-size="14" fill="#1a1a2e">
+    <rect x="55"  y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="110" y="130" text-anchor="middle">Signature</text>
+
+    <rect x="180" y="98" width="110" height="55" rx="6" fill="#bae6fd" stroke="#0f766e" stroke-width="2.5"/>
+    <text x="235" y="130" text-anchor="middle" font-weight="bold">IHDR</text>
+
+    <rect x="305" y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="360" y="130" text-anchor="middle">tEXt</text>
+
+    <rect x="430" y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="485" y="130" text-anchor="middle">tIME</text>
+
+    <rect x="555" y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="610" y="130" text-anchor="middle">pHYs</text>
+
+    <rect x="680" y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="735" y="130" text-anchor="middle">IDAT</text>
+
+    <rect x="805" y="98" width="110" height="55" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="860" y="130" text-anchor="middle">IEND</text>
+  </g>
+
+  <g font-size="12" fill="#475569" text-anchor="middle">
+    <text x="110" y="172">8 bytes</text>
+    <text x="235" y="172">13 bytes</text>
+    <text x="360" y="172">21 bytes</text>
+    <text x="485" y="172">7 bytes</text>
+    <text x="610" y="172">9 bytes</text>
+    <text x="735" y="172">1135 bytes</text>
+    <text x="860" y="172">0 bytes</text>
+  </g>
+  <text x="480" y="192" text-anchor="middle" font-size="11" font-style="italic" fill="#94a3b8">(boxes are not to scale &#8212; IDAT dwarfs the others in a real file)</text>
+
+  <!-- ================= Tier 2: anatomy of the IHDR chunk ================= -->
+  <text x="480" y="218" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">ANATOMY OF THE IHDR CHUNK (21 bytes)</text>
+
+  <g font-size="12" font-weight="bold" fill="#475569" text-anchor="middle">
+    <text x="124" y="253">LENGTH</text>
+    <text x="262" y="253">TYPE</text>
+    <text x="555" y="253">DATA</text>
+    <text x="847" y="253">CRC</text>
+  </g>
+
+  <!-- contiguous boxes: Length(4) Type(4) Data(13) CRC(4) -->
+  <rect x="55"  y="258" width="138" height="55" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="124" y="290" text-anchor="middle" font-size="18" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">13</text>
+
+  <rect x="193" y="258" width="138" height="55" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="262" y="290" text-anchor="middle" font-size="18" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">IHDR</text>
+
+  <rect x="331" y="258" width="448" height="55" fill="#bae6fd" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="555" y="290" text-anchor="middle" font-size="14" font-style="italic" fill="#0f4c4c">seven fields &#8212; see below</text>
+
+  <rect x="779" y="258" width="136" height="55" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="847" y="285" text-anchor="middle" font-size="13" font-style="italic" fill="#475569">checksum</text>
+  <text x="847" y="302" text-anchor="middle" font-size="11" font-style="italic" fill="#475569">(ignored here)</text>
+
+  <g font-size="12" fill="#475569" text-anchor="middle">
+    <text x="124" y="335">4 bytes</text>
+    <text x="262" y="335">4 bytes</text>
+    <text x="555" y="335">13 bytes</text>
+    <text x="847" y="335">4 bytes</text>
+  </g>
+
+  <!-- ================= Tier 3: the seven fields inside the data ================= -->
+  <text x="480" y="370" text-anchor="middle" font-size="14" font-weight="bold" letter-spacing="1" fill="#0f766e">THE DATA FIELD &#8212; unpack('NNCCCCC', $data)</text>
+
+  <!-- contiguous boxes: Width(4) Height(4) BitDepth(1) ColorType(1) CompType(1) FiltType(1) Interlace(1) -->
+  <g stroke-width="1.5">
+    <rect x="331" y="383" width="138" height="70" fill="#f8fafc" stroke="#cbd5e1"/>
+    <rect x="469" y="383" width="138" height="70" fill="#eef2ff" stroke="#cbd5e1"/>
+    <rect x="607" y="383" width="34"  height="70" fill="#f8fafc" stroke="#cbd5e1"/>
+    <rect x="641" y="383" width="34"  height="70" fill="#eef2ff" stroke="#cbd5e1"/>
+    <rect x="675" y="383" width="34"  height="70" fill="#f8fafc" stroke="#cbd5e1"/>
+    <rect x="709" y="383" width="34"  height="70" fill="#eef2ff" stroke="#cbd5e1"/>
+    <rect x="743" y="383" width="36"  height="70" fill="#f8fafc" stroke="#cbd5e1"/>
+  </g>
+
+  <g font-size="16" font-weight="bold" fill="#0f766e" text-anchor="middle">
+    <text x="400" y="408">1</text>
+    <text x="538" y="408">2</text>
+    <text x="624" y="408">3</text>
+    <text x="658" y="408">4</text>
+    <text x="692" y="408">5</text>
+    <text x="726" y="408">6</text>
+    <text x="761" y="408">7</text>
+  </g>
+
+  <g font-size="15" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e" text-anchor="middle">
+    <text x="400" y="440">100</text>
+    <text x="538" y="440">50</text>
+    <text x="624" y="440">8</text>
+    <text x="658" y="440">2</text>
+    <text x="692" y="440">0</text>
+    <text x="726" y="440">0</text>
+    <text x="761" y="440">0</text>
+  </g>
+
+  <!-- legend -->
+  <g font-size="16" font-weight="bold" fill="#0f766e">
+    <text x="100" y="495">1</text>
+    <text x="100" y="521">2</text>
+    <text x="100" y="547">3</text>
+    <text x="100" y="573">4</text>
+
+    <text x="530" y="495">5</text>
+    <text x="530" y="521">6</text>
+    <text x="530" y="547">7</text>
+  </g>
+  <g font-size="13" fill="#1a1a2e">
+    <text x="125" y="495">Width &#8212; 4 bytes &#8212; 100 (pixels)</text>
+    <text x="125" y="521">Height &#8212; 4 bytes &#8212; 50 (pixels)</text>
+    <text x="125" y="547">Bit Depth &#8212; 1 byte &#8212; 8</text>
+    <text x="125" y="573">Color Type &#8212; 1 byte &#8212; 2 (RGB triplet)</text>
+
+    <text x="555" y="495">Compression Type &#8212; 1 byte &#8212; 0</text>
+    <text x="555" y="521">Filtering Type &#8212; 1 byte &#8212; 0</text>
+    <text x="555" y="547">Interlace Scheme &#8212; 1 byte &#8212; 0</text>
+  </g>
+
+  <line x1="55" y1="610" x2="915" y2="610" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="480" y="635" text-anchor="middle" font-size="12" font-style="italic" fill="#94a3b8">Full field descriptions are in table 7.2</text>
+
+</svg>
