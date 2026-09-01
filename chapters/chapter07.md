@@ -591,29 +591,22 @@ chapter.
 Binary data
 ----------
 
-All of the data that we have looked at so far has been ASCII data.
-That is, it has been encoded using a system laid down by the
-American Standards Committee for Information Interchange. In this
-code, 128 characters (there are a number of extensions
-to the ASCII character set which define 256 characters, but the fact
-that they are nonstandard can make dealing with them problematic)
-have been given a numerical equivalent value from 0 to 127. For
-example, the space character is number 32, the digits 0 to 9 have
-the numbers 48 to 57, and the letters of the alphabet appear from 65
-to 90 in upper case and from 97 to 122 in lower case. Other numbers
-are taken up by punctuation marks and various control characters.
+All of the data we've looked at so far has been text: every character
+written to disk represents itself, via whichever character encoding
+is in use—see Chapter 5 for a detailed look at ASCII, Unicode, and
+UTF-8. Whatever the encoding, the same tradeoff applies: text is easy
+to work with, but wasteful of space compared to storing a value
+directly in binary.
 
-When an ASCII character is written to a file, what is actually
-written is the binary version of the ASCII code for the given
-character. For example the number 123 would be written to the file
-as 00110001 00110010 00110011 (the binary equivalents of 49, 50,
-and 51). The advantage of this type of data is that it is very easy
-to write software that allows users to make sense of the data. All
-you need to do is convert each byte of data into its equivalent
-ASCII character. The major disadvantage is the amount of space used.
-In the previous example we used 3 bytes of data to store a number,
-but if we had stored the binary number 01111011 (the binary
-equivalent of 123) we could have used a third of the space.
+For example, using plain ASCII, the number 123 is written to disk as
+the three characters "1", "2", and "3"—three bytes: 00110001 00110010
+00110011. Store the same value as a single binary byte instead—
+01111011—and you've used a third of the space. The advantage of the
+text version is that it's trivial to make sense of: convert each byte
+back to its character and you're reading a number. The binary
+version is more compact, but you need to know its format—how many
+bytes make up the value, and how to interpret them—before you can do
+anything useful with it.
 
 For this reason, there are a number of applications which store data
 in binary format. In many cases these are proprietary binary
@@ -629,19 +622,15 @@ best example of this is in graphics files, where any number of
 applications across many different platforms can happily read and
 write each other’s files.
 
-We’ll start by writing a script that can extract useful data from a
-graphics file. The most ubiquitous graphics file format (especially
-across the Internet) is the CompuServe *Graphics Interchange Format*
-(or GIF). Unfortunately for us, this file format uses a patented data
-compression technique and the owners of the patent (Unisys) are
-trying to ensure that only properly licensed software is used to
-create GIF files (you can read more about this dispute in Lincoln Stein’s excellent article at
-[http://www.webtechniques.com/archives/1999/12/webm/](http://www.webtechniques.com/archives/1999/12/webm/).
-). As Perl is
-Open Source, it does not fall into this category, and you shouldn’t
-use it to create GIFs. I believe that using Perl to read GIFs would
-not violate the licensing terms, but to be sure we’ll look at the
-*Portable Network Graphics* (PNG) format instead.
+We'll start by writing a script that can extract useful data from a
+graphics file. We'll use the *Portable Network Graphics* (PNG)
+format: it's simple, openly documented, and its structure—a fixed
+signature followed by a sequence of self-describing chunks—makes it a
+clear example of how binary file formats work in general. (GIF,
+PNG's old rival, spent years shadowed by a patent dispute over the
+compression algorithm it uses; that patent expired worldwide back in
+2004, so it's no longer a factor either way, but PNG's chunk format
+still makes for the better teaching example.)
 
 
 ### Reading PNG files
