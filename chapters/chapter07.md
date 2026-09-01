@@ -11,7 +11,7 @@ What this chapter covers:
 
 *  Graphics file formats
 
-*  Reading and writing MP3 files
+*  Reading MP3 files
 
 
 In this chapter we will complete our survey of simple data formats by
@@ -799,23 +799,24 @@ IDAT chunk which contains the actual image data.
 #### CPAN modules
 
 There are, of course, easier ways to get to this information than by
-writing your own program. In particular, Gisle Aas has written a
-module called Image::Info which is available from the CPAN. Currently
-(version 0.04) the module supports PNG, JPG, TIFF, and GIF file
-formats, and no doubt more will follow. Reading the source code for
-this module will give you more useful insights into reading binary
-files using Perl.
+writing your own program. Gisle Aas's Image::Info module will do all
+of this for you, and it's still actively maintained today—what
+started as basic PNG/JPG/TIFF/GIF support in the late 1990s has grown,
+over two decades of releases, to also cover BMP, ICO, SVG, WEBP, AVIF,
+and more. If you need more than basic metadata—EXIF data in
+particular—Image::Info's own documentation points you at
+Image::ExifTool instead. Reading the source of either module will
+give you more useful insights into reading binary files using Perl.
 
-### Reading and writing MP3 files
+### Reading MP3 files
 
 Another binary file format that has been getting a lot of publicity
-recently is the MP3 (short for MPEG3 or Motion
-Pictures Experts Group—Audio Level 3) file. These files store
+for a lot longer than you'd expect is the MP3 (short for MPEG3, or
+Motion Pictures Experts Group—Audio Level 3) file. These files store
 near-CD quality sound in typically a third of the space required by
-raw CD data. This has led to a whole new drain on Internet bandwidth
-as people upload their favorite tracks to their web sites.
+raw CD data.
 
-We won’t look at reading or writing the actual audio data in an MP3
+We won't look at reading or writing the actual audio data in an MP3
 file (encoding audio data is a large enough field to deserve several
 books of description), but we will look at the ID3 data which is
 stored at the end of an MP3 file. The ID3 tags allow you to store
@@ -825,46 +826,134 @@ track name, and year of release, together with more obscure data like
 the genre of the track and the copyright and distribution
 information.
 
-Chris Nandor has written a module which allows you to read and write
-these data fields. The module is called MPEG::MP3Info and it is
-available from the CPAN. Using the module is very simple. Here is a
-sample program which displays all of the ID3 data that it can find in
-a given MP3 file:
+Andy Grundman's Audio::Scan module reads exactly this kind of data,
+and a lot more besides—as well as MP3, it understands MP4/AAC, Ogg
+Vorbis, FLAC, WMA, WAV, AIFF, and several other formats, all through
+the same handful of methods. Using the module is very simple. Here is
+a sample program which displays all of the metadata that it can find
+in a given MP3 file:
 
-    use MPEG::MP3Info;
+    use Audio::Scan;
 
     my $file = shift;
 
-    my $tag = get_mp3tag($file);
-    my $info = get_mp3info($file);
+    my $data = Audio::Scan->scan($file);
 
     print "Filename: $file\n";
     print "MP3 Tags\n";
-    foreach (sort keys %$tag) {
-      print "$_ : $tag->{$_}\n";
+    foreach (sort keys %{ $data->{tags} }) {
+      print "$_ : $data->{tags}{$_}\n";
     }
 
     print "MP3 Info\n";
-    foreach (sort keys %$info) {
-      print "$_ : $info->{$_}\n";
+    foreach (sort keys %{ $data->{info} }) {
+      print "$_ : $data->{info}{$_}\n";
     }
 
-Notice that there are two separate parts of the ID3 data. The data
-returned in `$tag` is the data about the sound contained in the
-file—like track name, artist, and year of release. The data returned
-in `$info` tend to be more physical data about the actual data in the
-file—the bit-rate, frequency, and whether the recording is stereo or
-mono. For this reason, the module currently (and I’m looking at
-version 0.71) contains a `set_mp3tag` function, but not a `set_mp3info`
-function. It is likely that you’ll have good reasons to change the
-ID3 tags which defined the track and artist, but less likely that
-you’ll ever need to change the physical recording parameters. There
-is also a `remove_mp3tag` function which removes the ID3 data from the
-end of the file.
+#### Testing the Audio::Scan example
 
-As with Image::Info which we discussed earlier, it is very
-instructive to read the code of this module as it will give you many
-useful ideas on the best way to read and write your binary data.
+Running this against a real MP3 file gives output like this:
+
+    Filename: /home/dave/win/Downloads/I Still Miss You.mp3
+    MP3 Tags
+    APIC : ARRAY(0x5e299d6a6780)
+    COMM : ARRAY(0x5e299d67c348)
+    TIT2 : I Still Miss You
+    TPE1 : davorg
+    USLT : ARRAY(0x5e299d6a6708)
+    WOAS : https://suno.com/song/318fd940-1bb1-4d87-aece-8e288306570b
+    MP3 Info
+    audio_offset : 14907
+    audio_size : 4620888
+    bitrate : 182000
+    dlna_profile : MP3
+    file_size : 4635795
+    id3_version : ID3v2.3.0
+    jenkins_hash : 1832251115
+    layer : 1
+    padding : 0
+    samplerate : 48000
+    samples_per_frame : 1152
+    song_length_ms : 202800
+    stereo : 1
+    vbr : 1
+    xing_bytes : 4620888
+    xing_frames : 8450
+    xing_toc : ARRAY(0x5e299d61d208)
+
+Most of it is immediately readable—title, artist, bit rate, sample
+rate, and so on. But four of the tags (`APIC`, `COMM`, `USLT`, and
+`xing_toc`) have printed as `ARRAY(0x...)` rather than anything
+useful. That's not a bug; those tags are genuinely array references,
+because that's how the underlying data is structured. `APIC`
+(embedded artwork) is a four-element array of `[mime_type,
+picture_type, description, binary_image_data]`. `COMM` (comments) and
+`USLT` (lyrics) are each `[language, description, text]`—the ID3
+spec allows more than one of each, tagged by language, so a single
+scalar wouldn't be able to hold them. `xing_toc` is a seek table used
+by variable bit rate files: a run of values letting a player jump to
+roughly the right byte offset for a given point in the track.
+
+#### Array-valued tags
+
+It's not much effort to turn those into something printable:
+
+    sub format_value {
+      my ($value) = @_;
+      return $value unless ref $value eq 'ARRAY';
+
+      # Some array-valued tags (embedded artwork, Xing seek tables)
+      # carry large binary blobs that aren't useful to print as text.
+      return join(', ', map {
+          !defined $_     ? ''
+        : length($_) > 60 ? sprintf('<%d bytes of binary data>', length($_))
+        :                   $_
+      } @$value);
+    }
+
+Used in place of the plain `$data->{tags}{$_}` in the loop above, this
+turns `APIC : ARRAY(0x5e299d6a6780)` into something like `APIC :
+image/jpeg, 3, , <98213 bytes of binary data>`—readable, at least.
+
+It's worth being clear about what this does and doesn't solve, though.
+It's a generic heuristic—"if it's long, assume it's binary and
+summarize it"—not a real understanding of any particular tag, and
+that shows in a couple of places. `xing_toc` is usually a hundred or
+so individually short values (each one a single byte's worth of seek
+data), so no single element is long enough to trip the "treat as
+binary" check; you'd still get a wall of numbers, just now
+comma-separated instead of hidden behind an array reference. And for
+`COMM` or `USLT`, the same "long string" heuristic that correctly
+hides `APIC`'s binary image data will just as happily truncate a
+genuinely long comment or a full set of song lyrics—which is exactly
+the data you presumably wanted to read in the first place.
+
+A version that actually got this right would need to know about each
+tag individually: extract `APIC`'s image data to a file rather than
+print it, format `COMM`/`USLT`'s language and text properly instead
+of guessing at truncation, and probably just omit internal
+housekeeping data like `xing_toc` from a human-readable summary
+entirely. That's a reasonable thing to build if you're actually
+writing an ID3 tag viewer, but it's a different, larger task than
+"read some metadata from an MP3 file," so we'll leave it as an
+exercise rather than build it out here.
+
+As with MPEG::MP3Info—the module this replaces, which hasn't had a
+release since 2017—there are two separate parts to the returned data.
+`info` is physical data about the recording: bit rate, sample rate,
+whether it's stereo or mono, and so on. `tags` is the ID3 data about
+the sound itself—track name, artist, year of release—normalized to
+modern ID3v2.4 field names (`TIT2` for the title, `TPE1` for the
+artist, and so on) regardless of which version of ID3 the file
+actually has.
+
+One thing Audio::Scan doesn't do is write tags back to a file—it's a
+read-only scanner. If you need to update or remove ID3 tags rather
+than just read them, MP3::Tag is a reasonable place to look.
+
+As with Image::Info, it is very instructive to read the code of this
+module, as it will give you many useful ideas on the best way to read
+your own binary data.
 
 Further information
 ----------
@@ -876,9 +965,9 @@ page. The list of type specifiers supported by `sprintf` and `printf` is
 system-dependent, so you can get this information from your system
 documentation.
 
-The Image::Info and MPEG::MP3Info modules are both available from the
+The Image::Info and Audio::Scan modules are both available from the
 CPAN. Having installed them, you will be able to read their full
-documentation by typing perldoc Image::Info or perldoc MPEG::MP3Info
+documentation by typing perldoc Image::Info or perldoc Audio::Scan
 at your command line.
 
 Summary
