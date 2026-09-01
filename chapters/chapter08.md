@@ -1,21 +1,20 @@
 Part III - Simple data parsing
 ==============================
 
-As this part of the tale commences, our heroes begin to realize that
-there are very good reasons for the beast to appear in more complex
-forms, and they see that their current techniques will be of limited
-use against these new forms. They begin to discuss more powerful
-techniques to attack them.
+In this section, we move beyond the record-oriented data of Part II
+into data that's structured hierarchically, and look at the tools
+Perl offers for making sense of it.
 
-The beast then appears in a new, hierarchical format. Luckily, our
-heroes find a source of ready-made tools for defeating this form. The
-beast appears once again in a more complex (and yet, in some ways,
-simplified) guise and our heroes once more find ready-built tools for
-defeating this form.
+We start by looking at where the simple techniques we've used so far
+start to break down, using HTML as our example, before taking a brief
+detour into the theory behind how parsers work. From there, we look
+at purpose-built tools for parsing HTML, and then at XML, JSON, and
+YAML—the formats you're most likely to meet when exchanging
+structured data between systems. Finally, we look at how to build a
+parser of your own for a data format you've invented yourself.
 
-At the end of this part of the tale, our heroes develop techniques
-which let them build their own tools to tackle the beast whenever it
-appears in forms of arbitrary complexity.
+By the end of this part, you'll be equipped to handle structured data
+in whatever form it arrives, however it's put together.
 
 Chapter 8: Complex data formats
 ===============================

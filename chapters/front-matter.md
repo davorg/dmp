@@ -188,9 +188,8 @@ and how to parse and produce all three with Perl.
 *[Chapter 11](ch016.xhtml)* demonstrates how to write parsers for your own data
 structures using a parser-building tool available for Perl.
 
-*[Chapter 12](ch017.xhtml)* concludes our tour with a brief review of what
-we've covered, along with suggestions for where to find more Perl
-support and further reading.
+[PART IV](ch017.xhtml) concludes our tour with a brief review as well as
+suggestions for further study.
 
 *[Appendix A](ch018.xhtml)* is a guide to many of the Perl modules covered in the
 book.

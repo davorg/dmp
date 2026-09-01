@@ -1,3 +1,14 @@
+Part IV - The big picture
+=========================
+
+This final section steps back from the specifics of any one data
+format or technique to look at the bigger picture.
+
+We close by reviewing why data munging matters, why Perl remains such
+a good tool for it, and where to go next—both for further Perl
+resources and for continuing to develop as a data munger long after
+you've finished this book.
+
 Chapter 12: Looking Back and Ahead
 ==================================
 
