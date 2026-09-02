@@ -60,12 +60,12 @@
   <rect x="193" y="258" width="138" height="55" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
   <text x="262" y="290" text-anchor="middle" font-size="18" font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" fill="#1a1a2e">IHDR</text>
 
-  <rect x="331" y="258" width="448" height="55" fill="#bae6fd" stroke="#0f766e" stroke-width="2.5"/>
-  <text x="555" y="290" text-anchor="middle" font-size="14" font-style="italic" fill="#0f4c4c">seven fields &#8212; see below</text>
-
   <rect x="779" y="258" width="136" height="55" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
   <text x="847" y="285" text-anchor="middle" font-size="13" font-style="italic" fill="#475569">checksum</text>
   <text x="847" y="302" text-anchor="middle" font-size="11" font-style="italic" fill="#475569">(ignored here)</text>
+
+  <rect x="331" y="258" width="448" height="55" fill="#bae6fd" stroke="#0f766e" stroke-width="2.5"/>
+  <text x="555" y="290" text-anchor="middle" font-size="14" font-style="italic" fill="#0f4c4c">seven fields &#8212; see below</text>
 
   <g font-size="12" fill="#475569" text-anchor="middle">
     <text x="124" y="335">4 bytes</text>
