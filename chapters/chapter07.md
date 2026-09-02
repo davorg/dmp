@@ -42,8 +42,8 @@ within the files.
 
 Here is an example of two fixed-width data records:
 
-     00374Bloggs & Co        19991105100103+00015000
-     00375Smith Brothers     19991106001234-00004999
+     00374Bloggs & Co        20261105100103+00015000
+     00375Smith Brothers     20261106001234-00004999
 
 As you can see, it’s tricky to understand exactly what is going on
 here. It looks as though there is an ascending sequence number at the
@@ -67,8 +67,8 @@ Here is the definition of the data:
 
 
 Now we can start to make some sense of the data. We can see that on
-November 5, 1999, we received a check (number 100103) for $150.00
-from Bloggs & Co. and on November 6, 1999, we paid $49.99 to Smith
+November 5, 2026, we received a payment (reference 100103) for $150.00
+from Bloggs & Co. and on November 6, 2026, we paid $49.99 to Smith
 Brothers in response to their invoice number 1234.
 
 #### Example: extracting fixed-width data fields with substr
@@ -151,13 +151,13 @@ The a designates each field as an ASCII string, but the template can
 contain many other options. For reference, here is one of the data
 lines that was produced by the previous example:
 
-    00374¦Bloggs & Co           ¦19991105¦100103¦+¦00015000
+    00374¦Bloggs & Co           ¦20261105¦100103¦+¦00015000
 
 Notice that the numbers are still prepadded with zeroes and the string
 is still postpadded with spaces. Now see what happens if we replace
 each a in the template with an A.
 
-    00374¦Bloggs & Co¦19991105¦100103¦+¦00015000
+    00374¦Bloggs & Co¦20261105¦100103¦+¦00015000
 
 The spaces at the end of the string are removed. Depending on your
 application, this may or may not be what you want. Perl gives you the
@@ -338,9 +338,9 @@ Using this method our financial data file would look like this:
 
     005020008006001008
     00374Bloggs & Co
-    19991105100103+00015000
+    20261105100103+00015000
     00375Smith Brothers
-    19991106001234-00004999
+    20261106001234-00004999
 
 The first line contains the field widths (5, 20, 8, 6, 1, and 8), all
 padded out to three digit numbers.
@@ -352,8 +352,8 @@ a marker (perhaps a | character) wherever a field will end in the
 following rows. In other words, our example file would look like this:
 
         |                 |       |     ||       |
-    00374Bloggs & Co       19991105100103+00015000
-    00375Smith Brothers    19991106001234-00004999
+    00374Bloggs & Co       20261105100103+00015000
+    00375Smith Brothers    20261106001234-00004999
 
 To deal with this metadata, we can split the row on the marker
 character and use the length of the various elements to calculate the
@@ -518,14 +518,14 @@ reading earlier.
 
     my %rec1 = ( txnref => 374,
                  cust   => 'Bloggs & Co',
-                 date   => 19991105,
+                 date   => 20261105,
                  extref => 100103,
                  dir    => '+',
                  amt    => 15000 );
 
     my %rec2 = ( txnref => 375,
                  cust   => 'Smith Brothers',
-                 date   => 19991106,
+                 date   => 20261106,
                  extref => 1234,
                  dir    => '-',
                  amt    => 4999 );

@@ -1,13 +1,13 @@
 my %rec1 =(txnref => 374, 
 	   cust => 'Bloggs & Co', 
-	   date => 19991105, 
+	   date => 20261105,
 	   extref => 100103, 
 	   dir => '+', 
 	   amt => 15000 ); 
 
 my %rec2 =(txnref => 375, 
 	   cust => 'Smith Brothers', 
-	   date => 19991106, 
+	   date => 20261106,
 	   extref => 1234, 
 	   dir => '-', 
 	   amt => 4999 ); 
