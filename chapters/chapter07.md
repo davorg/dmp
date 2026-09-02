@@ -147,7 +147,7 @@ which returns exactly the same set of data that we have seen in all
 of the examples above. In this case our template consists of the
 letter a for each field followed by the length of the field (the
 length is optional on single-character fields like our +/- field).
-The a designates each field as an ASCII string, but the template can
+The a designates each field as a text string, but the template can
 contain many other options. For reference, here is one of the data
 lines that was produced by the previous example:
 
@@ -164,7 +164,7 @@ application, this may or may not be what you want. Perl gives you the
 flexibility to choose the most appropriate route. There are a number
 of other options that can be used in the unpack template and we’ll
 see some more of them when we look at binary data in more detail. For
-ASCII data, only a and A are useful.
+text data, only a and A are useful.
 
 #### Multiple record types
 
@@ -637,7 +637,7 @@ still makes for the better teaching example.)
 
 In order to read any binary file, you will need a definition of the
 format. I’m using the definition from the PNG home page at
-http://www.libpng.org/pub/png/.
+https://www.libpng.org/pub/png/.
 
 #### Reading the file format signature
 
@@ -704,8 +704,8 @@ A complete program to extract this data from a PNG file (passed in via
 The first thing to do when dealing with binary data is to put the
 filehandle that you will be reading into binary mode by calling
 binmode on it. This is necessary on operating systems which
-differentiate between binary and text files (these include DOS and
-Windows). On these operating systems, a `\cM\cJ` end-of-line marker
+differentiate between binary and text files—Windows is the one you’ll
+still encounter today. On Windows, a `\cM\cJ` end-of-line marker
 in a text file gets translated to `\n` as it is read in. If this
 sequence appears in a binary file, it needs to be left untouched.
 Operating systems, such as UNIX, don’t make this binary/text
