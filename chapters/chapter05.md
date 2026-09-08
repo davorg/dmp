@@ -24,6 +24,8 @@ What this chapter covers:
 
 *  Producing text statistics
 
+*  Working with Unicode text
+
 *  Performing format conversions
 
 *  Reformatting numbers
@@ -310,15 +312,8 @@ existing `read_text` function to read in our text.
 	printf "The average word length is %.2f\n",
 	  $total_length / $num_words;
 
-Data conversions
-----------------
-
-One of the most useful things that you might want to do to
-unstructured data is to perform simple data format conversions on it.
-In this section we’ll take a look at three typical types of
-conversions that you might need to do.
-
-### Converting the character set
+Unicode
+-------
 
 These days, most textual data you come across will already be
 Unicode, usually encoded as UTF-8—but you will still run into other
@@ -327,8 +322,6 @@ systems or specific regional formats. Multibyte characters, in
 particular, are increasingly the norm rather than the exception,
 especially if you are dealing with data from a country where they are
 commonplace (like China or Japan).
-
-#### Unicode
 
 For multibyte characters, the modern story is straightforward, but it
 wasn't always. Perl 5.6 (released in 2000) introduced the `utf8`
@@ -355,7 +348,7 @@ they solve different problems:
    on disk (or from a network connection, or `STDIN`) into Perl's
    internal Unicode strings, and back again.
 
-##### Bytes versus Unicode strings
+### Bytes versus Unicode strings
 
 Before any of this makes sense, it helps to be clear about the
 difference between two things that are easy to conflate: bytes and
@@ -402,7 +395,7 @@ translate correctly at the boundary. Get that one fact right, and
 everything inside the border—string functions, regular expressions,
 sorting, comparisons—just works on characters, with no bytes in sight.
 
-##### "Patrol your borders"
+### "Patrol your borders"
 
 The single most useful rule for working with Unicode text, in any
 language, is this: decode incoming data into Unicode as soon as it
@@ -480,7 +473,7 @@ as one string) is exactly equivalent to opening the file with
 and an `or die`. The border is still there; Path::Tiny is just
 patrolling it on your behalf.
 
-##### A silly example: Unicode in your source code
+### A silly example: Unicode in your source code
 
 Because [utf8](https://metacpan.org/pod/utf8) is about your source
 code rather than your data, it lets you do things that have nothing to
@@ -509,7 +502,7 @@ letters in production code—but it's a good illustration of what the
 
 	Can't use global $π in "my" at greek_pi.pl line 8, near "my $π"
 
-##### Other ways to represent Unicode characters
+### Other ways to represent Unicode characters
 
 Typing a literal character like `π` or `é` straight into your source,
 as in the example above, is the most direct approach, but it isn't
@@ -555,7 +548,7 @@ have an easy-to-type keyboard representation at all.
 	print "\N{U+2603}\n";                  # ☃ (Snowman)
 	print "\N{GREEK SMALL LETTER PI}\n";   # π
 
-##### Unicode properties in regular expressions
+### Unicode properties in regular expressions
 
 We already saw, back in "Patrol your borders," that once a string is
 properly decoded, familiar regex shorthands like `\w` and `\b` just
@@ -611,7 +604,7 @@ everything that isn't a letter, regardless of script:
 	(my $stripped = 'Björk-1975!') =~ s/\P{L}//g;
 	print "$stripped\n";  # Björk
 
-##### Combining characters and canonical representation
+### Combining characters and canonical representation
 
 There's a wrinkle in all of this that catches people out: the same
 visually identical piece of text can be represented by more than one
@@ -676,7 +669,7 @@ you're already decoding—as part of getting data into a known-good
 state before you do anything else with it, right alongside deciding on
 an encoding in the first place.
 
-##### Comparing and sorting Unicode text: fold case and collation
+### Comparing and sorting Unicode text: fold case and collation
 
 Normalization fixes one kind of comparison problem—the same character
 represented by different code point sequences. But even fully
@@ -748,7 +741,7 @@ language conventions, and much more into account. It's the module to
 reach for any time you're presenting a sorted list of names, titles,
 or other Unicode text to a human reader.
 
-##### Simplifying Unicode with Text::Unidecode
+### Simplifying Unicode with Text::Unidecode
 
 Sometimes you don't need to preserve Unicode text faithfully—you just
 need something ASCII-safe to fall back on: a filename, a URL slug, a
@@ -787,6 +780,14 @@ as a shortcut to avoid learning the borders rule above.
 We'll come back to this when we look at JSON and YAML in
 [Chapter 10](ch015.xhtml)—both formats assume UTF-8 by default, and
 getting the borders right here is exactly what makes that just work.
+
+Data conversions
+----------------
+
+One of the most useful things that you might want to do to
+unstructured data is to perform simple data format conversions on it.
+In this section we’ll take a look at two typical types of
+conversions that you might need to do.
 
 ### Converting line endings
 
