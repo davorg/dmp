@@ -368,29 +368,15 @@ easier to write and maintain.
 ## Database Interface (DBI)
 
 As discussed in [Chapter 1](ch004.xhtml), a common source or sink for data is a
-database. For many years Perl has had mechanisms that enable it to
-talk to various database systems. For example, if you wanted to
-exchange data with an Oracle database you would use oraperl and if you
-had to communicate with a Sybase database you would use sybperl.
-Modules were also available to talk to many other popular database
-systems.
-
-Most of these database access modules were a thin Perl wrapper around
-the programming APIs that were already provided by the database
-vendors. The mechanisms for talking to the various databases were all
-doing largely the same thing, but they were doing it in completely
-incompatible ways.
-
-This has all changed in recent years with the introduction of the
-generic Perl Database Interface (DBI) module. This module was designed
-and written by Tim Bunce (the author and maintainer of oraperl). It
-allows a program to connect to any of the supported database systems
-and read and write data using exactly the same syntax. The only change
-required to connect to a different database system is to change one
-string that is passed to the DBI connect function. It does this by
-using different database driver (DBD) modules. These are all named
-`DBD::<db_name>`. You will need to obtain the DBD module for
-whichever database you are using separately from the main DBI module.
+database. The generic Perl Database Interface (DBI) module, designed
+and written by Tim Bunce, allows a program to connect to any of a wide
+range of supported database systems and read and write data using
+exactly the same syntax. The only change required to connect to a
+different database system is to change one string that is passed to
+the DBI connect function. It does this by using different database
+driver (DBD) modules. These are all named `DBD::<db_name>`. You will
+need to install the DBD module for whichever database you are using
+from CPAN, separately from the main DBI module.
 
 ### Sample DBI program
 
@@ -403,28 +389,26 @@ this:
 	  4: use warnings;
 	  5: use DBI;
 	  6:
-	  7: my $user = 'dave';
-	  8: my $pass = 'secret';
-	  9: my $dbh = DBI->connect('dbi:mysql:testdb', $user, $pass,
-	 10:                        {RaiseError => 1})
-	 11:  or die "Connect failed: $DBI::errstr";
+	  7: my $dbh = DBI->connect('dbi:SQLite:dbname=testdb.db', undef, undef,
+	  8:                        {RaiseError => 1})
+	  9:  or die "Connect failed: $DBI::errstr";
+	 10:
+	 11: my $sth = $dbh->prepare('select col1, col2, col3 from my_table');
 	 12:
-	 13: my $sth = $dbh->prepare('select col1, col2, col3 from my_table');
+	 13: $sth->execute;
 	 14:
-	 15: $sth->execute;
-	 16:
-	 17: my @row;
-	 18: while (@row = $sth->fetchrow_array) {
-	 19:   print join("\t", @row), "\n";
-	 20: }
-	 21:
-	 22: $sth->finish;
-	 23: $dbh->disconnect;
+	 15: my @row;
+	 16: while (@row = $sth->fetchrow_array) {
+	 17:   print join("\t", @row), "\n";
+	 18: }
+	 19:
+	 20: $sth->finish;
+	 21: $dbh->disconnect;
 
 While this is a very simple DBI program, it demonstrates a number of
 important DBI concepts and it is worth examining line by line.
 
-Line 1 points to the Perl interpreter. Notice the use of the `-w` flag.
+Line 1 points to the Perl interpreter.
 
 Lines 3 and 4 switch on the [strict](https://perldoc.perl.org/strict)
 and [warnings](https://perldoc.perl.org/warnings/) pragmas.
@@ -432,28 +416,26 @@ and [warnings](https://perldoc.perl.org/warnings/) pragmas.
 Line 5 brings in the [DBI.pm](https://metacpan.org/pod/DBI) module.
 This allows us to use the DBI functions.
 
-Lines 7 and 8 define a username and password that we will use to connect
-to the database. Obviously, in a real program you probably wouldn’t want to
-have a password written in a script in plain text.
-
-Line 9 connects us to the database. In this case we are connecting to
-a database running MySQL. This free database program is very popular
-for web systems. This is the only line that would need to change if we
-were connecting to a different database system. The connect function
-takes a number of parameters which can vary depending on the database
-to which you are connecting. The first parameter is a connection
-string. This changes its precise meaning for different databases, but
-it is always a colon-separated string. The first part is the string
-dbi and the second part is always the name of the database system2
-that we are connecting to. In this case the string `mysql` tells DBI
-that we will be talking to a MySQL database, and it should therefore
-load the [DBD::mysql](https://metacpan.org/pod/DBD::mysql) module.
-The third section of the connection string
-in this case is the particular database that we want to connect to.
-Many database systems (including MySQL) can store many different
-databases on the same database server. In this case we want to connect
-to a database called testdb. The second and third parameters are valid
-usernames and passwords for connecting to this database.
+Line 7 connects us to the database. Here we're using
+[SQLite](https://www.sqlite.org/), a small, serverless database engine
+that stores an entire database in a single file on disk—there's
+nothing to install, configure, or run in the background, which makes
+it a convenient choice for an example you can just run as-is. This is
+the only line that would need to change if we were connecting to a
+different database system. The connect function takes a number of
+parameters which can vary depending on the database to which you are
+connecting. The first parameter is a connection string. This changes
+its precise meaning for different databases, but it is always a
+colon-separated string. The first part is always the string dbi and
+the second part is the name of the database system that we are
+connecting to. In this case the string `SQLite` tells DBI that we will
+be talking to a SQLite database, and it should therefore load the
+[DBD::SQLite](https://metacpan.org/pod/DBD::SQLite) module. The rest
+of the connection string is driver-specific; here, `dbname=testdb.db`
+names the file the database is stored in, which SQLite will create
+automatically if it doesn't already exist. Since SQLite has no user
+accounts of its own, the second and third parameters to `connect`
+(username and password) are simply left as `undef`.
 
 The fourth parameter to `DBI->connect` is a reference to a hash
 containing various configuration options. In this example we switch on
@@ -467,28 +449,28 @@ if there is a problem, the program dies after printing the value of
 the variable `$DBI::errstr` which contains the most recent database
 error message.
 
-Line 13 prepares an SQL statement for execution against the database.
+Line 11 prepares an SQL statement for execution against the database.
 It does this by calling the DBI function `prepare`. This function
 returns a statement handle which can be used to access another set of
 DBI functions—those that deal with executing queries on the database
 and reading and writing data. This handle is undefined if there is an
 error preparing the statement.
 
-Line 15 executes the statement and dies if there is an error.
+Line 13 executes the statement and dies if there is an error.
 
-Line 17 defines an array variable which will hold each row of data
+Line 15 defines an array variable which will hold each row of data
 returned from the database in turn.
 
-Lines 18 to 20 define a loop which receives each row from the database
-query and prints it out. On line 18 we call `fetchrow_array` which
+Lines 16 to 18 define a loop which receives each row from the database
+query and prints it out. On line 16 we call `fetchrow_array` which
 returns a list containing one element for each of the columns in the
 next row of the result set. When the result set has all been returned,
 the next call to `fetchrow_array` will return the value `undef`.
 
-Line 19 prints out the current row with a tab character between each
+Line 17 prints out the current row with a tab character between each
 element.
 
-Lines 22 and 23 call functions that reclaim the memory used for the
+Lines 20 and 21 call functions that reclaim the memory used for the
 database and statement handles. This memory will be reclaimed
 automatically when the variables go out of scope, but it is tidier to
 clean up yourself.
@@ -498,14 +480,34 @@ number of other functions and the most useful ones are listed in
 [Appendix A](ch018.xhtml). More detailed documentation comes with the DBI module and
 your chosen DBD modules.
 
+### Choosing a DBD module
+
+SQLite is a good choice for this example because it needs no setup,
+but it isn't the only popular open source database you're likely to
+meet. Each one has its own DBD module, loaded by naming it as the
+second part of the connection string:
+
+| Database   | Example connection string      | DBD module   |
+|------------|---------------------------------|--------------|
+| SQLite     | `dbi:SQLite:dbname=testdb.db`  | [DBD::SQLite](https://metacpan.org/pod/DBD::SQLite) |
+| PostgreSQL | `dbi:Pg:dbname=testdb`         | [DBD::Pg](https://metacpan.org/pod/DBD::Pg) |
+| MariaDB    | `dbi:MariaDB:database=testdb`  | [DBD::MariaDB](https://metacpan.org/pod/DBD::MariaDB) |
+| MySQL      | `dbi:mysql:database=testdb`    | [DBD::mysql](https://metacpan.org/pod/DBD::mysql) |
+
+MariaDB began life as a fork of MySQL, created after Oracle's
+acquisition of MySQL in 2010. The two remain close enough that
+DBD::mysql can often talk to a MariaDB server too, but DBD::MariaDB is
+the more actively developed of the two drivers, and the more natural
+choice for new code talking to a MariaDB server.
+
 ---
 
-Although DBI is still a very useful way to interact with databases uses Perl,
+Although DBI is still a very useful way to interact with databases using Perl,
 these days there are more powerful options available to us. In particular,
 I would recommend taking a look at
 [DBIx::Class](https://metacpan.org/pod/DBIx::Class) which is an "Object
 Relational Mapper" (ORM) - that is, it builds classes out of your database
-tables and allows you to interact with your databse in a far more natural
+tables and allows you to interact with your database in a far more natural
 way. Exploring DBIx::Class is outside the scope of this book, but it's well
 worth investigating.
 
@@ -1047,7 +1049,7 @@ installed DBD module by typing
 	perldoc DBD::<name>
 
 at your command line. You should replace `<name>` with the name of the
-DBD module that you have installed, for example “Sybase” or “mysql”.
+DBD module that you have installed, for example “SQLite” or “Pg”.
 
 Full documentation for [Path::Tiny](https://metacpan.org/pod/Path::Tiny),
 including its many other methods, is available by typing
