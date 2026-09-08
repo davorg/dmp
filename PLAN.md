@@ -16,13 +16,20 @@ See `TODO.md` for the full detail behind every item below.
 - While in the chapter, check whether Ch7's binary/packed-data layouts
   would benefit from a diagram.
 
-## Week 2 (5–11 Sep): Chapter 3 audit
+## Week 2 (5–11 Sep): Chapter 3 audit — done (2026-09-08)
 
-- Full modernity audit of Chapter 3 ("Useful Perl idioms") — the broadest
+- [x] Full modernity audit of Chapter 3 ("Useful Perl idioms") — the broadest
   of the three remaining chapter audits. Last touched for `Path::Tiny`
   (2026-08-22) and the PDF-sync diff, but never checked chapter-wide.
-- Tidy Chapter 5's heading order — the Unicode section currently sits
-  nested oddly under "Converting the character set."
+  Landed as 15 mechanical fixes, a restructured Benchmark section
+  (current numbers first, 2001 as historical aside), an SQLite-based
+  DBI rewrite with a DBD-module comparison table, and a new Testing
+  section (Test::More + Test2::V0) — the latter pulled forward from
+  Week 6's stretch-goal list.
+- [x] Tidy Chapter 5's heading order — Unicode promoted to its own H2
+  (no longer nested under "Converting the character set," which never
+  actually taught character-set conversion), "Data conversions"
+  relocated to introduce just line endings and number formats.
 
 ## Week 3 (12–18 Sep): Chapter 8 audit
 

@@ -43,7 +43,7 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 - [x] ~~"Part IV" is referenced but doesn't exist.~~ **Resolved (2026-09-01):** the preface said "PART IV concludes our tour..." but Chapter 12 just followed Part III directly, with no Part IV divider in the actual document. Turned out Part III also still had its original "beast/heroes" fantasy-narrative text (see `orig/dmp.txt`) even though Parts I and II had already been rewritten in plain prose — fixed both: replaced Part III's narrative text in `chapter08.md` with plain prose matching Parts I/II's style, added an actual "Part IV - The big picture" heading to `chapter12.md`, and restored the front matter's original "PART IV concludes our tour..." sentence as a proper link (the sentence itself was fine, word-for-word from the 2001 original — the bug was the missing heading it pointed at, not the sentence).
 - [ ] **Internal cross-reference links (`ch0NN.xhtml`) throughout the book don't match what pandoc actually generates.** (Found 2026-09-01, verifying the Part IV fix above with a real `make epub` build.) Front matter and several chapters (1, 3, 5, 8, 9, appendix-b) link to specific chapter files like `ch015.xhtml` assuming one file per chapter/part. In reality pandoc splits the EPUB at *every* heading — including sub-headings inside a chapter like "What is data munging?" — producing 32 files, not ~20, so most of these hand-numbered links likely land on the wrong section in a real EPUB reader (verified: e.g. the front matter's `ch015.xhtml` for "Chapter 10" is actually a sub-section of Chapter 2 in the real build). Pre-existing, book-wide, unrelated to the Part IV fix. Needs a decision: demote the sub-headings that shouldn't split their own file (so real filenames line up with the hand-written ones), or drop the hardcoded hrefs and just reference chapters by name without a link.
 - [x] ~~Front matter is ahead of the chapter it describes.~~ **Resolved (2026-08-06):** Chapter 10 is now "Common Data Interchange Formats," covering XML, JSON, and YAML; front matter's TOC blurb updated to match.
-- [ ] **Check heading order in Chapter 5.** (2026-08-22) The whole Unicode section — bytes vs. strings, patrol your borders, the `$π` demo, character escapes, regex properties, normalization, fold case/collation, Text::Unidecode — currently sits nested under "### Converting the character set," which reads as if it's just one narrow topic among others rather than the bulk of the chapter's substance. Worth revisiting the heading structure once the Unicode content has settled.
+- [x] ~~Check heading order in Chapter 5.~~ **Resolved (2026-09-08):** removed the "Converting the character set" H3 wrapper entirely (it never actually taught character-set conversion) and promoted Unicode to a top-level H2 in its own right, with its eight subsections promoted H4→H3 and a reinstated opening paragraph. "Data conversions" relocated to introduce just the two conversions still under it (line endings, number formats — wording updated from "three typical types" to "two"). Chapter's "What this chapter covers" bullets updated with a new "Working with Unicode text" line.
 
 ## Outdated code / modules, by chapter
 
@@ -63,10 +63,13 @@ The `dmp` folder had 28 untracked files. Most were noise, but a few are drafted 
 
 Worth knowing when trusting the completion estimate above: the "no
 modernization flags" chapters haven't all had the same level of
-scrutiny. Ch5, Ch6, Ch7, Ch9, Ch10, and Ch11 have been actively
+scrutiny. Ch3, Ch5, Ch6, Ch7, Ch9, Ch10, and Ch11 have been actively
 checked against current Perl/CPAN practice (that's where the open
-items above come from). Ch1, Ch2, and Ch4 got a full read during the
-original July 2026 pass. **Ch3 and Ch8 got the PDF-sync diff but not
+items above come from) — Ch3's full modernity audit completed
+2026-09-08 (15 mechanical fixes, Benchmark section restructured with
+current numbers, DBI section rewritten around SQLite, new Testing
+section added). Ch1, Ch2, and Ch4 got a full read during the
+original July 2026 pass. **Ch8 got the PDF-sync diff but not
 a fresh modernity audit; Ch12 (Looking Back and Ahead) and Appendix B
 haven't been specifically checked for datedness at all** — Ch12 is
 mostly reflective prose so risk is low, but worth a pass rather than
@@ -133,10 +136,10 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 
 **Priority (decided 2026-08-26):** Dave wants to get to a position where every chapter itself — not just appendices/artwork — has been checked and modernized. Ch3 ("Useful Perl idioms"), Ch7 ("Binary data" — need to confirm exact title/scope), and Ch8 ("Complex data formats," Part III opener) are next, since none of the three has had a real modernity audit yet: Ch3 and Ch8 only got the July PDF-sync diff, and Ch7's `Image::Info`/`MPEG::MP3Info` currency was flagged but never actually checked. Suggested order: Ch7 first (narrowest, already has a known concrete question — are those two modules still reasonable to teach), then Ch3 and Ch8 (broader "full modernity read" like the original Ch5/Ch6/Ch9/Ch10/Ch11 passes).
 
-- Audit Chapter 7 (binary data) for outdated modules/techniques, starting with `Image::Info`/`MPEG::MP3Info`.
-- Full modernity audit of Chapter 3 (useful Perl idioms) — last touched content-wise for `Path::Tiny` (2026-08-22) and the four markdown-only asides (2026-08-05, decided no action needed), but never audited chapter-wide the way Ch5/Ch6/Ch9/Ch10/Ch11 were.
+- [x] ~~Audit Chapter 7 (binary data) for outdated modules/techniques, starting with `Image::Info`/`MPEG::MP3Info`.~~ **Done (2026-09-01)** — see "Outdated code / modules" above.
+- [x] ~~Full modernity audit of Chapter 3 (useful Perl idioms)~~ **Done (2026-09-08)** — 15 mechanical fixes, Benchmark section restructured (current numbers first, 2001 numbers as historical aside), DBI section rewritten around SQLite with a DBD-module comparison table, new Testing section (Test::More + Test2::V0) added. Chapter 5's heading order (see "Structural issues" above) tidied up in the same week.
 - Full modernity audit of Chapter 8 (complex data formats / Part III opener) — diagrams redrawn 2026-08-26, but the prose itself hasn't been checked.
-- Once Ch3/Ch7/Ch8 are done: Appendix A (module reference) rewrite becomes the next logical step, since it depends on the narrative chapters being settled first — see Artwork/Outdated-code sections above for what it's missing.
+- Once Ch8 is done: Appendix A (module reference) rewrite becomes the next logical step, since it depends on the narrative chapters being settled first — see Artwork/Outdated-code sections above for what it's missing.
 - Review the copyright wording in `front-matter.md`.
 - Run and check the new Ch10 weather examples (`weather_xpath.pl`, `weather_walk.pl`, `weather_api.pl`, `cities_weather.pl`, `cds.pl`) and the Ch11 `cds.pl` — see "Untested" notes above and in prior sprints.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
