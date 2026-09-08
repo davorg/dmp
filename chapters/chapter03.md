@@ -6,6 +6,7 @@ What this chapter covers:
 * Simple and complex sorts
 * The Orcish manoeuvre and the Schwartzian and Guttman-Rosler transforms
 * Database Interface and database driver modules
+* Inspecting data structures with Data::Dumper and Data::Printer
 * Benchmarking
 * Command line scripts
 * Path::Tiny for file and path handling
@@ -123,8 +124,10 @@ person first.
         || $b->{age} <=> $a->{age};
     }
 
-his default sort mechanism is implemented using a Quicksort algorithm.
-In this type of sort, each element of the list is compared with at least one
+Perl’s default sort mechanism is currently implemented using a mergesort
+algorithm, and has been guaranteed stable—elements that compare equal keep
+their original relative order—since Perl 5.8. In this type of sort, each
+element of the list is compared with at least one
 other element in order to determine the correct sequence. This is an efficient method if
 each comparison is relatively cheap; however, there are circumstances where you
 are sorting on a value which is calculated from the element. In these situations,
@@ -354,7 +357,7 @@ are often better options available to you.
 
 [Memoize](https://metacpan.org/pod/Memoize) was introduced with Perl 5.8. It
 provides an easy way to cache the results from function calls. It can be used
-to simplify the Orciah Manoeuvre.
+to simplify the Orcish Manoeuvre.
 
 [List::UtilsBy](https://metacpan.org/pod/List::UtilsBy) provides a number of
 utility functions that can replace the standard `sort` function, making code
@@ -406,7 +409,7 @@ this:
 	 10:                        {RaiseError => 1})
 	 11:  or die "Connect failed: $DBI::errstr";
 	 12:
-	 13: my $sth = $dbh->prepare('select col1, col2, col3 from my_table')
+	 13: my $sth = $dbh->prepare('select col1, col2, col3 from my_table');
 	 14:
 	 15: $sth->execute;
 	 16:
@@ -556,7 +559,7 @@ output:
 	$VAR1 = [
 		{
 		  'artist' => 'Bragg, Billy',
-		  'title' => 'Workers' Playtime',
+		  'title' => 'Workers\' Playtime',
 		  'year' => '1987',
 		  'label' => 'Cooking Vinyl'
 		},
@@ -587,7 +590,7 @@ output:
 		{
 		  'artist' => 'Bowie, David',
 		  'title' => 'Earthling',
-		  'year' => '1998',
+		  'year' => '1997',
 		  'label' => 'EMI'
 		}
 	];
@@ -601,12 +604,12 @@ element of the array individually and produced output for each of
 them. By passing a reference we forced it to treat our array as a
 single object.
 
-The newer (Data::Printer)[https://metacpan.org/pod/Data::Printer] module
+The newer [Data::Printer](https://metacpan.org/pod/Data::Printer) module
 (available from CPAN) simplifies this, by allowing you to pass arrays and
 hashes directly to its `p()` function. The output from this module is also
 simpler and (on a correctly configured terminal) in colour.
 
-Replaceing Data::Dumper with Data::Printer in our previous program looks
+Replacing Data::Dumper with Data::Printer in our previous program looks
 like this:
 
     use Data::Printer;
@@ -658,12 +661,12 @@ And produces the following output:
                 artist   "Bowie, David",
                 label    "EMI",
                 title    "Earthling",
-                year     1987
+                year     1997
             }
     ]
 
-I believe that's easy to read than the equivalent Data::Dumper output,
-but it doesn't produce valid Perl code (which may or may not be a pronlem
+I believe that's easier to read than the equivalent Data::Dumper output,
+but it doesn't produce valid Perl code (which may or may not be a problem
 for you).
 
 ## Benchmarking
@@ -704,27 +707,27 @@ write a script like this
 
 	my  $x = 'x' x 100;
 
-	sub using _concat {
+	sub using_concat {
 	  my  $str = 'x is ' .  $x . ' (or thereabouts)';
 	}
 
-	sub using _join {
+	sub using_join {
 	  my  $str = join '', 'x is ',  $x, ' (or thereabouts)';
 	}
 
-	sub using _interp {
+	sub using_interp {
 	  my  $str = "x is  $x (or thereabouts)";
 	}
 
-	sub using _sprintf {
+	sub using_sprintf {
 	  my  $str = sprintf("x is %s (or thereabouts)",  $x);
 	}
 
 	timethese (1E6, {
-	  'concat'  => &using_concat,
-	  'join'    => &using_join,
-	  'interp'  => &using_interp,
-	  'sprintf' => &using_sprintf,
+	  'concat'  => \&using_concat,
+	  'join'    => \&using_join,
+	  'interp'  => \&using_interp,
+	  'sprintf' => \&using_sprintf,
 	});
 
 On my current computer (a rather old 200 MHz P6 with 64 MB of RAM,
@@ -789,7 +792,7 @@ module that is installed on your system using code like this
 (providing that the module uses the standard practice of defining a
 `$VERSION` variable):
 
-	perl -MCGI -e 'print $CGI::VERSION'
+	perl -MDBI -e 'print $DBI::VERSION'
 
 These single-line scripts can sometimes be useful, but there is a
 whole set of more powerful options to write file processing scripts.
@@ -804,7 +807,7 @@ looks like this:
 This can be used, for example, to write a simple `grep`-like script such
 as:
 
-	perl -ne 'print if /search text/' file.txt\
+	perl -ne 'print if /search text/' file.txt
 
 which will print any lines in file.txt that contain the string “search
 text”. Notice the presence of the `LINE` label which allows you to
@@ -873,7 +876,7 @@ manual page which is installed when you install Perl.
 ---
 
 We've used the `-e` command line option in this section. Since Perl 5.10,
-many new Perl features have have to be explicitly turned on in your
+many new Perl features have had to be explicitly turned on in your
 code by using a `use feature` pragma. For example, `use feature 'say'`
 would allow you to start using `say()` in place of `print()`. As a shortcut,
 you can also use `use VERSION` to turn on all of the features upto and
@@ -975,7 +978,7 @@ pattern for Unicode text even shorter.
 ## Further information
 
 More discussion of the Schwartzian transform, the Orcish Manoeuvre, and
-other Perl tricks can be found in *Effective Perl Programming* by Joseph Hall, brian d foy, and Joshua McAdams.
+other Perl tricks can be found in *Effective Perl Programming* by Joseph Hall, brian d foy, and Joshua McAdams
 (Addison-Wesley) and *The Perl Cookbook* by Tom Christiansen
 and Nathan Torkington (O’Reilly).
 
