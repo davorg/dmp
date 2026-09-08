@@ -702,8 +702,8 @@ write a script like this
 
 	#!/usr/bin/perl
 	use strict;
-    use warnings;
-	use Benchmark qw(timethese);
+	use warnings;
+	use Benchmark qw(timethese cmpthese);
 
 	my  $x = 'x' x 100;
 
@@ -723,16 +723,59 @@ write a script like this
 	  my  $str = sprintf("x is %s (or thereabouts)",  $x);
 	}
 
-	timethese (1E6, {
+	my $results = timethese(-3, {
 	  'concat'  => \&using_concat,
 	  'join'    => \&using_join,
 	  'interp'  => \&using_interp,
 	  'sprintf' => \&using_sprintf,
 	});
 
-On my current computer (a rather old 200 MHz P6 with 64 MB of RAM,
-running Microsoft Windows 98 and ActivePerl build 521), running this
-script gives the following output:
+	cmpthese($results);
+
+Running this on a 16-core/22-thread Intel Core Ultra 7 155H with 16GB
+of RAM, running Fedora 44 under WSL2 on Windows 11 (Perl 5.42.3), gives
+the following output:
+
+	Benchmark: running concat, interp, join, sprintf for at least 3 CPU seconds...
+	    concat:  3 wallclock secs ( 3.07 usr +  0.00 sys =  3.07 CPU) @ 36437086.32/s (n=111861855)
+	    interp:  3 wallclock secs ( 3.20 usr +  0.00 sys =  3.20 CPU) @ 40642558.13/s (n=130056186)
+	      join:  1 wallclock secs ( 3.08 usr +  0.00 sys =  3.08 CPU) @ 12410345.13/s (n=38223863)
+	   sprintf:  4 wallclock secs ( 3.69 usr +  0.00 sys =  3.69 CPU) @ 40014743.09/s (n=147654402)
+
+	              Rate    join  concat sprintf  interp
+	join    12410345/s      --    -66%    -69%    -69%
+	concat  36437086/s    194%      --     -9%    -10%
+	sprintf 40014743/s    222%     10%      --     -2%
+	interp  40642558/s    227%     12%      2%      --
+
+What does this mean? Looking at the script, we can see that we call
+`timethese`, passing it a count followed by a reference to a hash. A
+positive count is the number of times you want each piece of code run;
+a negative count (as here) instead tells Benchmark to run each one for
+at least that many CPU seconds, which is generally the safer choice—on
+today's hardware, a fixed count of a million iterations (which took a
+noticeable 8 to 12 seconds back in 2001) comes and goes in a fraction
+of a second, giving too few samples for a reliable measurement. The
+hash contains details of the code that you want tested: the keys are
+unique names for each of the subroutines, and the values are
+references to the functions themselves. `timethese` runs each function
+for the requested duration and returns a results object, which we then
+pass to `cmpthese` to print a second, more useful table: a grid
+showing how much faster or slower each option is than every other one.
+As you can see from the results, `sprintf`, `interp`, and `concat` are
+all within about 10% of each other, while `join` is left a long way
+behind—more than three times slower than the rest.
+
+You can then use these figures to help you decide which version of the
+code to use in your application.
+
+---
+
+It's worth comparing this against the equivalent benchmark from the
+first edition of this book, back in 2001. On the machine I was using
+at the time—a rather old 200 MHz P6 with 64 MB of RAM, running
+Microsoft Windows 98 and ActivePerl build 521—the original,
+1,000,000-iteration version of this script gave this output:
 
 	Benchmark: timing 1000000 iterations of concat, interp, join, sprintf …
 	concat: 8 wallclock secs ( 7.36 usr + 0.00 sys = 7.36 CPU) @135869.57/s (n=1000000)
@@ -740,19 +783,21 @@ script gives the following output:
 	join: 9 wallclock secs ( 8.38 usr + 0.03 sys = 8.41 CPU) @118906.06/s (n=1000000)
 	sprintf: 12 wallclock secs (11.14 usr + 0.02 sys = 11.16 CPU) @89605.73/s (n=1000000)
 
-What does this mean? Looking at the script, we can see that we call the
-function `timethese`, passing it an integer followed by a reference to a hash. The
-integer is the number of times that you want the tests to be run. The hash contains
-details of the code that you want tested. The keys to the hash are unique names for
-each of the subroutines and the values are references to the functions themselves.
-timethese will run each of your functions the given number of times and will print
-out the results. As you can see from the results we get above, our functions
-fall into three sets. Both concat and interp took about 8 seconds of CPU time to run
-1,000,000 times; join was a little longer at 9 seconds; and `sprintf` came in at 12
-seconds of CPU time.
+Twenty-five years and a great many CPU generations later, the absolute
+numbers are obviously meaningless as a comparison—but the *relative*
+ordering has actually flipped in one interesting way. In 2001,
+`sprintf` was clearly the slowest of the four, trailing `concat` and
+`interp` by around 30%, with `join` sitting comfortably in second
+place. Today, `sprintf` runs neck-and-neck with `interp` and `concat`,
+while `join` is the one left behind.
 
-You can then use these figures to help you decide which version of the
-code to use in your application.
+The point isn't which of these four you should reach for (string
+interpolation is almost always both the clearest and among the
+fastest, then and now). It's that a benchmark result is a snapshot of
+one Perl, on one machine, at one point in time. If a performance
+decision actually matters, don't trust a 25-year-old number—or even a
+two-year-old one—rerun the benchmark on your own Perl, your own
+hardware, with your own data.
 
 ---
 
