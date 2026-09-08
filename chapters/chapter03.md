@@ -7,6 +7,7 @@ What this chapter covers:
 * The Orcish manoeuvre and the Schwartzian and Guttman-Rosler transforms
 * Database Interface and database driver modules
 * Inspecting data structures with Data::Dumper and Data::Printer
+* Testing with Test::More and Test2
 * Benchmarking
 * Command line scripts
 * Path::Tiny for file and path handling
@@ -671,6 +672,81 @@ I believe that's easier to read than the equivalent Data::Dumper output,
 but it doesn't produce valid Perl code (which may or may not be a problem
 for you).
 
+## Testing
+
+It's easy to convince yourself that a data munging script works just by
+running it once and eyeballing the output. But scripts get modified—new
+edge cases turn up in the data, colleagues extend them, you revisit code
+you wrote six months ago—and it's very easy for a small change to break
+something that used to work. Automated tests catch that kind of
+regression before it costs you a ruined data file, and they're just as
+useful as a way of pinning down exactly what a tricky function is
+supposed to do.
+
+[Test::More](https://metacpan.org/pod/Test::More) is the traditional
+starting point, and has shipped with Perl for a very long time. A test
+file is just a Perl script that calls a handful of functions to make
+assertions, and prints the results in a standard format (TAP, the Test
+Anything Protocol) that a test runner can understand. Here's a simple
+example, testing a small function that trims whitespace from the ends
+of a string—a very typical data munging job:
+
+	use strict;
+	use warnings;
+	use Test::More;
+
+	sub trim {
+	  my ($str) = @_;
+	  $str =~ s/^\s+|\s+$//g;
+	  return $str;
+	}
+
+	is(trim('  hello  '), 'hello', 'removes leading and trailing spaces');
+	is(trim('no spaces'), 'no spaces', 'leaves an already-trimmed string alone');
+	ok(!length(trim('   ')), 'a string of just spaces trims to empty');
+	like(trim('  data munging  '), qr/^data/, 'trimmed string starts with "data"');
+
+	done_testing();
+
+Running this script (either directly with `perl`, or via the standard
+test runner `prove`) produces TAP output like this:
+
+	ok 1 - removes leading and trailing spaces
+	ok 2 - leaves an already-trimmed string alone
+	ok 3 - a string of just spaces trims to empty
+	ok 4 - trimmed string starts with "data"
+	1..4
+
+`is` compares two values and reports a helpful diff if they don't
+match; `ok` just checks that its argument is true; and `like` checks a
+string against a regular expression. All three print an `ok` or `not
+ok` line, along with a description that makes a failing test easy to
+identify. `done_testing()` tells Test::More that you've finished, so
+it can report how many tests it saw—the modern replacement for
+declaring `use Test::More tests => 4;` up front, which meant updating
+a count by hand every time you added or removed a test.
+
+That's only a handful of the assertion functions Test::More provides;
+the module's own documentation lists the rest.
+
+### Test2
+
+Test::More has been the standard for so long that it's practically a
+byword for testing in Perl, but underneath, Perl's testing tools have
+moved on: Test::More is now itself built on top of a newer framework
+called Test2, and ships in the same distribution as Test2's own
+recommended interface, [Test2::V0](https://metacpan.org/pod/Test2::V0).
+Test2::V0 provides equivalents of `is`, `ok`, `like`, and
+`done_testing`—often as near drop-in replacements—along with a more
+capable comparison engine that's particularly good at telling you
+exactly what's different when two complex data structures don't match,
+which is a common thing to need when you're testing data munging code.
+
+For new code, Test2::V0 is generally the better starting point. But
+Test::More remains extremely widely used, understood by every existing
+Perl programmer, and assumed by a huge amount of existing documentation
+and example code, so it's still well worth knowing.
+
 ## Benchmarking
 
 When choosing between various ways to implement a task in Perl, it will
@@ -1063,6 +1139,7 @@ at your command line, once the module is installed.
 * Sorting can be very simple in Perl, but for more complex sorts there are a number of methods which can make the sort more efficient.
 * Database access in Perl is very easy using the DBI.
 * [Data::Dumper](https://metacpan.org/pod/Data::Dumper) is very useful for seeing what your internal data structures look like.
+* Automated tests, written with Test::More or Test2, catch regressions before they reach your data.
 * Benchmarking is very important, but can be quite tricky to do correctly.
 * Command line scripts can be surprisingly powerful.
 * [Path::Tiny](https://metacpan.org/pod/Path::Tiny) makes reading, writing, and manipulating files and paths simpler and more portable than Perl's built-in functions.

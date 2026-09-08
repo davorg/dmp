@@ -50,12 +50,12 @@ See `TODO.md` for the full detail behind every item below.
 
 ## Week 6 (3–9 Oct): New-topics decision + version-citation sweep
 
-- Decide what from the "new topics" backlog actually makes it in — not
-  all eight open items will realistically fit. Standout candidate: a
-  `Test2::V0` testing section (the book currently has none). Treat the
-  rest (REST/HTTP-as-data-source, modern HTTP client note, `CHI`
-  caching, `Benchmark::Timer`, core-vs-CPAN `use`-statement audit,
-  `shift`-to-signatures audit, CPAN-glossary appendix) as stretch goals.
+- Decide what from the remaining "new topics" backlog actually makes it
+  in — the standout candidate, a testing section, landed early in
+  Chapter 3 (2026-09-08). Treat the rest (REST/HTTP-as-data-source,
+  modern HTTP client note, `CHI` caching, `Benchmark::Timer`,
+  core-vs-CPAN `use`-statement audit, `shift`-to-signatures audit,
+  CPAN-glossary appendix) as stretch goals.
 - Audit every "available/bundled since Perl 5.X.Y" claim in the book for
   citing a real stable release, not a development track.
 
