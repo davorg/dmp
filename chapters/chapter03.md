@@ -10,6 +10,7 @@ What this chapter covers:
 * Testing with Test::More and Test2
 * Benchmarking
 * Command line scripts
+* Feature pragmas, and how they let you opt in to things like subroutine signatures
 * Path::Tiny for file and path handling
 
 There are a number of Perl idioms that will be useful in many data
@@ -996,14 +997,14 @@ For more information about these command line options see the
 [perlrun](https://perldoc.perl.org/perlrun)
 manual page which is installed when you install Perl.
 
----
+## Feature pragmas
 
-We've used the `-e` command line option in this section. Since Perl 5.10,
+We've used the `-e` command line option throughout this section. Since Perl 5.10,
 many new Perl features have had to be explicitly turned on in your
 code by using a `use feature` pragma. For example, `use feature 'say'`
 would allow you to start using `say()` in place of `print()`. As a shortcut,
-you can also use `use VERSION` to turn on all of the features upto and
-including the version you list. So `use 5.38` would turn on all of the
+you can also use `use VERSION` to turn on all of the features up to and
+including the version you list. So `use v5.38;` would turn on all of the
 features defined in versions of Perl up to and including version 5.38
 (you can get a list of the available features for each version in the
 `perldoc feature` manual page).
@@ -1017,7 +1018,7 @@ So running
     perl -e 'say "hello world"'
 
 would throw an error as `say()` needs to be turned on before you can use it.
-You can do that explicity by using the `-M` option to load the pragma:
+You can do that explicitly by using the `-M` option to load the pragma:
 
     perl -Mfeature=say -e 'say "hello world"'
 
@@ -1026,7 +1027,34 @@ available features:
 
     perl -E 'say "hello world"'
 
----
+### Signatures: a feature worth turning on
+
+Subroutine signatures are a good example of a feature that arrived
+this way, and one you'll see used throughout this book. Instead of
+the traditional way of unpacking arguments by hand:
+
+	sub greet {
+	  my ($name) = @_;
+	  say "Hello, $name!";
+	}
+
+a signature lets you declare a subroutine's parameters right there in
+its definition:
+
+	sub greet($name) {
+	  say "Hello, $name!";
+	}
+
+Signatures were introduced, marked experimental, in Perl 5.20, and
+went through several rounds of changes before settling down. As of
+Perl 5.36, they're no longer experimental—`use v5.36;` (or later)
+turns them on without a warning, and without needing the older
+`use experimental 'signatures';` line.
+
+From this point on, you should read every code example in this book
+as if it begins with `use v5.36;`. We won't clutter every listing by
+repeating that line, but it's what lets every subroutine in the book
+be written with a signature instead of unpacking `@_` by hand.
 
 ## Path::Tiny
 
@@ -1142,4 +1170,5 @@ at your command line, once the module is installed.
 * Automated tests, written with Test::More or Test2, catch regressions before they reach your data.
 * Benchmarking is very important, but can be quite tricky to do correctly.
 * Command line scripts can be surprisingly powerful.
+* New Perl features are often opt-in, turned on with `use feature` or a `use VERSION` bundle—subroutine signatures are a good example, stable since Perl 5.36.
 * [Path::Tiny](https://metacpan.org/pod/Path::Tiny) makes reading, writing, and manipulating files and paths simpler and more portable than Perl's built-in functions.
