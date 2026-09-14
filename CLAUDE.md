@@ -71,6 +71,19 @@ belong in either of those.
   are inline `<polygon>` triangles, not `<marker>` refs (see sandbox
   gotcha above). Build diagrams from the chapter's own worked example
   data where possible, not invented numbers.
+- **Part titles**: short, abstract noun phrases, not literal
+  descriptions of technique (Part I "Foundations", Part II "Data
+  munging", Part III "Data parsing", Part IV "The big picture").
+  Separator is " - " (hyphen), not a colon.
+- **Perl baseline for code examples** (established 2026-09-14): every
+  example in the book is meant to be read as if it begins with
+  `use v5.36;` — the first release where subroutine signatures are
+  non-experimental. Write subroutines with signatures
+  (`sub greet($name) { ... }`), not manual `@_`/`shift` unpacking.
+  This is a book-wide retrofit in progress (scope and status tracked
+  in TODO.md) — don't assume an existing example has already been
+  converted, but write anything new this way, and prefer signatures
+  when touching an old-style sub for an unrelated reason too.
 
 ## External systems
 
