@@ -31,12 +31,21 @@ See `TODO.md` for the full detail behind every item below.
   actually taught character-set conversion), "Data conversions"
   relocated to introduce just line endings and number formats.
 
-## Week 3 (12–18 Sep): Chapter 8 audit
+## Week 3 (12–18 Sep): Chapter 8 audit — done (2026-09-14)
 
-- Full modernity audit of Chapter 8 (complex data formats / Part III
+- [x] Full modernity audit of Chapter 8 (complex data formats / Part III
   opener) — diagrams are redrawn, but the prose hasn't been checked.
-- Quick keep-or-trim decision on the EBCDIC mention in Chapter 12's
-  "things to consider" checklist.
+  Found and fixed two stale forward-references (`XML::Parser`→
+  `XML::LibXML`, `Parse::RecDescent`→`Regexp::Grammars`, matching the
+  Ch10/Ch11 rewrites those chapters actually got), a real data bug
+  (the chapter's two CD-file examples disagreed with each other on
+  three album years — reconciled against real release dates), and a
+  likely leftover typo. Part III's own heading ("Simple data
+  parsing") was flagged as misleading but needs an actual rethink
+  rather than a quick fix — left alone for now, logged in TODO.md.
+- [x] Quick keep-or-trim decision on the EBCDIC mention in Chapter 12's
+  "things to consider" checklist — kept, reworded so Unicode reads as
+  the assumed default rather than an equal alternative to ASCII.
 
 ## Week 4 (19–25 Sep): Appendix A rewrite
 

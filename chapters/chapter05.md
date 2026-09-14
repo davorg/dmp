@@ -1,5 +1,5 @@
-Part II: Data munging
-=====================
+Part II - Data munging
+======================
 
 In this section, we’ll encounter different forms of data challenges and
 explore methods to overcome them.
@@ -385,6 +385,19 @@ multi-byte sequences. Feed Latin-1 bytes to something expecting UTF-8
 or—worse—something that "successfully" decodes into complete garbage.
 That collision, more than anything else, is where the classic mojibake
 you'll have seen in broken web pages and emails comes from.
+
+Latin-1 is just one member of a whole family of legacy single-byte
+encodings—ISO-8859-2 for Central European languages, ISO-8859-5 for
+Cyrillic, ISO-8859-7 for Greek, and so on through ISO-8859-16—each
+assigning its own characters to that same 128–255 range, which is
+exactly why you can't tell which one you've got just by looking at the
+bytes. Windows adds its own near-relative into the mix: CP-1252 (also
+called Windows-1252), which agrees with Latin-1 almost everywhere but
+quietly redefines a handful of bytes in the 128–159 range for things
+like curly quotes and em dashes. It's close enough to Latin-1 to work
+by accident most of the time, and different enough that a smart quote
+copied from Word is a classic way to end up with a stray "â€™" in your
+output.
 
 ![How the same character encodes differently: "A" is byte 0x41 in both ASCII and UTF-8, but "é" (Unicode code point U+00E9) has no ASCII byte at all and takes two bytes, 0xC3 0xA9, in UTF-8](images/5-1-ascii-vs-utf8-encoding.svg)
 

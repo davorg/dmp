@@ -1,5 +1,5 @@
-Part III - Simple data parsing
-==============================
+Part III - Data parsing
+=======================
 
 In this section, we move beyond the record-oriented data of Part II
 into data that's structured hierarchically, and look at the tools
@@ -58,12 +58,12 @@ Let’s take another look at that first sample data file.
 	 16 Sep 1999
 	 Artist        Title              Label          Released
 	 --------------------------------------------------------
-	 Bragg, Billy  Workers' Playtime  Cooking Vinyl  1987
+	 Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
 	 Bragg, Billy  Mermaid Avenue     EMI            1998
 	 Black, Mary   The Holy Ground    Grapevine      1993
-	 Black, Mary   Circus             Grapevine      1996
+	 Black, Mary   Circus             Grapevine      1995
 	 Bowie, David  Hunky Dory         RCA            1971
-	 Bowie, David  Earthling          EMI            1987
+	 Bowie, David  Earthling          EMI            1997
 	 6 Records
 
 As you can see, the data consists of three clearly delimited
@@ -265,7 +265,7 @@ believe that they will continue to grow in popularity in the future.
 They are so popular, in fact, that the next two chapters are dedicated
 to ways of dealing with them using dedicated modules such as
 [HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
-[XML::Parser](https://metacpan.org/pod/XML::Parser). In this section,
+[XML::LibXML](https://metacpan.org/pod/XML::LibXML). In this section,
 however, I’d like to give you some idea of why these modules are
 necessary by pointing out the limitations in the data parsing methods
 that we have been using up to now.
@@ -453,7 +453,7 @@ Parsers
 We’ve seen in the previous section that for certain types of data,
 our usual regular expression-based approach is not guaranteed to
 work. We must therefore find a new approach. This will involve the
-use of parlance.
+use of parsers.
 
 ### An introduction to parsers
 
@@ -560,16 +560,16 @@ reasons, this type of parser is also known as a *top-down* parser.
 
 Parsers in Perl come in two types: prebuilt parsers such as
 [HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
-[XML::Parser](https://metacpan.org/pod/XML::Parser), which are
+[XML::LibXML](https://metacpan.org/pod/XML::LibXML), which are
 designed to parse a particular type of data, and modules such as
-Parse::Yapp and Parse::RecDescent which allow you to create your own
-parsers from a grammar which you have defined. In the next two
-chapters we will take a longer look at the
-[HTML::Parser](https://metacpan.org/pod/HTML::Parser) and
-[XML::Parser](https://metacpan.org/pod/XML::Parser) families of
-modules; and in [Chapter 11](ch016.xhtml) we will examine
-[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent), in detail, which is the most flexible tool for
-creating your own parsers in Perl.
+[Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars) and
+Parse::RecDescent which allow you to create your own parsers from a
+grammar which you have defined. In the next two chapters we will take
+a longer look at [HTML::Parser](https://metacpan.org/pod/HTML::Parser)
+and [XML::LibXML](https://metacpan.org/pod/XML::LibXML); and in
+[Chapter 11](ch016.xhtml) we will examine
+[Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars) in
+detail—the most flexible tool for creating your own parsers in Perl.
 
 Further information
 -------------------

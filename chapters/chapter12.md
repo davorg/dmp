@@ -136,8 +136,9 @@ formats in a preprocessing program to make them all the same?
 
 You may also need to know about the operating system that data was
 produced on or will be used on, as this may affect the format of the
-data. Is it in ASCII, EBCDIC or Unicode? Is binary data big-endian or
-little-endian? What is the line end character sequence?
+data. Is it plain ASCII, Unicode (most likely, these days), or
+something older like ISO-8859-X or Shift-JIS? Is binary data
+big-endian or little-endian? What is the line end character sequence?
 
 ### Know your tools
 
