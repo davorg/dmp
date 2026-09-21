@@ -431,9 +431,8 @@ class.
 An object defines both the structure of a data record and all of the methods
 used  to operate on the record. It makes the code far easier to reuse and
 maintain. A full discussion of the advantages of object-oriented programming
-(OOP) is beyond the scope of this book, but two very good places to get the
-full story are the *perlobj* manual page and Damian Conway's *Object Oriented
-Perl*.
+(OOP) is beyond the scope of this book, but a good place to get the
+full story is the *perlobj* manual page.
 
 ---
 
@@ -946,8 +945,8 @@ kind of real-time notification system.
 
 # Further information
 
-For more information on writing objects in Perl see *Object Oriented Perl*
-by Damian Conway (Manning) or the `perlobj` and `perlclass` manual pages.
+For more information on writing objects in Perl see the `perlobj` and
+`perlclass` manual pages.
 
 For more information about the UNIX filter model and other UNIX programming
 tricks see *The UNIX Programming Environment* by Brian Kernighan and Rob Pike

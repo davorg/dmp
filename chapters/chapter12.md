@@ -52,7 +52,7 @@ problem in a way that is closer to the way that their thought
 processes work and further from the way that computer CPUs work, many
 programmers find that using Perl makes them far more productive.
 
-In a recent article on www.perl.com, Mark-Jason Dominus talks about
+In a classic article on perl.com, Mark-Jason Dominus talks about
 the difference between “natural” code and “synthetic” code. Natural
 code is the code which is fundamentally tied in with solving the
 problem at hand. Synthetic code is code which is merely a side effect
@@ -90,9 +90,9 @@ article is at [Return of Program Repair Shop and Red Flags](https://www.perl.com
 One of the best things about using Perl is the community that goes
 with it. It seems to attract people who are only too happy to help
 others—whether by submitting their code to the CPAN, answering a
-technical question in a newsgroup such as comp.lang.perl.misc, or on a
-website like Perl Monks, or even writing articles for *The Perl
-Journal*.
+technical question on a site like PerlMonks, or writing up what
+they've learned as a blog post that gets picked up by Perl Weekly or
+aggregated on Planet Perl for the rest of the community to find.
 
 If you are going to use Perl, I would certainly encourage you to
 become part of the Perl community. There are a number of ways to do
@@ -100,9 +100,13 @@ this:
 
 *  Join your local Perl Mongers group. These are users’ groups. You can find the contact for your local group at www.pm.org. If there isn’t one for your area, why not form one?
 
-*  Visit comp.lang.perl.misc regularly. This is the main Perl newsgroup. As long as you follow the rules of Netiquette, you will be very welcome there.
+*  Ask questions on [PerlMonks](https://www.perlmonks.org). It's been around since 1999 and still has a deep well of Perl expertise, even if the site itself shows its age these days.
 
-*  Read *The Perl Journal*. This is the only printed magazine dedicated to Perl. You can subscribe at www.tpj.com.
+*  Join [r/perl](https://www.reddit.com/r/perl) on Reddit. It's a small but active community for Perl news and discussion.
+
+*  Subscribe to [Perl Weekly](https://perlweekly.com). It's a free weekly roundup of Perl news, blog posts, and CPAN releases—the easiest way to keep up with what the community is doing.
+
+*  Try [The Weekly Challenge](https://theweeklychallenge.org). Two programming tasks are posted every Monday, one for beginners and one for experts—a great way to keep your Perl sharp and see how other people solve the same problem.
 
 *  Submit your code to the CPAN. If you have written code which could be of use to others, why not put it in a place where everyone can find it? Details on becoming a CPAN author can be found at www.cpan.org.
 
@@ -143,13 +147,34 @@ big-endian or little-endian? What is the line end character sequence?
 ### Know your tools
 
 Ensure that you are as comfortable as possible with Perl and its
-features. Buy and read Perl books. All Perl programmers should have
-read [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-3rd/0596000278/), [The Perl Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/), [Mastering Regular
-Expressions](https://learning.oreilly.com/library/view/mastering-regular-expressions/0596528124/), and [Object Oriented Perl](https://www.manning.com/books/object-oriented-perl). Read the documentation that
-comes with Perl—it will be more up-to-date than any book. Know what
-questions are answered in [perldoc perlfaq](https://perldoc.perl.org/perlfaq) (and know their answers).
-Subscribe to [The Perl Journal](https://www.foo.be/docs/tpj/) (and consider buying a complete set of
-back issues).
+features. The market for Perl-specific books has largely dried
+up—like much of technical publishing, it's moved to the web, and big
+publishers won't take a risk on a niche technology when a website
+can cover the same ground for free and stay current. Two books are
+still worth having on the shelf, because both remain in print and
+reasonably current: [Learning
+Perl](https://learning.oreilly.com/library/view/learning-perl-8th/9781492094951/)
+and [Programming
+Perl](https://learning.oreilly.com/library/view/programming-perl-4th/9781449321451/).
+Older classics like [The Perl
+Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/)
+and [Object Oriented
+Perl](https://www.manning.com/books/object-oriented-perl) are worth a
+skim if you stumble across a copy—the underlying techniques still
+hold up even though the exact syntax has moved on—but don't go out of
+your way to track one down. For something
+more current, look at [Perl School](https://perlschool.com/books):
+it's been publishing Perl books since 2017, as ebooks and (more
+recently) print-on-demand paperbacks, precisely because the
+mainstream publishers had walked away from the topic—modern,
+low-overhead production tools instead of a traditional publisher's
+long lead times (this book is one of them). Read the documentation
+that comes with Perl—it will be more up-to-date than any book. Know
+what questions are answered in [perldoc
+perlfaq](https://perldoc.perl.org/perlfaq) (and know their answers).
+Subscribe to [Perl Weekly](https://perlweekly.com) and follow [Planet
+Perl](https://perl.theplanetarium.org/) for a steady stream of what
+the community is writing and thinking about.
 
 Understand common Perl methods such as complex sorting techniques.
 Learn how to benchmark your programs. Find the best performing
@@ -168,21 +193,31 @@ Here is a list of sources for information about Perl. Most of them
 have been mentioned at some point in the book, but I thought it would
 be useful to gather them together in one place.
 
-*  [The Perl Home Page](http://www.perl.com)—Definitive source for all things Perl: www.perl.com
+*  [The Perl Home Page](https://www.perl.org)—The official home of Perl: news, downloads, and documentation.
 
-*  *comp.lang.perl.misc*—The most active Perl newsgroup.
+*  [perl.com](https://www.perl.com)—Not the official site (that's perl.org), but still worth checking for articles and interviews.
 
 *  [perldoc perl](https://perldoc.perl.org) *(and others)*—The best Perl documentation installed right on your computer.
 
-*  [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-4th/9781449321451/) (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl book. Make sure you get the 3rd edition.
+*  [Learning Perl](https://learning.oreilly.com/library/view/learning-perl-8th/9781492094951/) (O’Reilly), Randal L. Schwartz, brian d foy, and Tom Phoenix—The classic beginner's introduction. Still in print, still current (8th edition, 2021).
 
-*  [The Perl Cookbook](https://learning.oreilly.com/library/view/perl-cookbook-2nd/0596003137/) (O’Reilly), Tom Christiansen and Nathan Torkington— The essential Perl book (volume 2).
+*  [Programming Perl](https://learning.oreilly.com/library/view/programming-perl-4th/9781449321451/) (O’Reilly), Larry Wall, Tom Christiansen, and Jon Orwant—The essential Perl reference. Make sure you get the 4th edition.
 
-*  [Mastering Regular Expressions](https://learning.oreilly.com/library/view/mastering-regular-expressions/0596528124/) (O’Reilly), Jeffrey Friedl—Everything you ever wanted to know about regexes.
+*  [Perl School](https://perlschool.com/books)—Perl books, published as ebooks and print-on-demand paperbacks since 2017, using modern, low-overhead production tools instead of a traditional publisher's long lead times. This book is one of them.
 
-*  [Object Oriented Perl](https://www.manning.com/books/object-oriented-perl) (Manning), Damian Conway—Everything you ever wanted to know about programming with objects in Perl.
+*  [Perl Weekly](https://perlweekly.com)—A free weekly newsletter rounding up Perl news, blog posts, and CPAN releases.
 
-*  [The Perl Journal](https://www.foo.be/docs/tpj/)—The only Perl magazine.
+*  [Planet Perl](https://perl.theplanetarium.org/)—An aggregator collecting Perl blog posts from across the community, and the best place to read what people are actually writing about Perl. (The classic planet.perl.org address now just redirects to perl.org—this is its current successor.)
+
+*  [The Weekly Challenge](https://theweeklychallenge.org)—Two Perl programming tasks every week, running continuously since 2019.
+
+*  [The Perl and Raku Conference](https://tprc.us/) (TPRC)—The community's flagship annual conference, held in a different city each year.
+
+*  [The Perl & Raku Foundation](https://www.perlfoundation.org/)—A non-profit that funds Perl development, holds Perl's trademarks, and organizes and sponsors community events.
+
+*  [r/perl](https://www.reddit.com/r/perl)—A small, active Reddit community for Perl news and discussion.
+
+*  [Stack Overflow's `perl` tag](https://stackoverflow.com/questions/tagged/perl)—New questions have slowed to a trickle there in recent years, but the huge archive of existing Perl Q&A is still a goldmine when you're searching for an answer.
 
 *  [The Perl Mongers](http://www.pm.org)—Friendly Perl people in your town. www.pm.org.
 

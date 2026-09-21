@@ -62,14 +62,35 @@ See `TODO.md` for the full detail behind every item below.
   turned into a full from-scratch rewrite rather than a patch, once a
   quick read-through turned up how much else in there was stuck in
   2001. See TODO.md for full detail.
+- [x] Full modernity audits of Chapters 1, 2, and 12 — done
+  (2026-09-21). Ch1/Ch2: mechanical fixes only (typos, dead links, a
+  handful of code bugs) plus the postfix-dereference sweep across
+  Chapters 2–11 and Appendix B this same session turned up. Ch12
+  ("Looking Back and Ahead"): its "where to find Perl support"
+  section was the real find — rewritten wholesale to replace a set of
+  now-dead-or-misleading community references (comp.lang.perl.misc,
+  *The Perl Journal*, perl.com mislabeled as the official/definitive
+  site) with the current landscape (PerlMonks, r/perl, Perl Weekly,
+  Planet Perl, The Weekly Challenge, TPRC, The Perl & Raku
+  Foundation, Stack Overflow's `perl` tag framed honestly as an
+  archive rather than active Q&A). Also rewrote the book-recommendation
+  paragraph: *Learning Perl* and *Programming Perl* are the two still
+  worth buying, *The Perl Cookbook* and *Object Oriented Perl* moved
+  to "worth a skim if you find one, but dated" (swapping out
+  *Mastering Regular Expressions*, which was dropped from the chapter
+  entirely), and Perl School added as the modern alternative to
+  traditional publishing. Dropped Damian Conway's *Object Oriented
+  Perl* as a formal recommendation everywhere it appeared (Ch2's two
+  citations too) — a decision Dave had been sitting on since the
+  postfix-deref sweep flagged it. See TODO.md for full detail.
 
 ## Week 5 (26 Sep – 2 Oct): Chapter 4 audit, refresh CD data, tidy artwork
 
 - Full modernity audit of Chapter 4 (pattern matching / regular
-  expressions) — one of the last chapters never to get a dedicated
-  pass (Ch1, Ch2, and Ch12 are getting theirs on 2026-09-21; Ch4 was
-  pushed to this week as the harder of the four). Likely candidates
-  going in: `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
+  expressions) — the last chapter never to get a dedicated pass (Ch1,
+  Ch2, and Ch12 got theirs 2026-09-21; Ch4 was pushed to this week as
+  the harder of the four). Likely candidates going in:
+  `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
   named captures (`(?<name>...)`) vs numbered ones, whether
   `given`/`when` is mentioned anywhere (it shouldn't be — deprecated),
   and general currency of the regex examples.
