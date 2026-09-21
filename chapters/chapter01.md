@@ -585,6 +585,20 @@ generally considered to be safer and more flexible.
 
 ***
 
+In a similar spirit, every subroutine you see in this book—starting
+with the very next chapter—is written with a *signature*: its
+parameters are declared right there in the subroutine's definition,
+like `sub greet($name) { ... }`, rather than unpacked by hand from the
+`@_` array. Signatures are a comparatively recent addition to Perl, so
+you may still see the older style in code you come across elsewhere.
+From here on, you should read every code example in this book as if
+it begins with `use v5.36;`, which is what turns signatures on
+without a warning; we won't clutter every listing by repeating that
+line. [Chapter 3](ch006.xhtml) covers this—and the `use
+feature`/`use VERSION` mechanism behind it—in full.
+
+***
+
 Perl is not for everyone. Some people enjoy the verbosity of some other
 languages or the rigid syntax of others. Those who do make an effort to
 understand Perl typically become much more effective programmers.

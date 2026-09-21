@@ -1,3 +1,4 @@
+use v5.36;
 use Audio::Scan;
 
 my $file = shift;
@@ -17,8 +18,7 @@ foreach (sort keys %{ $data->{info} }) {
   print "$_ : ", format_value($data->{info}{$_}), "\n";
 }
 
-sub format_value {
-  my ($value) = @_;
+sub format_value($value) {
   return $value unless ref $value eq 'ARRAY';
 
   # Some array-valued tags (embedded artwork, Xing seek tables) carry

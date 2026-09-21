@@ -1,9 +1,10 @@
 #!/usr/bin/perl 
 
-use strict; 
+use strict;
 use warnings;
+use v5.36;
 
-my @CDs; 
+my @CDs;
 
 sub input { 
   my @attrs = qw(artist title label year); 
@@ -17,10 +18,8 @@ sub input {
   } 
 } 
 
-sub count_cds_by_attr { 
-  my $attr = shift; 
-
-  my %counts; 
+sub count_cds_by_attr($attr) {
+  my %counts;
 
   foreach (@CDs) { 
     $counts{$_->{$attr}}++;
@@ -29,8 +28,7 @@ sub count_cds_by_attr {
   return \%counts; 
 } 
 
-sub output { 
-  my $counts = shift; 
+sub output($counts) {
   foreach (sort keys $counts->%*) { 
     print "$_: $counts->{$_}\n"; 
   } 

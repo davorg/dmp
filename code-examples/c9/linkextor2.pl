@@ -1,6 +1,7 @@
-use HTML::LinkExtor; 
+use v5.36;
+use HTML::LinkExtor;
 
-my $file = shift; 
+my $file = shift;
 my $p = HTML::LinkExtor->new(\&check); 
 
 $p->parse_file($file); 
@@ -13,6 +14,6 @@ foreach (@links) {
   } 
 } 
 
-sub check { 
-  push @links, [@_] if $_[0] eq 'a'; 
+sub check(@args) {
+  push @links, [@args] if $args[0] eq 'a';
 }

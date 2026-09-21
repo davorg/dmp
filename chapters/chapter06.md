@@ -734,8 +734,7 @@ The important functions in Text:CSV are therefore:
 	  return \@data;
 	}
 
-	sub write_csv {
-	  my $data = shift;
+	sub write_csv($data) {
 	  my $csv = Text::CSV->new;
 	  foreach (@$data) {
 	    $csv->combine(@$_);

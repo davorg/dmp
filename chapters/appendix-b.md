@@ -709,6 +709,20 @@ context so that you can adjust your return value accordingly.
 More information about creating and calling subroutines can be found
 in the perlsub manual page.
 
+Everything above is the traditional way of handling a subroutine's
+parameters, and it's still worth understanding—you'll come across
+plenty of existing code written this way. Modern Perl, though, lets
+you skip the manual unpacking and declare parameters directly in the
+subroutine's definition instead, using a *signature*:
+
+    sub example($arg1, $arg2, $arg3) {
+      # Do stuff with $arg1, $arg2 and $arg3
+    }
+
+This is the style used throughout this book from Chapter 2 onwards.
+See [Chapter 3](ch006.xhtml) for the full explanation, including which
+version of Perl you need for it to work.
+
 References
 ----------
 

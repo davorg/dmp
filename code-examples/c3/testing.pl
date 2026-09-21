@@ -1,9 +1,9 @@
 use strict;
 use warnings;
+use v5.36;
 use Test::More;
 
-sub trim {
-  my ($str) = @_;
+sub trim($str) {
   $str =~ s/^\s+|\s+$//g;
   return $str;
 }

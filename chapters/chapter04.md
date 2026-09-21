@@ -700,27 +700,23 @@ to them. The program will look something like this:
 	  8: }
 	  9:
 	 10: my %trans;
-	 11: sub translate {
-	 12:   my $word = shift;
-	 13:
-	 14:   $trans{lc $word} ||= get_trans(lc $word);
-	 15: }
-	 16:
-	 17: sub get_trans {
-	 18:   my $word = shift;
-	 19:
-	 20:   my $file = 'american.txt';
-	 21:   open my $trans_fh, '<', $file or die "Can't open $file: $!";
-	 22:
-	 23:   my ($english, $american);
-	 24:   while (<$trans_fh>)) {
-	 25:     chomp;
-	 26:     ($english, $american) = split /\t/;
-	 27:     do { $word = $american; last; } if $english eq $word;
-	 28:   }
-	 29: 
-	 30:   return $word;
-	 31: }
+	 11: sub translate($word) {
+	 12:   $trans{lc $word} ||= get_trans(lc $word);
+	 13: }
+	 14:
+	 15: sub get_trans($word) {
+	 16:   my $file = 'american.txt';
+	 17:   open my $trans_fh, '<', $file or die "Can't open $file: $!";
+	 18:
+	 19:   my ($english, $american);
+	 20:   while (<$trans_fh>)) {
+	 21:     chomp;
+	 22:     ($english, $american) = split /\t/;
+	 23:     do { $word = $american; last; } if $english eq $word;
+	 24:   }
+	 25: 
+	 26:   return $word;
+	 27: }
 
 #### How the translation program works
 
@@ -750,26 +746,26 @@ exist in the `%trans` hash, it calls `get_trans` to get a translation
 of the word. Notice that we always work with lower case versions of
 the word.
 
-Line 17 starts the `get_trans` function, which will read any necessary
+Line 15 starts the `get_trans` function, which will read any necessary
 words from the file containing a list of translatable words.
 
-Line 20 defines the name of the translations file and line 21
+Line 16 defines the name of the translations file and line 17
 attempts to open it. If the file can’t be opened, then the program
 dies with an error message.
 
-Line 24 loops though the translations file a line at a time, putting
-each line of text into `$line` and line 25 removes the newline
+Line 20 loops though the translations file a line at a time, putting
+each line of text into `$line` and line 21 removes the newline
 character from the line.
 
-Line 26 splits the line on the tab character which separates the
+Line 22 splits the line on the tab character which separates the
 English and American words.
 
-Line 27 sets `$word` to the American word if the English word matches
+Line 23 sets `$word` to the American word if the English word matches
 the word we are seeking.
 
-Line 29 closes the file.
+Line 25 closes the file.
 
-Line 30 returns either the translation or the original word if a
+Line 26 returns either the translation or the original word if a
 translation is not found while looping through the file. This ensures
 that the function always returns a valid word and therefore that the
 `%trans` hash will contain an entry for every word that we’ve come

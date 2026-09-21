@@ -225,8 +225,7 @@ In fact these two routines are so similar, that it is possible to write a
 generic version which handles both of these cases (along with the cases where
 you want to count CDs by label or even by title).
 
-    sub count_cds_by_attr {
-      my $attr = shift;
+    sub count_cds_by_attr($attr) {
       my %counts;
       foreach (@CDs) {
         $counts{$_->{$attr}}++;
@@ -252,8 +251,7 @@ in on the command line would look like this:
       }
     }
 
-    sub count_cds_by_attr {
-      my $attr = shift;
+    sub count_cds_by_attr($attr) {
       my %counts;
       foreach (@CDs) {
         $counts{$_->{$attr}}++;
@@ -261,8 +259,7 @@ in on the command line would look like this:
       return \%counts;
     }
 
-    sub output {
-      my $counts = shift;
+    sub output($counts) {
       foreach (sort keys %{$counts}) {
         print "$_: $counts->{$_}\n";
       }
@@ -366,8 +363,7 @@ suggested above. The following example omits some of the lower level functions.
       return "CUS-$prev_no";
     }
 
-    sub save_cust_record {
-      my $cust = shift;
+    sub save_cust_record($cust) {
       $cust->{cust_no} ||= get_next_cust_no();
       is_valid_sales_ref($cust->{salesperson})
         || croak "Invalid salesperson ref: $cust->{salesperson}.";
@@ -475,8 +471,7 @@ called *Customer.pm*.
     has 'salesperson' => (is => 'rw');
 
     # Constructor with support for id lookup
-    around BUILDARGS => sub {
-      my ($orig, $class, %args) = @_;
+    around BUILDARGS => sub ($orig, $class, %args) {
 
       if (exists $args{id}) {
         # If an id is passed, populate the object from the database
@@ -493,10 +488,7 @@ called *Customer.pm*.
     };
 
     # Fetch customer data based on id (simulating a database fetch)
-    sub fetch_from_db {
-      my $class = shift;
-      my ($id) = @_;
-
+    sub fetch_from_db($class, $id) {
       # Simulate fetching data from a database (replace this with real DB interaction)
       my %fake_db = (
         'CUS-00123' => {
@@ -520,15 +512,12 @@ called *Customer.pm*.
     }
 
     # Validation method
-    sub validate {
-      my $self = shift;
+    sub validate($self) {
       return $self->is_valid_sales_ref && $self->is_valid_other_attr;
     }
 
     # Save method, including validation
-    sub save {
-      my $self = shift;
-
+    sub save($self) {
       unless ($self->validate) {
         croak "Validation failed for customer " . $self->cust_no;
       }
@@ -539,16 +528,14 @@ called *Customer.pm*.
     }
 
     # Generate the next customer number
-    sub get_next_cust_no {
-      my $self = shift;
+    sub get_next_cust_no($self) {
       my $prev_no = 10000;  # Simulate retrieving the last customer number
       $prev_no++;
       return "CUS-$prev_no";
     }
 
     # Simulate writing the customer record (to a database, etc.)
-    sub write {
-      my $self = shift;
+    sub write($self) {
       print "Customer record for " . $self->name . " (cust_no: " . $self->cust_no . ") saved successfully.\n";
       return 1;
     }
@@ -597,8 +584,7 @@ we require.
     }
 
     # A simple subroutine to prompt the user and capture input
-    sub prompt_user {
-      my ($prompt) = @_;
+    sub prompt_user($prompt) {
       print $prompt;
       my $input = <STDIN>;
       chomp($input);

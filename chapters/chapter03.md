@@ -696,8 +696,7 @@ of a string—a very typical data munging job:
 	use warnings;
 	use Test::More;
 
-	sub trim {
-	  my ($str) = @_;
+	sub trim($str) {
 	  $str =~ s/^\s+|\s+$//g;
 	  return $str;
 	}
@@ -1051,10 +1050,12 @@ Perl 5.36, they're no longer experimental—`use v5.36;` (or later)
 turns them on without a warning, and without needing the older
 `use experimental 'signatures';` line.
 
-From this point on, you should read every code example in this book
-as if it begins with `use v5.36;`. We won't clutter every listing by
-repeating that line, but it's what lets every subroutine in the book
-be written with a signature instead of unpacking `@_` by hand.
+As mentioned back in [Chapter 1](ch004.xhtml), you should read every
+code example in this book—including the ones you've already seen in
+Chapter 2—as if it begins with `use v5.36;`. We won't clutter every
+listing by repeating that line, but it's what lets every subroutine
+in the book be written with a signature instead of unpacking `@_` by
+hand.
 
 ## Path::Tiny
 

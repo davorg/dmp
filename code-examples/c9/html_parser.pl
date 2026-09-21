@@ -1,10 +1,10 @@
-use HTML::Parser; 
+use v5.36;
+use HTML::Parser;
 
-use LWP::Simple; 
+use LWP::Simple;
 
-sub start { 
-  my ($tag, $attr, $attrseq) = @_; 
-  print "Found $tag\n"; 
+sub start($tag, $attr, $attrseq) {
+  print "Found $tag\n";
   foreach (@$attrseq) { 
     print " [$_ -> $attr->{$_}]\n"; 
   } 

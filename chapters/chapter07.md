@@ -555,8 +555,7 @@ reading earlier.
     print fixed_rec(\%rec1, \@cols, $format);
     print fixed_rec(\%rec2, \@cols, $format);
 
-    sub build_fmt {
-      my $cols = shift;
+    sub build_fmt($cols) {
       my $fmt;
       foreach (@$cols) {
         if ($_->{num}) {
@@ -569,8 +568,7 @@ reading earlier.
     return $fmt;
     }
 
-    sub fixed_rec {
-      my ($rec, $cols, $fmt) = @_;
+    sub fixed_rec($rec, $cols, $fmt) {
       my @vals = map { $rec->{$_->{name}} } @$cols;
       sprintf("$fmt\n", @vals);
     }
@@ -890,8 +888,7 @@ roughly the right byte offset for a given point in the track.
 
 It's not much effort to turn those into something printable:
 
-    sub format_value {
-      my ($value) = @_;
+    sub format_value($value) {
       return $value unless ref $value eq 'ARRAY';
 
       # Some array-valued tags (embedded artwork, Xing seek tables)

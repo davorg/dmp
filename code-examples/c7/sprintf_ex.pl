@@ -1,4 +1,6 @@
-my %rec1 =(txnref => 374, 
+use v5.36;
+
+my %rec1 =(txnref => 374,
 	   cust => 'Bloggs & Co', 
 	   date => 20261105,
 	   extref => 100103, 
@@ -36,10 +38,8 @@ my $format = build_fmt(\@cols);
 print fixed_rec(\%rec1, \@cols, $format); 
 print fixed_rec(\%rec2, \@cols, $format); 
 
-sub build_fmt { 
-  my $cols = shift; 
-
-  my $fmt; 
+sub build_fmt($cols) {
+  my $fmt;
   foreach (@$cols) { 
     if ($_->{num}) { 
       $fmt .= "%0$_->{width}s"; 
@@ -51,9 +51,7 @@ sub build_fmt {
   return $fmt; 
 } 
 
-sub fixed_rec { 
-  my ($rec, $cols, $fmt) = @_; 
-
+sub fixed_rec($rec, $cols, $fmt) {
   my @vals = map { $rec->{$_->{name}} } @$cols; 
   sprintf("$fmt\n", @vals); 
 }

@@ -91,8 +91,7 @@ and attributes it finds in an HTML page.
 
 	use HTML::Parser;
 	use LWP::Simple;
-	sub start {
-	  my ($tag, $attr, $attrseq) = @_;
+	sub start($tag, $attr, $attrseq) {
 	  print "Found $tag\n";
 	  foreach (@$attrseq) {
 	    print " [$_ -> $attr->{$_}]\n";
@@ -286,8 +285,8 @@ displays only the a links within a file:
 	    $name -> $valn";
 	  }
 	}
-	sub check {
-	  push @links, [@_] if $_[0] eq 'a';
+	sub check(@args) {
+	  push @links, [@args] if $args[0] eq 'a';
 	}
 
 Running our test HTML file through this program gives us the following
@@ -593,8 +592,7 @@ And here's Web::Query pulling the artist and title out of each CD:
 
 	wq('webquery.html')
 	  ->find('.cd')
-	  ->each(sub {
-	      my $i = shift;
+	  ->each(sub ($i) {
 	      say $_->find('.artist')->text, ' - ', $_->find('.title')->text;
 	  });
 

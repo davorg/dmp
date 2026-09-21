@@ -1,8 +1,9 @@
 package Customer_Rules; 
 
-use strict; 
+use strict;
 use warnings;
-use Carp; 
+use v5.36;
+use Carp;
 
 our @EXPORT = qw(get_next_cust_no save_cust_record); 
 our @ISA = qw(Exporter); 
@@ -19,9 +20,7 @@ sub get_next_cust_no {
   return "CUS-$prev_no"; 
 } 
 
-sub save_cust_record { 
-  my $cust = shift; 
-
+sub save_cust_record($cust) {
   $cust->{cust_no} //= get_next_cust_no(); 
   is_valid_sales_ref($cust->{salesperson}) 
     or croak "Invalid salesperson ref: $cust->{salesperson}."; 

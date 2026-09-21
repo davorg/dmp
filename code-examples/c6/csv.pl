@@ -1,6 +1,7 @@
-use Text::CSV; 
+use v5.36;
+use Text::CSV;
 
-sub read_csv { 
+sub read_csv {
   my $csv = Text::CSV->new; 
   my @data; 
 
@@ -12,9 +13,8 @@ sub read_csv {
   return \@data; 
 } 
 
-sub write_csv { 
-  my $data = shift; 
-  my $csv = Text::CSV->new; 
+sub write_csv($data) {
+  my $csv = Text::CSV->new;
 
   foreach (@$data) { 
     $csv->combine(@$_); 
