@@ -200,74 +200,72 @@ These are the methods that you can call to format your data.
 
 * `unformat_number($formatted_number)` The parameter `$formatted_number` must be a number that has been formatted by `format_number`, `format_price` or `format_picture`. The formatting is removed and an unformatted number is returned.
 
-Date::Calc
-----------
-
-The most useful functions in Date::Calc include:
-
-* `$days = Days_in_Month($year, $month)` Returns the number of days in the given month in the given year.
-
-* `$days = Days_in_Year($year, $month)` Returns the number of days in the given year up to the end of the given month. Thus, `Days_in_Year(2000, 1)` returns 31, and `Days_in_Year(2000, 2)` returns 60.
-
-* `$is_leap = leap_year($year)` Returns 1 if the given year is a leap year and 0 if it isn’t.
-
-* `$is_data = check_date($year, $month, $day)` Checks whether or not the given combination of year, month, and day constitute a valid date. Therefore `check_date(2000, 2, 29)` returns true, but `check_date(2000, 2, 2001)` returns false.
-
-* `$doy = Day_of_Year($year, $month, $day)` Takes a given date in the year and returns the number of the day in the year that the date falls. Therefore `Day_of_Year(1962, 9, 7)` prints 250 as September 7 was the 250th day of 1962.
-
-* `$dow = Day_of_Week($year, $month, $day)` Returns the day of the week that the given date fell on. This will be 1 for Monday and 7 for Sunday. Therefore `Day_of_Week(1962, 9, 7)` returns 5 as September 7, 1962, was a Friday.
-
-* `$week = Week_Number($year, $month, $day)` Returns the week number of the year that the given date falls in. Week one is defined as the week that January 4 falls in, so it is possible for the number to be zero. It is also possible for the week number to be 53.
-
-* `($year, $month, $day) = Monday_of_Week($week, $year)` Returns the date of the first day (*i.e.*, Monday) of the given week in the given year.
-
-* `($year, $month, $day) = Nth_Weekday_of_Month_Year($year, $month, $dow, $n)` Returns the *n*th week day in the given month in the given year. For example if you wanted to find the third Sunday (day seven of the week) in November 1999 you would call it as `Nth_Weekday_of_Month_Year(1999, 11, 7, 3)` which would return the November 21, 1999.
-
-* `$days = Delta_Days($year1, $month1, $day1, $year2, $month2, $day2)` Calculates the number of days between the two given dates.
-
-* `($days, $hours, $mins, $secs) = Delta_DHMS($year1, $month1,$day1, $hour1, $min1, $sec1, $year2, $month2, $day2, $hour2, $min2, $sec2)` Returns the number of days, hours, minutes, and seconds between the two given dates and times.
-
-* `($year, $month, $day) = Add_Delta_Days($year, $month, $day, $days)` Adds the given number of days to the given date and returns the resulting date. If $days is negative then it is subtracted from the given date. There are other functions that allow you to add days, hours, minutes, and seconds (`Add_Delta_DHMS`) and years, months, and days (`Add_Delta_YMD`).
-
-* `($year, $month, $day, $hour, $min, $sec, $doy, $dow, $dst) =System_Clock` Returns the same set of values as Perl’s own internal localtime function, except that the values have been converted into the values recognized by Date::Calc. Specifically, this means the ranges of the month and day of week have been shifted and the year has had 1900 added to it. There are also functions to get the current date (`Today`), time (`Now`) and date and time (`Today_and_Now`).
-
-* `($year, $month, $day) = Easter_Sunday($year)` Calculates the date of Easter Sunday in the given year.
-
-* `$month = Decode_Month($string)` Parses the string and attempts to recognize it as a valid month name. If a month is found then the corresponding month number is returned. There is a similar function (`Decode_Day_of_Week`) for working with days of the week.
-
-* `$string = Date_to_Text($year, $month, $day)` Returns a string which is a textual representation of the data that was passed to the function. For example `Date_to_Text(1999, 12, 25)` returns Sat 25-Dec-1999. There is also a `Date_to_Text_Long` function which for the same input would return Saturday 25 December 1999. This is only a sample of the most useful functions in the module. In particular, I have ignored the multilanguage support in the module.
-
-Date::Manip
+Time::Piece
 -----------
 
-This is a brief list of some of the more important functions in
-Date::Manip.
+[Time::Piece](https://metacpan.org/pod/Time::Piece) replaces Perl's
+built-in `localtime`/`gmtime` functions with versions that return an
+object instead of a plain list of values.
 
-* `$date=ParseDateString($string)` Takes a string and attempts to parse a valid date out of it. The function will handle just about all common date and time formats and many other surprising ones like “today,” “tomorrow,” or in “two weeks” on Friday. This function returns the date in a standardized format, which is YYYYMMDDHH:MM:SS. You can convert it into a more user-friendly format using the UnixDate function described below. This is the most useful function in the module and you should think about installing this module simply to get access to this functionality.
+### Functions
 
-* `$date = UnixDate($date, $format)` Takes the given date (which can be in any format that is understood by `ParseDateString`) and formats it using the value of `$format`. The format string can handle any of the character sequences used by `POSIX::strftime`, but it defines a number of new sequences as well. These are all defined in the Date::Manip documentation.
+* `localtime($epoch_seconds)`, `gmtime($epoch_seconds)` Both overridden by Time::Piece to return a Time::Piece object (in local time and UTC respectively) instead of the usual nine-element list. Called with no argument, they use the current time.
 
-* `$delta = ParseDelta($string)` As well as dates (which indicate a fixed point in time), Date::Manip deals with date *deltas*. These are a number of years, months, days, hours, minutes, or seconds that you can add or subtract from a date in order to get another date. This function attempts to recognize deltas in the string that is passed to it and returns a standardized delta in the format Y:M:W:D:H:MN:S. The function recognizes strings like +3Y 4M 2D to add three years, four months and two days. It also recognizes more colloquial terms like “ago” (e.g., 4 years ago) and “in” (e.g., in three weeks).
+### Constructors
 
-* `@dates = ParseRecur($recur, [$base, $start, $end, $flags])` Returns a list of dates for a recurring event. The rules that govern how the event recurs are defined in `$recur`. The syntax is a little complex, but it is based loosely on the syntax of a UNIX crontab file and is defined in detail in the Date::Manip documentation.
+* `Time::Piece->strptime($string, $format)` Parses `$string` according to `$format` (using the same format specifiers as `strftime`, below) and returns a Time::Piece object. This is the usual way to build an object for an arbitrary date, since there's no plain `new` constructor that takes year/month/day directly.
 
-* `$diff = Date_Cmp($date1, $date2)` Compares two dates and returns the same values as Perl’s internal `cmp` and `<=>` operators do for strings and numbers respectively; *i.e.*, –1 if `$date < $date1`, 0 if `$date1 == $date2`, and 1 if `$date1 > $date2`. This means that this function can be used as a sort routine.
+### Methods
 
-* `$d = DateCalc($d1, $d2)` Takes two dates (or two deltas or one of each) and performs an appropriate calculation with them. Two deltas yield a third delta; a date and a delta yield the result of applying the delta to the date; and two dates yield a delta which is the time between the two dates. There are additional parameters that give you finer control over the calculation.
+* `$t->strftime($format)` Formats the date/time using the same format specifiers as `POSIX::strftime`.
 
-* `$date = Date_GetPrev($date, $dow, $curr, $time)` Given a date, this function will calculate the previous occurrence of the given day of the week. If the given date falls on the given day of the week, then the behavior depends on the setting of the `$curr` flag. If $curr is non-zero then the current date is returned. If `$curr` is zero then the date a week earlier is returned. If the optional parameter `$time` is passed to the function, then the time in the returned date is set to that value. There is also a very similar `Date_GetNext` function.
+* `$t->ymd`, `$t->mdy`, `$t->dmy` Return the date as a string, in ISO (`2026-09-21`), US (`09/21/2026`), or UK (`21/09/2026`) order respectively. All three take an optional separator argument, e.g. `$t->ymd('/')`.
 
-* `$day = Date_DayOfWeek($month, $day, $year)` Returns the day of the week that the given date fell on (1 for Monday, 7 for Sunday). Note the nonstandard order of the arguments to this function.
+* `$t->year`, `$t->mon`, `$t->mday`, `$t->hour`, `$t->min`, `$t->sec` Return the individual components of the date/time. Unlike the built-in `localtime`, `mon` returns 1–12 and `year` returns the full four-digit year—no `+1` or `+1900` needed.
 
-* `$day = Date_DayOfYear($month, $day, $year)` Returns the day of the year (1 to 366) that the given date falls on. Note the nonstandard order of the arguments to this function.
+* `$t->day_of_week` Returns 0–6, with Sunday as 0—the same convention as the seventh element of the list returned by the built-in `localtime`.
 
-* `$days = Date_DaysInYear($year)` Returns the number of days in the given year.
+* `$t->day_of_year` Returns 1–366.
 
-* `$days = Date_DaysInMonth($month, $year)` Returns the number of days in the given month in the given year.
+* `$t->epoch` Returns the number of seconds since the epoch, the same value you'd pass to `localtime`/`gmtime`.
 
-* `$flag = Date_LeapYear($year)` Returns 1 if the given year is a leap year and 0 otherwise.
+* `$t + $seconds`, `$t - $seconds` Add or subtract a number of seconds. Time::Piece overloads the usual arithmetic operators, and Time::Seconds (bundled with Time::Piece) exports constants like `ONE_DAY`, `ONE_HOUR`, and `ONE_WEEK` to make this readable, as in `$t + ONE_DAY`.
 
-* `$day = Date_DaySuffix($day)` Calculates the suffix that should be applied to the day number and appends it to the number; *e.g.*, `Date_DaySuffix` returns “1st.” This only scratches the surface of what Date::Manip is capable of. In particular, it has very good support for working with business days and holidays and allows you to configure it to work with local holidays.
+* `$t1 - $t2` Subtracting one Time::Piece object from another returns a Time::Seconds object, which stringifies to a number of seconds but also has methods like `days`, `hours`, and `minutes` for reading the difference in other units.
+
+DateTime
+--------
+
+[DateTime](https://metacpan.org/pod/DateTime) is a heavier, CPAN-only
+alternative to Time::Piece, built around a large family of
+`DateTime::*` modules that all share the same object representation.
+
+### Constructors
+
+* `DateTime->new(%args)` Builds an object for an arbitrary date/time directly. Recognized keys are `year`, `month`, `day`, `hour`, `minute`, `second`, and `time_zone`; all except `year` are optional, and `time_zone` defaults to UTC.
+
+* `DateTime->now(%args)`, `DateTime->today(%args)` Return an object for the current date and time, or just the current date (time set to midnight). Both default to the UTC time zone—pass `time_zone => 'local'` (or a named zone like `'Europe/London'`) for anything else.
+
+### Methods
+
+* `$dt->add(%args)`, `$dt->subtract(%args)` Move the date/time forward or backward. Recognized keys are `years`, `months`, `weeks`, `days`, `hours`, `minutes`, and `seconds`, and any combination can be passed in one call.
+
+* `$dt1->subtract_datetime($dt2)` (or the overloaded `$dt1 - $dt2`) Returns a [DateTime::Duration](https://metacpan.org/pod/DateTime::Duration) object representing the difference between two dates, with its own `years`, `months`, `weeks`, and `days` methods—these account properly for varying month lengths and leap years, which a simple day count can't.
+
+* `$dt->year`, `$dt->month`, `$dt->day`, `$dt->hour`, `$dt->minute`, `$dt->second`, `$dt->day_of_week` Return the individual components; `day_of_week` returns 1–7 with Monday as 1 (note this is a different convention to Time::Piece's `day_of_week`).
+
+* `$dt->strftime($format)` Formats the date/time using the same format specifiers as `POSIX::strftime`.
+
+* `$dt->ymd`, `$dt->mdy`, `$dt->dmy` Return the date as a string, using the same conventions as the equivalent Time::Piece methods.
+
+* Printing a DateTime object directly (or calling `$dt->iso8601` / `$dt->datetime`) gives an ISO 8601 formatted string.
+
+There's also a large family of `DateTime::Format::*` modules for
+parsing and formatting particular standards (`DateTime::Format::HTTP`
+for the date format used in HTTP headers, for example), and
+`DateTime::Calendar::*` modules for viewing a DateTime object through
+a non-Gregorian calendar. See [Chapter 6](ch010.xhtml) for examples of
+both.
 
 LWP::Simple
 -----------
@@ -290,14 +288,7 @@ manual page which comes with the LWP bundle of modules.
 HTML::Parser
 ------------
 
-Here is a brief guide to the methods of the HTML::Parser object. As I
-mentioned briefly in [Chapter 9](ch014.xhtml), this describes version
-3.x of HTML::Parser. In older versions you had to subclass
-HTML::Parser in order to do any useful work with it. Unfortunately, as
-I write this, the version of HTML::Parser available from the
-ActiveState module repository for use with ActivePerl is still a 2.x
-version. For further detail on using an older version, see the
-documentation that comes with the module.
+Here is a brief guide to the methods of the HTML::Parser object.
 
 * `$parser = HTML::Parser->new(%options_and_handlers)` Creates an instance of the HTML parser object. For details of the various options and handlers that can be passed to this method, see the description later in this section. Returns the new parser object or `undef` on failure.
 
@@ -426,77 +417,181 @@ is a list of them.
 
 * `$parser->warn($boolean)` Controls whether or not warnings are displayed when syntax errors are found in the HTML document.
 
-XML::Parser
+Web::Query
+----------
+
+[Web::Query](https://metacpan.org/pod/Web::Query) gives you a
+jQuery-style, CSS-selector interface for scraping HTML, built on top
+of HTML::TreeBuilder.
+
+### Functions
+
+* `wq($thing)` Shortcut for `Web::Query->new($thing)`, exported by default.
+
+### Constructors
+
+* `Web::Query->new($thing, \%options)` Builds a Web::Query object from a filename, a string of HTML, a URL, a [URI](https://metacpan.org/pod/URI) object, or an existing [HTML::Element](https://metacpan.org/pod/HTML::Element) (or array ref of them). Fetching a URL uses `LWP::UserAgent` internally; you can supply your own agent via `$Web::Query::UserAgent`.
+
+* `Web::Query->new_from_url($url)` Like `new`, but specifically for URLs, and returns `undef` on a non-2xx response rather than throwing—check `Web::Query->last_response` for the failure detail.
+
+### Traversing
+
+* `$q->find($selector)` Returns a new object containing the descendants of the current set that match `$selector`—a CSS3 selector, or a scalar ref for a raw XPath expression. This is the method you'll use most.
+
+* `$q->filter($selector)` Like `find`, but tests the elements in the current set themselves rather than their descendants.
+
+* `$q->each($coderef)` Calls `$coderef` once per matched element, passing the index as the argument and localizing `$_` to a Web::Query object wrapping that single element—so you can call `find`/`text`/`attr` straight off `$_`, much like jQuery's `$(this)`.
+
+* `$q->first`, `$q->last` Return a new object containing just the first or last matched element.
+
+* `$q->parent`, `$q->next`, `$q->prev` Return the parent, next sibling, or previous sibling of each matched element.
+
+* `$q->size` Returns the number of elements in the set.
+
+### Reading and changing content
+
+* `$q->text` Get the text content of the matched elements. In list context returns one string per element; in scalar context returns just the first.
+
+* `$q->html` Get the inner HTML of the matched elements, following the same list/scalar convention as `text`.
+
+* `$q->attr($name)`, `$q->attr($name => $value)` Get or set an attribute. Getting follows the same list/scalar convention as `text`; setting applies to every matched element and returns the object for chaining.
+
+* `$q->as_html` Returns the matched elements themselves (not just their contents) as an HTML string.
+
+XML::LibXML
 -----------
 
-XML::Parser is one of the most complex modules that is covered in this
-book. Here is a brief reference to its most commonly used methods.
+[XML::LibXML](https://metacpan.org/pod/XML::LibXML) is a Perl binding
+for `libxml2`. Unlike the older XML::Parser family, it builds a full
+DOM and lets you query it with XPath in the same step.
 
-* `$parser = XML::Parser->new(Style => $style, Handlers => \%handlers, Pkg => $package)` Creates an XML::Parser object. It takes a number of optional named parameters. The Style parameter indicates which of a number of canned parsing styles you would like to use. Table A.3 lists the available styles along with the results of choosing a particular style.
+### Constructors
 
-| Style name | Results |
-|------------|---------|
-| Debug | Prints out a stylized version of the document outline. |
-| Subs | When the start of an XML tag is found, the parser calls a subroutine with the same name as the tag. When the end of an XML tag is found, the parser calls a subroutine with the same names as the tag with an underscore character prepended. Both of these subroutines are presumed to exist in the package denoted by the Pkg parameter. The parameters passed to these subroutines are the same as those passed to the `Start` and `End` handler routines. |
-| Tree | The parse method will return a parse tree representing the document. Each node is represented by a reference to a two-element array. The first element in the list is either the tag name or “0” if it is a text node. The second element is the content of the tag. The content is a reference to another array. The first element of this array is a reference to a (possibly empty) hash containing attribute/value pairs. The rest of this array is made up of pair of elements representing the type and content of the contained nodes. See section 9.2.3 for examples. |
-|Objects | The parse method returns a parse tree representing the object. Each node in the tree is a hash which has been blessed into an object. The object type names are created by appending the type of each tag to the value of the Pkg parameter followed by `::`. A text node is blessed into the class ::Characters. Each node will have a kids attribute which will be a reference to an array containing each of the node’s children. |
-| Stream | This style works in a manner similar to the Subs style. Whenever the parser finds particular XML objects, it calls various subroutines. These subroutines are all assumed to exist in the package denoted by the Pkg parameter. The subroutines are called `StartDocument`, `StartTag`, `EndTag`, `Text`, `PI`, and `EndDocument`. The only one of these names which doesn’t make it obvious when the subroutine is called is PI. This is called when the parser encounters a processing instruction in the document. |
+* `XML::LibXML->load_xml(location => $filename)`, `XML::LibXML->load_xml(string => $xml)` Parse a document from a file or a string and return a document object. Throws an exception (rather than returning `undef`) on malformed XML—wrap the call in `eval` if you need to handle that gracefully.
 
-Table: **XML::Parser** Styles
+### Methods (on a document or any node)
 
-The Handlers parameter is a reference to a hash. The keys of this
-hash are the names of the events that the parser triggers while
-parsing the document and the values are references to subroutines
-which are called when the events are triggered. The subroutines are
-assumed to be in the package defined by the `Pkg` parameter. Table A.4
-lists the various types of handlers. The first parameter to each of
-these handlers is a reference to the Expat object which XML::Parser
-creates to actually handle the parsing. This object has a number of
-its own methods which you can use to gain even more precise control
-over the parsing process. For details of these, see the manual page
-for XML::Parser::Expat.
+* `$doc->findvalue($xpath)` Runs an XPath expression and returns the text content of whatever it matches, as a plain string.
 
-| Handler | When called | Subroutine parameters |
-|---------|-------------|-----------------------|
-| Init | Before the parser starts processing the document | Reference to the Expat object |
-| Final | After the parser finishes processing the document | Reference to the Expat object |
-| Start | When the parser finds the start of a tag | Reference to the Expat object<br>Name of the tag found<br>List of name/value pairs for the attributes |
-| End | When the parser finds the end of a tag | Reference to the Expat Object |
-| Char | When the parser finds character data | Reference to the Expat Object<br>The character string |
-| Proc | When the parser finds a processing instruction | Reference to the Expat Object<br>The name of the PI target<br>The PI data |
-| Comment | When the parser finds a comment | Reference to the Expat Object<br>The comment data |
-| CdataStart | When the parser finds the start of a CDATA section | Reference to the Expat Object |
-| CdataEnd | When the parser finds the end of a CDATA section | Reference to the Expat Object |
-| Default | When the parser finds any data that doesn’t have an assigned handler | Reference to the Expat Object<br>The data string |
-| Unparsed  | When the parser finds an unparsed entity declaration | Reference to the Expat Object<br>Name of the Entity<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
-| Notation | When the parser finds a notation declaration | Reference to the Expat Object<br>Name of the Notation<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
-| ExternEnt | When the parser finds an external entity declaration | Reference to the Expat Object<br>Base URL to use when resolving the address<br>The system ID<br>The public ID |
-| Entity | When the parser finds an entity declaration | Reference to the Expat Object<br>Name of the Entity<br>The value of the Entity<br>The system ID<br>The public ID<br> The notation for the entity
-| Element | When the parser finds an element declaration | Reference to the Expat Object<br>Name of the Element<br>The Content Model<br>Subroutine parameters
-| Attlist | When the parser finds an attribute declaration | Reference to the Expat Object<br>Name of the Element<br>Name of the Attribute<br>The Attribute Type<br>Default Value<br>String indicating whether the attribute is fixed
-| Doctype | When the parser finds a DocType declaration | Reference to the Expat Object<br>Name of the Document Type<br>System ID<br>Public ID<br>The Internal Subset
-| XMLDecl | When the parser finds an XML declaration | Reference to the Expat Object<br>Version of XML<br>Document Encoding<br>String indication whether or not the<br>DTD is standalone
+* `$doc->findnodes($xpath)` Runs an XPath expression and returns a list of matching element objects, which you can then query further.
 
-Table: **XML::Parser** Handlers
+* `$node->getAttribute($name)` Returns the value of the named attribute on an element.
 
-`Pkg` is the name of a package. All handlers are assumed to be in this
-package and all styles which rely on user-defined subroutines also
-search for them in this package. If this parameter is not given then
-the default package name is `main`.
+* `$node->textContent` Returns all the text inside a node, with child elements' tags stripped out.
 
-This method also takes a number of other optional parameters, all of
-which are passed straight on to the Expat object. For details see the
-manual page for XML::Parser.
+* `$node->nodeName` Returns the element's tag name.
 
-* `$parser->parse($source)` Parses the document. The $source parameter
-should either be the entire document in a scalar variable or a
-reference to an open IO::Handle object. The return value varies
-depending on the style chosen.
+* `$doc->documentElement` Returns the top-level (root) element of the document.
 
-* `$parser->parse_file($filename)` Opens the given file and parses the
-contents. The return value varies according to the style chosen.
+XML::LibXML also has a streaming reader,
+[XML::LibXML::Reader](https://metacpan.org/pod/XML::LibXML::Reader),
+for working through documents too large to hold as a DOM in memory all
+at once.
 
-* `$parser->setHandlers(%handlers)` Overrides the current set of
-handlers with a new set. The parameters are interpreted as a hash in
-exactly the same format as the one passed to new. By including an
-empty string or `undef`, the associated handler can be switched off.
+JSON::MaybeXS
+-------------
+
+[JSON::MaybeXS](https://metacpan.org/pod/JSON::MaybeXS) picks the
+fastest available JSON backend (`Cpanel::JSON::XS` if it's installed,
+falling back to the pure-Perl `JSON::PP` otherwise) behind one
+consistent interface. It gives you two ways to work, which handle
+Unicode encoding differently—see [Chapter 5](ch009.xhtml) and
+[Chapter 10](ch015.xhtml) for the full explanation.
+
+### Functions (exported by default)
+
+* `encode_json($data)`, `decode_json($json_bytes)` Convert a Perl data structure to JSON, or JSON bytes back to a data structure. These operate in *utf8 mode*: `encode_json` returns UTF-8 bytes, and `decode_json` expects UTF-8 bytes and hands back decoded characters.
+
+### Object-oriented interface
+
+* `JSON->new` Creates a JSON object, which can be configured by chaining methods before calling `encode`/`decode`.
+
+* `->utf8` Switches the object into byte-mode: `encode` then returns UTF-8 bytes instead of a decoded Perl string, and `decode` expects bytes instead of a decoded string. Without this, the OO interface works with already-decoded characters—the opposite default to the plain functions above.
+
+* `->pretty` Formats encoded output with indentation and newlines, for human-readable JSON.
+
+* `->canonical` Sorts hash keys when encoding, so the same data structure always produces byte-identical output—useful for diffs and tests.
+
+* `->encode($data)`, `->decode($json)` Encode a Perl data structure to JSON, or decode JSON back to a data structure, using whatever options have been chained onto the object.
+
+YAML::PP
+--------
+
+[YAML::PP](https://metacpan.org/pod/YAML::PP) is a modern, actively
+maintained YAML processor (the older `YAML` and `YAML::Syck` modules
+are both best avoided for new code—`YAML::Syck` in particular is no
+longer maintained).
+
+### Constructor
+
+* `YAML::PP->new(%options)` Creates a YAML::PP object. Called with no options, it's ready to use for the common case of reading and writing plain data structures.
+
+### Methods
+
+* `$ypp->load_file($filename)` Reads and parses a YAML file, handling UTF-8 decoding for you, and returns the resulting Perl data structure (a reference, if the document's top level is a list or mapping).
+
+* `$ypp->dump_file($filename, $data)` Writes a Perl data structure to a file as YAML, handling UTF-8 encoding for you.
+
+* `$ypp->load_string($yaml_text)` Like `load_file`, but parses a string you've already read (and decoded) yourself rather than opening a file.
+
+* `$ypp->dump_string($data)` Like `dump_file`, but returns the YAML as a (decoded) string rather than writing it to a file.
+
+HTTP::Tiny
+----------
+
+[HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny) is a small,
+dependency-free HTTP client that's been part of core Perl since 5.14.
+It's a good default for straightforward requests—reach for
+`LWP::UserAgent` instead if you need cookies, redirects across
+protocols, or other things HTTP::Tiny deliberately leaves out.
+
+### Constructor
+
+* `HTTP::Tiny->new(%options)` Creates a client object. Common options include `timeout` (seconds) and `agent` (the User-Agent string to send).
+
+### Methods
+
+* `$http->get($url)`, `$http->post($url, \%options)`, `$http->post_form($url, \%form_data)` Make a GET or POST request. All return a hash reference (see below); `post_form` encodes `\%form_data` as `application/x-www-form-urlencoded`.
+
+* `$http->request($method, $url, \%options)` The general-purpose method the shortcuts above call internally—use it directly for other HTTP methods, or when you need to pass a request body or headers via `\%options`.
+
+### The response hash
+
+Every request method returns a hash reference with these keys:
+
+* `success` True if the request was made and received an HTTP response in the 2xx range.
+
+* `status`, `reason` The numeric HTTP status code and its text reason phrase.
+
+* `content` The response body, as raw bytes—decode it yourself (with `decode_json`, an `:encoding` layer, or similar) if you need text.
+
+* `headers` A hash reference of the response headers, lower-cased.
+
+Regexp::Grammars
+----------------
+
+[Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars) lets you
+build a recursive-descent parser out of an ordinary Perl regular
+expression, extended with named rules. It isn't part of core Perl.
+
+### Grammar syntax
+
+* `<rule: Name> ... </rule>` (the closing tag is implied by the next `<rule:>` or the end of the grammar) Defines a rule named `Name`. The body is itself a regular expression, which can reference other rules.
+
+* `<Name>` Inside a rule's body, matches the rule called `Name`.
+
+* `<[Name]>` Matches `Name` and captures each match into an array, for a rule that can match more than once.
+
+* `<[Name]>+ % $separator` Matches one or more repetitions of `Name`, separated by `$separator` (a literal, or another rule reference)—the separators themselves aren't captured.
+
+* `<nocontext:>` Turns off Regexp::Grammars' default "context" tracking, which most grammars in this book don't need.
+
+* `<debug: on>` (or `same`, `off`) Turns on step-by-step tracing of the parser's attempts to match, useful when a grammar isn't matching what you expect. Controlled per-grammar, unlike Parse::RecDescent's global `$::RD_TRACE`/`$::RD_HINT` variables.
+
+* `<objrule: Class>`, `<objtoken: Class>` Like `<rule:>`/`<token:>`, but bless the resulting hash into `Class` instead of leaving it as a plain hash reference.
+
+### Using a grammar
+
+* `$text =~ $grammar` Matches `$text` (a string) against a compiled grammar (built with `qr{...}`, using the syntax above). Returns true/false like any other regex match.
+
+* `%/` On a successful match, this special hash is populated with the full parse tree—there's no separate object to build or method to call to extract the result, unlike Parse::RecDescent.

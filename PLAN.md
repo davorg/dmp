@@ -49,10 +49,15 @@ See `TODO.md` for the full detail behind every item below.
 
 ## Week 4 (19–25 Sep): Appendix A rewrite
 
-- Rewrite Appendix A (Modules Reference) now that Ch3/Ch7/Ch8 are settled.
-  Needs sections for `XML::LibXML`, `JSON::MaybeXS`, `YAML::PP`,
-  `Regexp::Grammars`, and `HTTP::Tiny`.
-- Appendix B: add the missing `use strict; use warnings;` mention
+- [x] Rewrite Appendix A (Modules Reference) now that Ch3/Ch7/Ch8 are settled
+  — done (2026-09-21). Went further than the original scope: also
+  dropped `Date::Calc`/`Date::Manip`/`XML::Parser` entirely (all three
+  superseded in the narrative chapters, so no legacy entry either),
+  added `Time::Piece`/`DateTime` (the Ch6 gap the original plan
+  missed), and added a brand-new `Web::Query` section to both Chapter
+  9 and Appendix A — Dave's own current go-to for screen-scraping,
+  not originally on the list. See TODO.md for full detail.
+- [ ] Appendix B: add the missing `use strict; use warnings;` mention
   alongside the existing `-w` flag coverage.
 
 ## Week 5 (26 Sep – 2 Oct): Refresh CD data, tidy artwork
@@ -70,11 +75,13 @@ See `TODO.md` for the full detail behind every item below.
   in — the standout candidate, a testing section, landed early in
   Chapter 3 (2026-09-08). The `shift`-to-signatures item also jumped
   the queue: its explanatory groundwork (a new "Feature pragmas"
-  section in Chapter 3) landed 2026-09-14, though the actual
-  book-wide code conversion is blocked on shell access — see TODO.md.
-  Treat the rest (REST/HTTP-as-data-source, modern HTTP client note,
-  `CHI` caching, `Benchmark::Timer`, core-vs-CPAN `use`-statement
-  audit, CPAN-glossary appendix) as stretch goals.
+  section in Chapter 3) landed 2026-09-14, and the code conversion
+  itself is unblocked now shell access is back. `CHI`/`Cache::Memory`
+  and `Benchmark::Timer`/`Time::HiRes` also jumped the queue, in the
+  other direction — decided against (2026-09-21), ahead of writing
+  Appendix A, so its module list would be final. Treat the rest
+  (REST/HTTP-as-data-source, modern HTTP client note, core-vs-CPAN
+  `use`-statement audit, CPAN-glossary appendix) as stretch goals.
 - Audit every "available/bundled since Perl 5.X.Y" claim in the book for
   citing a real stable release, not a development track.
 
