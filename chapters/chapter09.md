@@ -11,6 +11,8 @@ What this chapter covers:
 
 *  Getting a weather forecast
 
+*  Web::Query, a modern jQuery-style alternative for scraping
+
 Since the explosion in interest in the World Wide Web in the 1990s,
 HTML has become one of the most popular file formats that we can use
 for the purpose of extracting data. At the end of the 1990s it seemed
@@ -549,6 +551,81 @@ data today, the modern equivalent is to call a weather API that
 returns JSON directly, with none of this HTML-archaeology required.
 [Chapter 10](ch015.xhtml) does exactly that.
 
+Web::Query: a modern alternative
+---------------------------------
+
+The techniques in this chapter -- HTML::Parser, HTML::LinkExtor,
+HTML::TokeParser, HTML::TreeBuilder -- are all still perfectly good
+Perl, and understanding them is worth your time even today, because
+they show you what's actually happening under the hood: tags, tokens,
+a tree of elements. But if you're screen-scraping day to day rather
+than learning how parsing works, there's a more direct route:
+[Web::Query](https://metacpan.org/pod/Web::Query), which gives you a
+jQuery-style interface -- select elements with a CSS selector, then
+pull out the text or attributes you want -- built on top of
+HTML::TreeBuilder under the hood.
+
+Here's the CD collection again, this time as a fragment of HTML
+(`webquery.html`):
+
+	<ul id="collection">
+	  <li class="cd">
+	    <span class="artist">Bragg, Billy</span>
+	    <span class="title">Workers' Playtime</span>
+	    <span class="year">1988</span>
+	  </li>
+	  <li class="cd">
+	    <span class="artist">Black, Mary</span>
+	    <span class="title">Circus</span>
+	    <span class="year">1995</span>
+	  </li>
+	  <li class="cd">
+	    <span class="artist">Bowie, David</span>
+	    <span class="title">Earthling</span>
+	    <span class="year">1997</span>
+	  </li>
+	</ul>
+
+And here's Web::Query pulling the artist and title out of each CD:
+
+	use v5.40;
+	use Web::Query;
+
+	wq('webquery.html')
+	  ->find('.cd')
+	  ->each(sub {
+	      my $i = shift;
+	      say $_->find('.artist')->text, ' - ', $_->find('.title')->text;
+	  });
+
+which prints:
+
+	Bragg, Billy - Workers' Playtime
+	Black, Mary - Circus
+	Bowie, David - Earthling
+
+`wq()` (exported by the module) builds a Web::Query object from a
+filename, a string of HTML, or a URL—it fetches the page for you if
+you give it one, using LWP::UserAgent internally. `find` takes a CSS
+selector, exactly like `document.querySelectorAll` in JavaScript or
+`$(...)` in jQuery, and `each` iterates the matches, setting `$_` to a
+Web::Query object wrapping the current element, so you can call
+`find`/`text`/`attr` straight off it—jQuery's `$(this)` pattern
+translated into Perl.
+
+Compare this to the HTML::TokeParser example above: there's no manual
+walking of "get the sixth `<table>` tag, then the next `<font>` tag."
+If the page's structure changes, you update a selector string instead
+of a chain of `get_tag` calls. That said, `.cd`/`.artist`/`.title`
+class names are doing you a favor here—a real page rarely provides
+such helpfully named hooks, so the harder part of web scraping is
+usually finding the right selector in the first place, not writing
+the Perl to use it once you have.
+
+Web::Query last saw a release in January 2024, which for a small,
+focused module like this is a sign of stability rather than
+neglect—the interface hasn't needed to change.
+
 Further information
 -------------------
 
@@ -569,3 +646,5 @@ Summary
 *  You can retrieve HTML documents from the Internet using the LWP bundle of modules from the CPAN.
 
 *  The main Perl module used for parsing HTML is [HTML::Parser](https://metacpan.org/pod/HTML::Parser), but you may well never need to use it, because subclasses like [HTML::LinkExtor](https://metacpan.org/pod/HTML::LinkExtor), [HTML::TokeParser](https://metacpan.org/pod/HTML::TokeParser), and [HTML::TreeBuilder](https://metacpan.org/pod/HTML::TreeBuilder) are often more useful for particular tasks.
+
+*  [Web::Query](https://metacpan.org/pod/Web::Query) gives you a jQuery-style, CSS-selector interface for scraping, and is often quicker to reach for day to day than working with HTML::Parser directly.
