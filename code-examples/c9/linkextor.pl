@@ -8,7 +8,7 @@ my @links = $p->links;
 
 foreach (@links) { 
   print 'Type: ', shift @$_, "\n";
-  while (my ($name, $val) = splice(@$_, 0, 2)) { 
+  while (my ($name, $val) = splice(@$_, 0, 2)) {
     print " $name -> $val\n"; 
   } 
 }

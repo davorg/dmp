@@ -529,7 +529,7 @@ act on an outer loop instead, label it and name that label in your
 
     ARTIST:
     foreach my $artist (keys %cds_by_artist) {
-      foreach my $cd (@{ $cds_by_artist{$artist} }) {
+      foreach my $cd ($cds_by_artist{$artist}->@*) {
         next ARTIST if $cd->{year} < 1970;   # skip this artist entirely
         print "$artist: $cd->{title}\n";
       }
@@ -658,7 +658,7 @@ between however many levels of brackets or braces you need:
     }
 
     my %cds_by_year;
-    push @{ $cds_by_year{$cd->{year}} }, $cd for @cds;
+    push $cds_by_year{$cd->{year}}->@*, $cd for @cds;
 
     my @from_1988 = $cds_by_year{1988}->@*;
     my $first_1988_title = $cds_by_year{1988}[0]{title};
@@ -673,10 +673,31 @@ You'll also come across an older style of dereferencing in existing
 code, which puts the sigil of the thing you want in front of either a
 block or a plain reference variable: `@{$cds_ref}` and `@$cds_ref`
 both mean the same as `$cds_ref->@*`, and `${$cds_by_year{1988}}[0]`
-means the same as `$cds_by_year{1988}[0]`. Postfix dereference — added
-in Perl 5.24, and used throughout this book — is generally easier to
-read left-to-right, especially partway through a longer chain, but
-you'll need to be able to recognize both styles.
+means the same as `$cds_by_year{1988}[0]`. Postfix dereference was
+added in Perl 5.24, and you'll need to be able to recognize both
+styles.
+
+Which one reads better depends on what's being dereferenced. For a
+plain reference sitting in its own variable, the two styles are about
+equally clear — `@$cds_ref` and `$cds_ref->@*` say the same thing in
+the same number of glances, and this book uses the older, shorter form
+in that situation. The difference shows up once the reference isn't a
+bare variable but an expression in its own right — a hash or array
+element, the result of a method call, a chain of lookups. The old
+style then forces you to wrap the whole expression in `@{ ... }` and
+read it from the inside out:
+
+    push @{ $cds_by_year{$cd->{year}} }, $cd for @cds;
+
+whereas postfix dereference lets you read straight through,
+left-to-right, with the dereference tacked on at the end where it
+happens:
+
+    push $cds_by_year{$cd->{year}}->@*, $cd for @cds;
+
+That's the case this book reaches for `->@*`/`->%*`: not as a blanket
+replacement for `@$ref`, but for the expressions old-style
+dereferencing makes awkward to read.
 
 References to subroutines work the same way, using `&` as their
 sigil:

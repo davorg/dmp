@@ -164,23 +164,23 @@ data structure.
 	17:   last if /^\s*$/;
 	18:
 	19:   if (/^\+/) {
-	20:     push @{$rec{tracks}}, substr($_, 1);
+	20:     push $rec{tracks}->@*, substr($_, 1);
 	21:   } else {
-	22:     push @{$data{CDs}}, {%rec} if keys %rec;
+	22:     push $data{CDs}->@*, {%rec} if keys %rec;
 	23:     %rec = ();
 	24:     @rec{@labels} = unpack($template, $_);
 	25:   }
 	26: }
 	27:
-	28: push @{$data{CDs}}, {%rec} if keys %rec;
+	28: push $data{CDs}->@*, {%rec} if keys %rec;
 	29:
 	30: ($data{count}) = (<STDIN> =~ /(\d+)/);
 	31:
-	32: if ($data{count} == @{$data{CDs}}) {
+	32: if ($data{count} == $data{CDs}->@*) {
 	33:   print "$data{count} records processed successfully\n";
 	34: } else {
 	35:   warn "Expected $data{count} records but received ",
-	36:   scalar @{$data{CDs}}, "\n";
+	36:   scalar $data{CDs}->@*, "\n";
 	37: }
 
 This code is not the best way to achieve this. We’ll see a far better

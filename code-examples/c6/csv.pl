@@ -16,14 +16,14 @@ sub read_csv {
 sub write_csv($data) {
   my $csv = Text::CSV->new;
 
-  foreach (@$data) { 
-    $csv->combine(@$_); 
-    print $csv->string; 
-  } 
+  foreach (@$data) {
+    $csv->combine(@$_);
+    print $csv->string;
+  }
 }
 
-my $data = read_csv; 
-foreach (@$data) { 
+my $data = read_csv;
+foreach (@$data) {
   # Do something to each record. 
   # Individual fields are accessed as 
   # $_->[0], $_->[1], etc ...

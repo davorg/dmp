@@ -88,13 +88,13 @@ if ($text =~ $grammar) {
         list  => [],
     );
 
-    for my $cd (@{ $data->{File}{Body}{CD} }) {
-        push @{ $output{list} }, {
+    for my $cd ($data->{File}{Body}{CD}->@*) {
+        push $output{list}->@*, {
             artist   => trim($cd->{CDLine}{Artist}),
             title    => trim($cd->{CDLine}{TitleField}),
             label    => trim($cd->{CDLine}{Label}),
             released => $cd->{CDLine}{Released},
-            tracks   => [ map { $_->{Track} } @{ $cd->{TrackLine} || [] } ],
+            tracks   => [ map { $_->{Track} } ($cd->{TrackLine} || [])->@* ],
         };
     }
 

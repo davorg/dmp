@@ -96,7 +96,7 @@ something like this:
     while (<STDIN>) {
       chomp;
       my $year = (split /\t/)[3];
-      $years{\$year}++;
+      $years{$year}++;
     }
 
     foreach (sort keys %years) {
@@ -124,18 +124,18 @@ back and rewrite our script completely to something like this:
       my $rec = {artist => $artist,
                  title  => $title,
                  label  => $label};
-      push @ {$year{$year}}, $rec;
+      push $years{$year}->@*, $rec;
     }
 
     foreach my $year (sort keys %years) {
-      my $count = scalar @{$years{$year}};
+      my $count = scalar $years{$year}->@*;
       print "In $year, $count CDs were released.\n";
-      print “They were:\n”;
+      print "They were:\n";
       print map { "$_->{title} by $_->{artist}\n" }
-        @{$years{$year}};
+        $years{$year}->@*;
     }
 
-As you can see, this change has entailed an almost complee rewrite of the
+As you can see, this change has entailed an almost complete rewrite of the
 script. In the new version, we still have a hash where the keys are the
 years, but each value is now a reference to an array. Each element of this
 array is a reference to a hash which contains the artist, title, and label
@@ -495,7 +495,7 @@ called *Customer.pm*.
           cust_no => 'CUS-00123',
           name => 'Alice Cooper',
           address => '1234 Elm Street',
-          salesperson => 'SP-987'.
+          salesperson => 'SP-987',
         },
         'CUS-00124' => {
           cust_no => 'CUS-00124',
@@ -673,7 +673,7 @@ Table 2.1 - Common I/O redirection
 | `>`     | `cmd > file`  | Runs cmd and writes the output to file, overwriting whatever was in file. |
 | `>>`    | `cmd >> file` | Runs cmd and appends the output to the end of file. |
 | `<`     | `cmd < file`  | Runs cmd, taking input from file. |
-| `\|`     | `cmd \| file`  | Runs cmd1 and passes any output as input to cmd2 |
+| `\|`     | `cmd1 \| cmd2`  | Runs cmd1 and passes any output as input to cmd2 |
 
 
 ## Advantages of the filter model
@@ -721,10 +721,10 @@ something like:
 
     my ($input, $output) = @ARGV;
     open(my $in_fh, '<', $input) or die "Can't open $input for reading: $!";
-    open(my $out_fh, '>', $output") or die "Can't open $output for writing: $!";
+    open(my $out_fh, '>', $output) or die "Can't open $output for writing: $!";
 
-    while (<$in_fh>) {\
-      print %out_fh munge_data($_);
+    while (<$in_fh>) {
+      print $out_fh munge_data($_);
     }
 
 This will certainly work well for as long as we receive our input data in
@@ -920,7 +920,7 @@ and either creates or updates database records might look like this:
 ## Better logging with Log::Log4perl
 
 The CPAN module [Log::Log4perl](https://metacpan.org/pod/Log::Log4perl)
-has become a `defacto` standard for writing all sorts of logs from Perl.
+has become a de facto standard for writing all sorts of logs from Perl.
 
 A simple example of using it looks like this:
 
@@ -950,12 +950,12 @@ For more information on writing objects in Perl see *Object Oriented Perl*
 by Damian Conway (Manning) or the `perlobj` and `perlclass` manual pages.
 
 For more information about the UNIX filter model and other UNIX programming
-tricks see *The UNIX Programming Environment* by Brian Kernigan and Rob Pike
+tricks see *The UNIX Programming Environment* by Brian Kernighan and Rob Pike
 (Prentice Hall) or *UNIX Power Tools* by Jerry Peek, Tim O'Reilly, and Mike
 Loukides (O'Reilly).
 
 For more general programming advice see *The Practice of Programming* by Brian
-Kernigan and Rob Pike (Addison-Wesley) and *Programming Pearls* by Jon Bentley
+Kernighan and Rob Pike (Addison-Wesley) and *Programming Pearls* by Jon Bentley
 (Addison-Wesley).
 
 # Summary

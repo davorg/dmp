@@ -8,13 +8,13 @@ my $data = Audio::Scan->scan($file);
 print "Filename: $file\n";
 print "MP3 Tags\n";
 
-foreach (sort keys %{ $data->{tags} }) {
+foreach (sort keys $data->{tags}->%*) {
   print "$_ : ", format_value($data->{tags}{$_}), "\n";
 }
 
 print "MP3 Info\n";
 
-foreach (sort keys %{ $data->{info} }) {
+foreach (sort keys $data->{info}->%*) {
   print "$_ : ", format_value($data->{info}{$_}), "\n";
 }
 

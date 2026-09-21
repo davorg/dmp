@@ -42,7 +42,7 @@ if ($text =~ $grammar) {
         my $name = $section->{Header}{Name};
         my $assignments = $section->{Assign};
         $output->{$name} = {
-            map { $_->{Key} => $_->{Value} } $assignments->@*
+            map { $_->{Key} => $_->{Value} } @$assignments
         };
     }
 

@@ -5,7 +5,7 @@ use LWP::Simple;
 
 sub start($tag, $attr, $attrseq) {
   print "Found $tag\n";
-  foreach (@$attrseq) { 
+  foreach (@$attrseq) {
     print " [$_ -> $attr->{$_}]\n"; 
   } 
 } 

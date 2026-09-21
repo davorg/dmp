@@ -29,7 +29,7 @@ sub count_cds_by_attr($attr) {
 } 
 
 sub output($counts) {
-  foreach (sort keys $counts->%*) { 
+  foreach (sort keys %$counts) {
     print "$_: $counts->{$_}\n"; 
   } 
 } 

@@ -17,21 +17,21 @@ while (<STDIN>) {
   last if /^\s*$/; 
 
   if (/^\+/) {
-    push @{$rec{tracks}}, substr($_, 1); 
+    push $rec{tracks}->@*, substr($_, 1);
   } else {
-    push @{$data{CDs}}, {%rec} if keys %rec;
+    push $data{CDs}->@*, {%rec} if keys %rec;
     %rec = ();
     @rec{@labels} = unpack($template, $_);
   }
 } 
 
-push @{$data{CDs}}, {%rec} if keys %rec; 
+push $data{CDs}->@*, {%rec} if keys %rec;
 
 ($data{count}) = (<STDIN> =~ /(\d+)/);
 
-if ($data{count} == @{$data{CDs}}) {
+if ($data{count} == $data{CDs}->@*) {
   print "$data{count} records processed successfully\n";
 } else {
   warn "Expected $data{count} records but received ",
-  scalar @{$data{CDs}}, "\n"; 
+  scalar $data{CDs}->@*, "\n";
 }

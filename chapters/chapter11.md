@@ -382,7 +382,7 @@ the other is now just ordinary Perl—no more grammar-writing required:
         my $name = $section->{Header}{Name};
         my $assignments = $section->{Assign};
         $output->{$name} = {
-            map { $_->{Key} => $_->{Value} } $assignments->@*
+            map { $_->{Key} => $_->{Value} } @$assignments
         };
     }
 
@@ -439,7 +439,7 @@ for the original Parse::RecDescent version:
             my $name = $section->{Header}{Name};
             my $assignments = $section->{Assign};
             $output->{$name} = {
-                map { $_->{Key} => $_->{Value} } $assignments->@*
+                map { $_->{Key} => $_->{Value} } @$assignments
             };
         }
 
@@ -746,13 +746,13 @@ turns the raw parse tree into a tidier data structure:
             list  => [],
         );
 
-        for my $cd (@{ $data->{File}{Body}{CD} }) {
-            push @{ $output{list} }, {
+        for my $cd ($data->{File}{Body}{CD}->@*) {
+            push $output{list}->@*, {
                 artist   => trim($cd->{CDLine}{Artist}),
                 title    => trim($cd->{CDLine}{TitleField}),
                 label    => trim($cd->{CDLine}{Label}),
                 released => $cd->{CDLine}{Released},
-                tracks   => [ map { $_->{Track} } @{ $cd->{TrackLine} || [] } ],
+                tracks   => [ map { $_->{Track} } ($cd->{TrackLine} || [])->@* ],
             };
         }
 

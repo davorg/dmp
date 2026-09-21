@@ -439,7 +439,7 @@ script which displays some of the more useful data from an RSS file.
 
     print "Items:n";
 
-    foreach (@{$rss->items}) {
+    foreach ($rss->items->@*) {
       print $_->{title}, "nt<", $_->{link}, ">n";
     }
 

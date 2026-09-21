@@ -831,12 +831,12 @@ in a given MP3 file:
 
     print "Filename: $file\n";
     print "MP3 Tags\n";
-    foreach (sort keys %{ $data->{tags} }) {
+    foreach (sort keys $data->{tags}->%*) {
       print "$_ : $data->{tags}{$_}\n";
     }
 
     print "MP3 Info\n";
-    foreach (sort keys %{ $data->{info} }) {
+    foreach (sort keys $data->{info}->%*) {
       print "$_ : $data->{info}{$_}\n";
     }
 

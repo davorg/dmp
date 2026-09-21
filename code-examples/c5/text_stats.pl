@@ -7,9 +7,9 @@ my (%words, %lengths);
 
 my $text = read_text(); 
 
-$num_lines = scalar @{$text}; 
+$num_lines = scalar @{$text};
 
-foreach $line (@{$text}) { 
+foreach $line (@{$text}) {
   $num_words += scalar @{$line};
 
   foreach $word (@{$line}) {

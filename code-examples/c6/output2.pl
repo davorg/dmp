@@ -16,6 +16,6 @@ my @fields = qw/name title label year/;
 local $" = "\t"; 
 local $\ = "\n"; 
 foreach (@CDs) { 
-  my %CD = %$_; 
+  my %CD = %$_;
   print "@CD{@fields}"; 
 }

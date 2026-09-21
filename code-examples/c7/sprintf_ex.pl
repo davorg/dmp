@@ -40,7 +40,7 @@ print fixed_rec(\%rec2, \@cols, $format);
 
 sub build_fmt($cols) {
   my $fmt;
-  foreach (@$cols) { 
+  foreach (@$cols) {
     if ($_->{num}) { 
       $fmt .= "%0$_->{width}s"; 
     } else { 
@@ -52,6 +52,6 @@ sub build_fmt($cols) {
 } 
 
 sub fixed_rec($rec, $cols, $fmt) {
-  my @vals = map { $rec->{$_->{name}} } @$cols; 
+  my @vals = map { $rec->{$_->{name}} } @$cols;
   sprintf("$fmt\n", @vals); 
 }

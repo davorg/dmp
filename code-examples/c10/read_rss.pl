@@ -12,6 +12,6 @@ print 'Published: ', $rss->channel('pubDate'), "\n";
 print 'Editor: ', $rss->channel('managingEditor'), "\n\n"; 
 print "Items:\n"; 
 
-foreach (@{$rss->items}) { 
+foreach ($rss->items->@*) {
   print $_->{title}, "\n\t<", $_->{link}, ">\n"; 
 }

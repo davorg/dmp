@@ -63,8 +63,16 @@ See `TODO.md` for the full detail behind every item below.
   quick read-through turned up how much else in there was stuck in
   2001. See TODO.md for full detail.
 
-## Week 5 (26 Sep – 2 Oct): Refresh CD data, tidy artwork
+## Week 5 (26 Sep – 2 Oct): Chapter 4 audit, refresh CD data, tidy artwork
 
+- Full modernity audit of Chapter 4 (pattern matching / regular
+  expressions) — one of the last chapters never to get a dedicated
+  pass (Ch1, Ch2, and Ch12 are getting theirs on 2026-09-21; Ch4 was
+  pushed to this week as the harder of the four). Likely candidates
+  going in: `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
+  named captures (`(?<name>...)`) vs numbered ones, whether
+  `given`/`when` is mentioned anywhere (it shouldn't be — deprecated),
+  and general currency of the regex examples.
 - Refresh the CD collection example data — the album years (Hunky Dory
   1971, etc.) read as dated. Touches prose, code, and diagrams across
   several chapters.

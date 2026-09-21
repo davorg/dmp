@@ -8,8 +8,8 @@ $p->parse_file($file);
 
 my @links; 
 foreach (@links) { 
-  print 'Type: ', shift @$_, "\n"; 
-  while (my ($name, $val) = splice(@$_, 0, 2)) { 
+  print 'Type: ', shift @$_, "\n";
+  while (my ($name, $val) = splice(@$_, 0, 2)) {
     print " $name -> $val\n"; 
   } 
 } 
