@@ -1,942 +1,732 @@
 Appendix B: Essential Perl
 ==========================
 
-Throughout this book I have assumed that you have a certain level of
-knowledge of Perl and have tried to explain everything that I have
-used beyond that level. In this appendix, I’ll give a brief overview
-of the level of Perl that I’ve been aiming at. Note that this is not
-intended to be a complete introduction to Perl. For that you would be
-better looking at *Learning Perl* by Randal Schwartz and Tom
-Christiansen (O’Reilly); *Elements of Programming with Perl* by
-Andrew Johnson (Manning), or *Perl: The Programmer’s Companion* by
-Nigel Chapman (Wiley).
+Throughout this book I've assumed a working, if rudimentary, knowledge
+of Perl. This appendix is a refresher of the "essential Perl" you need
+in order to follow the code in the rest of the book — it isn't a
+complete introduction to the language, and it moves considerably
+faster than one would. If any of it feels genuinely new to you rather
+than just a reminder, see the recommendations at the end of this
+appendix before going any further.
 
 Running Perl
 ------------
 
-There are a number of ways to achieve most things in Perl and running
-Perl scripts is no exception. In most cases you will write your Perl
-code using a text editor and save it to a file. Many people like to
-give Perl program files the extension *.pl*, but this usually isn’t
-necessary. I say “usually” because Windows uses the
-extension of the file to determine how to run it. Therefore, if
-you’re developing Perl under Windows, you’ll need the *.pl* extension.
-
-Under most modern operating systems the command interpreter works out
-how to run a script by parsing the first line of the script. If the
-first line looks like
-
-    #!/path/to/script/interpreter
-
-then the program defined in this line will be called and your program
-file will be passed to it as input. In the case of Perl, this means
-that your Perl program files should usually start with the line
+There are several ways to run a Perl script. Most commonly, you'll
+save your code to a file and add a *shebang* line as the very first
+line, naming the interpreter that should run it:
 
     #!/usr/bin/perl
 
-(although the exact path to the Perl interpreter will vary from system
-to system). Having saved your program (and made the file executable if
-your operating system requires it) you can run it by typing the name
-of the file on your command line; *e.g.*, if your script is in a file
-called *myscript.pl* you can run it by typing
+(the exact path will vary from system to system — `which perl` will
+tell you where yours lives). Many people give Perl files a `.pl`
+extension, though it usually isn't necessary — except on Windows,
+which decides how to run a file from its extension rather than its
+shebang line, so there it's required. Having saved and (on
+UNIX-like systems) made the file executable, you run it by typing its
+name:
 
-    myscript.pl
+    ./cds.pl
 
-at the command line.
+or by calling the interpreter directly and handing it the script's
+name:
 
-An alternative would be to call the Perl interpreter directly, passing
-it the name of your script like this:
+    perl cds.pl
 
-    perl myscript.pl
+A handful of command-line options are worth knowing. `-c` checks a
+script for syntax errors without running it — a useful first line of
+defence before you commit code you haven't tested. `-d` runs the
+script under Perl's built-in debugger. `-T` turns on taint mode, which
+treats all input from outside your program as untrusted until you've
+explicitly checked it; it's particularly worth knowing about if you
+ever write a CGI script or anything else exposed to the outside world
+(see `perldoc perlsec` for the details).
 
-There are a number of command line options that you can either put on
-the command line or on the interpreter line in the program file. The
-most useful include:
-
-* `-w` Asks Perl to notify you when it comes across a number of unsafe programming practices in your program. These include using a variable before it is initialized and attempting to write to a filehandle that is opened for reading. These warnings are usually very useful and there is no good reason not to use this option for every Perl program that you write.
-
-* `-T` Turns on Perl’s “taint” mode. In this mode all input from an external source is untrusted by default. You can make use of such input only by explicitly cleaning it first. This is particularly useful if you are writing a CGI script. For more details see the perlsec manual page.
-
-* `-c` Checks a script for syntax errors without executing it.
-
-* `-d` Runs the script using Perl’s built-in debugger.
-
-There is another way that you can pass Perl code to the Perl
-interpreter. This is to use the `-e` command line option. A text string
-following this option is assumed to be code to be executed, for
-example:
+You'll also come across `-e`, which lets you pass Perl code directly
+on the command line instead of putting it in a file:
 
     perl -e 'print "Hello World\n";'
 
-will print the string “Hello World” to the console.
+On its own this looks like a toy, useful only for scripts too short to
+bother saving — but combined with Perl's other command-line options it
+becomes a genuinely useful tool for short, one-off jobs.
+[Chapter 3](ch006.xhtml) covers this in detail, including the `-E`
+option, which behaves like `-e` but also turns on every feature
+available in your version of Perl — the same features discussed in
+the next section.
 
-It may seem that this feature wouldn’t be very useful as the only
-scripts that you can write like this would be very small; however,
-Perl has a number of other command line options that can combine
-with `-e` to create surprisingly complex scripts. Details of these
-options are given in [Chapter 3](ch006.xhtml).
+Everything else you could want to know about running Perl is in the
+perlrun manual page — type `perldoc perlrun` at your command line.
 
-All of the information that you could ever need about running Perl can
-be found in the perlrun manual page.
+Installing modules from CPAN
+----------------------------
+
+Perl's standard library covers a lot of ground, but a great deal of
+what makes Perl good for data munging lives outside it, on CPAN — the
+Comprehensive Perl Archive Network. Nearly every module named in this
+book, from `Text::CSV` to `DBI` to `Moo` to `XML::LibXML`, has to be
+installed from there before you can use it.
+
+The easiest way to do that today is with `cpanm` (short for
+`App::cpanminus`), a small, dependency-free tool built specifically
+for installing things from CPAN with the minimum of fuss. Your
+system's own package manager will often have it (`apt install
+cpanminus`, `brew install cpanminus`, and so on); failing that, you
+can bootstrap it directly:
+
+    curl -L https://cpanmin.us | perl - App::cpanminus
+
+Once you have it, installing a module is a single command:
+
+    cpanm Text::CSV
+
+`cpanm` fetches the module, works out and installs whatever it
+depends on, runs its test suite, and installs it — all without asking
+you anything, in the normal case.
+
+Perl also ships with its own built-in client, unimaginatively called
+`cpan`, which does the same job but with a much more old-fashioned,
+interactive interface. It's worth knowing it's there — every Perl
+installation has it, with nothing extra to add — but `cpanm` is the
+friendlier day-to-day tool, and the one assumed throughout this book
+whenever it says "install X from CPAN."
+
+If a project needs several CPAN modules, listing them in a `cpanfile`
+lets you install the lot in one go (`cpanm --installdeps .`), which is
+worth doing as soon as a project outgrows one or two dependencies — it
+turns "what does this need to run?" from a question you answer by
+reading the source into one you answer by reading a single file.
+
+The modern baseline
+-------------------
+
+Every script in this book — and every serious Perl script you write
+yourself — should start with three things:
+
+    use strict;
+    use warnings;
+    use v5.36;
+
+`use strict;` switches off a handful of pieces of "convenience"
+behaviour that cause far more harm than good in practice. Its most
+valuable effect is that it stops you from using a variable you haven't
+first declared with `my`:
+
+    $counnt++;         # typo for $count -- silently creates a new
+                        # global variable without "strict"; a compile
+                        # error with it
+
+That single check catches an enormous number of typos before your
+code ever runs. `use warnings;` asks Perl to tell you about other
+dubious constructs — using a value before it's been given one,
+comparing two strings numerically, and so on. In older code you may
+see the command-line flag `-w` used for this instead; it does a
+similar job, but `use warnings;` is generally preferred these days
+because it's lexically scoped to the file it appears in, rather than
+switching warnings on globally for every module your script happens
+to load, including ones you didn't write and can't fix.
+
+`use v5.36;` (or any later version) does something different again: it
+declares which version of Perl your code expects, and as a side
+effect turns on a whole bundle of features that are considered safe
+and stable — including, as it happens, `strict` and `warnings`
+themselves. Strictly speaking, then, a modern script only needs the
+one line:
+
+    use v5.36;
+
+This book spells out all three anyway, partly for clarity to readers
+still working with older Perls, and partly because plenty of code
+you'll meet in the wild still does the same — but from here on,
+whenever you see `use v5.36;` (or later) at the top of a script, you
+can take `strict` and `warnings` as already switched on.
+
+Version declarations enable other features too, on a rolling basis as
+each one is judged ready. Two used throughout this book are `say` — a
+version of `print` that adds the trailing newline for you — and
+subroutine signatures, which let you declare a subroutine's parameters
+directly in its definition rather than unpacking them by hand:
+
+    use v5.36;
+
+    say "Hello, World!";      # same as: print "Hello, World!\n";
+
+[Chapter 3](ch006.xhtml) covers this mechanism in full, including how
+to turn on individual features one at a time with `use feature`
+instead of jumping to a particular Perl version all at once, and
+exactly which version you need for signatures specifically.
 
 Variables and data types
 ------------------------
 
-Perl supports a number of different data types. Each data type can be
-stored in its own type of variable. Unlike languages such as C or
-Pascal, Perl variables are not strongly typed. This means that a
-variable that contains a number can just as easily be used as a string
-without having to carry out any conversions.
-
-The main data types that you will come across in Perl are scalars,
-arrays, and hashes. More complex data structures can be built using a
-combination of these types. The type of a Perl variable can be
-determined by the symbol that precedes the variable name. Scalars use
-`$`, arrays use `@`, and hashes use `%`.
+Perl has three main kinds of variable — scalars, arrays, and hashes —
+and, unlike languages such as C or Java, doesn't require you to
+declare what *type* of data (number, string, and so on) a variable
+will hold. What kind of variable you're working with is instead shown
+by the symbol, or *sigil*, in front of its name: scalars use `$`,
+arrays use `@`, and hashes use `%`. Every variable should be declared
+with `my` the first time you use it — `use strict;` insists on it, and
+it's good practice even when nothing's forcing you.
 
 ### Scalars
 
-A scalar variable holds a single item of data. This data can be either
-a number or a string (or a reference, but we’ll come to that later).
-Here are some examples of assigning values to a scalar variable:
+A scalar variable holds a single item of data — a number, a string,
+or (as we'll see later) a reference to something bigger.
 
-    $text = 'Hello World';
-    $count = 100;
-    $count = 'one hundred';
+    my $artist = 'Bragg, Billy';
+    my $year   = 1988;
 
-As you can see from the last two examples, the same scalar variable
-can contain both text and numbers. If a variable holds a number and
-you use it in a context where text is more useful, then Perl
-automatically makes the translation for you.
+Perl doesn't ask you to decide in advance whether a scalar holds a
+number or a string; it works out what you mean from how you use it.
+The same variable can hold either, and Perl will convert between them
+as needed:
 
-    $number = 1;
-    $text = "$number ring to rule them all";
+    my $count   = 3;
+    my $message = "There are $count CDs by $artist";
 
-After running this code, `$text` would contain the string “1 ring to
-rule them all”. This also works the other way around (you can always
-turn a number into a string, but it’s harder to turn most strings into
-numbers).
+    my $price      = '9.99';
+    my $with_tax   = $price * 1.2;   # numeric context: '9.99' is
+                                      # treated as the number 9.99
 
-    $number = '100';
-    $big_number = $number * 2; # $big_number now contains the value 200.
+Double-quoted strings, as `$message` shows, interpolate variables
+directly into the text. Single-quoted strings don't:
 
-Notice that we have used two different types of quotes to delimit
-strings in the previous examples. If a string is in double quotes and
-it contains variable names, then these variables are replaced by
-their values in the final string. If the string is in single quotes
-then variable expansion does not take place. There are also a number
-of character sequences which are expanded to special characters
-within double quotes. These include `\n` for a newline character, `\t`
-for a tab, and `\x1F` for a character whose ASCII code is 1F in hex.
-The full set of these escape sequences is in perldoc perldata.
+    my $literal = 'The value of $count is not shown here';
+
+Double quotes also understand a handful of backslash escapes — `\n`
+for a newline, `\t` for a tab, `\x1F` for the character with that hex
+code, and so on. The full set is in `perldoc perldata`.
 
 ### Arrays
 
-An array contains an ordered list of scalar values. Once again the
-scalar values can be of any type. Here are some examples of array
-assignment:
+An array holds an ordered list of scalar values, and is prefixed with
+`@`:
 
-    @empty = ();
-    @hobbits = ('Bilbo', 'Frodo', 'Merry');
-    @elves = ('Elrond', 'Legolas', 'Galadriel');
-    @people = (@hobbits, @elves);
-    ($council, $fellow, $mirror) = @elves;
+    my @artists = ('Bragg, Billy', 'Black, Mary', 'Bowie, David');
 
-Notice that when assigning two arrays to a third (as in the fourth
-example above) the result array is an array consisting of six
-elements, not an array with two elements each of which is another
-array. Remember that the elements of an array can only be scalars. The
-final example shows how you can use list assignment to extract data
-from an array. You can access the individual elements of an array
-using syntax like this:
+Access an individual element with a `$` sigil and a numeric index
+starting from zero — a single element of an array is a scalar value,
+not an array, which is why the sigil changes:
 
-    $array[0]
+    my $first = $artists[0];    # 'Bragg, Billy'
+    my $last  = $artists[-1];   # 'Bowie, David' -- negative indices
+                                 # count back from the end
 
-You can use this syntax to both get and set the value of an individual
-array element.
+If you assign to an index beyond the current end of the array, Perl
+extends it for you, filling any gap with `undef`:
 
-    $hero = $hobbits[0];
-    $hobbits[2] = 'Pippin';
+    $artists[10] = 'Black, Mary';   # elements 3 .. 9 now exist and
+                                     # are undef
 
-Notice that we use `$` rather than `@` to denote this value. This is
-because a single element of an array is a scalar value, not an array
-value.
+A *slice* pulls out several elements at once. Because the result is
+itself a list, it keeps the `@` sigil even though you're using square
+brackets:
 
-If you assign a value to an element outside the current array index
-range, then the array is automatically extended.
+    my @first_two = @artists[0, 1];
+    my @by_range  = @artists[0 .. 2];
 
-    $hobbits[3] = 'Merry';
-    $hobbits[100] = 'Sam';
+Be careful when combining arrays — Perl flattens them into a single
+list rather than nesting one inside the other:
 
-In that last example, all of the elements between 4 and 99 also
-magically sprang into existence, and they all contain the value `undef`.
+    my @hobbits = ('Bilbo', 'Frodo');
+    my @elves   = ('Elrond', 'Galadriel');
+    my @all     = (@hobbits, @elves);   # four elements, not two
 
-You can use negative index values to access array values from the end
-of the array.
+This is worth remembering, because it's also what happens to arguments
+passed into a subroutine, as we'll see shortly.
 
-    $gardener = $hobbits[-1]; # $gardener now contains 'Sam'
+Perl gives you functions for adding and removing elements at either
+end of an array: `push @array, list` and `pop @array` work on the
+end; `unshift @array, list` and `shift @array` work on the start.
+`splice @array, $offset, $length, list` is the general-purpose tool
+underneath all four — it removes `$length` elements starting at
+`$offset` and replaces them with `list` (omit `list` to just delete;
+omit `$length` to remove everything from `$offset` to the end).
 
-You can use an *array slice* to access a number of elements of an
-array at once. In this case the result is another array.
+`map` and `grep` are the two functions you'll reach for constantly
+when munging data held in arrays. Suppose `@cds` holds one hash
+reference per CD — we'll see exactly how structures like this are
+built in the "References and data structures" section below:
 
-    @ring_holders = @hobbits[0, 1];
+    my @cds = (
+      { artist => 'Bragg, Billy', title => "Workers' Playtime",
+        label  => 'Cooking Vinyl', year => 1988 },
+      { artist => 'Black, Mary',  title => 'Circus',
+        label  => 'Grapevine',    year => 1995 },
+      { artist => 'Bowie, David', title => 'Earthling',
+        label  => 'EMI',          year => 1997 },
+    );
 
-You can also use syntax indicating a range of values:
+`map` runs a block of code once for each element of a list (available
+inside the block as `$_`) and returns the list of results:
 
-    @ring_holders = @hobbits[0 .. 1];
+    my @years = map { $_->{year} } @cds;   # (1988, 1995, 1997)
 
-or even another array which contains the indexes of the values that you
-need.
+`grep` runs a block for each element too, but returns only the
+elements for which the block was true, rather than transforming them:
 
-    @index = (0, 1);
-    @ring_holders = @hobbits[@index];
+    my @nineties = grep { $_->{year} >= 1990 } @cds;
 
-You can combine different types of values within the same assignment.
+One gotcha that catches a lot of newcomers out: assigning an *array*
+to a scalar gives you its length, but assigning a *list* to a scalar
+gives you the last element of that list — these look similar but
+aren't the same operation at all:
 
-    @ring_holders = ('Smeagol', @hobbits[0, 1], 'Sam');
+    my $count    = @artists;              # length of @artists
+    my $last_one = ('Bilbo', 'Frodo');    # 'Frodo', not 2
 
-If you assign an array to a scalar value, you will get the number of
-elements in the array.
-
-    $count = @ring_holders;  # $count is now 4
-
-There is a subtle difference between an array and a *list* (which is
-the set of values that an array contains). Notably, assigning a list
-to a scalar will give you the value of the rightmost element in the
-list. This often confuses newcomers to Perl.
-
-    $count = @ring_holders;  # As before, $count is 4
-    $last = ('Bilbo', 'Frodo'); # $last contains 'Frodo'
-
-You can also get the index of the last element of an array using the
-syntax:
-
-    $#array
-
-There are a number of functions that can be used to process a list.
-
-* `push @array, list`—Adds the elements of list to the end of `@array`.
-
-* `pop @array`—Removes and returns the last element of `@array`.
-
-* `shift @array`—Removes and returns the first element of `@array`.
-
-* `unshift @array, list`—Adds the elements of list to the front of `@array`.
-
-* `splice @array, $offset, $length, list`—Removes and returns `$length` elements from `@array` starting at element $offset and replaces them with the elements of list. If list is omitted then the removed elements are simply deleted. If `$length` is omitted then everything from `$offset` to the end of `@array` is removed.
-
-Two other very useful list processing functions are map and grep. map
-is passed a block of code and a list and returns the list created by
-running the given code on each element of the list in turn. Within the
-code block, the element being processed is stored in `$_`. For example,
-to create a list of squares, you could write code like this:
-
-    @squares = map { $_ * $_ } @numbers;
-
-If `@numbers` contains the integers from 1 to 10, then @square will end
-up containing the squares of those integers from 1 to 100. It doesn’t
-have to be true that each iteration only generates one element in the
-new list; for example, the code
-
-    @squares = map { $_, $_ * $_ } @numbers;
-
-generates a list wherein each integer is followed by its square. `grep`
-is also passed a block of code and a list. It executes the block of
-code for each element on the list in turn, and if the code returns a
-true value, then `grep` adds the original element to its return list.
-The list returned, therefore, contains all the elements wherein the
-code evaluated to true. For example, given a list containing random
-integers,
-
-    @odds = grep { $_ % 2 } @ints;
-
-will put all of the odd values into the array `@odds`.
+You can also find the index of an array's last element directly, with
+`$#array` (in the example above, that would be `$#artists`).
 
 ### Hashes
 
-Hashes (or, as they were previously known, associative arrays)
-provide a simple way to implement lookup tables in Perl. They
-associate a value with a text key. You assign values to a hash in
-much the same way as you do to an array. Here are some examples:
+A hash — sometimes still called an *associative array* in older
+material — maps string keys to scalar values, and is prefixed with
+`%`:
 
-    %rings = (); # Creates an empty hash
-    %rings = ('elves', 3, 'dwarves', 7);
-    %rings = (elves => 3, dwarves => 7); # Another way to do the samething
-    $rings{men} = 9;
-    $rings{great} = 1;
+    my %label_for = (
+      'Bragg, Billy' => 'Cooking Vinyl',
+      'Black, Mary'  => 'Grapevine',
+      'Bowie, David' => 'EMI',
+    );
 
-Notice that using the arrow operator (`=>`) has two advantages over the
-comma. It makes the assignment easier to understand and it
-automatically quotes the value to its left. Also notice that hashes
-use different brackets to access individual elements and because,
-like arrays, each element is a scalar, it is denoted with a `$` rather
-than a `%`. You can access the complete set of keys in a hash using the
-function keys, which returns a list of the hash keys.
+The `=>` ("fat comma") is really just a comma with better manners —
+functionally identical, but it also auto-quotes the bareword to its
+left, which is why the keys above don't need their own quotes.
 
-    @ring_types = keys %rings;
-    # @ring_types is now ('men', 'great', 'dwarves', 'elves')
+Access (or set) an individual value with a `$` sigil and curly braces:
 
-There is a similar function for values.
+    my $label = $label_for{'Bragg, Billy'};
+    $label_for{'Some New Artist'} = 'Some Label';
 
-    @ring_counts = values %rings;
-    # @ring_counts is now (9, 1, 7, 3)
+`keys %hash` and `values %hash` return a hash's keys and values as two
+separate lists — in the same order as each other, though not
+necessarily the order you added them in:
 
-Notice that neither keys nor values is guaranteed to return the data
-in the same order as it was added to the hash. They are, however,
-guaranteed to return the data in the same order (assuming that you
-haven’t changed the hash between the two calls).
-
-There is a third function in this set called each which returns a
-two-element list containing one key from the hash together with its
-associated value. Subsequent calls to each will return another
-key/value pair until all pairs have been returned, at which point an
-empty array is returned. This allows you to write code like this:
-
-    while ( ($type, $count) = each %rings) ) {
-      print "$count $type ring(s)\n";
+    foreach my $artist (keys %label_for) {
+      print "$artist is on $label_for{$artist}\n";
     }
 
-You can also call each in a scalar context in which case it iterates
-over the keys in the hash. The most efficient way to get the number of
-key/value pairs in a hash is to assign the return value from either
-keys or values to a scalar variable.
+A *hash slice* accesses several values at once. As with an array
+slice, the result is a list, so it takes the `@` sigil even though
+you're indexing into a `%` variable with curly braces:
 
-    $ring_types = keys %rings; # $ring_types is now 4
+    my @some_labels = @label_for{'Bragg, Billy', 'Black, Mary'};
 
-Note that this example also demonstrates that you can have variables
-of different types with the same name. The scalar `$ring_types` in this
-example has no connection at all with the array `@ring_types` in the
-earlier example.
+You'll build hashes like this constantly when summarizing data.
+[Chapter 2](ch005.xhtml)'s `count_cds_by_attr` routine is a good
+example: it builds a hash keyed by whichever field you're counting —
+artist, year, whatever's passed in — incrementing the count each time
+it sees a matching record. You can build the same kind of thing in one
+line with `map`, too:
 
-You can access parts of a hash using a *hash slice* which is very
-similar to the array slice discussed earlier.
+    my %title_for = map { $_->{artist} => $_->{title} } @cds;
 
-    @minor_rings_types = ('elves', 'dwarves', 'men');
-    @minor_rings{@minor_rings_types} = @rings{@minor_rings_types};
-         # creates a new hash called %minor rings containing
-         # elves => 3
-         # dwarves => 7
-         # men => 9
+Note that a hash and a scalar (or an array) can share the same name
+without clashing — `%label_for` and any `$label_for` or `@label_for`
+you might also have are three entirely separate variables, since it's
+the sigil, not the name, that Perl uses to tell them apart. That
+doesn't mean it's a good idea, though — reusing a name like this in
+real code is a reliable way to confuse whoever reads it next
+(quite possibly you, in six months), and is worth avoiding even though
+Perl itself won't stop you.
 
-Note, once again, that a hash slice returns a list and therefore is
-prefixed with `@`. The key list, however, is still delimited with `{` and
-`}`. As a hash can be given values using a list, it is possible to use
-the map function to turn a list into a hash. For example, the
-following code creates a hash where the keys are numbers and the
-values are their squares.
+### Scope: `my`, `our`, and `local`
 
-    %squares = map { $_, $_ * $_ } @numbers;
+Every example so far has declared its variables with `my`, which
+creates a *lexical* variable — one that exists, and is visible, only
+within the block (or file) where it's declared. This is what you want
+almost all of the time, and it's what `use strict;` requires.
 
-### More Information
+Occasionally you'll need a *package* variable instead: one that
+belongs to an entire package rather than a particular block, and can
+be referred to from outside it (by its full name, `$Package::name`, or
+after importing it). These are declared with `our`, and you'll most
+often meet them in module code, setting up inheritance or exports:
 
-For more information about Perl data types, see the perldata manual
-page.
+    package Customer_Rules;
+
+    our @ISA    = qw(Exporter);
+    our @EXPORT = qw(get_next_cust_no save_cust_record);
+
+[Chapter 2](ch005.xhtml) uses exactly this pattern.
+
+A third keyword, `local`, looks similar to `my` but does something
+different again: it temporarily replaces the value of an *existing*
+global variable for the rest of the current block, automatically
+restoring the original value once the block ends. It's mostly there
+for adjusting one of Perl's own special variables — `$/`, the input
+record separator, is a common one — for a limited scope, and comes up
+far less often in everyday code than either `my` or `our`. `perldoc
+perlsub` has the full rules for all three.
 
 Operators
 ---------
 
-Perl has all of the operators that you will be familiar with from
-other languages—and a few more besides. You can get a complete list
-of all of Perl’s operators in the perlop manual page. Let’s look at
-some of the operators in more detail.
+Perl has the usual set of mathematical operators — `+`, `-`, `*`, `/`,
+`%` for modulus, and `**` for exponentiation — each with a
+corresponding assignment form (`+=`, `-=`, and so on), plus `++` and
+`--` for incrementing and decrementing. It also has bitwise operators
+(`&`, `|`, `^`, `~`, `<<`, `>>`) for working directly on the binary
+representation of a number, which come up occasionally when handling
+binary data (see [Chapter 7](ch011.xhtml)).
 
-### Mathematical operators
+Two operators are specific to strings: `.` concatenates two strings
+together, and `x` repeats one — `'la' . 'la'` gives `'lala'`, while
+`'la' x 3` gives `'lalala'`. In list context, `x` repeats a whole list
+instead: `(0) x 5` gives a five-element list of zeroes, handy for
+initializing a data structure.
 
-The operators `+`, `-`, `*`, and `/` will add, subtract, multiply, and divide
-their two operands respectively. `%` will find the modulus of the two
-operands (that is the remainder when integer division is carried out).
+Comparison operators come in two flavours, because Perl doesn't know
+in advance whether your scalars hold numbers or strings: `<`, `<=`,
+`==`, `!=`, `>=`, and `>` compare numerically, while `lt`, `le`, `eq`,
+`ne`, `ge`, and `gt` compare as strings. Using the wrong flavour is an
+easy mistake to make and `use warnings;` will usually catch it for
+you. `<=>` and `cmp` are their sorting cousins — the numeric and
+string "spaceship" operators — each returning -1, 0, or 1 depending on
+whether the first operand is less than, equal to, or greater than the
+second; [Chapter 3](ch006.xhtml) puts these to work when discussing
+custom sort routines.
 
-Unary minus (`-`) reverses the sign of its single operand.
+For combining conditions, `&&` and `||` are the ones you'll reach for
+most, and both are *short-circuiting* — the right-hand side is only
+evaluated if it's actually needed to determine the overall result.
+That's the basis of a very common Perl idiom:
 
-Unary increment (`++`) and decrement (`--`) operators will add or subtract
-one from their operands. These operators are available both in prefix
-and postfix versions. Both versions increment or decrement the
-operand, but the prefix versions return the result after the operation
-and the postfix versions return the results before the operation.
+    open(my $fh, '<', 'cds.txt') or die "Can't open cds.txt: $!";
 
-The exponentiation operator (`**`) raises its left-hand operand to the
-power given by its right operand.
+If `open` succeeds, its return value is true, which is already enough
+to make the whole `or` expression true, so `die` never runs and never
+needs to. `and` and `or` do the same jobs as `&&` and `||` but at much
+lower precedence, which occasionally matters if you leave the
+parentheses off a function call. Compare:
 
-All of the binary mathematical operators are available in an
-assignment version. For example,
+    open my $fh, '<', 'cds.txt' or die "Can't open cds.txt: $!";
+    open my $fh, '<', 'cds.txt' || die "Can't open cds.txt: $!";
 
-    $x += 5;
+The first works exactly as intended — the low precedence of `or` means
+Perl parses it as `(open my $fh, '<', 'cds.txt') or die ...`, so if
+`open` fails, `die` fires. The second doesn't: `||` binds more tightly
+than the comma that separates `open`'s own arguments, so Perl instead
+parses it as `open my $fh, '<', ('cds.txt' || die ...)` — meaning
+`die` only fires if the *filename* is false, not if `open` itself
+fails. Since a non-empty filename is always true, that `die` branch is
+effectively dead code, and a failed `open` passes completely
+unnoticed, which is far worse than a script that merely looks wrong.
+Once you add the parentheses back, as in the very first example above,
+this stops mattering — which is exactly why the low-precedence `or`
+idiom is usually written without them. Otherwise, the choice between
+`&&`/`||` and `and`/`or` is mostly a matter of house style.
 
-is exactly equivalent to writing
+(You may also come across older code that opens a file with a
+bareword filehandle instead of a scalar variable —
+`open(DATA, 'cds.txt') or die ...;` — and without the three-argument
+form shown above. Both still work, but the modern style, with a
+lexical filehandle and an explicit mode, is safer and more flexible,
+and is what's used throughout this book.)
 
-    $x = $x + 5;
+Perl also has a defined-or operator, `//`, and its assignment form
+`//=`. Where `||` asks "is this true?", `//` asks the narrower
+question "is this *defined*?" — a distinction that matters a great
+deal once your data might legitimately contain a zero or an empty
+string, both of which are false but perfectly good values that `||`
+would otherwise discard:
 
-Similar to the mathematical operators, but working instead on strings,
-the concatenation operator (`.`) joins two strings and the string
-multiplication operator (`x`) returns a string made of its left operand
-repeated the number of times given by its right operand. For example,
+    my $year = $cd->{year} // 'unknown';   # 'unknown' only if year is
+                                            # undef, not if it's 0
 
-    $y = 'hello' x 3;
+    $cust->{cust_no} //= get_next_cust_no();
 
-results in `$y` having the value “hellohellohello”.
+You'll see `//=` used exactly like that — filling in a value only if
+one isn't already present — in [Chapter 2](ch005.xhtml)'s
+customer-record code, and again when we look at caching exchange rates
+in [Chapter 6](ch010.xhtml).
 
-In an array context, if the left operand is a list, then this
-operator acts as a list repetition operator. For example,
+Finally, the ternary operator (`?:`) picks between two values based on
+a condition, and is often the tidiest way to write a short `if`/`else`:
 
-    @a = (0) x 100;
+    my $plural = $count == 1 ? 'CD' : 'CDs';
 
-makes a list with 100 elements, each of which contains the number 0,
-and then assigns it to `@a`.
-
-### Logical operators
-
-Perl distinguishes between logical operators for use on numbers and
-logical operators for use on strings. The former set uses the
-mathematical symbols `<`, `<=`, `==`, `!=`,
-`>=`, and `>` for less than, less than or equal to, equal to, not equal
-to, greater than or equal to, and greater than, respectively, whereas
-the string logical operators use`lt`, `le`, `eq`, `ne`, `ge`, and `gt` for the
-same operations. All of these operators return 1 if their operands
-satisfy the relationship and 0 if they don’t. In addition, there are
-two comparison operators `<=>` (for numbers) and `cmp` (for strings) which
-return –1, 0, or 1 depending on whether their first operand is less
-than, equal to, or greater than their second operand.
-
-For joining logical comparisons, Perl has the usual set of operators,
-but once again it has two sets. The first set uses `&&` for conjunction
-and `||` for disjunction. These operators have very high precedence. The
-second set uses the words and and or. This set has very low
-precedence. The difference is best explained with an example. When
-opening a file, it is very common in Perl to write something like
-this:
-
-    open DATA, 'file.dat' or die "Can't open file\n";
-
-Notice that we have omitted the parentheses around the arguments to
-open. Because of the low precedence of or, this code is interpreted
-as if we had written
-
-    open (DATA, 'file.dat') or die "Can't open file\n";
-
-which is what we wanted. If we had used the high precedence version
-of the operator instead, like this
-
-    open DATA, 'file.dat' || die "Can't open file\n";
-
-it would have bound more tightly than the comma that builds up the
-list of arguments to open. Our code would, therefore, have been
-interpreted as though we had written
-
-    open DATA, ('file.dat' || die "Can't open file\n");
-
-which doesn’t achieve the correct result.
-
-The previous example also demonstrates another feature of Perl’s
-logical operators—they are *short-circuiting*. That is to say they
-only execute enough of the terms to know what the overall result will
-be. In the case of the open example, if the call to open is
-successful, then the left-hand side of the operator is true, which
-means that the whole expression is true (as an or operation is true if
-either of its operands is true). The right-hand side (the call to die)
-is therefore not called. If the call to open fails, then the left-hand
-side of the operator is false. The right-hand side must therefore be
-executed in order to ascertain what the result is. This leads to a
-very common idiom in Perl in which you will often see code like
-
-    execute_code() or handle_error();
-
-Unusually, the logical operators are also available in assignment
-versions. The “or-equals” operator is the most commonly used of these.
-It is used in code like
-
-    $value ||= 'default';
-
-This can be expanded into
-
-    $value = $value || 'default';
-
-from which it is obvious that the code sets $value to a default value
-if it doesn’t already have a value.
-
-Perl also has *bitwise* logical operators for and (`&`) or (`|`),
-exclusive or (`^`), and negation (`~`). These work on the binary
-representation of their two operands and, therefore, don’t always give
-intuitively correct answers (for example `~1` isn’t equal to 0). There
-are also left (`<<`) and right (`>>`) shift operators for manipulating
-binary numbers. One use for these is to quickly multiply or divide
-numbers by a power of two.
+which does the same job as a four-line `if`/`else` block whose only
+purpose is choosing between `'CD'` and `'CDs'`.
 
 Flow of control
 ---------------
 
-Perl has all of the standard flow of control constructs that are
-familiar from other languages, but many of them have interesting
-variations.
+`if` executes a block only when its condition is true, and can be
+extended with `elsif` and `else`:
 
-### Conditional execution
-
-The if statement executes a piece of code only if an expression is
-true.
-
-    if ($location eq 'The Shire') {
-      $safety = 1;
-    }
-
-The statement can be extended with an else clause.
-
-    if ($location eq 'The Shire') {
-      $safety++;
+    if ($cd->{year} < 1990) {
+      print "$cd->{title} is from the 80s\n";
+    } elsif ($cd->{year} < 2000) {
+      print "$cd->{title} is from the 90s\n";
     } else {
-      $safety--;
+      print "$cd->{title} is from $cd->{year}\n";
     }
 
- And further extended with elsif clauses.
+`unless` is `if`'s mirror image — it runs its block when the condition
+is *false*. Both `if` and `unless` can also be used as *statement
+modifiers*, tacked onto the end of a simple statement, which often
+reads more naturally than wrapping the statement in braces:
 
-    if ($location eq 'The Shire') {
-      $safety++;
-    } elsif ($location eq 'Mordor') {
-      $safety = 0;
-    } else {
-      $safety--;
-    }
+    print "$cd->{title}\n" unless $seen{$cd->{title}}++;
+    $count++ if $cd->{year} >= 1990;
 
-Perl also has an unless statement which is logically opposite the if
-statement—it executes unless the condition is true.
+Perl has three looping constructs. The C-style `for` loop exists —
 
-    unless ($location eq 'The Shire') {
-      $panic = 1;
-    }
-
-Both the `if` and `unless` keywords can be used as *statement modifiers*.
-This can often make for more readable code.
-
-    $damage *= 2 if $name eq 'Aragorn';
-    $dexterity++ unless $name eq 'Sam';
-
-### Loops
-
-Perl has a number of looping constructs to execute a piece of code a
-number of times.
-
-#### for loop
-
-The for loop has the syntax:
-
-    for (initialisation; test; increment) {
-      statements;
-    }
-
-For example,
-
-    for ($x = 1; $x <= 10; ++$x) {
+    for (my $x = 1; $x <= 10; ++$x) {
       print "$x squared is ", $x * $x, "\n";
     }
 
-The loop will execute until the test returns a false value. It is
-probably true to say that this loop is very rarely used in Perl, as
-the `foreach` loop discussed in the next section is far more flexible.
+— but you'll rarely need it in practice, because `foreach` (Perl also
+accepts plain `for` as a synonym) is both more common and more
+flexible for working through a list:
 
-#### foreach loop
-
-The foreach loop has the syntax:
-
-    foreach var (list) {
-      statements;
+    foreach my $cd (@cds) {
+      print "$cd->{artist}: $cd->{title}\n";
     }
 
-For example, the previous example can be rewritten as:
+Omit the loop variable and each element becomes available as `$_`
+instead, which is especially handy inside a short block:
 
-    foreach my $x (1 .. 10) {
-      print "$x squared is ", $x * $x, "\n";
+    foreach (@cds) {
+      print "$_->{artist}: $_->{title}\n";
     }
 
-which, to many people, is easier to understand as it is less complex.
-You can even omit the loop variable, in which case each element in
-the list in turn is accessible as `$_`.
+`while` loops for as long as its condition remains true — a common use
+is reading a file a line at a time:
 
-    foreach (1 .. 10) {
-      print "$_ squared is ", $_ * $_, "\n";
+    while (my $line = <$fh>) {
+      chomp $line;
+      process($line);
     }
 
-This loop will execute until each element of the list has been
-processed. It is often used for iterating across the contents of an
-array like this:
+Three keywords let you adjust a loop's normal behaviour. `next`
+immediately moves on to the next iteration, re-testing the loop's
+condition first:
 
-    foreach (@data) {
-      process($_);
+    foreach my $cd (@cds) {
+      next unless $cd->{year};   # skip records with no year
+      process($cd);
     }
 
-### while loop
+`last` exits the loop altogether and continues with whatever comes
+after it:
 
-The `while` loop has the syntax:
-
-    while (condition) {
-      statements
+    foreach my $cd (@cds) {
+      last if $cd->{year} < 0;   # stop at the first bit of bad data
+      process($cd);
     }
 
-For example,
+and `redo` restarts the current iteration from the top, without
+re-testing the loop's condition or moving on to the next element —
+useful, for example, if you want to retry the same piece of input
+after failing to validate it.
 
-    while ($data = get_data()) {
-      process($data);
-    }
+All three keywords act on the innermost enclosing loop by default. To
+act on an outer loop instead, label it and name that label in your
+`next`, `last`, or `redo`:
 
-This loop will execute until the condition evaluates to a false value.
-
-### Loop control
-
-There are three keywords which can be used to alter the normal
-execution of a loop: `next`, `last`, and `redo`. `next` immediately starts the
-next iteration of the loop, starting with the evaluation of any test
-which controls whether the loop should continue to be executed. For
-example, to ignore empty elements of an array you can write code like
-this:
-
-    foreach my $datum (@data) {
-      next unless $datum;
-      process($datum);
-    }
-
-`redo` also returns to the start of the loop block, but does not
-execute any test or iteration code. Suppose you were prompting the
-user for ten pieces of data, none of which could be blank. You could
-write code like this:
-
-    foreach my $input (1 .. 10) {
-      print "\n$input> ";
-      $_; = <STDIN>;
-      redo unless $_'
-    }
-
-`last` immediately exits the loop and continues execution on the
-statement following the end of the loop. If you were processing data,
-but wanted to stop when you reached a number that was negative, you
-could write code like this:
-
-    foreach my $datum (@data) {
-      last if $datum < 0;
-      process($datum);
-    }
-
-All of these keywords act on the innermost enclosing loop by default.
-If this isn’t what you want then you can put a label in front of the
-loop keyword (for, `foreach`, or `while`) and refer to it in the `next`,
-`redo`, or `last` command. For example, if you were processing lines and
-words from a document, you could write something like this:
-
-    LINE:
-      foreach my $line (getlines()) {
-      WORD:
-        foreach $word (getwords($line)) {
-          last WORD if $word eq 'next';
-          last LINE if $word eq 'end';
-          process($word);
-        }
+    ARTIST:
+    foreach my $artist (keys %cds_by_artist) {
+      foreach my $cd (@{ $cds_by_artist{$artist} }) {
+        next ARTIST if $cd->{year} < 1970;   # skip this artist entirely
+        print "$artist: $cd->{title}\n";
       }
+    }
 
 Subroutines
 -----------
 
-Subroutines are defined using the keyword sub like this:
+Subroutines are defined with `sub`, with their parameters declared
+directly in a *signature*:
 
-    sub gollum {
-      print "We hatesss it forever!\n";
+    sub count_by_year($cds) {
+      my %counts;
+      $counts{$_->{year}}++ for $cds->@*;
+      return \%counts;
     }
 
-and are called like this:
+and called just like any built-in function:
 
-    &gollum;
+    my $counts = count_by_year(\@cds);
 
-or like this
+Signatures are a comparatively recent addition to Perl —
+[Chapter 3](ch006.xhtml) has the full story, including exactly which
+version of Perl you need. In code written before signatures existed
+(and you'll still see plenty of it, both elsewhere and occasionally in
+this book, where it matters to the point being made), a subroutine's
+arguments instead arrive in the special array `@_`, and are usually
+unpacked by hand at the top of the subroutine:
 
-    gollum();
-
-or (if the definition of the subroutine has already been seen by the
-compiler) like this:
-
-    gollum;
-
-Within a subroutine, the parameters are available in the special array
-`@_`. These parameters are passed by reference, so changing this array
-will alter the values of the variables in the calling code (this isn’t
-strictly true, but it’s true enough to be a reasonable working
-hypothesis. For the full gory details see perldoc perlsub). To
-simulate parameter passing by value, it is usual to assign the
-parameters to local variables within the subroutine like this:
-
-    sub example {
-      my ($arg1, $arg2, $arg4) = @_;
-      # Do stuff with $arg1, $arg2 and $arg3
+    sub count_by_year {
+      my ($cds) = @_;
+      ...
     }
 
-Any arrays or hashes that are passed into subroutines this way are
-flattened into one array. Therefore if you try to write code like
-this:
+The two versions are equivalent — a signature is really just a tidier
+way of writing exactly the same argument-unpacking Perl was always
+doing anyway.
 
-    # Subroutine to print one element of an array
-    # N.B. This code doesn't work.
+One thing to watch for either way: arrays and hashes passed as
+arguments get flattened into one long list, the same as when combining
+them directly (see "Arrays," above). A subroutine expecting an array
+followed by a scalar,
+
     sub element {
-      my (@arr, $x) = @_;
-
-      print $arr[$x];
+      my (@arr, $x) = @_;   # doesn't work -- @arr greedily takes
+      return $arr[$x];      # everything, leaving nothing for $x
     }
 
-    my @array = (1 .. 10);
-    element(@array, 4);
+won't work as hoped, because the assignment to `@arr` doesn't know
+where to stop pulling elements from `@_` and takes all of it, leaving
+`$x` undefined. Putting the scalar first fixes this particular case —
 
-it won’t work because, within the subroutine, the assignment to `@arr`
-doesn’t know when to stop pulling elements from `@_` and will,
-therefore, take all of `@_`, leaving nothing to go into `$x` which
-therefore ends up containing the `undef` value.
-
-If you were to pass the parameters the other way round like this:
-
-    # Subroutine to print one element of an array
-    # N.B. Better than the previous version.
     sub element {
       my ($x, @arr) = @_;
-      print $arr[$x];
+      return $arr[$x];
     }
 
-    my @array = (1 .. 10);
-    element(4, @array);
+— but the more general, and more common, solution used throughout this
+book is to pass a *reference* to the array or hash instead of the
+thing itself, since a reference is a single scalar value and so never
+gets flattened. We'll come to references next.
 
-it would work, as the assignment to `$x` would pull one element off of
-`@_` leaving the rest to go into `@arr`. An even better way, however, is
-to use references, as we’ll see later.
+A subroutine returns the value of its last statement, or you can use
+`return` to hand back a value explicitly from anywhere inside it. That
+return value can be a single scalar or a list, and the built-in
+`wantarray` function tells you which kind of value the caller is
+actually expecting, if you need a subroutine to behave differently in
+each case. Full details of all of this are in `perldoc perlsub`.
 
-A subroutine returns the value of the last statement that it executes,
-although you can also use the return function to explicitly return a
-value from any point in the subroutine. The return value can be a
-scalar or a list. Perl even supplies a function called wantarray which
-tells you whether your subroutine was called in scalar or array
-context so that you can adjust your return value accordingly.
+References and data structures
+------------------------------
 
-More information about creating and calling subroutines can be found
-in the perlsub manual page.
+A reference is a scalar value that points *at* another piece of data —
+an array, a hash, another scalar, even a subroutine — rather than
+containing that data directly. References are the mechanism behind
+every complex data structure in Perl, and the reason is simple: an
+array or a hash can only directly hold scalar values, but a reference
+to an array, or to a hash, is itself just a scalar. So if you want an
+array of arrays, or a hash containing other hashes, references are
+how you get there.
 
-Everything above is the traditional way of handling a subroutine's
-parameters, and it's still worth understanding—you'll come across
-plenty of existing code written this way. Modern Perl, though, lets
-you skip the manual unpacking and declare parameters directly in the
-subroutine's definition instead, using a *signature*:
+Create a reference to an existing variable by putting a backslash in
+front of it:
 
-    sub example($arg1, $arg2, $arg3) {
-      # Do stuff with $arg1, $arg2 and $arg3
+    my @cds     = ( ... );
+    my $cds_ref = \@cds;
+
+or build one directly, with no separately-named variable to reference
+in the first place, using square or curly brackets:
+
+    my $cds_ref = [ ... ];                          # anonymous array
+    my $cd_ref  = { artist => 'Bragg, Billy', ... }; # anonymous hash
+
+This second form is how you build a structure with more than one
+level. An array of CD records, for instance — as used earlier in this
+appendix, and throughout the book — is really an array where every
+element is a reference to a hash:
+
+    my @cds = (
+      { artist => 'Bragg, Billy', title => "Workers' Playtime",
+        year   => 1988 },
+      { artist => 'Black, Mary',  title => 'Circus', year => 1995 },
+    );
+
+If you tried to build a similar structure without references — say,
+grouping several CDs' worth of fields directly into one big array —
+Perl would simply flatten everything into a single list, exactly as
+described under "Arrays" above, and you'd lose the grouping
+altogether. References are what let you sidestep that.
+
+To get from a reference back to the thing it refers to, the modern
+idiom is *postfix dereference*: write `->`, then the sigil of the kind
+of thing you want, followed by an asterisk.
+
+    my @all_cds  = $cds_ref->@*;    # the whole array
+    my %all_data = $cd_ref->%*;     # the whole hash
+    my $count    = $cds_ref->@*;    # in scalar context: a count,
+                                     # exactly as for a plain array
+
+Reaching *into* a nested structure — which is where references really
+earn their keep — doesn't even need the asterisk. Just chain `->`
+between however many levels of brackets or braces you need:
+
+    foreach my $cd (@cds) {
+      print "$cd->{artist}: $cd->{title} ($cd->{year})\n";
     }
 
-This is the style used throughout this book from Chapter 2 onwards.
-See [Chapter 3](ch006.xhtml) for the full explanation, including which
-version of Perl you need for it to work.
+    my %cds_by_year;
+    push @{ $cds_by_year{$cd->{year}} }, $cd for @cds;
 
-References
-----------
+    my @from_1988 = $cds_by_year{1988}->@*;
+    my $first_1988_title = $cds_by_year{1988}[0]{title};
 
-References are the key to building complex data structures in Perl
-and, as such, are very important for data munging. They work somewhat
-like pointers in languages like C, but are more useful. They know, for
-example, the type of the object that they are pointing at. A reference
-is a scalar value and can, therefore, be stored in a standard scalar
-variable.
+That last line demonstrates something worth knowing: Perl lets you
+drop the arrow between two *consecutive* sets of brackets or braces —
+`$cds_by_year{1988}[0]` and `$cds_by_year{1988}->[0]` mean exactly the
+same thing — which is why deeply nested expressions like that one stay
+readable instead of turning into a wall of arrows.
 
-### Creating references
+You'll also come across an older style of dereferencing in existing
+code, which puts the sigil of the thing you want in front of either a
+block or a plain reference variable: `@{$cds_ref}` and `@$cds_ref`
+both mean the same as `$cds_ref->@*`, and `${$cds_by_year{1988}}[0]`
+means the same as `$cds_by_year{1988}[0]`. Postfix dereference — added
+in Perl 5.24, and used throughout this book — is generally easier to
+read left-to-right, especially partway through a longer chain, but
+you'll need to be able to recognize both styles.
 
-You can create a reference to a variable in Perl by putting a
-backslash character (`\`) in front of the variable name. For example:
+References to subroutines work the same way, using `&` as their
+sigil:
 
-    $scalar = 'A scalar';
-    @array = ('An', 'Array');
-    %hash = (type => 'Hash);
-    $scalar_ref = \$scalar;
-    $array_ref = \@array;
-    $hash_ref = \%hash;
+    my $formatter = \&count_by_year;
+    my $counts    = $formatter->(\@cds);
 
-Sometimes you’d like a reference to an array or a hash, but you don’t
-wish to go to the bother of creating a variable. In these cases, you
-can create an *anonymous* array or hash like this:
+and an *anonymous* subroutine — one with no name of its own — is
+itself simply a reference, created directly with `sub`:
 
-    $array_ref = ['An', 'Array'];
-    $hash_ref = {type => 'Hash'};
+    my $formatter = sub ($cds) { ... };
 
-The references created in this manner are no different than the ones
-created from variables, and can be dereferenced in exactly the same
-ways.
+Finally, the `ref` function tells you what kind of thing a reference
+points at — `'ARRAY'`, `'HASH'`, `'CODE'`, and so on — which is
+occasionally useful when you're not certain what you've been handed.
 
-### Using references
+Full details of everything in this section are in `perldoc perlref`;
+`perldoc perlreftut` is a gentler introduction if `perlref` moves too
+fast, and `perldoc perldsc` is a cookbook of common data-structure
+patterns, with plenty of worked examples of its own.
 
-To get back to the original object that the scalar points at, you
-simply put the object’s type specifier character (*i.e.*, `$`, `@`, or `%`) in
-front of the variable holding the reference. For example:
+A nod to object orientation
+---------------------------
 
-    $orig_scalar = $$scalar_ref;
-    @orig_array = @$array_ref;
-    %orig_hash = %$hash_ref;
+Perl also supports object-oriented programming, though nothing above
+requires it, and this book leans on OO only occasionally.
+[Chapter 2](ch005.xhtml) has a full worked example built with
+[Moo](https://metacpan.org/pod/Moo), currently the most common
+lightweight way to write a Perl class, alongside a look at Perl's
+newer built-in `class`/`method` syntax, which seems likely to take
+over from Moo (and its heavier relative, Moose) as it matures. If
+object orientation is new to you, that's the place to go for a proper
+introduction rather than here.
 
-If you have a reference to an array or a hash, you can access the
-contained elements using the dereferencing operator (`->`). For
-example:
+Further reading
+---------------
 
-    $array_element = $array_ref->[1];
-    $hash_element = $hash_ref->{type};
+This appendix is a refresher, not a tutorial, and it's moved quickly
+over a lot of ground. If any of it felt genuinely new rather than
+familiar, [Chapter 1](ch004.xhtml) has recommendations for a fuller
+introduction — *Learning Perl* (8th edition) by Randal Schwartz, brian
+d foy, and Tom Phoenix (O'Reilly) remains the standard starting point,
+and still the one I'd recommend first. Once the basics feel
+comfortable, *Programming Perl* (4th edition) by Tom Christiansen,
+brian d foy, Larry Wall, and Jon Orwant (also O'Reilly) is as close to
+a definitive reference as Perl has.
 
-To find out what type of object a reference refers to, you can use
-the `ref` function. This function returns a string containing the name
-of the object type. For example:
-
-    print ref $scalar_ref;  # prints 'SCALAR'
-    print ref $array_ref;   # prints 'ARRAY'
-    print ref $hash_ref;    # prints 'HASH'
-
-### References to subroutines
-
-You can also take references to subroutines. The syntax is exactly
-equivalent for other object types. Remember that the type specifier
-character for a subroutine is `&`. You can therefore do things like
-this:
-
-    sub my_sub {
-      print "I am a subroutine";
-    }
-
-    $sub_ref = \&my_sub;
-    &$sub_ref;    # executes &my_sub
-    $sub_ref->(); # another way to execute my_sub (allowing parameter passing)
-
-You can use this to create references to anonymous subroutines (*i.e.*,
-subroutines without names) like this:
-
-    $sub_ref = sub { print "I'm an anonymous subroutine" };
-
-Now the only way to execute this subroutine is via the reference.
-
-### Complex data structures using references
-
-I said at the start of this section that references were the key to
-creating complex data structures in Perl. Let’s take a look at why
-this is. Recall that each element of an array or a hash can only
-contain scalar values. If you tried to create a two-dimensional array
-with code like this:
-
-    # NOTE: This code doesn't work
-    @array_2d = ((1, 2, 3), (4, 5, 6), (7, ,8, 9));
-
-the arrays would all be flattened and you would end up with a
-one-dimensional array containing the numbers from one to nine.
-However, with references we now have a way to refer to an array using
-a value which will fit into a scalar variable. We can, therefore, do
-something like this:
-
-    @arr1 = (1, 2, 3);
-    @arr2 = (4, 5, 6);
-    @arr3 = (7, 8, 9);
-    @array_2d = (\@arr1, \@arr2, \@arr3);
-
-or (without the need for intermediate array variables):
-
-    @array_2d = ([1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]);
-
-Of course, having put our data into a two-dimensional array, we need
-to know how we get the data back out again. It should be possible to
-work this out, given what we already know about arrays and references.
-
-Suppose we want to access the central element of our 2-D array (the
-number 5). Actually, our array isn’t a 2-D array at all, it is really
-an array which contains references to arrays in its elements. The
-element `$array_2d[1]` contains a reference to an anonymous array which
-contains the numbers 4, 5, and 6. One way to do it would, therefore,
-be to use an intermediate variable like this:
-
-    $row = $array_2d[1];
-    @row_arr = @$row;
-    $element = $row_arr[1];
-
-While this will work, Perl gives us ways to write the same thing more
-efficiently. In particular, the notation for accessing an object given
-a reference to it has some extensions to it. Where previously we have
-seen syntax like `@$arr_ref` give us the array referred to by `$arr_ref`,
-there is a more general syntax which looks like:
-
-    @{block}
-
-in which *block* is any piece of Perl code that returns a reference to
-an array (the same is true, incidentally, of hashes). In our case, we
-can, therefore, use this to our advantage and use
-
-    @{$array_2d[1]}
-
-to get back the required array. As this is now the array in which we
-are interested, we can use standard array syntax to get back our
-required element, that is we replace the `@` with a `$` and put the
-required index in `[ .. ]` on the end. Our required element is therefore
-given by the expression:
-
-    ${$array_2d[1]}[1]
-
-That does the job, but it looks a bit ugly and, if there were more
-than one level of indirection, it would just get worse. Surely there’s
-another way? Remember when we were accessing elements of an array
-using the `$arr_ref->[0]` syntax? We can make use of that. We said that
-`$array_2d[1]` gives us a reference to the array that we need. We can,
-therefore, use the `->` syntax to access the individual elements of that
-array. The element that we want is given by:
-
-    $array_2d[1]->[1];
-
-which is much simpler. There is one further simplification that we can
-make. Because the only way to have multi-dimensional data structures
-like these is to use references, Perl knows that any multilevel
-accesses must involve references. Perl therefore assumes that there
-must be a deferencing arrow (`->`) between any two successive sets of
-array or hash brackets and, if there isn’t one there, it acts as
-though it were there anyway. This means that we can further simplify
-our expression to:
-
-    $array_2d[1][1];
-
-This makes our structure look a lot like a traditional two-dimensional
-array in a language like C or BASIC.
-
-In all of the examples of complex data structures we have used arrays
-that contain references to arrays; but it’s just as simple to use
-arrays that contain hash references, hashes that contain hash
-references, or hashes that contain array references (or, indeed, any
-even more complex structures). Here are a few examples:
-
-    @hobbits = ({ fname => 'bilbo',
-                  lname => 'baggins' },
-                { fname => 'frodo',
-                  lname => 'baggins' },
-                { fname => 'Sam',
-                  lname => 'Gamgee' });
-
-    foreach (@hobbits) {
-      print $_->{fname}, "\n";
-    }
-
-    %races = ( hobbits => [ 'Bilbo', 'Frodo', 'Sam'],
-               men => ['Aragorn', 'Boromir', 'Theoden'],
-               elves => ['Elrond', 'Galadriel', 'Legolas'],
-               wizards => ['Gandalf', 'Saruman', 'Radagast'] );
-
-    foreach (keys %races) {
-      print "Here are some $_\n";
-      print "@{$races{$_}}\n\n";
-    }
-
-### More information on references and complex data structures
-
-The manual page perlref contains a complete guide to references, but
-it can sometimes be a little terse for a beginner. The perlreftut
-manual page is a kinder, gentler introduction to references. The
-perllol manual page contains an introduction to using Perl for the
-purpose of creating multi-dimensional arrays (or lists of lists—hence
-the name). The perldsc manual page is the data structures cookbook
-and contains information about building other kinds of data
-structures. It comes complete with a substantial number of detailed
-examples of creating and using such structures.
-
-More information on Perl
-------------------------
-
-[Chapter 12](ch017.xhtml) contains details of other places to obtain useful
-information about Perl. In general the best place to start is with
-the manual pages which come with your distribution of Perl. Typing
-perldoc perl on your command line will give you an overview of the
-various manual pages supplied and should help you decide which one to
-read for more detailed information.
+Perl's own documentation is extensive, and installed alongside the
+interpreter itself — `perldoc perl` gives you an index of everything
+else that's available, and every manual page mentioned in this
+appendix (`perldata`, `perlop`, `perlsub`, `perlref`, and the rest) is
+sitting right there on your own machine. [Chapter 12](ch017.xhtml) has
+more on where to find help and stay current with Perl generally.

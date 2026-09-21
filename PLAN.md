@@ -57,8 +57,11 @@ See `TODO.md` for the full detail behind every item below.
   missed), and added a brand-new `Web::Query` section to both Chapter
   9 and Appendix A — Dave's own current go-to for screen-scraping,
   not originally on the list. See TODO.md for full detail.
-- [ ] Appendix B: add the missing `use strict; use warnings;` mention
-  alongside the existing `-w` flag coverage.
+- [x] Appendix B: add the missing `use strict; use warnings;` mention
+  alongside the existing `-w` flag coverage — done (2026-09-21), but
+  turned into a full from-scratch rewrite rather than a patch, once a
+  quick read-through turned up how much else in there was stuck in
+  2001. See TODO.md for full detail.
 
 ## Week 5 (26 Sep – 2 Oct): Refresh CD data, tidy artwork
 

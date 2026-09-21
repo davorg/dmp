@@ -667,7 +667,8 @@ Internet at www.cpan.org. CPAN stands for the Comprehensive Perl Archive
 Network. If someone else has previously solved your particular problem then you
 will find a solution there. If you are the first person to address a particular
 problem, once you’ve solved it, why not submit the solution to the CPAN. That
-way everyone benefits.
+way everyone benefits. (Appendix B has a short section on actually installing
+modules from CPAN once you've found one you want.)
 
 * *Perl is fun* — I know this is a very subjective opinion, but the fact
 remains that I have seen jaded C programmers become fired up with enthusiasm
