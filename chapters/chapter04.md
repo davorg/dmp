@@ -686,6 +686,55 @@ strange way to print out a table of squares:
 	 11 squared is 121
 	 12 squared is 144
 
+### Transliterating characters with tr///
+
+Not every operator that looks like a regular expression actually is
+one. `tr///` (also spelled `y///`) works completely differently from
+`m//` and `s///`—it doesn’t understand any of the metacharacters,
+character classes, or quantifiers we’ve just covered. Instead, it
+works character by character, replacing each character in one list
+with the character in the same position in a second list. The syntax
+looks similar to `s///`:
+
+	tr/SEARCHLIST/REPLACEMENTLIST/
+
+For example, to replace every “a”, “e”, and “o” in a string with “4”,
+“3”, and “0” respectively:
+
+	my $string = 'Data Munging with Perl';
+	(my $leet = $string) =~ tr/aeo/430/;
+	print "$leet\n";
+
+which prints:
+
+	D4t4 Munging with P3rl
+
+Notice that only lowercase “a”, “e”, and “o” were affected—`tr///`
+matches characters literally, not case-insensitively, so an uppercase
+letter would need its own entry in both lists if you wanted it
+converted too.
+
+`tr///` really earns its keep, though, for something `s///` can’t do
+nearly as neatly: counting characters. If you leave the replacement
+list empty, `tr///` doesn’t change the string at all—it just counts
+how many characters matched, and returns that count:
+
+	my $string = 'Data Munging with Perl';
+	my $vowels = ($string =~ tr/aeiouAEIOU//);
+	print "There are $vowels vowels in '$string'\n";
+
+which prints:
+
+	There are 6 vowels in 'Data Munging with Perl'
+
+`tr///` also has a couple of useful modifiers of its own: `d` deletes
+any character in SEARCHLIST that has no corresponding entry in
+REPLACEMENTLIST, and `s` squeezes runs of consecutive identical
+replaced characters down to a single one. Between counting,
+deleting, and squeezing, `tr///` makes short work of jobs like
+stripping unwanted characters or collapsing repeated whitespace,
+without needing a full regular expression at all.
+
 ### Example: translating from English to American
 
 To finish this overview of regular expressions, let’s write a script

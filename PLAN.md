@@ -109,11 +109,13 @@ See `TODO.md` for the full detail behind every item below.
   transformations", which named the pragma with no explanation of
   what it does — now explains it properly and points forward to
   Ch5's `fc()`/`Unicode::Collate` as the more reliable modern
-  approach. Still open: `\d`/`\w`/`\s` vs Unicode property escapes
-  (`\p{...}`), named captures (`(?<name>...)`) vs numbered ones, a
-  broken promise to cover non-greedy quantifiers that never
-  arrives, and no `tr///` anywhere in the book. See TODO.md for
-  full detail.
+  approach. Also added (2026-09-28) a new "Transliterating
+  characters with tr///" section, with a leetspeak-style example
+  and the classic vowel-counting idiom. Still open: `\d`/`\w`/`\s`
+  vs Unicode property escapes (`\p{...}`), named captures
+  (`(?<name>...)`) vs numbered ones, and a broken promise to cover
+  non-greedy quantifiers that never arrives. See TODO.md for full
+  detail.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
   Bowie/LCD Soundsystem across prose, code examples, and all 9 affected
