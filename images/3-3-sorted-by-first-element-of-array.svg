@@ -23,7 +23,7 @@
   <circle cx="182" cy="40" r="4" fill="#7c3aed"/>
   <circle cx="182" cy="80" r="4" fill="#7c3aed"/>
 
-  <!-- [0]: [1971, hashref] (array -> square) -->
+  <!-- [0]: [2013, hashref] (array -> square) -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
     <rect x="300" y="20" width="160" height="80"/>
   </g>
@@ -32,12 +32,12 @@
     <line x1="340" y1="20" x2="340" y2="100"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="320" y="45" text-anchor="middle">0</text> <text x="355" y="45">1971</text>
+    <text x="320" y="45" text-anchor="middle">0</text> <text x="355" y="45">2013</text>
     <text x="320" y="85" text-anchor="middle">1</text> <text x="355" y="85" font-style="italic">hashref</text>
   </g>
   <circle cx="452" cy="80" r="4" fill="#7c3aed"/>
 
-  <!-- [1]: [1972, hashref] -->
+  <!-- [1]: [2016, hashref] -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
     <rect x="300" y="220" width="160" height="80"/>
   </g>
@@ -46,12 +46,12 @@
     <line x1="340" y1="220" x2="340" y2="300"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="320" y="245" text-anchor="middle">0</text> <text x="355" y="245">1972</text>
+    <text x="320" y="245" text-anchor="middle">0</text> <text x="355" y="245">2016</text>
     <text x="320" y="285" text-anchor="middle">1</text> <text x="355" y="285" font-style="italic">hashref</text>
   </g>
   <circle cx="452" cy="280" r="4" fill="#7c3aed"/>
 
-  <!-- Hunky Dory / 1971 hash (hash -> rounded), top-aligned with the top-tier boxes -->
+  <!-- The Next Day / 2013 hash (hash -> rounded), top-aligned with the top-tier boxes -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
     <rect x="560" y="20" width="260" height="80" rx="10" ry="10"/>
   </g>
@@ -60,11 +60,11 @@
     <line x1="650" y1="20" x2="650" y2="100"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="575" y="45">year</text>  <text x="665" y="45">1971</text>
-    <text x="575" y="85">title</text> <text x="665" y="85">Hunky Dory</text>
+    <text x="575" y="45">year</text>  <text x="665" y="45">2013</text>
+    <text x="575" y="85">title</text> <text x="665" y="85">The Next Day</text>
   </g>
 
-  <!-- Ziggy Stardust / 1972 hash -->
+  <!-- Blackstar / 2016 hash -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
     <rect x="560" y="220" width="260" height="80" rx="10" ry="10"/>
   </g>
@@ -73,8 +73,8 @@
     <line x1="650" y1="220" x2="650" y2="300"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="575" y="245">year</text>  <text x="665" y="245">1972</text>
-    <text x="575" y="285">title</text> <text x="665" y="285">Ziggy Stardust</text>
+    <text x="575" y="245">year</text>  <text x="665" y="245">2016</text>
+    <text x="575" y="285">title</text> <text x="665" y="285">Blackstar</text>
   </g>
 
   <g stroke="#7c3aed" stroke-width="1.5" fill="none" marker-end="url(#r33)">

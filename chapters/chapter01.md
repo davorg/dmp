@@ -58,17 +58,16 @@ recognition, parsing, filtering, and transformation.
 
 ### Example data: the CD file
 
-[Note: I'm aware that in the since the first edition, things have moved on and these days a
-sizeable proportion of my audience will have never owned a CD. I'm hoping that the
-concepts are well-known enough that I don't need to explain the data. If it helps, think of a
-CD as a smaller and less fragile version of your hipster vinyl collection.]
-
 To discuss these processes, let’s assume that we have a text file
-containing a description of my CD collection. For each CD, we’ll list
-the artist, title, recording label, and year of release. Additionally
-the file will contain information on the date on which it was generated
-and the number of records in the file. Figure 1.1 shows what this file
-looks like with the various parts labeled.
+containing a description of my CD collection. (I’m aware that, since
+the first edition, things have moved on, and a good few of you reading
+this will never have owned — let alone played — an actual CD. If it
+helps, think of a CD as a smaller and less fragile version of your
+hipster vinyl collection.)
+For each CD, we’ll list the artist, title, recording label, and year of
+release. Additionally the file will contain information on the date on
+which it was generated and the number of records in the file. Figure
+1.1 shows what this file looks like with the various parts labeled.
 
 ![Sample data file](images/1-1-sample-data-file.svg)
 
@@ -139,7 +138,7 @@ than you actually need. You will therefore have to reduce the amount
 of data in the data set. This can be achieved in a number of ways.
 
 * *You can reduce the number of records returned.* For example, you could
-list only CDs by David Bowie or only CDs that were released in the 1990s.
+list only CDs by David Bowie or only CDs that were released in the 2010s.
 
 * *You can reduce the number of fields returned.* For example, you could
 list only the artist, title, and year of release of all of the CDs.
@@ -149,7 +148,7 @@ could list only the total number of CDs for each artist or list the
 number of CDs released in a certain year.
 
 * *You can perform a combination of these processes.* For example, you
-could list the number of CDs by Billy Bragg.
+could list the number of CDs by Lily Allen.
 
 ## Data transformation
 

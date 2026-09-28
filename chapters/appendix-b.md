@@ -173,8 +173,8 @@ it's good practice even when nothing's forcing you.
 A scalar variable holds a single item of data — a number, a string,
 or (as we'll see later) a reference to something bigger.
 
-    my $artist = 'Bragg, Billy';
-    my $year   = 1988;
+    my $artist = 'Allen, Lily';
+    my $year   = 2009;
 
 Perl doesn't ask you to decide in advance whether a scalar holds a
 number or a string; it works out what you mean from how you use it.
@@ -202,21 +202,21 @@ code, and so on. The full set is in `perldoc perldata`.
 An array holds an ordered list of scalar values, and is prefixed with
 `@`:
 
-    my @artists = ('Bragg, Billy', 'Black, Mary', 'Bowie, David');
+    my @artists = ('Allen, Lily', 'LCD Soundsystem', 'Bowie, David');
 
 Access an individual element with a `$` sigil and a numeric index
 starting from zero — a single element of an array is a scalar value,
 not an array, which is why the sigil changes:
 
-    my $first = $artists[0];    # 'Bragg, Billy'
+    my $first = $artists[0];    # 'Allen, Lily'
     my $last  = $artists[-1];   # 'Bowie, David' -- negative indices
                                  # count back from the end
 
 If you assign to an index beyond the current end of the array, Perl
 extends it for you, filling any gap with `undef`:
 
-    $artists[10] = 'Black, Mary';   # elements 3 .. 9 now exist and
-                                     # are undef
+    $artists[10] = 'LCD Soundsystem';   # elements 3 .. 9 now exist and
+                                         # are undef
 
 A *slice* pulls out several elements at once. Because the result is
 itself a list, it keeps the `@` sigil even though you're using square
@@ -228,9 +228,9 @@ brackets:
 Be careful when combining arrays — Perl flattens them into a single
 list rather than nesting one inside the other:
 
-    my @hobbits = ('Bilbo', 'Frodo');
-    my @elves   = ('Elrond', 'Galadriel');
-    my @all     = (@hobbits, @elves);   # four elements, not two
+    my @first_pair  = ('Alice', 'Bob');
+    my @second_pair = ('Carol', 'Diana');
+    my @all         = (@first_pair, @second_pair);   # four elements, not two
 
 This is worth remembering, because it's also what happens to arguments
 passed into a subroutine, as we'll see shortly.
@@ -249,23 +249,23 @@ reference per CD — we'll see exactly how structures like this are
 built in the "References and data structures" section below:
 
     my @cds = (
-      { artist => 'Bragg, Billy', title => "Workers' Playtime",
-        label  => 'Cooking Vinyl', year => 1988 },
-      { artist => 'Black, Mary',  title => 'Circus',
-        label  => 'Grapevine',    year => 1995 },
-      { artist => 'Bowie, David', title => 'Earthling',
-        label  => 'EMI',          year => 1997 },
+      { artist => 'Allen, Lily',      title => "It's Not Me, It's You",
+        label  => 'Regal',            year => 2009 },
+      { artist => 'LCD Soundsystem',  title => 'This Is Happening',
+        label  => 'Parlophone',       year => 2010 },
+      { artist => 'Bowie, David',     title => 'Blackstar',
+        label  => 'Columbia',         year => 2016 },
     );
 
 `map` runs a block of code once for each element of a list (available
 inside the block as `$_`) and returns the list of results:
 
-    my @years = map { $_->{year} } @cds;   # (1988, 1995, 1997)
+    my @years = map { $_->{year} } @cds;   # (2009, 2010, 2016)
 
 `grep` runs a block for each element too, but returns only the
 elements for which the block was true, rather than transforming them:
 
-    my @nineties = grep { $_->{year} >= 1990 } @cds;
+    my @recent = grep { $_->{year} >= 2010 } @cds;
 
 One gotcha that catches a lot of newcomers out: assigning an *array*
 to a scalar gives you its length, but assigning a *list* to a scalar
@@ -273,7 +273,7 @@ gives you the last element of that list — these look similar but
 aren't the same operation at all:
 
     my $count    = @artists;              # length of @artists
-    my $last_one = ('Bilbo', 'Frodo');    # 'Frodo', not 2
+    my $last_one = ('Alice', 'Bob');      # 'Bob', not 2
 
 You can also find the index of an array's last element directly, with
 `$#array` (in the example above, that would be `$#artists`).
@@ -285,9 +285,9 @@ material — maps string keys to scalar values, and is prefixed with
 `%`:
 
     my %label_for = (
-      'Bragg, Billy' => 'Cooking Vinyl',
-      'Black, Mary'  => 'Grapevine',
-      'Bowie, David' => 'EMI',
+      'Allen, Lily'     => 'Regal',
+      'LCD Soundsystem' => 'Parlophone',
+      'Bowie, David'    => 'Columbia',
     );
 
 The `=>` ("fat comma") is really just a comma with better manners —
@@ -296,7 +296,7 @@ left, which is why the keys above don't need their own quotes.
 
 Access (or set) an individual value with a `$` sigil and curly braces:
 
-    my $label = $label_for{'Bragg, Billy'};
+    my $label = $label_for{'Allen, Lily'};
     $label_for{'Some New Artist'} = 'Some Label';
 
 `keys %hash` and `values %hash` return a hash's keys and values as two
@@ -311,7 +311,7 @@ A *hash slice* accesses several values at once. As with an array
 slice, the result is a list, so it takes the `@` sigil even though
 you're indexing into a `%` variable with curly braces:
 
-    my @some_labels = @label_for{'Bragg, Billy', 'Black, Mary'};
+    my @some_labels = @label_for{'Allen, Lily', 'LCD Soundsystem'};
 
 You'll build hashes like this constantly when summarizing data.
 [Chapter 2](ch005.xhtml)'s `count_cds_by_attr` routine is a good
@@ -621,7 +621,7 @@ or build one directly, with no separately-named variable to reference
 in the first place, using square or curly brackets:
 
     my $cds_ref = [ ... ];                          # anonymous array
-    my $cd_ref  = { artist => 'Bragg, Billy', ... }; # anonymous hash
+    my $cd_ref  = { artist => 'Allen, Lily', ... }; # anonymous hash
 
 This second form is how you build a structure with more than one
 level. An array of CD records, for instance — as used earlier in this
@@ -629,9 +629,9 @@ appendix, and throughout the book — is really an array where every
 element is a reference to a hash:
 
     my @cds = (
-      { artist => 'Bragg, Billy', title => "Workers' Playtime",
-        year   => 1988 },
-      { artist => 'Black, Mary',  title => 'Circus', year => 1995 },
+      { artist => 'Allen, Lily', title => "It's Not Me, It's You",
+        year   => 2009 },
+      { artist => 'Bowie, David', title => 'Blackstar', year => 2016 },
     );
 
 If you tried to build a similar structure without references — say,
@@ -660,20 +660,20 @@ between however many levels of brackets or braces you need:
     my %cds_by_year;
     push $cds_by_year{$cd->{year}}->@*, $cd for @cds;
 
-    my @from_1988 = $cds_by_year{1988}->@*;
-    my $first_1988_title = $cds_by_year{1988}[0]{title};
+    my @from_2009 = $cds_by_year{2009}->@*;
+    my $first_2009_title = $cds_by_year{2009}[0]{title};
 
 That last line demonstrates something worth knowing: Perl lets you
 drop the arrow between two *consecutive* sets of brackets or braces —
-`$cds_by_year{1988}[0]` and `$cds_by_year{1988}->[0]` mean exactly the
+`$cds_by_year{2009}[0]` and `$cds_by_year{2009}->[0]` mean exactly the
 same thing — which is why deeply nested expressions like that one stay
 readable instead of turning into a wall of arrows.
 
 You'll also come across an older style of dereferencing in existing
 code, which puts the sigil of the thing you want in front of either a
 block or a plain reference variable: `@{$cds_ref}` and `@$cds_ref`
-both mean the same as `$cds_ref->@*`, and `${$cds_by_year{1988}}[0]`
-means the same as `$cds_by_year{1988}[0]`. Postfix dereference was
+both mean the same as `$cds_ref->@*`, and `${$cds_by_year{2009}}[0]`
+means the same as `$cds_by_year{2009}[0]`. Postfix dereference was
 added in Perl 5.24, and you'll need to be able to recognize both
 styles.
 

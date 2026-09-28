@@ -769,35 +769,35 @@ we mentioned in previous sections.
 Imagine, for example, if our CD file was in a slightly different
 format, like this:
 
-	Name: Bragg, Billy
-	Title: Workers' Playtime
-	Label: Cooking Vinyl
-	Year: 1987
+	Name: Allen, Lily
+	Title: It's Not Me, It's You
+	Label: Regal
+	Year: 2009
 	%%
-	Name: Bragg, Billy
-	Title: Mermaid Avenue
-	Label: EMI
-	Year: 1998
-	%%
-	Name: Black, Mary
-	Title: The Holy Ground
-	Label: Grapevine
-	Year: 1993
-	%%
-	Name: Black, Mary
-	Title: Circus
-	Label: Grapevine
-	Year: 1996
+	Name: Allen, Lily
+	Title: West End Girl
+	Label: BMG
+	Year: 2025
 	%%
 	Name: Bowie, David
-	Title: Hunky Dory
-	Label: RCA
-	Year: 1971
+	Title: The Next Day
+	Label: Columbia
+	Year: 2013
 	%%
 	Name: Bowie, David
-	Title: Earthling
+	Title: Blackstar
+	Label: Columbia
+	Year: 2016
+	%%
+	Name: LCD Soundsystem
+	Title: Sound of Silver
 	Label: EMI
-	Year: 1997
+	Year: 2007
+	%%
+	Name: LCD Soundsystem
+	Title: This Is Happening
+	Label: Parlophone
+	Year: 2010
 
 In this case the data is exactly the same, but a record is now spread
 over a number of lines. Notice that the records are separated by a

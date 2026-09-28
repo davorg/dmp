@@ -51,10 +51,10 @@ my $grammar = qr{
         <Artist> <TitleField> <Label> <Released> \n
 
     <rule: Artist>
-        .{14}
+        .{17}
 
     <rule: TitleField>
-        .{19}
+        .{23}
 
     <rule: Label>
         .{15}
@@ -107,25 +107,25 @@ __DATA__
 Dave's CD Collection
 16 Sep 1999
 
-Artist        Title              Label          Released
---------------------------------------------------------
-Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-+She's Got A New Spell
-+Must I Paint You A Picture
-Bragg, Billy  Mermaid Avenue     EMI            1998
-+Walt Whitman's Niece
-+California Stars
-Black, Mary   The Holy Ground    Grapevine      1993
-+Summer Sent You
-+Flesh And Blood
-Black, Mary   Circus             Grapevine      1995
-+The Circus
-+In A Dream
-Bowie, David  Hunky Dory         RCA            1971
-+Changes
-+Oh You Pretty Things
-Bowie, David  Earthling          EMI            1997
-+Little Wonder
-+Looking For Satellites
+Artist           Title                  Label          Released
+---------------------------------------------------------------
+Allen, Lily      It's Not Me, It's You  Regal          2009
++The Fear
++22
+Allen, Lily      West End Girl          BMG            2025
++West End Girl
++Madeline
+Bowie, David     The Next Day           Columbia       2013
++Where Are We Now?
++Valentine's Day
+Bowie, David     Blackstar              Columbia       2016
++Lazarus
++Girl Loves Me
+LCD Soundsystem  Sound of Silver        EMI            2007
++Someone Great
++North American Scum
+LCD Soundsystem  This Is Happening      Parlophone     2010
++I Can Change
++Drunk Girls
 6 Records
 

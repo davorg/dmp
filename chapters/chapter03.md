@@ -562,40 +562,40 @@ output:
 
 	$VAR1 = [
 		{
-		  'artist' => 'Bragg, Billy',
-		  'title' => 'Workers\' Playtime',
-		  'year' => '1987',
-		  'label' => 'Cooking Vinyl'
+		  'artist' => 'Allen, Lily',
+		  'title' => 'It\'s Not Me, It\'s You',
+		  'year' => '2009',
+		  'label' => 'Regal'
 		},
 		{
-		  'artist' => 'Bragg, Billy',
-		  'title' => 'Mermaid Avenue',
-		  'year' => '1998',
-		  'label' => 'EMI'
-		},
-		{
-		  'artist' => 'Black, Mary',
-		  'title' => 'The Holy Ground',
-		  'year' => '1993',
-		  'label' => 'Grapevine'
-		},
-		{
-		  'artist' => 'Black, Mary',
-		  'title' => 'Circus',
-		  'year' => '1996',
-		  'label' => 'Grapevine'
+		  'artist' => 'Allen, Lily',
+		  'title' => 'West End Girl',
+		  'year' => '2025',
+		  'label' => 'BMG'
 		},
 		{
 		  'artist' => 'Bowie, David',
-		  'title' => 'Hunky Dory',
-		  'year' => '1971',
-		  'label' => 'RCA'
+		  'title' => 'The Next Day',
+		  'year' => '2013',
+		  'label' => 'Columbia'
 		},
 		{
 		  'artist' => 'Bowie, David',
-		  'title' => 'Earthling',
-		  'year' => '1997',
+		  'title' => 'Blackstar',
+		  'year' => '2016',
+		  'label' => 'Columbia'
+		},
+		{
+		  'artist' => 'LCD Soundsystem',
+		  'title' => 'Sound of Silver',
+		  'year' => '2007',
 		  'label' => 'EMI'
+		},
+		{
+		  'artist' => 'LCD Soundsystem',
+		  'title' => 'This Is Happening',
+		  'year' => '2010',
+		  'label' => 'Parlophone'
 		}
 	];
 
@@ -632,40 +632,40 @@ And produces the following output:
 
     [
         [0] {
-                artist   "Bragg, Billy",
-                label    "Cooking Vinyl",
-                title    "Workers' Playtime",
-                year     1987
+                artist   "Allen, Lily",
+                label    "Regal",
+                title    "It's Not Me, It's You",
+                year     2009
             },
         [1] {
-                artist   "Bragg, Billy",
-                label    "EMI",
-                title    "Mermaid Avenue",
-                year     1998
+                artist   "Allen, Lily",
+                label    "BMG",
+                title    "West End Girl",
+                year     2025
             },
         [2] {
-                artist   "Black, Mary",
-                label    "Grapevine",
-                title    "The Holy Ground",
-                year     1993
+                artist   "Bowie, David",
+                label    "Columbia",
+                title    "The Next Day",
+                year     2013
             },
         [3] {
-                artist   "Black, Mary",
-                label    "Grapevine",
-                title    "Circus",
-                year     1996
+                artist   "Bowie, David",
+                label    "Columbia",
+                title    "Blackstar",
+                year     2016
             },
         [4] {
-                artist   "Bowie, David",
-                label    "RCA",
-                title    "Hunky Dory",
-                year     1971
+                artist   "LCD Soundsystem",
+                label    "EMI",
+                title    "Sound of Silver",
+                year     2007
             },
         [5] {
-                artist   "Bowie, David",
-                label    "EMI",
-                title    "Earthling",
-                year     1997
+                artist   "LCD Soundsystem",
+                label    "Parlophone",
+                title    "This Is Happening",
+                year     2010
             }
     ]
 

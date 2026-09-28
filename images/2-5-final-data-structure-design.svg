@@ -113,9 +113,9 @@
   </g>
   <g font-size="15" fill="#1a1a2e">
     <text x="435" y="43">artist</text> <text x="525" y="43">David Bowie</text>
-    <text x="435" y="76">title</text>  <text x="525" y="76">Hunky Dory</text>
-    <text x="435" y="110">label</text> <text x="525" y="110">RCA</text>
-    <text x="435" y="143">year</text>  <text x="525" y="143">1971</text>
+    <text x="435" y="76">title</text>  <text x="525" y="76">Blackstar</text>
+    <text x="435" y="110">label</text> <text x="525" y="110">Columbia</text>
+    <text x="435" y="143">year</text>  <text x="525" y="143">2016</text>
   </g>
 
   <path d="M 196 38 L 420 38" stroke="#7c3aed" stroke-width="1.5" fill="none" marker-end="url(#ref5)"/>

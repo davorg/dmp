@@ -706,35 +706,35 @@ as an XML feed:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <cds>
-      <cd artist="Bragg, Billy" title="Workers' Playtime"
-          label="Cooking Vinyl" released="1988">
-        <track>She's Got A New Spell</track>
-        <track>Must I Paint You A Picture</track>
+      <cd artist="Allen, Lily" title="It's Not Me, It's You"
+          label="Regal" released="2009">
+        <track>The Fear</track>
+        <track>22</track>
       </cd>
-      <cd artist="Bragg, Billy" title="Mermaid Avenue"
-          label="EMI" released="1998">
-        <track>Walt Whitman's Niece</track>
-        <track>California Stars</track>
+      <cd artist="Allen, Lily" title="West End Girl"
+          label="BMG" released="2025">
+        <track>West End Girl</track>
+        <track>Madeline</track>
       </cd>
-      <cd artist="Black, Mary" title="The Holy Ground"
-          label="Grapevine" released="1993">
-        <track>Summer Sent You</track>
-        <track>Flesh And Blood</track>
+      <cd artist="Bowie, David" title="The Next Day"
+          label="Columbia" released="2013">
+        <track>Where Are We Now?</track>
+        <track>Valentine's Day</track>
       </cd>
-      <cd artist="Black, Mary" title="Circus"
-          label="Grapevine" released="1995">
-        <track>The Circus</track>
-        <track>In A Dream</track>
+      <cd artist="Bowie, David" title="Blackstar"
+          label="Columbia" released="2016">
+        <track>Lazarus</track>
+        <track>Girl Loves Me</track>
       </cd>
-      <cd artist="Bowie, David" title="Hunky Dory"
-          label="RCA" released="1971">
-        <track>Changes</track>
-        <track>Oh You Pretty Things</track>
+      <cd artist="LCD Soundsystem" title="Sound of Silver"
+          label="EMI" released="2007">
+        <track>Someone Great</track>
+        <track>North American Scum</track>
       </cd>
-      <cd artist="Bowie, David" title="Earthling"
-          label="EMI" released="1997">
-        <track>Little Wonder</track>
-        <track>Looking For Satellites</track>
+      <cd artist="LCD Soundsystem" title="This Is Happening"
+          label="Parlophone" released="2010">
+        <track>I Can Change</track>
+        <track>Drunk Girls</track>
       </cd>
     </cds>
 

@@ -56,14 +56,14 @@ Let’s take another look at that first sample data file.
 
 	 Dave's CD Collection
 	 16 Sep 1999
-	 Artist        Title              Label          Released
-	 --------------------------------------------------------
-	 Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-	 Bragg, Billy  Mermaid Avenue     EMI            1998
-	 Black, Mary   The Holy Ground    Grapevine      1993
-	 Black, Mary   Circus             Grapevine      1995
-	 Bowie, David  Hunky Dory         RCA            1971
-	 Bowie, David  Earthling          EMI            1997
+	 Artist           Title                  Label          Released
+	 ---------------------------------------------------------------
+	 Allen, Lily      It's Not Me, It's You  Regal          2009
+	 Allen, Lily      West End Girl          BMG            2025
+	 Bowie, David     The Next Day           Columbia       2013
+	 Bowie, David     Blackstar              Columbia       2016
+	 LCD Soundsystem  Sound of Silver        EMI            2007
+	 LCD Soundsystem  This Is Happening      Parlophone     2010
 	 6 Records
 
 As you can see, the data consists of three clearly delimited
@@ -117,26 +117,26 @@ something like this (listing only the first two tracks):
 
 	Dave's CD Collection
 	16 Sep 1999
-	Artist        Title              Label          Released
-	--------------------------------------------------------
-	Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-	+She's Got A New Spell
-	+Must I Paint You A Picture
-	Bragg, Billy  Mermaid Avenue     EMI            1998
-	+Walt Whitman's Niece
-	+California Stars
-	Black, Mary   The Holy Ground    Grapevine      1993
-	+Summer Sent You
-	+Flesh And Blood
-	Black, Mary   Circus             Grapevine      1995
-	+The Circus
-	+In A Dream
-	Bowie, David  Hunky Dory         RCA            1971
-	+Changes
-	+Oh You Pretty Things
-	Bowie, David  Earthling          EMI            1997
-	+Little Wonder
-	+Looking For Satellites
+	Artist           Title                  Label          Released
+	---------------------------------------------------------------
+	Allen, Lily      It's Not Me, It's You  Regal          2009
+	+The Fear
+	+22
+	Allen, Lily      West End Girl          BMG            2025
+	+West End Girl
+	+Madeline
+	Bowie, David     The Next Day           Columbia       2013
+	+Where Are We Now?
+	+Valentine's Day
+	Bowie, David     Blackstar              Columbia       2016
+	+Lazarus
+	+Girl Loves Me
+	LCD Soundsystem  Sound of Silver        EMI            2007
+	+Someone Great
+	+North American Scum
+	LCD Soundsystem  This Is Happening      Parlophone     2010
+	+I Can Change
+	+Drunk Girls
 	6 Records
 
 ### Example: reading the expanded CD file
@@ -155,7 +155,7 @@ data structure.
 	8: @labels = split(/\s+/, $labels);
 	9: <STDIN>;
 	10:
-	11: my $template = 'A14 A19 A15 A8';
+	11: my $template = 'A17 A23 A15 A8';
 	12:
 	13: my %rec;
 	14: while (<STDIN>) {
@@ -185,7 +185,7 @@ data structure.
 
 This code is not the best way to achieve this. We’ll see a far better
 way when we examine the module
-[Parse::RecDescent](https://metacpan.org/pod/Parse::RecDescent) in
+[Regexp::Grammars](https://metacpan.org/pod/Regexp::Grammars) in
 [Chapter 11](ch016.xhtml), but in the meantime let’s take a look at
 the code in more detail to see where it’s a bit kludgy.
 

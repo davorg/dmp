@@ -21,17 +21,17 @@
     <line x1="110" y1="20" x2="110" y2="220"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="25" y="43">1971</text>  <text x="125" y="43" font-style="italic">arrayref</text>
-    <text x="25" y="76">1987</text>  <text x="125" y="76" font-style="italic">arrayref</text>
-    <text x="25" y="110">1993</text> <text x="125" y="110" font-style="italic">arrayref</text>
-    <text x="25" y="143">1996</text> <text x="125" y="143" font-style="italic">arrayref</text>
-    <text x="25" y="176">1997</text> <text x="125" y="176" font-style="italic">arrayref</text>
-    <text x="25" y="210">1998</text> <text x="125" y="210" font-style="italic">arrayref</text>
+    <text x="25" y="43">2007</text>  <text x="125" y="43" font-style="italic">arrayref</text>
+    <text x="25" y="76">2009</text>  <text x="125" y="76" font-style="italic">arrayref</text>
+    <text x="25" y="110">2010</text> <text x="125" y="110" font-style="italic">arrayref</text>
+    <text x="25" y="143">2013</text> <text x="125" y="143" font-style="italic">arrayref</text>
+    <text x="25" y="176">2016</text> <text x="125" y="176" font-style="italic">arrayref</text>
+    <text x="25" y="210">2025</text> <text x="125" y="210" font-style="italic">arrayref</text>
   </g>
   <circle cx="222" cy="38" r="4" fill="#7c3aed"/>
 
   <!-- Every year maps to an arrayref, so every row gets a reference dot;
-       only 1971's is followed all the way, and the rest fade out to show
+       only 2016's is followed all the way, and the rest fade out to show
        they point somewhere too (same treatment as Figure 2.5). -->
   <g fill="#7c3aed">
     <circle cx="222" cy="71" r="4"/>
@@ -98,8 +98,8 @@
   </g>
   <g font-size="15" fill="#1a1a2e">
     <text x="575" y="43">artist</text> <text x="665" y="43">David Bowie</text>
-    <text x="575" y="76">title</text>  <text x="665" y="76">Hunky Dory</text>
-    <text x="575" y="110">label</text> <text x="665" y="110">RCA</text>
+    <text x="575" y="76">title</text>  <text x="665" y="76">Blackstar</text>
+    <text x="575" y="110">label</text> <text x="665" y="110">Columbia</text>
   </g>
 
   <path d="M 226 38 L 330 38" stroke="#7c3aed" stroke-width="1.5" fill="none" marker-end="url(#ref)"/>

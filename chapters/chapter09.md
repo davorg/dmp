@@ -569,19 +569,19 @@ Here's the CD collection again, this time as a fragment of HTML
 
 	<ul id="collection">
 	  <li class="cd">
-	    <span class="artist">Bragg, Billy</span>
-	    <span class="title">Workers' Playtime</span>
-	    <span class="year">1988</span>
+	    <span class="artist">Allen, Lily</span>
+	    <span class="title">West End Girl</span>
+	    <span class="year">2025</span>
 	  </li>
 	  <li class="cd">
-	    <span class="artist">Black, Mary</span>
-	    <span class="title">Circus</span>
-	    <span class="year">1995</span>
+	    <span class="artist">LCD Soundsystem</span>
+	    <span class="title">This Is Happening</span>
+	    <span class="year">2010</span>
 	  </li>
 	  <li class="cd">
 	    <span class="artist">Bowie, David</span>
-	    <span class="title">Earthling</span>
-	    <span class="year">1997</span>
+	    <span class="title">Blackstar</span>
+	    <span class="year">2016</span>
 	  </li>
 	</ul>
 
@@ -598,9 +598,9 @@ And here's Web::Query pulling the artist and title out of each CD:
 
 which prints:
 
-	Bragg, Billy - Workers' Playtime
-	Black, Mary - Circus
-	Bowie, David - Earthling
+	Allen, Lily - West End Girl
+	LCD Soundsystem - This Is Happening
+	Bowie, David - Blackstar
 
 `wq()` (exported by the module) builds a Web::Query object from a
 filename, a string of HTML, or a URL—it fetches the page for you if

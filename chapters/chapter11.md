@@ -475,26 +475,26 @@ is the data file we were discussing:
     Dave's CD Collection
     16 Sep 1999
 
-    Artist        Title              Label          Released
-    --------------------------------------------------------
-    Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-    +She's Got A New Spell
-    +Must I Paint You A Picture
-    Bragg, Billy  Mermaid Avenue     EMI            1998
-    +Walt Whitman's Niece
-    +California Stars
-    Black, Mary   The Holy Ground    Grapevine      1993
-    +Summer Sent You
-    +Flesh And Blood
-    Black, Mary   Circus             Grapevine      1995
-    +The Circus
-    +In A Dream
-    Bowie, David  Hunky Dory         RCA            1971
-    +Changes
-    +Oh You Pretty Things
-    Bowie, David  Earthling          EMI            1997
-    +Little Wonder
-    +Looking For Satellites
+    Artist           Title                  Label          Released
+    ---------------------------------------------------------------
+    Allen, Lily      It's Not Me, It's You  Regal          2009
+    +The Fear
+    +22
+    Allen, Lily      West End Girl          BMG            2025
+    +West End Girl
+    +Madeline
+    Bowie, David     The Next Day           Columbia       2013
+    +Where Are We Now?
+    +Valentine's Day
+    Bowie, David     Blackstar              Columbia       2016
+    +Lazarus
+    +Girl Loves Me
+    LCD Soundsystem  Sound of Silver        EMI            2007
+    +Someone Great
+    +North American Scum
+    LCD Soundsystem  This Is Happening      Parlophone     2010
+    +I Can Change
+    +Drunk Girls
 
     6 Records
 
@@ -554,10 +554,10 @@ Here is the grammar that I have designed for parsing the CD data file.
             <Artist> <TitleField> <Label> <Released> \n
 
         <rule: Artist>
-            .{14}
+            .{17}
 
         <rule: TitleField>
-            .{19}
+            .{23}
 
         <rule: Label>
             .{15}
@@ -709,10 +709,10 @@ turns the raw parse tree into a tidier data structure:
             <Artist> <TitleField> <Label> <Released> \n
 
         <rule: Artist>
-            .{14}
+            .{17}
 
         <rule: TitleField>
-            .{19}
+            .{23}
 
         <rule: Label>
             .{15}
@@ -765,26 +765,26 @@ turns the raw parse tree into a tidier data structure:
     Dave's CD Collection
     16 Sep 1999
 
-    Artist        Title              Label          Released
-    --------------------------------------------------------
-    Bragg, Billy  Workers' Playtime  Cooking Vinyl  1988
-    +She's Got A New Spell
-    +Must I Paint You A Picture
-    Bragg, Billy  Mermaid Avenue     EMI            1998
-    +Walt Whitman's Niece
-    +California Stars
-    Black, Mary   The Holy Ground    Grapevine      1993
-    +Summer Sent You
-    +Flesh And Blood
-    Black, Mary   Circus             Grapevine      1995
-    +The Circus
-    +In A Dream
-    Bowie, David  Hunky Dory         RCA            1971
-    +Changes
-    +Oh You Pretty Things
-    Bowie, David  Earthling          EMI            1997
-    +Little Wonder
-    +Looking For Satellites
+    Artist           Title                  Label          Released
+    ---------------------------------------------------------------
+    Allen, Lily      It's Not Me, It's You  Regal          2009
+    +The Fear
+    +22
+    Allen, Lily      West End Girl          BMG            2025
+    +West End Girl
+    +Madeline
+    Bowie, David     The Next Day           Columbia       2013
+    +Where Are We Now?
+    +Valentine's Day
+    Bowie, David     Blackstar              Columbia       2016
+    +Lazarus
+    +Girl Loves Me
+    LCD Soundsystem  Sound of Silver        EMI            2007
+    +Someone Great
+    +North American Scum
+    LCD Soundsystem  This Is Happening      Parlophone     2010
+    +I Can Change
+    +Drunk Girls
 
     6 Records
 
@@ -813,63 +813,63 @@ this:
     $VAR1 = {
              'list' => [
                         {
-                          'released' => '1988',
-                          'artist' => 'Bragg, Billy',
-                          'title' => 'Workers\' Playtime',
-                          'label' => 'Cooking Vinyl',
+                          'released' => '2009',
+                          'artist' => 'Allen, Lily',
+                          'title' => 'It\'s Not Me, It\'s You',
+                          'label' => 'Regal',
                           'tracks' => [
-                                        'She\'s Got A New Spell',
-                                        'Must I Paint You A Picture'
+                                        'The Fear',
+                                        '22'
                                       ]
                         },
                         {
-                        'released' => '1998',
-                        'artist' => 'Bragg, Billy',
-                        'title' => 'Mermaid Avenue',
+                        'released' => '2025',
+                        'artist' => 'Allen, Lily',
+                        'title' => 'West End Girl',
+                        'label' => 'BMG',
+                        'tracks' => [
+                                      'West End Girl',
+                                      'Madeline'
+                                    ]
+                        },
+                        {
+                        'released' => '2013',
+                        'artist' => 'Bowie, David',
+                        'title' => 'The Next Day',
+                        'label' => 'Columbia',
+                        'tracks' => [
+                                      'Where Are We Now?',
+                                      'Valentine\'s Day'
+                                    ]
+                        },
+                        {
+                        'released' => '2016',
+                        'artist' => 'Bowie, David',
+                        'title' => 'Blackstar',
+                        'label' => 'Columbia',
+                        'tracks' => [
+                                      'Lazarus',
+                                      'Girl Loves Me'
+                                    ]
+                        },
+                        {
+                        'released' => '2007',
+                        'artist' => 'LCD Soundsystem',
+                        'title' => 'Sound of Silver',
                         'label' => 'EMI',
                         'tracks' => [
-                                      'Walt Whitman\'s Niece',
-                                      'California Stars'
+                                      'Someone Great',
+                                      'North American Scum'
                                     ]
                         },
                         {
-                        'released' => '1993',
-                        'artist' => 'Black, Mary',
-                        'title' => 'The Holy Ground',
-                        'label' => 'Grapevine',
+                        'released' => '2010',
+                        'artist' => 'LCD Soundsystem',
+                        'title' => 'This Is Happening',
+                        'label' => 'Parlophone',
                         'tracks' => [
-                                      'Summer Sent You',
-                                      'Flesh And Blood'
-                                    ]
-                        },
-                        {
-                        'released' => '1995',
-                        'artist' => 'Black, Mary',
-                        'title' => 'Circus',
-                        'label' => 'Grapevine',
-                        'tracks' => [
-                                      'The Circus',
-                                      'In A Dream'
-                                    ]
-                        },
-                        {
-                        'released' => '1971',
-                        'artist' => 'Bowie, David',
-                        'title' => 'Hunky Dory',
-                        'label' => 'RCA',
-                        'tracks' => [
-                                      'Changes',
-                                      'Oh You Pretty Things'
-                                    ]
-                        },
-                        {
-                        'released' => '1997',
-                        'artist' => 'Bowie, David',
-                        'title' => 'Earthling',
-                        'label' => 'EMI',
-                        'tracks' => [
-                                      'Little Wonder',
-                                      'Looking For Satellites'
+                                      'I Can Change',
+                                      'Drunk Girls'
                                     ]
                         }
                       ],
