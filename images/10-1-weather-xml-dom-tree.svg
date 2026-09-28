@@ -37,11 +37,12 @@
   <text x="625" y="135" font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">temperature</text>
   <text x="625" y="160" font-size="13" fill="#475569" text-anchor="middle">type: MIN, degrees: C</text>
 
-  <!-- text node: "Partly Cloudy" -->
+  <!-- text node: "Partly Cloudy", aligned with the other two leaves below,
+       even though its parent (outlook) is a shorter box than theirs -->
   <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
-    <rect x="115" y="210" width="150" height="40" rx="6" ry="6"/>
+    <rect x="115" y="230" width="150" height="40" rx="6" ry="6"/>
   </g>
-  <text x="190" y="235" font-size="14" font-style="italic" fill="#475569" text-anchor="middle">Partly Cloudy</text>
+  <text x="190" y="255" font-size="14" font-style="italic" fill="#475569" text-anchor="middle">Partly Cloudy</text>
 
   <!-- text node: "12" -->
   <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
@@ -61,7 +62,7 @@
     <path d="M 403 64 L 403 87 L 190 87 L 190 110"/>
     <path d="M 403 64 L 403 87 L 395 87 L 395 110"/>
     <path d="M 403 64 L 403 87 L 625 87 L 625 110"/>
-    <path d="M 190 154 L 190 210"/>
+    <path d="M 190 154 L 190 230"/>
     <path d="M 395 178 L 395 230"/>
     <path d="M 625 178 L 625 230"/>
   </g>
