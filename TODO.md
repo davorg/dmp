@@ -6,7 +6,10 @@ Findings from a full read-through of `Data Munging with Perl (2ed).pdf` (234 pag
 
 **LeanPub note (2026-08-05):** updates reach the LeanPub WIP edition via manual upload — no GitHub sync is configured, so a built EPUB/PDF from this repo has to be produced and uploaded by hand each time.
 
+**Release cadence (set 2026-09-28):** Dave's aiming for **fortnightly** WIP releases, announced on Fosstodon (last one: [18 Sep](https://fosstodon.org/@davorg/117292942239689550)). Next release due **Friday 2 October 2026**, then every two weeks after that (16 Oct, 30 Oct, ...) — 30 Oct would be the last one before the 24 Oct manuscript-complete target in PLAN.md, so worth double-checking that date once we're closer. Before each release: build a fresh EPUB/PDF (`make epub`/`make pdf`), Dave uploads to LeanPub by hand, and the completion percentage (see below) is worth revisiting given whatever's landed since the last one.
+
 **Completion estimate (2026-08-06):** for the LeanPub "percentage complete" field, set to **65%**. My own read was 75–80% — every chapter is structurally complete and readable, and the worst staleness (dead XML chapter, broken weather example, ancient parser tooling) is fixed — but Dave's going with the more pessimistic figure given what's still open below: real rewrites still needed for Ch5 (Unicode) and Ch6 (dates), the Appendix A drift found today, and the smaller polish items (copyright wording, artwork, Appendix B). Worth revisiting this number each time a chapter from the "Outdated code / modules" or "New topics" lists below gets closed out.
+**Update (2026-08-22):** revised to **75%**, per Dave — Ch5 and Ch6 rewrites both landed. Not revisited since; given everything that's landed since then (Ch1/2/12 audits, Appendix A rewrite, Ch3 audit, CD data refresh, new diagrams, full Ch4 audit), this is due another look before Friday's release.
 
 ## 2026-08-05 pre-release sprint — done
 

@@ -4,6 +4,11 @@
 weeks for production (ebook + paperback) means the manuscript needs to be
 complete by **Saturday 24 October 2026** — eight weeks from now.
 
+**Release cadence (set 2026-09-28):** fortnightly WIP releases to LeanPub,
+announced on Fosstodon. Last one: 18 Sep. Next: **Friday 2 October**, then
+16 Oct, 30 Oct, and so on — see TODO.md for the build/upload checklist and
+the completion-percentage note.
+
 See `TODO.md` for the full detail behind every item below.
 
 ## Week 1 (29 Aug – 4 Sep): Chapter 7 audit
