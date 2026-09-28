@@ -217,6 +217,8 @@ the value is shown on the right of the row.
 referenced variable. The type of the reference appears to the left of the
 disk.
 
+![Diagram key: how arrays, hashes, and references are drawn in this book](images/preface-diagram-key.svg)
+
 Source code downloads
 ---------------------
 

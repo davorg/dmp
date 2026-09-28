@@ -97,8 +97,10 @@ See `TODO.md` for the full detail behind every item below.
 - Refresh the CD collection example data — the album years (Hunky Dory
   1971, etc.) read as dated. Touches prose, code, and diagrams across
   several chapters.
-- Wire `foreword-diagram-key.svg` into Chapter 1 or 2, once caption
-  wording is settled.
+- [x] Wire `preface-diagram-key.svg` (renamed from `foreword-diagram-key.svg`
+  — 2026-09-28 — it belongs with the Preface's "Typographical conventions"
+  section, not the Foreword) into the Preface, alongside the existing
+  array/hash/reference bullets it illustrates.
 - Clean up the three orphaned images.
 
 ## Week 6 (3–9 Oct): New-topics decision + version-citation sweep
