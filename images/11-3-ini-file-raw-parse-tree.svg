@@ -2,25 +2,30 @@
 
   <rect x="0" y="0" width="1470" height="410" fill="#ffffff"/>
 
-  <!-- %/ top level: File -> hashref (hash -> rounded corners) -->
+  <!-- %/ top level: File -> hashref (hash -> rounded corners).
+       Box widths and internal margins are measured from actual glyph
+       widths at this font/size (File 24px, hashref-italic ~55px, etc.),
+       giving a consistent 15px pad: box edge -> label -> 15px -> divider
+       -> 15px -> value -> 15px -> box edge. Top-aligned with the Section
+       array's row 0 so the arrows into and out of it are flat. -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
-    <rect x="10" y="190" width="140" height="40" rx="10" ry="10"/>
+    <rect x="10" y="170" width="139" height="40" rx="10" ry="10"/>
   </g>
-  <line x1="80" y1="190" x2="80" y2="230" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="64" y1="170" x2="64" y2="210" stroke="#cbd5e1" stroke-width="1"/>
   <g font-size="15" fill="#1a1a2e">
-    <text x="25" y="215">File</text> <text x="95" y="215" font-style="italic">hashref</text>
+    <text x="25" y="195">File</text> <text x="79" y="195" font-style="italic">hashref</text>
   </g>
-  <circle cx="150" cy="210" r="4" fill="#7c3aed"/>
+  <circle cx="149" cy="190" r="4" fill="#7c3aed"/>
 
   <!-- File hash: Section -> arrayref -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
-    <rect x="210" y="190" width="170" height="40" rx="10" ry="10"/>
+    <rect x="199" y="170" width="167" height="40" rx="10" ry="10"/>
   </g>
-  <line x1="295" y1="190" x2="295" y2="230" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="279" y1="170" x2="279" y2="210" stroke="#cbd5e1" stroke-width="1"/>
   <g font-size="15" fill="#1a1a2e">
-    <text x="225" y="215">Section</text> <text x="305" y="215" font-style="italic">arrayref</text>
+    <text x="214" y="195">Section</text> <text x="294" y="195" font-style="italic">arrayref</text>
   </g>
-  <circle cx="380" cy="210" r="4" fill="#7c3aed"/>
+  <circle cx="366" cy="190" r="4" fill="#7c3aed"/>
 
   <!-- Section array: index | hashref (array -> square corners); only index 0 followed -->
   <g stroke="#cbd5e1" stroke-width="1.5" fill="#f8fafc">
@@ -31,8 +36,8 @@
     <line x1="480" y1="170" x2="480" y2="250"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="460" y="195" text-anchor="middle">0</text> <text x="500" y="195" font-style="italic">hashref</text>
-    <text x="460" y="235" text-anchor="middle">1</text> <text x="500" y="235" font-style="italic">hashref</text>
+    <text x="460" y="195" text-anchor="middle">0</text> <text x="495" y="195" font-style="italic">hashref</text>
+    <text x="460" y="235" text-anchor="middle">1</text> <text x="495" y="235" font-style="italic">hashref</text>
   </g>
   <circle cx="580" cy="190" r="4" fill="#7c3aed"/>
   <circle cx="580" cy="230" r="4" fill="#7c3aed"/>
@@ -113,21 +118,21 @@
     <line x1="1320" y1="260" x2="1320" y2="340"/>
   </g>
   <g font-size="15" fill="#1a1a2e">
-    <text x="1265" y="285">Key</text>   <text x="1330" y="285">input</text>
-    <text x="1265" y="325">Value</text> <text x="1330" y="325">data_in</text>
+    <text x="1265" y="285">Key</text>   <text x="1335" y="285">input</text>
+    <text x="1265" y="325">Value</text> <text x="1335" y="325">data_in</text>
   </g>
 
   <!-- connecting arrows -->
   <g stroke="#7c3aed" stroke-width="1.5" fill="none">
-    <path d="M 154 210 L 206 210"/>
-    <path d="M 384 210 L 436 190"/>
+    <path d="M 153 190 L 195 190"/>
+    <path d="M 370 190 L 436 190"/>
     <path d="M 584 190 L 646 190"/>
     <path d="M 864 190 L 930 190 L 930 65 L 996 65"/>
     <path d="M 864 230 L 930 230 L 930 280 L 996 280"/>
     <path d="M 1154 280 L 1246 280"/>
   </g>
   <g fill="#7c3aed">
-    <polygon points="206,210 199,206.5 199,213.5"/>
+    <polygon points="195,190 188,186.5 188,193.5"/>
     <polygon points="436,190 429,186.5 429,193.5"/>
     <polygon points="646,190 639,186.5 639,193.5"/>
     <polygon points="996,65 989,61.5 989,68.5"/>
