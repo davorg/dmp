@@ -144,7 +144,7 @@ correct code to achieve this is:
 
 The second trap for the unwary is that these functions will respect
 your local language character set, but to make use of that, you need
-to switch on Perl’s locale support by including the line use locale
+to switch on Perl’s locale support by including the line `use locale`
 in your program.
 
 Regular expressions
@@ -250,7 +250,7 @@ will match any lower case letter.
 To match any character that is not in a character class, put a caret
 (`^`) at the start of the group, so
 
-	/[\^aeiouAEIOU]/
+	/[^aeiouAEIOU]/
 
 matches any nonvowel (note that this does not just match consonants;
 it will also match punctuation characters, spaces, control
@@ -358,7 +358,7 @@ header line which consists of a string such as “From”, “To”, or
 “Subject” followed by a colon, an optional space and some more text,
 you could use a regular expression like this:
 
-	/\^[\^:]+: ?.+\$/
+	/^[^:]+: ?.+$/
 
 which matches the start of the line followed by at least one noncolon
 character, followed by a colon, an optional space, and at least one
@@ -414,9 +414,9 @@ for example, that you have a text file containing email messages and
 you want to print out all of the lines containing “From” headers. You
 could do something like this:
 
-	open my $mail_fh, '<', 'mail.txt' or die "Can’t open mail.txt: \$!";
+	open my $mail_fh, '<', 'mail.txt' or die "Can’t open mail.txt: $!";
 	while (<$mail_fh>) {
-  	  print if m/\^From:/;
+  	  print if m/^From:/;
 	}
 
 The while loop reads in another line from the file each time around
@@ -428,16 +428,16 @@ lines are then printed to `STDOUT`.
 One nice touch with the match operator is that in many cases the m is
 optional so we can write the match statement in our scripts as
 
-	print if /\^From:/;
+	print if /^From:/;
 
 and that is how you will see it in most scripts that you encounter.
 It is also possible to use delimiters other than the `/` character, but
 in this case the m becomes mandatory. To see why you might want to
 do this, look at this example:
 
-	open my $fh, '<', 'files.txt' or die "Can't open files.txt: \$!";
+	open my $fh, '<', 'files.txt' or die "Can't open files.txt: $!";
 	while (<$fh>) {
-	  print if /\\/davec\\//;
+	  print if /\/davec\//;
 	}
 
 In this script we are doing a very similar thing to the previous
@@ -485,7 +485,7 @@ an email body can contain the character “:”):
 	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
 	while (<$mail_fh>) {
 	  if (/^([^:]+): ?(.+)$/) {
-	    print "Header \$1 has the value \$2\\n";
+	    print "Header $1 has the value $2\n";
 	  }
 	}
 
@@ -496,9 +496,9 @@ evaluated in an array context, it returns the values of `$1`, `$2`, and
 so forth in a list. We could, therefore, rewrite the previous example
 as:
 
-	open $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: \$!";
+	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
 	my ($header, $value);
-	while (<MAIL>) {
+	while (<$mail_fh>) {
 	  if (($header, $value) = /^([^:]+): ?(.+)$/) {
 	    print "Header $header has the value $value\n";
 	  }
@@ -576,7 +576,7 @@ used to match email headers, is it easier to follow like this:
 	      # start of line
 	[^:]+ # at least one non-colon
 	:     # a colon
-	\\s?  # an optional white space character
+	\s?   # an optional white space character
 	.+    # at least one other character
 	$/x   # end of line
 
@@ -691,79 +691,79 @@ to them. The program will look something like this:
 
 	  1: #!/usr/bin/perl
 	  2: use strict;
-         use warnings;
-	  3:
-	  4: while (<STDIN>) {
+	  3: use warnings;
+	  4: use v5.36;
 	  5:
-	  6:   s/(\w+)/translate($1)/ge;
-	  7:   print;
-	  8: }
-	  9:
-	 10: my %trans;
-	 11: sub translate($word) {
-	 12:   $trans{lc $word} ||= get_trans(lc $word);
-	 13: }
-	 14:
-	 15: sub get_trans($word) {
-	 16:   my $file = 'american.txt';
-	 17:   open my $trans_fh, '<', $file or die "Can't open $file: $!";
+	  6: while (<STDIN>) {
+	  7:   s/(\w+)/translate($1)/ge;
+	  8:   print;
+	  9: }
+	 10:
+	 11: my %trans;
+	 12: sub translate($word) {
+	 13:   $trans{lc $word} ||= get_trans(lc $word);
+	 14: }
+	 15:
+	 16: sub get_trans($word) {
+	 17:   my $file = 'american.txt';
 	 18:
-	 19:   my ($english, $american);
-	 20:   while (<$trans_fh>)) {
-	 21:     chomp;
-	 22:     ($english, $american) = split /\t/;
-	 23:     do { $word = $american; last; } if $english eq $word;
-	 24:   }
-	 25: 
+	 19:   open my $trans_fh, '<', $file or die "Can't open $file: $!";
+	 20:
+	 21:   while (defined(my $line = <$trans_fh>)) {
+	 22:     chomp $line;
+	 23:     my ($english, $american) = split(/\t/, $line);
+	 24:     do { $word = $american; last; } if $english eq $word;
+	 25:   }
 	 26:   return $word;
 	 27: }
 
 #### How the translation program works
 
-Lines 1 and 2 are the standard way to start a Perl script.
+Lines 1 to 4 are the standard way to start a Perl script today: the
+shebang line, then the modern baseline of `use strict`, `use
+warnings`, and a version declaration—needed here because `translate`
+and `get_trans` are defined using subroutine signatures further down.
 
-The loop starting on line 4 reads from `STDIN` and puts each line in
+The loop starting on line 6 reads from `STDIN` and puts each line in
 turn in the `$_` variable.
 
-Line 6 does most of the work. It looks for groups of word characters.
+Line 7 does most of the work. It looks for groups of word characters.
 Each time it finds one it stores the word in `$1`. The replacement
 string is the result of executing the code `translate($1)`. Notice
 the two modifiers: `g` which means that every word in the line will be
 converted, and `e` which forces Perl to execute the replacement string
 before putting it back into the original string.
 
-Line 7 prints the value of `$_`, which is now the translated line.
+Line 8 prints the value of `$_`, which is now the translated line.
 Note that when given no arguments, print defaults to printing the
 contents of the `$_` variable—which in this case is exactly what we
 want.
 
-Line 10 defines a caching hash which the translate function uses to
+Line 11 defines a caching hash which the translate function uses to
 store words which it already knows how to translate.
 
-The translate function which starts on line 11 uses a caching
+The translate function which starts on line 12 uses a caching
 algorithm similar to the Orcish Manoeuvre. If the current word doesn’t
 exist in the `%trans` hash, it calls `get_trans` to get a translation
 of the word. Notice that we always work with lower case versions of
 the word.
 
-Line 15 starts the `get_trans` function, which will read any necessary
+Line 16 starts the `get_trans` function, which will read any necessary
 words from the file containing a list of translatable words.
 
-Line 16 defines the name of the translations file and line 17
+Line 17 defines the name of the translations file and line 19
 attempts to open it. If the file can’t be opened, then the program
 dies with an error message.
 
-Line 20 loops though the translations file a line at a time, putting
-each line of text into `$line` and line 21 removes the newline
+Line 21 loops though the translations file a line at a time, putting
+each line of text into `$line`, and line 22 removes the newline
 character from the line.
 
-Line 22 splits the line on the tab character which separates the
+Line 23 splits the line on the tab character which separates the
 English and American words.
 
-Line 23 sets `$word` to the American word if the English word matches
+Line 24 sets `$word` to the American word if the English word matches
 the word we are seeking.
-
-Line 25 closes the file.
 
 Line 26 returns either the translation or the original word if a
 translation is not found while looping through the file. This ensures
@@ -855,8 +855,8 @@ coming in via `STDIN`.
 	  while (<STDIN>) {
 	    chomp;
 	    my %rec;
-	    @rec{@fields) = split(/:/);
-	      $users{$rec->{name}} = \%rec;
+	    @rec{@fields} = split(/:/);
+	    $users{$rec{name}} = \%rec;
 	  }
 	  return \%users;
 	}
@@ -949,12 +949,12 @@ bash instead. We might write something like this:
 	2:
 	3: my $users = read_passwd();
 	4:
-	6: foreach (keys %{$users}) {
-	7:   print "$_\n" if $users->{$_}{shell} eq '/bin/sh';
-	8: }
+	5: foreach (keys %{$users}) {
+	6:   print "$_\n" if $users->{$_}{shell} eq '/bin/sh';
+	7: }
 
 Again we have a very simple script. Most of the real work is being
-done on line 7. This line checks the value in `$users->{$_}{shell}`
+done on line 6. This line checks the value in `$users->{$_}{shell}`
 against the string “/bin/sh”, and if it matches it prints out the
 current key (which is the username). Notice that we could also have
 chosen to match against a regular expression using the code
