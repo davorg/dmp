@@ -274,6 +274,14 @@ underscore character) is matched by `\w` and any white space character
 matched by `\D`, any nonword character is matched by `\W`, and any
 nonspace character is matched by `\S`.
 
+These classes are a little blunter than they look once you’re dealing
+with more than plain ASCII text: `\w`, for instance, matches digits
+and the underscore as well as letters, and doesn’t let you restrict a
+match to a particular script (Greek, say, or Cyrillic). For that level
+of control Perl also provides Unicode *properties*, written
+`\p{PROPERTY}` and `\P{PROPERTY}` (its negation)—see Chapter 5’s
+“Unicode properties in regular expressions” for the details.
+
 #### Matching alternatives
 
 The vertical bar character (`|`) is used to denote alternate matches. A
@@ -355,6 +363,46 @@ using `{1,}`, `{0,}`, and `{0,1}`. If only one number appears without a
 comma then the expression will match if the term appears exactly that
 number of times.
 
+#### Non-greedy quantifiers
+
+All of the quantifiers we’ve just seen—`+`, `*`, `?`, and `{n,m}`—are
+*greedy* by default: they try to match as much of the string as
+possible, only backing off if that’s the only way to let the rest of
+the regular expression match. This usually does what you want, but
+not always. Consider a string containing several pieces of text in
+quotes:
+
+	my $string = 'a "quick" and "dirty" example';
+	if ($string =~ /"(.+)"/) {
+	  print "Greedy: $1\n";
+	}
+
+which prints:
+
+	Greedy: quick" and "dirty
+
+The greedy `.+` grabs as much as it can between the first quote mark
+and the last one, swallowing the closing and opening quotes of the
+middle pair along the way. That’s not what we wanted—we wanted just
+the first quoted piece of text. Adding a `?` after a quantifier makes
+it *non-greedy* (also called *lazy*): it matches as little as
+possible, only taking more if the rest of the regular expression
+can’t otherwise match. So `+?`, `*?`, `??`, and `{n,m}?` are all valid.
+Changing our example to use a non-greedy quantifier
+
+	if ($string =~ /"(.+?)"/) {
+	  print "Non-greedy: $1\n";
+	}
+
+now prints:
+
+	Non-greedy: quick
+
+which is what we were after. Non-greedy quantifiers are particularly
+useful whenever you’re matching between two delimiters (quotes,
+brackets, tags) and the text can contain more than one occurrence of
+either delimiter.
+
 #### Anchoring matches
 
 It is also possible to anchor parts of your regular expression at
@@ -371,8 +419,12 @@ which matches the start of the line followed by at least one noncolon
 character, followed by a colon, an optional space, and at least one
 other character before the end of the line.
 
-You could also write this as `/^.+?: ?.+$/`, but we don’t cover the
-syntax for nongreedy matching until later in the chapter.
+You could also write this as `/^.+?: ?.+$/`, using the non-greedy
+quantifier we covered a couple of sections back—though in this
+particular case it makes no practical difference, since a typical
+header line only contains one colon. Non-greedy quantifiers matter
+more when there’s more than one occurrence of whatever comes next to
+choose between.
 
 Other special terms can be used to match at word boundaries. The term
 `\b` matches only at the start or end of a word (*i.e.*, between a `\w`
@@ -530,6 +582,35 @@ a lot more work to keep them up to date. If you don’t use them it
 doesn’t set them. However, if you use them in just one match in your
 program, Perl will then keep them updated for every match. Using them
 can therefore have an effect on performance.
+
+#### Named captures
+
+Numbered captures work fine for a regular expression with one or two
+groups, but the more groups you add, the harder it gets to remember
+which number refers to which piece of data—and if you ever insert a
+new group partway through the expression, every `$1`-style variable
+after it shifts down by one, silently breaking any code that relied
+on the old numbering. Perl lets you give each group a name instead of
+relying on its position, using `(?<name>...)` in place of a plain
+`(...)`. Here’s the email header example again, rewritten to use
+named captures:
+
+	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
+	while (<$mail_fh>) {
+	  if (/^(?<header>[^:]+): ?(?<value>.+)$/) {
+	    print "Header $+{header} has the value $+{value}\n";
+	  }
+	}
+
+Named captures show up in the special hash `%+`, keyed by whatever
+name you gave the group, rather than in `$1`, `$2`, and so on (though
+the numbered variables are still set as well, so you can mix and
+match if you need to). A capture name must start with a letter and
+can otherwise contain letters, digits, and underscores. Named
+captures don’t change how the matching itself works—the expression
+above behaves identically to `/^([^:]+): ?(.+)$/`—they just make the
+code that uses the results easier to read, and far less fragile if
+the expression’s structure ever changes.
 
 #### Matching against other variables
 
