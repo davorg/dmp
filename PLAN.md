@@ -165,6 +165,10 @@ See `TODO.md` for the full detail behind every item below.
   `use`-statement audit, CPAN-glossary appendix) as stretch goals.
 - Audit every "available/bundled since Perl 5.X.Y" claim in the book for
   citing a real stable release, not a development track.
+- Decide what, if anything, Appendix B should say about regular
+  expressions — currently nothing, spotted 2026-09-28 during the Ch4
+  reality check. Appendix B points to Chapter 2 for OO in one line;
+  no equivalent exists for Chapter 4's regex coverage. See TODO.md.
 
 ## Week 7 (10–16 Oct): Run and verify everything untested
 
