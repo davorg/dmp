@@ -228,6 +228,12 @@ Run against the weather document, this prints:
       temperature [type: MIN, degrees: C]
         6
 
+Figure 10.1 shows the tree `walk()` is actually recursing over --
+element nodes carrying a tag name and any attributes, with the text
+they contain living in separate child text nodes of their own.
+
+![The DOM tree XML::LibXML builds for weather.xml](images/10-1-weather-xml-dom-tree.svg)
+
 `documentElement` gets us the top-level element to start from, and
 `attributes` and `childNodes` return plain lists directly, rather than
 the `NodeList` objects with their own `getLength`/`item` methods that
@@ -666,6 +672,11 @@ which prints:
 
 	Right: Björk (5 chars)
 	Wrong: BjÃ¶rk (6 chars)
+
+Figure 10.2 shows why: the same `$bytes` value goes into both calls,
+but only one of them was expecting bytes in the first place.
+
+![decode_json vs JSON->new->decode on the same bytes](images/10-2-json-bytes-vs-characters.svg)
 
 That's mojibake, from exactly the same cause as in Chapter 5—Perl
 treating a run of UTF-8 bytes as if each byte were already a separate

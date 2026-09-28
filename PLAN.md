@@ -105,15 +105,22 @@ See `TODO.md` for the full detail behind every item below.
   — 2026-09-28 — it belongs with the Preface's "Typographical conventions"
   section, not the Foreword) into the Preface, alongside the existing
   array/hash/reference bullets it illustrates.
-- Clean up the three orphaned images — in progress (2026-09-28):
+- [x] Clean up the three orphaned images — done (2026-09-28).
   `11-3-item-array.png` (old Parse::RecDescent `@item` diagram) deleted
-  and replaced with a new `11-3-ini-file-raw-parse-tree.svg`, showing
-  the equivalent raw `%/` parse-tree shape for Regexp::Grammars, wired
-  into Chapter 11 right where the prose already described that shape
-  in words. `10-1-output-from-xml-parser-tree-style.png` still
-  outstanding — no direct analog since `XML::LibXML`'s DOM isn't a
-  plain Perl data structure the same way; needs its own design
-  decision rather than a drop-in replacement.
+  and replaced with `11-3-ini-file-raw-parse-tree.svg`, showing the
+  equivalent raw `%/` parse-tree shape for Regexp::Grammars, wired into
+  Chapter 11 right where the prose already described that shape in
+  words. `10-1-output-from-xml-parser-tree-style.png` deleted; no
+  direct analog since `XML::LibXML`'s DOM isn't a plain Perl data
+  structure, so Chapter 10 got two new diagrams instead of a reskin —
+  see below.
+- [x] Two new Chapter 10 diagrams, spotted while closing out the `10-1`
+  orphan (2026-09-28): `10-1-weather-xml-dom-tree.svg`, a tree diagram
+  (not the usual array/hash/reference convention) tracing the DOM the
+  `walk()` example recurses over; and `10-2-json-bytes-vs-characters.svg`,
+  a colour-coded flow diagram tracing the chapter's own Björk worked
+  example through `decode_json` versus `JSON->new->decode` without
+  `->utf8`, showing exactly where the mojibake bug comes from.
 
 ## Week 6 (3–9 Oct): New-topics decision + version-citation sweep
 
@@ -143,6 +150,9 @@ See `TODO.md` for the full detail behind every item below.
 
 - Front-to-back proofread; verify cross-references still make sense
   after everything's moved.
+- Eliminate American English from the text — spelling (`-ize`/`-or`
+  forms, etc.) and word choice, consistently through to British
+  English. Added to the backlog 2026-09-28; see TODO.md for detail.
 - Confirm the completion estimate can genuinely go to 100%.
 - Final clean `make epub` / `make pdf` build.
 - **Manuscript complete: 24 October 2026.**

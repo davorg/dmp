@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" font-family="Helvetica, Arial, sans-serif">
+
+  <rect x="0" y="0" width="900" height="340" fill="#ffffff"/>
+
+  <!-- This is a DOM tree, not one of the book's usual Perl data-structure
+       diagrams. XML::LibXML hands back objects you navigate with method
+       calls, not plain hashrefs/arrayrefs, so the array/hash/reference
+       convention doesn't apply here. Element nodes are solid boxes (tag
+       name, plus attributes if any); text nodes are dashed, italic boxes.
+       Plain grey lines show parent/child containment, not a reference
+       being followed, just the tree XML::LibXML built while parsing,
+       matching the walk() example's output. -->
+
+  <!-- forecast (root element, no attributes) -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#eef2ff">
+    <rect x="333" y="20" width="140" height="44" rx="6" ry="6"/>
+  </g>
+  <text x="403" y="47" font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">forecast</text>
+
+  <!-- outlook (element, no attributes) -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#eef2ff">
+    <rect x="120" y="110" width="140" height="44" rx="6" ry="6"/>
+  </g>
+  <text x="190" y="137" font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">outlook</text>
+
+  <!-- temperature type="MAX" degrees="C" -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#eef2ff">
+    <rect x="300" y="110" width="190" height="68" rx="6" ry="6"/>
+  </g>
+  <text x="395" y="135" font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">temperature</text>
+  <text x="395" y="160" font-size="13" fill="#475569" text-anchor="middle">type: MAX, degrees: C</text>
+
+  <!-- temperature type="MIN" degrees="C" -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#eef2ff">
+    <rect x="530" y="110" width="190" height="68" rx="6" ry="6"/>
+  </g>
+  <text x="625" y="135" font-size="15" font-weight="bold" fill="#1a1a2e" text-anchor="middle">temperature</text>
+  <text x="625" y="160" font-size="13" fill="#475569" text-anchor="middle">type: MIN, degrees: C</text>
+
+  <!-- text node: "Partly Cloudy" -->
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
+    <rect x="115" y="210" width="150" height="40" rx="6" ry="6"/>
+  </g>
+  <text x="190" y="235" font-size="14" font-style="italic" fill="#475569" text-anchor="middle">Partly Cloudy</text>
+
+  <!-- text node: "12" -->
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
+    <rect x="355" y="230" width="80" height="40" rx="6" ry="6"/>
+  </g>
+  <text x="395" y="255" font-size="14" font-style="italic" fill="#475569" text-anchor="middle">12</text>
+
+  <!-- text node: "6" -->
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
+    <rect x="585" y="230" width="80" height="40" rx="6" ry="6"/>
+  </g>
+  <text x="625" y="255" font-size="14" font-style="italic" fill="#475569" text-anchor="middle">6</text>
+
+  <!-- containment lines: parent to child, plain (no arrowhead; this is
+       "contains", not "references") -->
+  <g stroke="#64748b" stroke-width="1.5" fill="none">
+    <path d="M 403 64 L 403 87 L 190 87 L 190 110"/>
+    <path d="M 403 64 L 403 87 L 395 87 L 395 110"/>
+    <path d="M 403 64 L 403 87 L 625 87 L 625 110"/>
+    <path d="M 190 154 L 190 210"/>
+    <path d="M 395 178 L 395 230"/>
+    <path d="M 625 178 L 625 230"/>
+  </g>
+
+  <!-- legend -->
+  <g stroke="#cbd5e1" stroke-width="1.5" fill="#eef2ff">
+    <rect x="300" y="298" width="24" height="24" rx="6" ry="6"/>
+  </g>
+  <text x="332" y="315" font-size="13" fill="#475569">Element node (tag, then attributes)</text>
+  <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4" fill="#ffffff">
+    <rect x="620" y="298" width="24" height="24" rx="6" ry="6"/>
+  </g>
+  <text x="652" y="315" font-size="13" font-style="italic" fill="#475569">Text node</text>
+
+</svg>
