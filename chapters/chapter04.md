@@ -822,21 +822,22 @@ means that each line in the file represents one user, and the various
 pieces of information about each user are separated with a colon. A
 typical line in one of these files looks like this:
 
-	dave:Rg6kuZvwIDF.A:501:100:Dave Cross:/home/dave:/bin/bash
+	dave:x:1000:1000::/home/dave:/bin/bash
 
 The seven sections of this line have the following meanings:
 
-	 1 The username
-	 2 The user’s password (in an encrypted form)9
-	 3 The unique ID of the user on this system
-	 4 The ID of the user’s default group
-	 5 The user’s full name10
-	 6 The path to the user’s home directory
-	 7 The user’s command shell
-	 9 On a system using shadow passwords, the encrypted password won’t be in this field.
-	10 Strictly, this field can contain any text that the system administrator chooses—but this is my system and
-
-I’ve chosen to store full names here.
+1. The username.
+2. The user’s password, in encrypted form (on a system using shadow
+   passwords—which is almost all of them these days—this field just
+   contains an `x`, and the real encrypted password lives in
+   `/etc/shadow` instead, a file only root can read).
+3. The unique ID of the user on this system.
+4. The ID of the user’s default group.
+5. The user’s full name (strictly, this field can contain any text
+   the system administrator chooses—it’s traditionally used to store
+   full names, though on this particular machine mine is left blank).
+6. The path to the user’s home directory.
+7. The user’s command shell.
 
 The precise meaning of some of these fields may not be clear to
 non-UNIX users, but it should be clear enough to understand the

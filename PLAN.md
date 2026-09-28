@@ -98,11 +98,17 @@ See `TODO.md` for the full detail behind every item below.
   section on `Regexp::Common` before "Taking it to extremes", an age
   caveat on `Text::Bastardize`, and `Email::Valid`'s ~100-line RFC822
   regex as a closing "regex insanity" example — all confirmed working
-  by Dave. Still open: `\d`/`\w`/`\s` vs Unicode property escapes
-  (`\p{...}`), named captures (`(?<name>...)`) vs numbered ones, a
-  broken promise to cover non-greedy quantifiers that never arrives,
-  no `tr///` anywhere in the book, `use locale` vs Ch5's `fc()`, and
-  the `/etc/passwd` example having shadow passwords backwards. See
+  by Dave. Also fixed (2026-09-28) the `/etc/passwd` section: a
+  broken pseudo-list (tab-indented, so markdown rendered it as a
+  block of text rather than a list) with two stray footnotes and a
+  detached paragraph, and shadow passwords presented backwards as
+  the exception rather than the modern norm — now a real numbered
+  list, footnotes folded into parentheticals, and the example line
+  swapped for Dave's own (shadow-style) `/etc/passwd` entry. Still
+  open: `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
+  named captures (`(?<name>...)`) vs numbered ones, a broken promise
+  to cover non-greedy quantifiers that never arrives, no `tr///`
+  anywhere in the book, and `use locale` vs Ch5's `fc()`. See
   TODO.md for full detail.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
