@@ -368,7 +368,10 @@ shape of the grammar: a `File` key holding an array of `Section`
 hashes, each with a `Header` (itself holding a `Name`) and an array of
 `Assign` hashes, each with a `Key` and a `Value`. Every rule name in
 the grammar becomes a hash key in the result; every `<[...]>` subrule
-becomes an array.
+becomes an array. Figure 11.3 shows the shape of the `files` section's
+corner of that tree.
+
+![The raw parse tree built in %/](images/11-3-ini-file-raw-parse-tree.svg)
 
 That's a completely faithful record of the parse, but it's a little
 more deeply nested than the `$Config{files}{input}`-style structure we

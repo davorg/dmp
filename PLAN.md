@@ -94,14 +94,26 @@ See `TODO.md` for the full detail behind every item below.
   named captures (`(?<name>...)`) vs numbered ones, whether
   `given`/`when` is mentioned anywhere (it shouldn't be — deprecated),
   and general currency of the regex examples.
-- Refresh the CD collection example data — the album years (Hunky Dory
-  1971, etc.) read as dated. Touches prose, code, and diagrams across
-  several chapters.
+- [x] Refresh the CD collection example data — done (2026-09-28). Swapped
+  the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
+  Bowie/LCD Soundsystem across prose, code examples, and all 9 affected
+  diagrams; also widened the fixed-width Artist/Title columns to fit
+  the new longest values, fixed a stale Parse::RecDescent cross-ref in
+  Ch8, removed leftover Lord-of-the-Rings names from Appendix B, and
+  added a light aside on younger readers never having owned a CD.
 - [x] Wire `preface-diagram-key.svg` (renamed from `foreword-diagram-key.svg`
   — 2026-09-28 — it belongs with the Preface's "Typographical conventions"
   section, not the Foreword) into the Preface, alongside the existing
   array/hash/reference bullets it illustrates.
-- Clean up the three orphaned images.
+- Clean up the three orphaned images — in progress (2026-09-28):
+  `11-3-item-array.png` (old Parse::RecDescent `@item` diagram) deleted
+  and replaced with a new `11-3-ini-file-raw-parse-tree.svg`, showing
+  the equivalent raw `%/` parse-tree shape for Regexp::Grammars, wired
+  into Chapter 11 right where the prose already described that shape
+  in words. `10-1-output-from-xml-parser-tree-style.png` still
+  outstanding — no direct analog since `XML::LibXML`'s DOM isn't a
+  plain Perl data structure the same way; needs its own design
+  decision rather than a drop-in replacement.
 
 ## Week 6 (3–9 Oct): New-topics decision + version-citation sweep
 
