@@ -969,8 +969,22 @@ choose is a matter of personal preference.
 
 Of course, using regular expressions for transforming data is a very
 powerful technique and, like all powerful techniques, it is open to
-abuse. As an example of what you can do with this technique, let’s
-take a brief look at the
+abuse.
+
+Before we get to the abuse, though, it's worth knowing that you often
+don't need to write a complex regular expression from scratch at all.
+The CPAN module [Regexp::Common](https://metacpan.org/pod/Regexp::Common)
+provides a library of ready-made, battle-tested patterns for things
+you're likely to need—numbers (in various formats), delimited and
+quoted strings, balanced parentheses, IPv4 and IPv6 addresses, and
+dozens more—all accessed through a single `%RE` hash, so `$RE{num}{real}`
+gives you a regular expression that matches a real number without you
+having to work out all the edge cases yourself. It's always worth a
+quick check of Regexp::Common before you reinvent one of its patterns
+by hand.
+
+As an example of what you can do with this technique when you don't
+hold back, let's take a brief look at the
 [Text::Bastardize](http://metacpan.org/pod/Text::Bastardize)
 module which is available
 from the CPAN at
@@ -979,7 +993,10 @@ from the CPAN at
 This module will take an innocent piece of text and will abuse it in
 various increasingly bizarre ways. The complete set of
 transformations available in the current version (0.08 as of the
-time of writing) is as follows:
+time of writing) is as follows. That version number is also the most
+recent one—Text::Bastardize hasn't been touched since 2006, so don't
+expect it to have grown any newer tricks, but it still works fine as
+an example:
 
 *  *rdct*—Converts the text to hyperreductionist English. This removes vowels within words, changes “you” to “u” and “are” to “r” and carries out a number of other conversions.
 
@@ -1020,6 +1037,21 @@ is to be transformed is set using the charge function.
 	    print "\n";
 	  }
 	}
+
+If Text::Bastardize is regular expressions used for fun, [Email::Valid](https://metacpan.org/pod/Email::Valid)
+is a good example of what happens when they're used in deadly earnest.
+Its `rfc822` method checks an address against the full RFC 822 address
+grammar using a regular expression originally developed by Jeffrey
+Friedl—the same Friedl whose book is recommended above—and folded into
+the module via Tom Christiansen's old `ckaddr` program. Print it out
+and it runs to somewhere around a hundred lines, matching the address
+grammar's full nested structure of quoted strings, comments, and
+domain literals in a single expression. It's a genuinely sobering
+thing to look at if you've ever thought your own regular expressions
+were getting a bit long, and a good practical lesson at the same time:
+validating email addresses correctly is far harder than it looks,
+which is why so much real-world code settles for something much
+simpler and just sends a confirmation email instead.
 
 Further information
 ----------
