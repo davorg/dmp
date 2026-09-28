@@ -673,11 +673,6 @@ which prints:
 	Right: Björk (5 chars)
 	Wrong: BjÃ¶rk (6 chars)
 
-Figure 10.2 shows why: the same `$bytes` value goes into both calls,
-but only one of them was expecting bytes in the first place.
-
-![decode_json vs JSON->new->decode on the same bytes](images/10-2-json-bytes-vs-characters.svg)
-
 That's mojibake, from exactly the same cause as in Chapter 5—Perl
 treating a run of UTF-8 bytes as if each byte were already a separate
 character—just arrived at through a mismatched JSON call rather than a

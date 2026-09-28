@@ -114,13 +114,14 @@ See `TODO.md` for the full detail behind every item below.
   direct analog since `XML::LibXML`'s DOM isn't a plain Perl data
   structure, so Chapter 10 got two new diagrams instead of a reskin —
   see below.
-- [x] Two new Chapter 10 diagrams, spotted while closing out the `10-1`
+- [x] New Chapter 10 diagram, spotted while closing out the `10-1`
   orphan (2026-09-28): `10-1-weather-xml-dom-tree.svg`, a tree diagram
   (not the usual array/hash/reference convention) tracing the DOM the
-  `walk()` example recurses over; and `10-2-json-bytes-vs-characters.svg`,
-  a colour-coded flow diagram tracing the chapter's own Björk worked
-  example through `decode_json` versus `JSON->new->decode` without
-  `->utf8`, showing exactly where the mojibake bug comes from.
+  `walk()` example recurses over. A second diagram was also built for
+  the Unicode-in-JSON-and-YAML section (a colour-coded flow diagram
+  tracing the chapter's own Björk example through `decode_json` versus
+  `JSON->new->decode` without `->utf8`) but Dave decided on review it
+  didn't add anything the prose wasn't already doing — dropped.
 
 ## Week 6 (3–9 Oct): New-topics decision + version-citation sweep
 
