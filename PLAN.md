@@ -87,13 +87,23 @@ See `TODO.md` for the full detail behind every item below.
 ## Week 5 (26 Sep – 2 Oct): Chapter 4 audit, refresh CD data, tidy artwork
 
 - Full modernity audit of Chapter 4 (pattern matching / regular
-  expressions) — the last chapter never to get a dedicated pass (Ch1,
-  Ch2, and Ch12 got theirs 2026-09-21; Ch4 was pushed to this week as
-  the harder of the four). Likely candidates going in:
-  `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
-  named captures (`(?<name>...)`) vs numbered ones, whether
-  `given`/`when` is mentioned anywhere (it shouldn't be — deprecated),
-  and general currency of the regex examples.
+  expressions) — in progress (2026-09-28). `given`/`when` isn't
+  mentioned anywhere, so nothing to remove there. Turned out to be the
+  least-touched chapter in the book — a systematic markdown-escaping
+  bug had left ten broken regexes/strings in the text (fixed), plus a
+  handful of unrelated bugs (a mismatched-bracket typo, a bareword
+  filehandle, a numbering gap, and a `translate.pl` listing that had
+  drifted entirely from its own walkthrough — all fixed, see TODO.md).
+  Also added, per Dave: a new "A library of regular expressions"
+  section on `Regexp::Common` before "Taking it to extremes", an age
+  caveat on `Text::Bastardize`, and `Email::Valid`'s ~100-line RFC822
+  regex as a closing "regex insanity" example — all confirmed working
+  by Dave. Still open: `\d`/`\w`/`\s` vs Unicode property escapes
+  (`\p{...}`), named captures (`(?<name>...)`) vs numbered ones, a
+  broken promise to cover non-greedy quantifiers that never arrives,
+  no `tr///` anywhere in the book, `use locale` vs Ch5's `fc()`, and
+  the `/etc/passwd` example having shadow passwords backwards. See
+  TODO.md for full detail.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
   Bowie/LCD Soundsystem across prose, code examples, and all 9 affected
