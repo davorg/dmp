@@ -108,7 +108,14 @@ See `TODO.md` for the full detail behind every item below.
   framing — now a real numbered list using Dave's own `/etc/passwd`
   entry) and the `use locale` mention in "Case transformations"
   (previously unexplained — now described properly, with a pointer
-  to Ch5's `fc()`/`Unicode::Collate`). See TODO.md for full detail.
+  to Ch5's `fc()`/`Unicode::Collate`). Finished with a "what's
+  changed in 25 years" reality check per Dave's request, which added
+  lookbehind and `\K`, corrected a genuinely wrong explanation of
+  `/m` vs `/s` (the old text said `.` matching newline was `/m`'s
+  doing — that's `/s`), and added `/a`, `/xx`, and `/r` (flagged in
+  the text as arguably the single most useful of the bunch). See
+  TODO.md for full detail, including two CPAN-module candidates
+  (`re::engine::RE2`, `String::Approx`) still awaiting Dave's steer.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
   Bowie/LCD Soundsystem across prose, code examples, and all 9 affected

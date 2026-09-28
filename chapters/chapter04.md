@@ -454,6 +454,12 @@ in your Perl documentation, but the most important additions are:
 
 * `(?! … )`—This is negative lookahead, which is the opposite of positive lookahead. You will only get a match if whatever is in the parentheses does not match the string there.
 
+* `(?<= … )`—This is positive lookbehind, the mirror image of positive lookahead: it checks that whatever is between the parentheses exists immediately *before* the current position in the string, again without consuming any of it. For example, `/(?<=\$)\d+/` matches the digits in "Price: $42" without including the dollar sign itself in the match. Unlike lookahead, what goes inside a lookbehind has to match a fixed length (Perl can't figure out how far to look backward otherwise).
+
+* `(?<! … )`—This is negative lookbehind, the equivalent of negative lookahead but looking backward: `/(?<!foo)bar/` matches "bar" anywhere it isn't directly preceded by "foo".
+
+* `\K`—This isn't a lookaround assertion at all, but it's often used to solve the same kind of problem: it tells the regex engine to forget everything matched so far, so it doesn't count as part of the overall match. `/\$\K\d+/` matches the same digits as the lookbehind example above, but without lookbehind's fixed-length restriction—whatever comes before `\K` can be as variable as you like. Added in Perl 5.10, `\K` is often the more flexible choice when a true lookbehind won't do the job.
+
 ### Using regular expressions
 
 Most regular expressions are used in Perl programs in one of two
@@ -642,14 +648,65 @@ Now that we have the `i` modifier, we can rewrite this as
 
 	/[aeiou]/i
 
-The next two modifiers are `s` and `m` which force the match to treat the
-data string as either single or multiple lines. In multiple line
-mode, `.` will match a newline character (which would not happen by
-default). Also `^` and `$` will match at the start and end of any line.
-To match the start and end of the entire string you can use the
-anchors `\A` and `\Z`.
+The next two modifiers are `m` and `s`, and they’re easy to get mixed
+up, because they sound similar but affect completely different parts
+of the match: `m` changes what `^` and `$` do, and `s` changes what
+`.` does.
 
-The final modifier is `x`. This allows you to put white space and
+By default, `^` and `$` only match at the very start and very end of
+the string you’re matching against, even if that string contains
+several lines separated by newlines:
+
+	my $text = "line1\nline2";
+	print "no /m: ", ($text =~ /^line2$/ ? "match" : "no match"), "\n";
+	print "with /m: ", ($text =~ /^line2$/m ? "match" : "no match"), "\n";
+
+which prints:
+
+	no /m: no match
+	with /m: match
+
+The `m` modifier makes `^` and `$` also match at the start and end of
+*every* line within the string, not just the string as a whole. (If
+you need to match the very start or end of the entire string
+regardless of which of these modes you’re in, the anchors `\A` and
+`\z` always mean exactly that.)
+
+By default, `.` matches any character except a newline:
+
+	my $text2 = "a\nb";
+	print "no /s: ", ($text2 =~ /a.b/ ? "match" : "no match"), "\n";
+	print "with /s: ", ($text2 =~ /a.b/s ? "match" : "no match"), "\n";
+
+which prints:
+
+	no /s: no match
+	with /s: match
+
+The `s` modifier makes `.` match any character at all, including a
+newline. `m` and `s` are entirely independent of each other, so you
+can use either one, both together, or neither, depending on whether
+your data spans multiple lines and whether you want `.` to see across
+those line breaks.
+
+One more modifier worth knowing about is `a`. By default, Perl’s
+built-in character classes—`\d`, `\w`, `\s`, and their opposites—are
+Unicode-aware, matching digits, letters, and whitespace from any
+script, not just ASCII (Chapter 5 covers Perl and Unicode in a lot
+more depth). The `a` modifier restricts them back down to plain
+ASCII, which is useful when you specifically want to reject
+non-ASCII input rather than silently accept it:
+
+	my $arabic_digit = "\x{0663}"; # Arabic-Indic digit three
+	print "no /a: ", ($arabic_digit =~ /\d/ ? "match" : "no match"), "\n";
+	print "with /a: ", ($arabic_digit =~ /\d/a ? "match" : "no match"), "\n";
+
+which prints:
+
+	no /a: match
+	with /a: no match
+
+The next modifier is `x`. This allows you to put white space and
 comments within your regular expressions. The regular expressions
 that we have looked at so far have been very simple, but regular
 expressions are largely what give Perl its reputation of being
@@ -669,6 +726,26 @@ used to match email headers, is it easier to follow like this:
 	$/x   # end of line
 
 And that’s just a simple example!
+
+There’s one gotcha with `x` that catches people out: whitespace
+inside a bracketed character class is still significant, even though
+it’s ignored everywhere else in the pattern. So if you space out a
+character class for readability
+
+	print 'e' =~ /[a e i o u]/x ? "match" : "no match", "\n";
+	print ' ' =~ /[a e i o u]/x ? "match" : "no match", "\n";
+
+both lines print `match`—the second one because you’ve accidentally
+added a literal space to the list of characters being matched. The
+`xx` modifier, added in Perl 5.26, closes this gap by ignoring
+whitespace inside character classes too, matching what most people
+expect plain `x` to do:
+
+	print ' ' =~ /[a e i o u]/xx ? "match" : "no match", "\n";
+
+which now correctly prints `no match`. If you actually want to match
+a literal space inside an `/x` or `/xx` character class, escape it as
+`\ ` or write it as `\x20`.
 
 #### String replacement
 
@@ -698,8 +775,9 @@ a different variable using the `=~` operator.
 
 #### Substitution modifiers
 
-All of the match operator modifiers (`i`, `s`, `m`, and `x`) work in the same
-way on the substitution operator but there are a few extra modifiers.
+All of the match operator modifiers (`i`, `m`, `s`, `a`, `x`, and `xx`)
+work in the same way on the substitution operator but there are a few
+extra modifiers.
 By default, the substitution only takes place on the first string
 matched in the data string. For example:
 
@@ -766,6 +844,33 @@ strange way to print out a table of squares:
 	 10 squared is 100
 	 11 squared is 121
 	 12 squared is 144
+
+There’s one final modifier worth knowing, and it may well be the most
+generally useful one added to Perl in the last twenty-five years: `r`.
+Normally `s///` modifies the string it’s matched against in place, and
+the operator itself returns a true or false value (or a count, with
+`g`) to say whether anything changed, not the changed string. Add the
+`r` modifier and that flips around: the original string is left
+completely untouched, and `s///r` instead returns a new string with
+the substitution applied, leaving you free to do whatever you like
+with the result.
+
+	my $original = 'Data Munging with Perl';
+	my $updated = $original =~ s/Perl/Raku/r;
+	print "Original: $original\n";
+	print "Updated:  $updated\n";
+
+which prints:
+
+	Original: Data Munging with Perl
+	Updated:  Data Munging with Raku
+
+Without `r` you’d normally have to copy the string first and then
+modify the copy, something like `(my $updated = $original) =~
+s/Perl/Raku/;`, which works but reads awkwardly and is easy to get
+backward. Added in Perl 5.14, `r` makes non-destructive substitution
+the natural way to write the code rather than a fiddly workaround. It
+works on `tr///` too, as `tr///r`, for exactly the same reason.
 
 ### Transliterating characters with tr///
 
