@@ -200,6 +200,32 @@ These are the methods that you can call to format your data.
 
 * `unformat_number($formatted_number)` The parameter `$formatted_number` must be a number that has been formatted by `format_number`, `format_price` or `format_picture`. The formatting is removed and an unformatted number is returned.
 
+Regexp::Common
+--------------
+
+[Regexp::Common](https://metacpan.org/pod/Regexp::Common) exports a
+single hash, `%RE`, that stores or generates ready-made regular
+expressions for commonly needed patterns, so you don't have to write
+(and debug) your own. Chapter 4 introduces it with `$RE{num}{real}`
+and `$RE{net}{IPv4}`.
+
+### Using %RE
+
+* `$RE{category}{name}` Looks up a pattern by category and name—for example `$RE{num}{real}` (a real number) or `$RE{net}{IPv4}` (an IPv4 address). None of the patterns are anchored by default, so wrap yours in `^...$` if you want to match the whole string rather than a substring within it.
+
+* `$RE{category}{name}{-flag=>value}` Flags refine a pattern further, and can appear in any order. For example, `$RE{num}{real}{-sep=>','}{-group=>3}` matches a real number with commas separating groups of three digits (`10,101,110.11`).
+
+* `$RE{category}{name}{-keep}` None of the patterns capture anything by default. The universal `-keep` flag makes a pattern capture its significant substrings into `$1`, `$2`, and so on.
+
+* `$RE{category}{name}->matches($string)`, `$RE{category}{name}->subs($string, $replacement)` Every pattern doubles as an object, with `matches` and `subs` methods for matching and non-destructive substitution—`$RE{ws}{crop}->subs($text)`, for example, trims leading and trailing whitespace from `$text` without an explicit `=~`.
+
+The pattern categories available in the current version are `balanced`
+(parenthesized delimiters), `comment` (over forty programming
+languages), `delimited` (delimited strings), `lingua` (palindromes),
+`list`, `net` (IPv4, IPv6, and MAC addresses), `number` (integers and
+reals), `profanity`, `whitespace`, and `zip` (postal codes); see
+`perldoc Regexp::Common` for the full details of each.
+
 Time::Piece
 -----------
 

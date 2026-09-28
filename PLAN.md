@@ -113,9 +113,14 @@ See `TODO.md` for the full detail behind every item below.
   lookbehind and `\K`, corrected a genuinely wrong explanation of
   `/m` vs `/s` (the old text said `.` matching newline was `/m`'s
   doing — that's `/s`), and added `/a`, `/xx`, and `/r` (flagged in
-  the text as arguably the single most useful of the bunch). See
-  TODO.md for full detail, including two CPAN-module candidates
-  (`re::engine::RE2`, `String::Approx`) still awaiting Dave's steer.
+  the text as arguably the single most useful of the bunch);
+  `re::engine::RE2` and `String::Approx` were considered and declined.
+  Checked both appendices for knock-on effects: Appendix A was
+  missing a reference section for `Regexp::Common` (now added,
+  slotted in chapter order between Number::Format and Time::Piece);
+  Appendix B doesn't mention regular expressions at all, a
+  pre-existing gap left as-is pending Dave's steer. See TODO.md for
+  full detail.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
   Bowie/LCD Soundsystem across prose, code examples, and all 9 affected
