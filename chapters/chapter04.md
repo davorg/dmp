@@ -1033,7 +1033,12 @@ installation of Perl. You can access this by typing
 on your command line.
 
 You can get more information than you will ever need from *[Mastering
-Regular Expressions](https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/)*, by Jeffrey Friedl (O’Reilly).
+Regular Expressions](https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/)*, by Jeffrey Friedl (O’Reilly). Be aware that
+it's now quite old—the third edition dates from 2006, and Perl's
+regex engine has moved on since then, so don't expect to find
+newer features like named captures or Unicode property escapes
+(`\p{...}`) in it. What it does cover, it covers in more depth than
+almost anything else available, and the fundamentals haven't changed.
 
 Summary
 ----------
