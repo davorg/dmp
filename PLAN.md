@@ -104,12 +104,16 @@ See `TODO.md` for the full detail behind every item below.
   detached paragraph, and shadow passwords presented backwards as
   the exception rather than the modern norm — now a real numbered
   list, footnotes folded into parentheticals, and the example line
-  swapped for Dave's own (shadow-style) `/etc/passwd` entry. Still
-  open: `\d`/`\w`/`\s` vs Unicode property escapes (`\p{...}`),
-  named captures (`(?<name>...)`) vs numbered ones, a broken promise
-  to cover non-greedy quantifiers that never arrives, no `tr///`
-  anywhere in the book, and `use locale` vs Ch5's `fc()`. See
-  TODO.md for full detail.
+  swapped for Dave's own (shadow-style) `/etc/passwd` entry. Also
+  fixed (2026-09-28) the `use locale` mention in "Case
+  transformations", which named the pragma with no explanation of
+  what it does — now explains it properly and points forward to
+  Ch5's `fc()`/`Unicode::Collate` as the more reliable modern
+  approach. Still open: `\d`/`\w`/`\s` vs Unicode property escapes
+  (`\p{...}`), named captures (`(?<name>...)`) vs numbered ones, a
+  broken promise to cover non-greedy quantifiers that never
+  arrives, and no `tr///` anywhere in the book. See TODO.md for
+  full detail.
 - [x] Refresh the CD collection example data — done (2026-09-28). Swapped
   the dated dataset (Hunky Dory 1971, etc.) for Lily Allen/David
   Bowie/LCD Soundsystem across prose, code examples, and all 9 affected

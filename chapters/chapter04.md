@@ -142,10 +142,17 @@ correct code to achieve this is:
 
 	$string = ucfirst lc 'UPPER';
 
-The second trap for the unwary is that these functions will respect
-your local language character set, but to make use of that, you need
-to switch on Perl’s locale support by including the line `use locale`
-in your program.
+The second trap for the unwary involves accented and other non-ASCII
+characters. Older Perl code often reaches for the `use locale` pragma
+here, which makes `uc`/`lc` and various other operators follow
+whatever locale is configured on the machine running the script
+(via the operating system's `LANG`/`LC_*` settings), rather than
+plain ASCII rules. It's a narrower fix than it looks like: it depends
+on the right locale being installed and configured on every machine
+the code runs on, and it doesn't know about Unicode's own case-folding
+oddities, such as German's "ß", which has no single-character
+uppercase form. For a more reliable, Unicode-aware approach, see
+Chapter 5's coverage of `use utf8`, `fc`, and `Unicode::Collate`.
 
 Regular expressions
 ----------
