@@ -965,26 +965,65 @@ If performance is important to you, then you could benchmark the two
 solutions and choose the faster one. Otherwise the solution you
 choose is a matter of personal preference.
 
+### A library of regular expressions
+
+Before we go any further, it's worth knowing that you often don't
+need to write a complex regular expression from scratch at all. The
+CPAN module [Regexp::Common](https://metacpan.org/pod/Regexp::Common)
+provides a library of ready-made, battle-tested patterns for things
+you're likely to need—numbers (in various formats), delimited and
+quoted strings, balanced parentheses, IPv4 and IPv6 addresses, and
+dozens more—all accessed through a single `%RE` hash. It's always
+worth a quick check of Regexp::Common before you reinvent one of its
+patterns by hand.
+
+Here's `$RE{num}{real}`, which matches a real number in any of the
+forms Perl itself would recognize—plain integers, decimals, and
+scientific notation—so you don't have to work out all of those cases
+yourself:
+
+	use Regexp::Common;
+
+	for my $candidate ('3.14', '-42', 'hello', '1e10') {
+	  if ($candidate =~ /^$RE{num}{real}$/) {
+	    print "$candidate: valid number\n";
+	  } else {
+	    print "$candidate: not a number\n";
+	  }
+	}
+
+which produces:
+
+	3.14: valid number
+	-42: valid number
+	hello: not a number
+	1e10: valid number
+
+`$RE{net}{IPv4}` is just as handy if you're validating configuration
+data or log files:
+
+	use Regexp::Common;
+
+	for my $candidate ('192.168.0.1', '999.1.1.1', 'not an address') {
+	  if ($candidate =~ /^$RE{net}{IPv4}$/) {
+	    print "$candidate: valid IPv4 address\n";
+	  } else {
+	    print "$candidate: not a valid IPv4 address\n";
+	  }
+	}
+
+Notice that `$RE{net}{IPv4}` correctly rejects `999.1.1.1`—it isn't
+just checking the shape of four dot-separated numbers, it's checking
+that each one is actually in the valid 0–255 range, which is exactly
+the kind of fiddly detail that's easy to get wrong writing a pattern
+like this yourself.
+
 ### Taking it to extremes
 
 Of course, using regular expressions for transforming data is a very
 powerful technique and, like all powerful techniques, it is open to
-abuse.
-
-Before we get to the abuse, though, it's worth knowing that you often
-don't need to write a complex regular expression from scratch at all.
-The CPAN module [Regexp::Common](https://metacpan.org/pod/Regexp::Common)
-provides a library of ready-made, battle-tested patterns for things
-you're likely to need—numbers (in various formats), delimited and
-quoted strings, balanced parentheses, IPv4 and IPv6 addresses, and
-dozens more—all accessed through a single `%RE` hash, so `$RE{num}{real}`
-gives you a regular expression that matches a real number without you
-having to work out all the edge cases yourself. It's always worth a
-quick check of Regexp::Common before you reinvent one of its patterns
-by hand.
-
-As an example of what you can do with this technique when you don't
-hold back, let's take a brief look at the
+abuse. As an example of what you can do with this technique when you
+don't hold back, let's take a brief look at the
 [Text::Bastardize](http://metacpan.org/pod/Text::Bastardize)
 module which is available
 from the CPAN at
