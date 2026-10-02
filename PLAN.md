@@ -5,8 +5,8 @@ weeks for production (ebook + paperback) means the manuscript needs to be
 complete by **Saturday 24 October 2026** — eight weeks from now.
 
 **Release cadence (set 2026-09-28):** fortnightly WIP releases to LeanPub,
-announced on Fosstodon. Last one: 18 Sep. Next: **Friday 2 October**, then
-**16 October**. A third, **30 October, is maybe-only**: it falls after the
+announced on Fosstodon. **2 October — done and promoted.** Next: **16
+October**. A third, **30 October, is maybe-only**: it falls after the
 24 Oct manuscript-complete target above, by which point the book should be
 in final production (proofing/typesetting/print) rather than still taking
 WIP content changes — if it happens at all, it should be the locked text
