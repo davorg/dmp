@@ -189,3 +189,5 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - Review the copyright wording in `front-matter.md`.
 - Run and check the new Ch10 weather examples (`weather_xpath.pl`, `weather_walk.pl`, `weather_api.pl`, `cities_weather.pl`, `cds.pl`) and the Ch11 `cds.pl` — see "Untested" notes above and in prior sprints.
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
+
+- [x] **Ch3 Test2 example (2026-10-06).** The Test2 section was prose-only. Added `code-examples/c3/testing_test2.pl` and `testing_test2_fail.pl`, plus the chapter walk-through; both run and output verified by Dave on Windows Perl 5.40 (Test2::V0 with nothing installed, which also confirms it's core in 5.40).

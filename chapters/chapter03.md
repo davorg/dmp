@@ -746,6 +746,84 @@ capable comparison engine that's particularly good at telling you
 exactly what's different when two complex data structures don't match,
 which is a common thing to need when you're testing data munging code.
 
+Here's the `trim` test again, rewritten for Test2::V0. The first four tests
+are unchanged apart from the `use` line, and there are two new ones that
+compare a whole data structure:
+
+	use v5.36;
+	use Test2::V0;
+
+	sub trim($str) {
+	  $str =~ s/^\s+|\s+$//g;
+	  return $str;
+	}
+
+	is(trim('  hello  '), 'hello', 'removes leading and trailing spaces');
+	is(trim('no spaces'), 'no spaces', 'leaves an already-trimmed string alone');
+	ok(!length(trim('   ')), 'a string of just spaces trims to empty');
+	like(trim('  data munging  '), qr/^data/, 'trimmed string starts with "data"');
+
+	sub parse_cd($line) {
+	  my ($artist, $title, $label, $year) = split /\t/, $line;
+	  return { artist => $artist, title => $title, label => $label, year => $year };
+	}
+
+	my $cd = parse_cd("Bowie, David\tBlackstar\tColumbia\t2016");
+
+	is($cd,
+	   { artist => 'Bowie, David', title => 'Blackstar',
+	     label  => 'Columbia',     year  => 2016 },
+	   'a CD line is parsed into the right hash');
+
+	like($cd, { artist => 'Bowie, David', year => 2016 },
+	     'the artist and year are right (we don\'t care about the rest)');
+
+	done_testing();
+
+Here `is` happily compares two hashes (or arrays, or structures nested as
+deeply as you like), where Test::More's `is` would only compare the
+references. `like` can also be given a hash, in which case it checks only
+the keys you mention. Test2::V0 loads `strict` and `warnings` for you, so
+there's no need to ask for them. Running this prints:
+
+	# Seeded srand with seed '20261006' from local date.
+	ok 1 - removes leading and trailing spaces
+	ok 2 - leaves an already-trimmed string alone
+	ok 3 - a string of just spaces trims to empty
+	ok 4 - trimmed string starts with "data"
+	ok 5 - a CD line is parsed into the right hash
+	ok 6 - the artist and year are right (we don't care about the rest)
+	1..6
+
+(The first line is Test2::V0 telling you the seed it used for Perl's random
+number generator, so that a test that depends on random numbers can be
+repeated exactly. You can ignore it.)
+
+The real payoff comes when a test fails. Suppose the `$cd` hash has the wrong
+label and no year:
+
+	my $cd = { artist => 'Bowie, David', title => 'Blackstar', label => 'EMI' };
+
+	is($cd,
+	   { artist => 'Bowie, David', title => 'Blackstar',
+	     label  => 'Columbia',     year  => 2016 },
+	   'a CD line is parsed into the right hash');
+
+Test2::V0 doesn't just say that the structures differ. It tells you where:
+
+	not ok 1 - a CD line is parsed into the right hash
+	# Failed test 'a CD line is parsed into the right hash'
+	# at testing_test2_fail.pl line 8.
+	# +---------+------------------+----+----------+
+	# | PATH    | GOT              | OP | CHECK    |
+	# +---------+------------------+----+----------+
+	# | {label} | EMI              | eq | Columbia |
+	# | {year}  | <DOES NOT EXIST> |    | 2016     |
+	# +---------+------------------+----+----------+
+
+With a big nested structure, that table is a lot easier to read than
+comparing two `Data::Dumper` dumps by eye.
+
 For new code, Test2::V0 is generally the better starting point. But
 Test::More remains extremely widely used, understood by every existing
 Perl programmer, and assumed by a huge amount of existing documentation
