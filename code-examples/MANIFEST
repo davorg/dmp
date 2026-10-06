@@ -10,8 +10,8 @@
 #   needs=net  needs the Internet; skipped with --offline
 
 # ---- c2 ----
-c2/Customer.pl
-c2/cd_full.pl  stdin=cd.txt
+c2/Customer.pl  stdin=customer_input.txt
+c2/cd_full.pl  stdin=cd.txt  args=year
 c2/cd_sol1.pl  stdin=cd.txt
 c2/cd_sol2.pl  stdin=cd.txt
 c2/cd_sol3.pl  stdin=cd.txt
@@ -23,7 +23,7 @@ c2/data_munger3.pl  skip="fragment: calls a sub defined in another listing"
 c3/benchmark.pl
 c3/complex_sorts.pl
 c3/data_dumper.pl  stdin=cd.txt
-c3/data_printer.pl  stdin=cd.txt
+c3/data_printer.pl  stdin=cd.txt  expect-stderr=1
 c3/dbi_setup.pl
 c3/dbi.pl
 c3/orcish.pl
@@ -35,7 +35,7 @@ c3/schwartzian3.pl  stdin=cd.txt
 c3/simple_sorts.pl
 c3/testing.pl
 c3/testing_test2.pl
-c3/testing_test2_fail.pl
+c3/testing_test2_fail.pl  expect_exit=1  expect-stderr=1
 
 # ---- c4 ----
 c4/bastardize.pl
@@ -114,8 +114,8 @@ c6/x_days2.pl
 c6/x_days3.pl
 
 # ---- c7 ----
-c7/audio_scan.pl
-c7/audio_scan2.pl
+c7/audio_scan.pl  skip="needs an audio file as an argument"
+c7/audio_scan2.pl  skip="needs an audio file as an argument"
 c7/fixed_wid1.pl
 c7/fixed_wid2.pl
 c7/metadata1.pl
@@ -139,24 +139,24 @@ c8/parse_html3.pl  stdin=cd.txt
 
 # ---- c9 ----
 c9/get.pl  needs=net
-c9/html_parser.pl  needs=net
+c9/html_parser.pl  needs=net  args=http://example.com/
 c9/linkextor.pl
 c9/linkextor2.pl
-c9/tokeparser.pl
+c9/tokeparser.pl  args=tokeparser.html  expect-stderr=1
 c9/tokeparser2.pl  args=tokeparser.html
 c9/treebuilder.pl  args=tokeparser.html
-c9/weather.pl  needs=net
+c9/weather.pl  needs=net  known="Yahoo UK weather page no longer exists (chapter says so); rewrite or keep as history?"
 c9/webquery.pl
 
 # ---- c10 ----
 c10/cds.pl
 c10/cities_weather.pl  needs=net
 c10/create_rss.pl  needs=net
-c10/read_rss.pl
+c10/read_rss.pl  args=news.rss
 c10/unicode_json.pl
 c10/weather_api.pl  needs=net
-c10/weather_walk.pl
-c10/weather_xpath.pl
+c10/weather_walk.pl  args=weather.xml
+c10/weather_xpath.pl  args=weather.xml
 
 # ---- c11 ----
 c11/cds.pl

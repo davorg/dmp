@@ -1071,7 +1071,7 @@ This results in:
 
 Changing the formatting options slightly:
 
-	my $fmt = Number::Format->new(INTL_CURRENCY_SYMBOL => 'GBP',
+	my $fmt = Number::Format->new(INT_CURR_SYMBOL => 'GBP',
 	                              DECIMAL_DIGITS => 1);
 	my $number = 1234567.890;
 	print $fmt->round($number), "\n";

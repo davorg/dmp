@@ -1,26 +1,25 @@
-use Customer; 
+use v5.36;
+use Customer;
 
-print 'Enter new customer name: '; 
-my $name = <STDIN>; 
-
-print 'Enter customer address: '; 
-my $addr = <STDIN>; 
-
-print 'Enter salesperson code: '; 
-my $sp_code = <STDIN>; 
-
-# Write code similar to that above to get any other 
-# required data from the user. 
-
+# Create a new customer object
 my $cust = Customer->new(
-  name => $name,
-  address => $addr,
-  sales_person => $sp_code
+  name       => prompt_user('Enter new customer name: '),
+  address    => prompt_user('Enter customer address: '),
+  salesperson => prompt_user('Enter salesperson code: ')
 );
 
-if ($cust->save) { 
-  print "New customer saved successfully.\n"; 
-  print "New customer code is ", $cust->code, "\n"; 
-} else { 
-  print "Error saving new customer.\n"; 
+# Attempt to save the customer object
+if ($cust->save) {
+  print "New customer saved successfully.\n";
+  print "New customer code is ", $cust->cust_no, "\n";
+} else {
+  print "Error saving new customer.\n";
+}
+
+# A simple subroutine to prompt the user and capture input
+sub prompt_user($prompt) {
+  print $prompt;
+  my $input = <STDIN>;
+  chomp($input);
+  return $input;
 }

@@ -42,7 +42,7 @@ This function takes a URL as an argument and returns the data that is
 returned when that URL is requested. For example:
 
 	use LWP::Simple;
-	my $page = get('http://www.mag-sol.com/index.html');
+	my $page = get('http://example.com/');
 
 will put the contents of the requested page into the variable `$page`.
 If there is an error, then get will return `undef`.
@@ -52,13 +52,13 @@ returned will be to print it out or to store it in a file.
 [LWP::Simple](https://metacpan.org/pod/LWP::Simple) has functions that
 carry out both of these options with a single call:
 
-	getprint('http://www.mag-sol.com/index.html');
+	getprint('http://example.com/');
 
 will print the page directly to `STDOUT` and
 
-	getstore('http://www.mag-sol.com/index.html', 'index.html');
+	getstore('http://example.com/', 'example.html');
 
-will store the data in the (local) file index.html.
+will store the data in the (local) file example.html.
 
 A word about HTTPS. These examples use plain `http` URLs, but almost
 every site you'll want to fetch today insists on `https`. LWP can't

@@ -111,7 +111,7 @@ book only mentions in passing, rather than uses, are left out.)
 | 3 | `DBI` plus a driver such as `DBD::SQLite`, `Path::Tiny`, `Data::Printer`; `Test2::V0` before Perl 5.40 | `Data::Dumper`, `Memoize`, `Benchmark`, `Test::More`; `Test2::V0` from 5.40 |
 | 4 | `Regexp::Common`, `Text::Bastardize` | |
 | 5 | `Text::Unidecode`, `Number::Format`, `Convert::SciEng` | `Encode`, `Unicode::Normalize`, `Unicode::Collate` |
-| 6 | `Text::CSV_XS`, `DateTime` | `POSIX`, `Time::Local`, `Time::Piece` |
+| 6 | `Text::CSV`, `DateTime` | `POSIX`, `Time::Local`, `Time::Piece` |
 | 7 | `Audio::Scan`, `Image::Info` | |
 | 9 | `LWP::Simple` (from the `libwww-perl` bundle), `LWP::Protocol::https`, the `HTML::*` parsers, `Web::Query` | `HTTP::Tiny`\* |
 | 10 | `XML::LibXML`, `XML::RSS`, `JSON::MaybeXS`, `YAML::PP` | `HTTP::Tiny`\*, `JSON::PP` |

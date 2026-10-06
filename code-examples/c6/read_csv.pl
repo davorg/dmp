@@ -1,4 +1,4 @@
-use Text::CSV_XS; 
+use Text::CSV; 
 
 my $csv = Text::CSV->new; 
 $csv->parse(<STDIN>); 

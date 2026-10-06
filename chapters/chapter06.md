@@ -662,18 +662,19 @@ are not part of the data and need to be stripped off and the doubled
 double quotes in the last field need to be converted to single double
 quotes!
 
-### Text::CSV\_XS
+### Text::CSV
 
 Fortunately, this problem has already been solved for you. On the CPAN
 there is a module called
-[Text::CSV_XS](http://metacpan.org/pod/Text::CSV_XS) which will
+[Text::CSV](http://metacpan.org/pod/Text::CSV) which will
 extract the data from CSV files and will also generate CSV records
-from your data. The best way to explain how it works is to leap right
+from your data. (It uses the faster Text::CSV_XS behind the scenes if that
+is installed.) The best way to explain how it works is to leap right
 in with an example or two. Suppose that we had a CSV file which
 contained data like the previous example line. The code to extract and
 print the data fields would look like this:
 
-	use Text::CSV_XS;
+	use Text::CSV;
 
 	my $csv = Text::CSV->new;
 
@@ -688,7 +689,7 @@ Assuming the input line above, this will print:
 	Cross, Dave|07/09/1962|M|Field with "embedded" quotes
 
 Notice the use of $" to print pipe characters between the fields.
-Text::CSV\_XS also works in reverse. It will create CSV records from
+Text::CSV also works in reverse. It will create CSV records from
 your data.
 
 As an example, let’s rebuild the same data line from the individual
@@ -1784,7 +1785,7 @@ Summary
 
 *  Record-oriented data is very easy to handle in Perl, particularly if you make appropriate use of the I/O control variables such as `$/`, `$"`, and `$,`.
 
-*  The [Text::CSV_XS](http://metacpan.org/pod/Text::CSV_XS) CPAN module makes it very easy to read and write comma-separated values.
+*  The [Text::CSV](http://metacpan.org/pod/Text::CSV) CPAN module makes it very easy to read and write comma-separated values.
 
 *  Data caching can speed up your programs when used carefully, and using Memoize.pm can make adding caching to a program very easy.
 

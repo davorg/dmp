@@ -1,5 +1,5 @@
 use LWP::Simple; 
 
-my $page = get('http://www.mag-sol.com/index.html');
-getprint('http://www.mag-sol.com/index.html');
-getstore('http://www.mag-sol.com/index.html', 'index.html');
+my $page = get('http://example.com/');
+getprint('http://example.com/');
+getstore('http://example.com/', 'example.html');

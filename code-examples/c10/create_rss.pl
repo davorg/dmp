@@ -2,6 +2,7 @@
 
 use strict; 
 use XML::RSS; 
+use POSIX qw(strftime);
 
 my $rss = XML::RSS->new; 
 
@@ -9,7 +10,7 @@ $rss->channel(title => "Dave's News",
 	      link => 'http://daves.news', 
 	      language => 'en', 
 	      description => "All the news that's unfit to print!", 
-	      pubDate => scalar localtime, 
+	      pubDate => strftime('%a, %d %b %Y %H:%M:%S %z', localtime), 
 	      managingEditor => 'ed@daves.news', 
 	      webMaster => 'webmaster@daves.news'); 
 

@@ -317,7 +317,7 @@ Dave’s news.
        <link>http://daves.news</link>
        <description>All the news that's unfit to print!</description>
        <language>en</language>
-       <pubDate>Wed May 10 21:06:38 2000</pubDate>
+       <pubDate>Tue, 06 Oct 2026 12:00:00 +0100</pubDate>
        <managingEditor>ed@daves.news</managingEditor>
        <webMaster>webmaster@daves.news</webMaster>
 
@@ -381,6 +381,7 @@ create the file given above:
      use strict;
      use warnings;
      use XML::RSS;
+     use POSIX qw(strftime);
 
      my $rss = XML::RSS->new;
 
@@ -389,7 +390,7 @@ create the file given above:
        link => 'http://daves.news',
        language => 'en',
        description => "All the news that's unfit to print!",
-       pubDate => scalar localtime,
+       pubDate => strftime('%a, %d %b %Y %H:%M:%S %z', localtime),
        managingEditor => 'ed@daves.news',
        webMaster => 'webmaster@daves.news');
 
@@ -443,10 +444,10 @@ script which displays some of the more useful data from an RSS file.
     print 'Published: ', $rss->channel('pubDate'), "\n";
     print 'Editor: ', $rss->channel('managingEditor'), "\n\n";
 
-    print "Items:n";
+    print "Items:\n";
 
     foreach ($rss->items->@*) {
-      print $_->{title}, "nt<", $_->{link}, ">n";
+      print $_->{title}, "\n\t<", $_->{link}, ">\n";
     }
 
 The file is parsed using the parsefile method (which [XML::RSS](https://metacpan.org/pod/XML::RSS)
@@ -464,7 +465,7 @@ we get.
     Dave's News
     All the news that's unfit to print!
     http://daves.news
-    Published: Wed May 10 21:06:38 2000
+    Published: Tue, 06 Oct 2026 12:00:00 +0100
     Editor: ed@daves.news
 
     Items:

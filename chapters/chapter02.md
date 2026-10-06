@@ -588,14 +588,14 @@ we require.
       my $input = <STDIN>;
       chomp($input);
       return $input;
-  }
+    }
 
 In this case we create a customer object by calling the `Customer->new`
 method, passing in data that we prompt the user for. Having created an
 object, we call `$cust->save` to save our new record. If the save is
-successful, the code attribute will have been filled in and we can display
-the new customer's code to the user by way of the `$cust->code` attribute
-access method.
+successful, the `cust_no` attribute will have been filled in and we can display
+the new customer's number to the user by way of the `$cust->cust_no`
+accessor method.
 
 If, on the other hand, we wanted to access an existing customer record, we
 would  pass the customer to the Customer->new method (e.g.,
