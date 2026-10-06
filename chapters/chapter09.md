@@ -627,10 +627,11 @@ filename, a string of HTML, or a URL—it fetches the page for you if
 you give it one, using LWP::UserAgent internally. `find` takes a CSS
 selector, exactly like `document.querySelectorAll` in JavaScript or
 `$(...)` in jQuery, and `each` iterates the matches, calling your
-subroutine with two arguments (the index and the element; we only want to
-ignore them here, hence `($i, $)`, because signatures insist on the right
-number of arguments) and setting `$_` to a Web::Query object wrapping the current element, so you can call
-`find`/`text`/`attr` straight off it—jQuery's `$(this)` pattern
+subroutine with two arguments, the index and the element. We don't need
+the element, since `each` also sets `$_` to a Web::Query object wrapping
+it, but a signature insists on the right number of arguments, so the bare
+`$` in `($i, $)` accepts and ignores it. That lets you call
+`find`/`text`/`attr` straight off `$_`—jQuery's `$(this)` pattern
 translated into Perl.
 
 Compare this to the HTML::TokeParser example above: there's no manual
