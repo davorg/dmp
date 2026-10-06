@@ -663,7 +663,6 @@ turns the raw parse tree into a tidier data structure:
     use warnings;
 
     use builtin qw(trim);
-    no warnings 'experimental::builtin';
 
     use Regexp::Grammars;
     use Data::Dumper;
@@ -894,7 +893,6 @@ hash-building out into a small subroutine using subroutine signatures:
 
     use v5.40;
     use builtin qw(trim);
-    no warnings 'experimental::builtin';
 
     use Regexp::Grammars;
     use JSON::MaybeXS;

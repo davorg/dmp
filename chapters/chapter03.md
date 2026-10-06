@@ -127,8 +127,10 @@ person first.
     }
 
 Perl’s default sort mechanism is currently implemented using a mergesort
-algorithm, and has been guaranteed stable—elements that compare equal keep
-their original relative order—since Perl 5.8. In this type of sort, each
+algorithm (since Perl 5.8), which happens to be stable—elements that compare
+equal keep their original relative order. That stability is an accident of
+the implementation rather than a promise, though; if it matters to you, say
+so with `use sort 'stable';`. In this type of sort, each
 element of the list is compared with at least one
 other element in order to determine the correct sequence. This is an efficient method if
 each comparison is relatively cheap; however, there are circumstances where you

@@ -673,8 +673,8 @@ You'll also come across an older style of dereferencing in existing
 code, which puts the sigil of the thing you want in front of either a
 block or a plain reference variable: `@{$cds_ref}` and `@$cds_ref`
 both mean the same as `$cds_ref->@*`, and `${$cds_by_year{2009}}[0]`
-means the same as `$cds_by_year{2009}[0]`. Postfix dereference was
-added in Perl 5.24, and you'll need to be able to recognize both
+means the same as `$cds_by_year{2009}[0]`. Postfix dereference has been
+stable since Perl 5.24, and you'll need to be able to recognize both
 styles.
 
 Which one reads better depends on what's being dereferenced. For a

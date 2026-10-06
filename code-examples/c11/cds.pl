@@ -2,7 +2,6 @@ use strict;
 use warnings;
 
 use builtin qw(trim);
-no warnings 'experimental::builtin';
 
 use Regexp::Grammars;
 use Data::Dumper;

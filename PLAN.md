@@ -173,8 +173,11 @@ See `TODO.md` for the full detail behind every item below.
   Appendix A, so its module list would be final. Treat the rest
   (REST/HTTP-as-data-source, modern HTTP client note, core-vs-CPAN
   `use`-statement audit, CPAN-glossary appendix) as stretch goals.
-- Audit every "available/bundled since Perl 5.X.Y" claim in the book for
-  citing a real stable release, not a development track.
+- [x] Audit every "available/bundled since Perl 5.X.Y" claim in the book
+  for citing a real stable release, not a development track — done
+  (2026-10-06). Five real corrections (incl. a wrong sort-stability
+  claim and a stale `experimental::builtin` warning suppression); see
+  TODO.md.
 - Decide what, if anything, Appendix B should say about regular
   expressions — currently nothing, spotted 2026-09-28 during the Ch4
   reality check. Appendix B points to Chapter 2 for OO in one line;

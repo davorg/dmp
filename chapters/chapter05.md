@@ -340,7 +340,7 @@ they solve different problems:
 
 *  [utf8](https://metacpan.org/pod/utf8) tells Perl that *your source
    code* is written in UTF-8, so that literal Unicode characters in
-   string literals—and, since Perl 5.10, in identifiers—are understood
+   string literals—and in identifiers—are understood
    correctly. It has nothing to do with reading or writing files.
 
 *  [Encode](https://metacpan.org/pod/Encode), and the `:encoding(...)`
@@ -490,7 +490,7 @@ patrolling it on your behalf.
 
 Because [utf8](https://metacpan.org/pod/utf8) is about your source
 code rather than your data, it lets you do things that have nothing to
-do with file I/O—including, since Perl 5.10, using Unicode characters
+do with file I/O—including using Unicode characters
 in identifiers:
 
 	use strict;
@@ -657,7 +657,7 @@ else can carry the same content in different forms.)
 The fix is *normalization*: converting text to one standard
 representation before you compare it. The core module
 [Unicode::Normalize](https://metacpan.org/pod/Unicode::Normalize)
-(bundled with Perl since 5.7.3) provides four standard forms, but the
+(bundled with Perl since 5.8.0) provides four standard forms, but the
 one you'll want most often is `NFC`, which composes characters
 together wherever possible:
 
