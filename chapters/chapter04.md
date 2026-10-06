@@ -145,7 +145,7 @@ they say and affect only the first character in the given string. I
 have seen code like this:
 
 	$string = ucfirst 'UPPER';
-	# This doesn’t work
+	# This doesn't work
 
 where the programmer expects to end up with the string 'Upper'. The
 correct code to achieve this is:
@@ -799,7 +799,7 @@ extra modifiers.
 By default, the substitution only takes place on the first string
 matched in the data string. For example:
 
-	my $data = "This is Dave’s data. It is the data belonging to Dave";
+	my $data = "This is Dave's data. It is the data belonging to Dave";
 	$data =~ s/Dave/David/;
 
 will result in `$data` containing the string “This is David’s data. It
@@ -807,7 +807,7 @@ is the data belonging to Dave”. The second occurrence of Dave was
 untouched. In order to affect all occurrences of the string we can
 use the g modifier.
 
-	my $data = "This is Dave’s data. It is the data belonging to Dave";
+	my $data = "This is Dave's data. It is the data belonging to Dave";
 	$data =~ s/Dave/David/g;
 
 This works as expected and leaves `$data` containing the string “This
@@ -1072,7 +1072,7 @@ Once again we make use of the power of the UNIX filter model as
 discussed in [Chapter 2](ch005.xhtml).
 
 This isn’t a particularly useful script. It doesn’t, for example,
-handle capitalization of the words that it translates. In the next
+handle capitalisation of the words that it translates. In the next
 section we’ll look at something a little more powerful.
 
 ### More examples: /etc/passwd
@@ -1249,7 +1249,7 @@ worth a quick check of Regexp::Common before you reinvent one of its
 patterns by hand.
 
 Here's `$RE{num}{real}`, which matches a real number in any of the
-forms Perl itself would recognize—plain integers, decimals, and
+forms Perl itself would recognise—plain integers, decimals, and
 scientific notation—so you don't have to work out all of those cases
 yourself:
 

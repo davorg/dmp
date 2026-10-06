@@ -8,6 +8,7 @@
 #   skip=   don't run it at all (interactive, needs special hardware, ...)
 #   known=  a known problem; reported as KNOWN, and flagged FIXED once it passes
 #   needs=net  needs the Internet; skipped with --offline
+#   slow=1     takes a long time; skipped with --quick
 
 # ---- c2 ----
 c2/Customer.pl  stdin=customer_input.txt
@@ -20,7 +21,7 @@ c2/data_munger2.pl  skip="fragment: calls a sub defined in another listing"
 c2/data_munger3.pl  skip="fragment: calls a sub defined in another listing"
 
 # ---- c3 ----
-c3/benchmark.pl  timeout=240
+c3/benchmark.pl  slow=1  timeout=240
 c3/complex_sorts.pl
 c3/data_dumper.pl  stdin=cd.txt
 c3/data_printer.pl  stdin=cd.txt  expect-stderr=1

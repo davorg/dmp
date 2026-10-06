@@ -19,7 +19,7 @@ while (read(STDIN, $data, 8)) {
 
     print << "END"; 
   Width: $w, Height: $h 
-  Bit Depth: $bitdepth, Color Type: $coltype 
+  Bit Depth: $bitdepth, Colour Type: $coltype 
   Compression Type: $comptype, Filtering Type: $filtype 
   Interlace Scheme: $interlscheme 
 END

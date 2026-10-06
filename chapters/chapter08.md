@@ -251,7 +251,7 @@ of records that we have processed and stored in `$data{CDs}`.
 Figure 8.1 shows the data structure that we store the album details
 in.
 
-![Data structure modeling the complex CD data file](images/8-1-data-structure-modeling-the-complex-cd-data-file.svg)
+![Data structure modelling the complex CD data file](images/8-1-data-structure-modeling-the-complex-cd-data-file.svg)
 
 As you can see, while this approach gets the job done, it is far from
 elegant. A better way to achieve this would be using a real parser.
@@ -467,7 +467,7 @@ use of parsers.
 
 As I have hinted throughout this chapter, the solution to all of
 these problems is to use a parser. A *parser* is a piece of software
-that takes a piece of input data and looks for recognizable patterns
+that takes a piece of input data and looks for recognisable patterns
 within it. This is, of course, what all of our parsing routines have
 been doing, but we are now looking at a far more mathematically
 rigorous way of splitting up our input data.
@@ -480,9 +480,9 @@ recommended at the end of this chapter.
 
 #### An introduction to parsing jargon
 
-I said that parsers look for recognizable patterns in the input data.
+I said that parsers look for recognisable patterns in the input data.
 The first question, therefore, should be: how do parsers know what
-patterns to recognize? Any parser works on a grammar that defines the
+patterns to recognise? Any parser works on a grammar that defines the
 allowable words in the input data and their allowed relationships with
 each other. Although I say words, obviously in the kinds of data that
 we are dealing with these words can, in fact, be any string of

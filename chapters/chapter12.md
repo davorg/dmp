@@ -213,7 +213,7 @@ be useful to gather them together in one place.
 
 *  [The Perl and Raku Conference](https://tprc.us/) (TPRC)—The community's flagship annual conference, held in a different city each year.
 
-*  [The Perl & Raku Foundation](https://www.perlfoundation.org/)—A non-profit that funds Perl development, holds Perl's trademarks, and organizes and sponsors community events.
+*  [The Perl & Raku Foundation](https://www.perlfoundation.org/)—A non-profit that funds Perl development, holds Perl's trademarks, and organises and sponsors community events.
 
 *  [r/perl](https://www.reddit.com/r/perl)—A small, active Reddit community for Perl news and discussion.
 

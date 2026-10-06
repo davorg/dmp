@@ -133,12 +133,12 @@ The following functions are all called via a valid statement handle.
 * `$sth->bind_columns(@list_of_refs_to_vars)` Binds each variable in the list to a column in the result set (the first variable in the list is bound to the first column in the result set, and so on). Note that the list must contain references to the variables. For example:
 
 	my ($code, $name);
-	my $sth = $dbh->prepare(‘select code, name from city’);
+	my $sth = $dbh->prepare('select code, name from city');
 	$sth->execute;
 	$sth->bind_columns(\$code, \$name);
 
 	while ($sth->fetch) {
-	  print “$code: $name\n";
+	  print "$code: $name\n";
 	}
 
 ### Statement handle attributes
@@ -220,7 +220,7 @@ and `$RE{net}{IPv4}`.
 * `$RE{category}{name}->matches($string)`, `$RE{category}{name}->subs($string, $replacement)` Every pattern doubles as an object, with `matches` and `subs` methods for matching and non-destructive substitution—`$RE{ws}{crop}->subs($text)`, for example, trims leading and trailing whitespace from `$text` without an explicit `=~`.
 
 The pattern categories available in the current version are `balanced`
-(parenthesized delimiters), `comment` (over forty programming
+(parenthesised delimiters), `comment` (over forty programming
 languages), `delimited` (delimited strings), `lingua` (palindromes),
 `list`, `net` (IPv4, IPv6, and MAC addresses), `number` (integers and
 reals), `profanity`, `whitespace`, and `zip` (postal codes); see
@@ -268,13 +268,13 @@ alternative to Time::Piece, built around a large family of
 
 ### Constructors
 
-* `DateTime->new(%args)` Builds an object for an arbitrary date/time directly. Recognized keys are `year`, `month`, `day`, `hour`, `minute`, `second`, and `time_zone`; all except `year` are optional, and `time_zone` defaults to UTC.
+* `DateTime->new(%args)` Builds an object for an arbitrary date/time directly. Recognised keys are `year`, `month`, `day`, `hour`, `minute`, `second`, and `time_zone`; all except `year` are optional, and `time_zone` defaults to UTC.
 
 * `DateTime->now(%args)`, `DateTime->today(%args)` Return an object for the current date and time, or just the current date (time set to midnight). Both default to the UTC time zone—pass `time_zone => 'local'` (or a named zone like `'Europe/London'`) for anything else.
 
 ### Methods
 
-* `$dt->add(%args)`, `$dt->subtract(%args)` Move the date/time forward or backward. Recognized keys are `years`, `months`, `weeks`, `days`, `hours`, `minutes`, and `seconds`, and any combination can be passed in one call.
+* `$dt->add(%args)`, `$dt->subtract(%args)` Move the date/time forward or backward. Recognised keys are `years`, `months`, `weeks`, `days`, `hours`, `minutes`, and `seconds`, and any combination can be passed in one call.
 
 * `$dt1->subtract_datetime($dt2)` (or the overloaded `$dt1 - $dt2`) Returns a [DateTime::Duration](https://metacpan.org/pod/DateTime::Duration) object representing the difference between two dates, with its own `years`, `months`, `weeks`, and `days` methods—these account properly for varying month lengths and leap years, which a simple day count can't.
 
@@ -470,7 +470,7 @@ of HTML::TreeBuilder.
 
 * `$q->filter($selector)` Like `find`, but tests the elements in the current set themselves rather than their descendants.
 
-* `$q->each($coderef)` Calls `$coderef` once per matched element, passing the index and the element as its two arguments and localizing `$_` to a Web::Query object wrapping that single element—so you can call `find`/`text`/`attr` straight off `$_`, much like jQuery's `$(this)`.
+* `$q->each($coderef)` Calls `$coderef` once per matched element, passing the index and the element as its two arguments and localising `$_` to a Web::Query object wrapping that single element—so you can call `find`/`text`/`attr` straight off `$_`, much like jQuery's `$(this)`.
 
 * `$q->first`, `$q->last` Return a new object containing just the first or last matched element.
 

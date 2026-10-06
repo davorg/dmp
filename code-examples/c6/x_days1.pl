@@ -2,7 +2,7 @@ use Time::Local;
 
 my @now = localtime; # Get the current date and time 
 
-my @then = (0, 0, 12, @now[3 .. 5]); # Normalize time to 12 noon 
+my @then = (0, 0, 12, @now[3 .. 5]); # Normalise time to 12 noon 
 
 my $then = timelocal(@then); # Convert to number of seconds 
 

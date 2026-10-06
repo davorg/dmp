@@ -416,7 +416,7 @@ the rules given by the template. Once again the full power of pack
 will be useful when we look at binary data, but for ASCII data we will
 just use the A and a template options. These options have slightly
 different meanings in a pack template than the ones they have in an
-unpack template. Table 7.1 summarizes these differences.
+unpack template. Table 7.1 summarises these differences.
 
 | function | A                               | a                               |
 |----------|---------------------------------|---------------------------------|
@@ -719,7 +719,7 @@ A complete program to extract this data from a PNG file (passed in via
           unpack('NNCCCCC', $data);
         print << "END";
       Width: $w, Height: $h
-      Bit Depth: $bitdepth, Color Type: $coltype
+      Bit Depth: $bitdepth, Colour Type: $coltype
       Compression Type: $comptype, Filtering Type: $filtype
       Interlace Scheme: $interlscheme
     END
@@ -766,8 +766,8 @@ documentation but there is a *précis* in table 7.2.
 |-------|------|-------------|
 |Width | 4-byte integer | The width of the image in pixels |
 |Height | 4-byte integer | The height of the image in pixels |
-|Bit Depth | 1-byte character | The number of bits used to represent the color of each pixel |
-|Color Type | 1-byte character | Code indicating how colors are encoded within the image.<br>Valid values are:<br>0: A number from 0–255 indicating the greyscale value<br>2: Three numbers from 0–255 indicating the amount of red, green, and blue<br>3: A number which is an index into a color table<br>4: A greyscale value (0–255) followed by an alpha mask<br>6: An RGB triplet (as is 2, above) followed by an alpha mask |
+|Bit Depth | 1-byte character | The number of bits used to represent the colour of each pixel |
+|Colour Type | 1-byte character | Code indicating how colours are encoded within the image.<br>Valid values are:<br>0: A number from 0–255 indicating the greyscale value<br>2: Three numbers from 0–255 indicating the amount of red, green, and blue<br>3: A number which is an index into a colour table<br>4: A greyscale value (0–255) followed by an alpha mask<br>6: An RGB triplet (as is 2, above) followed by an alpha mask |
 |Compression Type  | 1-byte character  | The type of compression used (always 0 in PNG version 1.0) |
 | Filtering Type | 1-byte character | The type of filtering applied to the data (always 0 in PNG version 1.0) |
 | Interlacing Scheme | 1-byte character | The interlacing scheme used to store the data.<br>For PNG version 1.0 this is either 0 (for no interlacing) or 1 (for Adam7 interlacing) |
@@ -799,7 +799,7 @@ and the output I got looked like this:
 
     IHDR (13 bytes)
       Width: 100, Height: 50
-      Bit Depth: 8, Color Type: 2
+      Bit Depth: 8, Colour Type: 2
       Compression Type: 0, Filtering Type: 0
       Interlace Scheme: 0
     tEXt (21 bytes)
@@ -938,7 +938,7 @@ image/jpeg, 3, , <98213 bytes of binary data>`—readable, at least.
 
 It's worth being clear about what this does and doesn't solve, though.
 It's a generic heuristic—"if it's long, assume it's binary and
-summarize it"—not a real understanding of any particular tag, and
+summarise it"—not a real understanding of any particular tag, and
 that shows in a couple of places. `xing_toc` is usually a hundred or
 so individually short values (each one a single byte's worth of seek
 data), so no single element is long enough to trip the "treat as
@@ -963,7 +963,7 @@ As with MPEG::MP3Info—the module this replaces, which hasn't had a
 release since 2017—there are two separate parts to the returned data.
 `info` is physical data about the recording: bit rate, sample rate,
 whether it's stereo or mono, and so on. `tags` is the ID3 data about
-the sound itself—track name, artist, year of release—normalized to
+the sound itself—track name, artist, year of release—normalised to
 modern ID3v2.4 field names (`TIT2` for the title, `TPE1` for the
 artist, and so on) regardless of which version of ID3 the file
 actually has.

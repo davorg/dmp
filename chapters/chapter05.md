@@ -672,7 +672,7 @@ real-world gotcha: macOS has historically favored the decomposed form
 for filenames, so text typed on a Mac and text typed almost anywhere
 else can carry the same content in different forms.)
 
-The fix is *normalization*: converting text to one standard
+The fix is *normalisation*: converting text to one standard
 representation before you compare it. The core module
 [Unicode::Normalize](https://metacpan.org/pod/Unicode::Normalize)
 (bundled with Perl since 5.8.0) provides four standard forms, but the
@@ -697,16 +697,16 @@ which prints:
 	Before: no
 	After:  yes
 
-The rule of thumb: normalize with `NFC` at the same border where
+The rule of thumb: normalise with `NFC` at the same border where
 you're already decoding—as part of getting data into a known-good
 state before you do anything else with it, right alongside deciding on
 an encoding in the first place.
 
 ### Comparing and sorting Unicode text: fold case and collation
 
-Normalization fixes one kind of comparison problem—the same character
+Normalisation fixes one kind of comparison problem—the same character
 represented by different code point sequences. But even fully
-normalized Unicode text can trip up the string comparisons you're
+normalised Unicode text can trip up the string comparisons you're
 used to, in two different ways: case-insensitive matching, and
 sorting.
 
@@ -770,7 +770,7 @@ which prints:
 	Collated sort: apple, über, zebra
 
 Plain `sort` puts "über" last, because "ü" (U+00FC) sits after every
-plain ASCII letter in code point order—not where a human alphabetizing
+plain ASCII letter in code point order—not where a human alphabetising
 a list would put it. [Unicode::Collate](https://metacpan.org/pod/Unicode::Collate),
 core since Perl 5.8.0, implements the Unicode Collation Algorithm,
 which sorts text the way people actually expect, taking accents,
@@ -859,7 +859,7 @@ without the ^M, and indicate the newline style in the status line).
 This is the printable equivalent of the carriage return character that
 Windows inserts before each line feed. Similarly, a UNIX text file
 opened in Windows Notepad will have no carriage returns before the
-line feed and, therefore, Notepad will not recognize the end of line
+line feed and, therefore, Notepad will not recognise the end of line
 character sequence. All the lines will subsequently be run together,
 separated only by a black rectangle, which is Windows’ way of
 representing the unprintable line feed character.
@@ -919,13 +919,13 @@ the source will not change during the execution of the while loop.
 
 Sometimes the unstructured data that you receive will contain
 numerical data and the only changes that you will want to make are to
-reformat the numbers into a standardized format. This breaks down
-into two processes. First you have to recognize the numbers you are
+reformat the numbers into a standardised format. This breaks down
+into two processes. First you have to recognise the numbers you are
 interested in, then you need to reformat them.
 
-#### Recognizing numbers
+#### Recognising numbers
 
-How do you recognize a number? The answer depends on what sort of
+How do you recognise a number? The answer depends on what sort of
 numbers you are dealing with. Are they integers or floating points?
 Can they be negative? Do you accept exponential notation (such as 1E6
 for 1 × 106)? When you answer these questions, you can build a regular
@@ -1016,7 +1016,7 @@ allow you to do far more sophisticated formatting of numbers. They are
 [Convert::SciEng](https://metacpan.org/pod/Convert::SciEng) is a module for converting numbers to and from a
 format in which they have a postfix letter indicating the magnitude
 of the number. This conversion is called *fixing* and *unfixing*
-the number. The module recognizes two different schemes of fixes, the
+the number. The module recognises two different schemes of fixes, the
 SI scheme and the SPICE scheme. The module interface is via an
 object interface. A new object is created by calling the class new
 method and passing it a string indicating which fix scheme you want

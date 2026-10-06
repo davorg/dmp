@@ -343,7 +343,7 @@ you're indexing into a `%` variable with curly braces:
 
     my @some_labels = @label_for{'Allen, Lily', 'LCD Soundsystem'};
 
-You'll build hashes like this constantly when summarizing data.
+You'll build hashes like this constantly when summarising data.
 [Chapter 2](ch005.xhtml)'s `count_cds_by_attr` routine is a good
 example: it builds a hash keyed by whichever field you're counting —
 artist, year, whatever's passed in — incrementing the count each time
@@ -405,7 +405,7 @@ Two operators are specific to strings: `.` concatenates two strings
 together, and `x` repeats one — `'la' . 'la'` gives `'lala'`, while
 `'la' x 3` gives `'lalala'`. In list context, `x` repeats a whole list
 instead: `(0) x 5` gives a five-element list of zeroes, handy for
-initializing a data structure.
+initialising a data structure.
 
 Comparison operators come in two flavours, because Perl doesn't know
 in advance whether your scalars hold numbers or strings: `<`, `<=`,
@@ -704,7 +704,7 @@ code, which puts the sigil of the thing you want in front of either a
 block or a plain reference variable: `@{$cds_ref}` and `@$cds_ref`
 both mean the same as `$cds_ref->@*`, and `${$cds_by_year{2009}}[0]`
 means the same as `$cds_by_year{2009}[0]`. Postfix dereference has been
-stable since Perl 5.24, and you'll need to be able to recognize both
+stable since Perl 5.24, and you'll need to be able to recognise both
 styles.
 
 Which one reads better depends on what's being dereferenced. For a

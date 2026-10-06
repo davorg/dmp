@@ -64,4 +64,4 @@ listings:
 	bin/check-listings --strict
 
 examples:
-	bin/run-examples --offline
+	bin/run-examples --offline --quick

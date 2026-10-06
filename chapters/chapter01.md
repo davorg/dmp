@@ -67,7 +67,7 @@ hipster vinyl collection.)
 For each CD, we’ll list the artist, title, recording label, and year of
 release. Additionally the file will contain information on the date on
 which it was generated and the number of records in the file. Figure
-1.1 shows what this file looks like with the various parts labeled.
+1.1 shows what this file looks like with the various parts labelled.
 
 ![Sample data file](images/1-1-sample-data-file.svg)
 
@@ -87,7 +87,7 @@ munging techniques.
 ## Data recognition
 
 You won’t be able to do very much with this data unless you can
-recognize what data you have. Data recognition is about examining
+recognise what data you have. Data recognition is about examining
 your source data and working out which parts of the data are of
 interest to you. More specifically, it is about a computer program
 examining your source data and comparing what it finds against
@@ -102,7 +102,7 @@ six CDs, then all the data we are interested in is in the header and
 footer records and we don’t need to examine the actual data records
 in any detail.
 
-An important part of recognizing data is realizing what *context* the
+An important part of recognising data is realising what *context* the
 data is found in. For example, data items that are in header and
 footer records will have to be processed completely differently from
 data items which are in the body of the data.
@@ -112,7 +112,7 @@ like and what we need to do with it.
 
 ## Data parsing
 
-Having recognized your data you need to be able to do something with
+Having recognised your data you need to be able to do something with
 it. Data parsing is about taking your source data and storing it in data
 structures that make it easier for you to carry out the rest of the
 required processing.
@@ -143,7 +143,7 @@ list only CDs by David Bowie or only CDs that were released in the 2010s.
 * *You can reduce the number of fields returned.* For example, you could
 list only the artist, title, and year of release of all of the CDs.
 
-* *You can summarize the data in a variety of ways.* For example, you
+* *You can summarise the data in a variety of ways.* For example, you
 could list only the total number of CDs for each artist or list the
 number of CDs released in a certain year.
 
@@ -152,7 +152,7 @@ could list the number of CDs by Lily Allen.
 
 ## Data transformation
 
-Having recognized, parsed, and filtered our data, it is very likely
+Having recognised, parsed, and filtered our data, it is very likely
 that we need to transform it before we have finished with it. This
 transformation can take a variety of forms.
 
@@ -196,11 +196,11 @@ of data or graphs.
 
 ## Transferring data between multiple systems
 
-It is obviously convenient for any organization if its data is held in
+It is obviously convenient for any organisation if its data is held in
 one format in one place. Every time you duplicate a data item, you
 increase the likelihood that the two copies can get out of step with
 each other. As part of any database design project, the designers will
-go through a process known as normalization which ensures that data is
+go through a process known as normalisation which ensures that data is
 held in the most efficient way possible.
 
 It is equally obvious that if data is held in only one format, then it
@@ -353,7 +353,7 @@ Of course, all of these benefits come at a price. Manipulating data within a
 database is potentially slower than equivalent operations on data files.
 You may also need to invest in new hardware as some larger database systems
 like to have their own CPU (or CPUs) to run on. Nevertheless, most
-organizations are prepared to pay this price for the extra flexibility that
+organisations are prepared to pay this price for the extra flexibility that
 they get from a database.
 
 ### Communicating with databases
@@ -462,7 +462,7 @@ We will look at record-oriented data in [Chapter 6](ch010.xhtml).
 
 This is an area that has become more important in the years since the first
 edition of this book. The best example of hierarchical data is the
-*Standardized General Mark-up Language* (SGML), and its two better known
+*Standard Generalized Markup Language* (SGML), and its two better known
 offspring, the *Hypertext Mark-up Language* (HTML) and the *Extensible
 Mark-up Language* (XML). In these systems, each data item is surrounded by
 tags which denote its position in the hierarchy of the data. A data item
@@ -538,7 +538,7 @@ which reads far more like English. In fact you can even write:
 
 which is about as close to English as a programming language ever gets.
 
-A Perl programmer once explained to me the moment when he realized that Perl
+A Perl programmer once explained to me the moment when he realised that Perl
 and he were made for each other was when he wrote some pseudocode which
 described a possible solution to a problem and accidentally ran it through
 the Perl interpreter. It ran correctly the first time.
@@ -645,7 +645,7 @@ running you don’t get any of the performance problems that you would from
 a purely interpreted language.
 
 * *Perl has powerful data recognition and transformation features* — A
-lot of data munging consists of recognizing particular parts of the input
+lot of data munging consists of recognising particular parts of the input
 data and then transforming them. In Perl this is often achieved by using
 regular expressions. We will look at regular expressions in some detail later
 in the book, but at this point it suffices to point out that Perl’s regular

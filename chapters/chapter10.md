@@ -40,7 +40,7 @@ design of the page was changed, we would have to rework our program.
 
 The reason this was so difficult was that HTML was designed to model
 the logical structure of a document, not the meaning of the various
-elements. An HTML document makes it easy to recognize headings,
+elements. An HTML document makes it easy to recognise headings,
 paragraphs, lists, and other publishing elements. You can tell when
 an element should be printed in bold, but you don't know *why* it was
 bold -- for emphasis, because it's a table row heading, or because
@@ -281,10 +281,10 @@ them in older code, but neither is actively developed any more, and
 everything they do is covered -- more directly, and usually in less
 code -- by `XML::LibXML`.
 
-Specialized parsers—XML::RSS
+Specialised parsers—XML::RSS
 -------
 
-Some of the subclasses of [XML::Parser](https://metacpan.org/pod/XML::Parser) are specialized to deal with
+Some of the subclasses of [XML::Parser](https://metacpan.org/pod/XML::Parser) are specialised to deal with
 particular types of XML documents, *i.e.*, documents which conform to a
 particular DTD. As an example we will look at one of the most popular
 of these parsers, [XML::RSS](https://metacpan.org/pod/XML::RSS).
@@ -460,7 +460,7 @@ script which displays some of the more useful data from an RSS file.
 
 The file is parsed using the parsefile method (which [XML::RSS](https://metacpan.org/pod/XML::RSS)
 overrides from its parent [XML::Parser](https://metacpan.org/pod/XML::Parser)). This method adds data
-structures modeling the RSS file to the RSS parser object. This data
+structures modelling the RSS file to the RSS parser object. This data
 can be accessed using various accessor methods. The `channel` method
 gives you access to the various parts of the `<channel>` element, and
 the items are held in an array reference in `$rss->{items}`. (There is no
@@ -723,16 +723,16 @@ from `HTTP::Tiny` is raw bytes straight off the network, which is
 precisely what `decode_json` wants.
 
 The object-oriented interface—`JSON->new`, as used later in this
-chapter—defaults to the opposite behavior. Without an explicit
+chapter—defaults to the opposite behaviour. Without an explicit
 `->utf8`, `encode` returns a decoded Perl string rather than UTF-8
 bytes, and `decode` expects one as input rather than producing one.
-You only get byte-level behavior from the OO form by asking for it
+You only get byte-level behaviour from the OO form by asking for it
 with `->utf8`, which is exactly why the round-trip example later in
 this chapter calls `JSON->new->utf8->pretty->encode(...)`: it's about
 to print the result straight to `STDOUT`, so it needs actual bytes,
 not decoded characters.
 
-Get this backwards and you get a specific, recognizable failure. Feed
+Get this backwards and you get a specific, recognisable failure. Feed
 already-UTF-8-encoded bytes through a decode call that isn't expecting
 bytes (or, equivalently, decode the same bytes twice), and every
 non-ASCII character comes out mangled:
@@ -871,7 +871,7 @@ Notice that this version drops the `->utf8` we used in the Unicode
 section above, and adds a `binmode` on `STDOUT` instead.
 `YAML::PP->new->dump_string` always hands back decoded Unicode
 characters, never encoded bytes—there's no `->utf8`-style flag to ask
-it for the other behavior—so it can't be printed safely without an
+it for the other behaviour—so it can't be printed safely without an
 encoding layer somewhere. Rather than encode the JSON by hand and
 leave the YAML in character form, it's simpler to decode nothing,
 encode nothing, and let one `:encoding(UTF-8)` layer on `STDOUT`
@@ -929,7 +929,7 @@ Summary
 
 * Older modules such as [XML::Parser](https://metacpan.org/pod/XML::Parser) and [XML::DOM](https://metacpan.org/pod/XML::DOM) are still around and you'll meet them in older code, but [XML::LibXML](https://metacpan.org/pod/XML::LibXML) does everything they do, more directly and in less code.
 
-* Specialized parsers such as [XML::RSS](https://metacpan.org/pod/XML::RSS) can be used to parse documents conforming to specific DTDs.
+* Specialised parsers such as [XML::RSS](https://metacpan.org/pod/XML::RSS) can be used to parse documents conforming to specific DTDs.
 
 * [JSON::MaybeXS](https://metacpan.org/pod/JSON::MaybeXS) is the standard choice for JSON in Perl -- it's fast where a fast backend is installed, and works everywhere regardless.
 

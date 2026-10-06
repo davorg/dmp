@@ -69,7 +69,7 @@ therefore, call the file input operator in one of these two ways:
 	my $next_line = <FILE>;
 	my @whole_file = <FILE>;
 
-In both of these examples it is important to realize that each
+In both of these examples it is important to realise that each
 record—whether it is the record stored in `$next_line` or one of the
 records in `@whole_file` will still contain the value of `$/` at the
 end. Often you will want to get rid of this and the easiest way to do
@@ -130,7 +130,7 @@ therefore rewrite our first attempt into something like this:
 	  …
 	}
 
-and this will exhibit all of the behavior that we need. There are
+and this will exhibit all of the behaviour that we need. There are
 still a couple of improvements that we can make, but these are more
 about making the code Perlish than about fixing bugs.
 
@@ -146,9 +146,9 @@ default. Our code will now look like this:
 	  …
 	}
 
-The last piece of optimization is one that you wouldn’t be able to
+The last piece of optimisation is one that you wouldn’t be able to
 guess at, as it uses a piece of syntactic sugar that was put in by
-the authors of Perl when they realized what a common task this would
+the authors of Perl when they realised what a common task this would
 be. If the file input operator is the only thing that is in the
 conditional expression of a while loop, then the result of the
 operator is magically assigned to the `$_` variable and the resulting
@@ -164,7 +164,7 @@ at which point we are back with our original code (but, hopefully,
 with a deeper understanding of the complexities beneath the surface
 of such simple looking code).
 
-Notice that this final optimization is dependent on two things being
+Notice that this final optimisation is dependent on two things being
 true:
 
 First, the file input operator must be the only thing in the conditional
@@ -338,7 +338,7 @@ you can do something like this:
 	  }
 	}
 
-(Notice how we’ve localized the change to `$\` so that we don’t
+(Notice how we’ve localised the change to `$\` so that we don’t
 inadvertently break any [print](https://perldoc.perl.org/functions/print) statements elsewhere in the program.)
 
 Generally people don’t use this variable because it isn’t really any
@@ -633,7 +633,7 @@ our currency conversion script like this:
 	}
 
 Notice how the introduction of [Memoize](http://metacpan.org/pod/Memoize) actually simplifies the code.
-What [Memoize](http://metacpan.org/pod/Memoize) does is it replaces any call to a memoized function
+What [Memoize](http://metacpan.org/pod/Memoize) does is it replaces any call to a memoised function
 (`get_rate` in our example) with a call to a new function. This new
 function checks an internal cache and calls the original function only
 if there is not an appropriate cached value already available. [An
@@ -641,7 +641,7 @@ article](https://www.foo.be/docs/tpj/issues/vol4_1/tpj0401-0011.html) explaining
 ([Vol. 4, No. 1](https://www.foo.be/docs/tpj/issues/vol4_1/ewtoc.html)) Spring 1999 of *The Perl Journal*.
 
 Not every function call is a suitable candidate for caching or
-memoization but, when you find one that is, you can see a remarkable
+memoisation but, when you find one that is, you can see a remarkable
 increase in performance.
 
 Comma-separated files
@@ -871,7 +871,7 @@ fields in a form that we can use, but there is one more step to take.
 
 One difference between this format and the original (one record per
 line) format for the CD file is that the individual fields are now
-labeled. We need to lose these labels, but we can first make good use
+labelled. We need to lose these labels, but we can first make good use
 of them. Eventually we want each of our records to end up in a hash.
 The values of the hash will be the values of the data fields, but what
 are the keys? In previous versions of the CD input routines we have
@@ -952,7 +952,7 @@ lines. Note that this is not the same as setting `$/` to `\n\n`. If a
 file has two or more consecutive blank lines then setting `$/` to `\n\n`
 will give you extra empty records, whereas setting it to the empty
 string will soak up any number of blank lines between records. There
-are, of course, times when either of these behaviors is what is
+are, of course, times when either of these behaviours is what is
 required.
 
 You can also set `$/` to a reference to a scalar (which should contain
@@ -1148,7 +1148,7 @@ carrying out the calculation.
 
 	my @now = localtime;                 # Get the current date and time
 
-	my @then = (0, 0, 12, @now[3 .. 5]); # Normalize time to 12 noon
+	my @then = (0, 0, 12, @now[3 .. 5]); # Normalise time to 12 noon
 
 	my $then = timelocal(@then);         # Convert to number of seconds
 
@@ -1231,7 +1231,7 @@ to get to the first Monday.
 
 There is one other important date function that comes with the Perl
 standard library. This is the `strftime` function that is part of the
-[POSIX](http://metacpan.org/pod/POSIX) module. [POSIX](http://metacpan.org/pod/POSIX) is an attempt to standardize system calls across a
+[POSIX](http://metacpan.org/pod/POSIX) module. [POSIX](http://metacpan.org/pod/POSIX) is an attempt to standardise system calls across a
 number of computer vendors’ systems (particularly among UNIX vendors)
 and the Perl [POSIX](http://metacpan.org/pod/POSIX) module is an interface to these standard functions.
 The strftime function allows you to format dates and times in a very
@@ -1505,7 +1505,7 @@ interoperability is the whole point of the project, so it's worth a
 quick tour of what that buys you. Every module below works because it,
 too, is built around the same shared object.
 
-##### Date math with DateTime::Duration
+##### Date maths with DateTime::Duration
 
 Whenever you subtract one datetime from another, or add or subtract an
 amount of time, [DateTime](http://metacpan.org/pod/DateTime) hands you

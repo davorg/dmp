@@ -6,6 +6,7 @@
 #
 # Options:
 #   --offline    skip examples tagged "needs=net"
+#   --quick      skip examples tagged "slow=1" (the benchmarks)
 #   --verbose    show stderr for every non-OK example
 #   --keep       keep the scratch copy of code-examples/ (prints its path)
 #   --manifest F use manifest F (default: code-examples/MANIFEST)
@@ -39,7 +40,7 @@ use Getopt::Long;
 use POSIX qw(WNOHANG);
 
 my %opt = (perl => $^X);
-GetOptions(\%opt, 'offline', 'verbose', 'keep', 'list', 'manifest=s', 'perl=s')
+GetOptions(\%opt, 'quick', 'offline', 'verbose', 'keep', 'list', 'manifest=s', 'perl=s')
   or die "Usage: $0 [--offline] [--verbose] [--keep] [--list] [--manifest F] [--perl P] [pattern ...]\n";
 my @patterns = @ARGV;
 
@@ -119,6 +120,7 @@ sub run_one {
   return ('SKIP', $e->{skip}) if $e->{skip};
   my %needs = map { $_ => 1 } split /,/, ($e->{needs} // '');
   return ('SKIP', 'needs network (--offline)') if $opt{offline} and $needs{net};
+  return ('SKIP', 'slow (--quick)') if $opt{quick} and $e->{slow};
 
   my @args = split /,/, ($e->{args} // '');
   my ($outf, $errf) = ("$work/.out.$$", "$work/.err.$$");

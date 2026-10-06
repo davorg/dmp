@@ -136,12 +136,12 @@ other element in order to determine the correct sequence. This is an efficient m
 each comparison is relatively cheap; however, there are circumstances where you
 are sorting on a value which is calculated from the element. In these situations,
 recalculating the value each time can have a detrimental effect on performance. There
-are a number of methods available to minimize this effect and we will now
+are a number of methods available to minimise this effect and we will now
 discuss some of the best ones.
 
 ### The Orcish Manoeuvre
 
-One simple way to minimize the effect of calculating the sort value
+One simple way to minimise the effect of calculating the sort value
 multiple times is to cache the results of each calculation so that we only have to carry
 out each calculation once. This is the basis of the *Orcish Manoeuvre* (a pun on “or
 cache”) devised by Joseph Hall. In this method, the results of previous calculations are

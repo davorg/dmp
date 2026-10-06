@@ -294,7 +294,7 @@ flexible. (A hint - it usually is!)
 
 # Encapsulate business rules
 
-Much of the logic in your data munging programs will be modeling what might
+Much of the logic in your data munging programs will be modelling what might
 be described as "business rules" or "domain-specific constraints". These are
 the rules about what particular data items mean, what their valid sets of
 values are, and how they relate to other values in the same or other records.
@@ -563,7 +563,7 @@ called *Customer.pm*.
     1;  # All modules should return a true value
 
 The advantage that this method has over the previous example is that in
-addition to modeling the business rules that apply to a customer record,
+addition to modelling the business rules that apply to a customer record,
 it defines a standard data structure to store customer data and a well defined
 set of actions that can be performed on a customer record. The slight downside
 is that incorporating this module into a program will take a little more work
@@ -847,11 +847,11 @@ command that you run to load the file looks like this:
     load_products < products.dat
 
 What happens when the department that produces products.dat announces that
-because of a reorganization of their database they will be changing the format
+because of a reorganisation of their database they will be changing the format
 of your input file? For example, perhaps they will no longer identify each
 product with a unique integer, but with an alphanumeric code. Your first
 option would be to rewrite `load_products` to handle the new data format, but
-do you really want to destabilize a script that has worked very well for a
+do you really want to destabilise a script that has worked very well for a
 long time? Using the UNIX filter model, you don't have to. You can write a
 new script called `translate_products` which reads the new file format,
 translates the new product code to the product identifiers that you are

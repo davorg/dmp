@@ -35,8 +35,8 @@ with Lego; even running quantum computations.
 But that’s not its day job.
 
 Nine-to-five it earns its keep far more prosaically: storing information
-in databases, extracting it from files, reorganizing rows and columns,
-converting to and from bizarre formats, summarizing documents, tracking
+in databases, extracting it from files, reorganising rows and columns,
+converting to and from bizarre formats, summarising documents, tracking
 data in real time, creating statistics, doing back-up and recovery,
 merging and splitting data streams, logging and checkpointing computations.
 
@@ -237,7 +237,7 @@ have been very short.
 
 Marjan Bace and his staff at Manning must have wondered at times if
 they would ever get a finished book out of me. I’d like to specifically
-mention Ted Kennedy for organizing the review process; Mary Piergies
+mention Ted Kennedy for organising the review process; Mary Piergies
 for steering the manuscript through production; Syd Brown for answering
 my technical questions; Sharon Mullins and Lianna Wlasiuk for editing;
 Dottie Marsico for typesetting the manuscript and turning my original
@@ -274,5 +274,5 @@ fix your computer.
 And lastly, thanks and love to Gill without whose support,
 encouragement, and love I would never have got to the end of this. I
 know that at times over the last year she must have wondered if she
-still had a husband, but I can only apologize (again) and promise that
+still had a husband, but I can only apologise (again) and promise that
 she’ll see much more of me now that the book is finished.

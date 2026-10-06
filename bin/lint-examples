@@ -10,7 +10,13 @@
 #               another use/no line or by a blank line, never directly by code
 #               or a comment. (So the use statements are a block of their own.)
 #
-# With --fix the violations are repaired in place by inserting a blank line.
+#   smart-quote  a typographic quote (“ ” ‘ ’) in code. These creep
+#               in when code is pasted through a word processor, and they are
+#               not valid Perl. (Reported only; fix by hand, because it isn't
+#               always clear whether a quote is meant to be a ' or a ".)
+#
+# With --fix the use-blank violations are repaired in place by inserting a
+# blank line.
 # Exit status is 1 if any violations were found (and not fixed).
 
 use strict;
@@ -18,6 +24,7 @@ use warnings;
 use File::Basename qw(dirname);
 use Cwd qw(abs_path);
 use Getopt::Long;
+binmode STDOUT, ":encoding(UTF-8)";
 
 my %opt;
 GetOptions(\%opt, 'fix', 'chapters-only', 'examples-only')
@@ -32,7 +39,7 @@ unless (@files) {
     unless $opt{'examples-only'};
 }
 
-my $found = 0;
+my ($found, $smart) = (0, 0);
 for my $file (@files) {
   my $is_md = $file =~ /\.md$/;
   open my $fh, '<:encoding(UTF-8)', $file or die "Can't open $file: $!\n";
@@ -46,6 +53,14 @@ for my $file (@files) {
     next if $i == $#lines;
 
     my ($this, $next) = @lines[$i, $i + 1];
+    if ($is_md and $this =~ /^(?:\t|    )/ and $this =~ /[\x{201C}\x{201D}\x{2018}\x{2019}]/) {
+      printf "%s:%d: typographic quote in code: %s\n", $file =~ s{^\Q$root\E/}{}r, $i + 1, $this =~ s/^\s+//r;
+      $smart++;
+    }
+    elsif (!$is_md and $this =~ /[\x{201C}\x{201D}\x{2018}\x{2019}]/ and $this !~ /^\s*#/) {
+      printf "%s:%d: typographic quote in code: %s\n", $file =~ s{^\Q$root\E/}{}r, $i + 1, $this =~ s/^\s+//r;
+      $smart++;
+    }
     if ($is_md) {
       # only inside indented code blocks (tab or 4+ spaces), ignoring the
       # "  7: " line-number prefix some listings have
@@ -78,6 +93,7 @@ for my $file (@files) {
 
 sub is_use { $_[0] =~ /^(?:use|no)\s+\S/ }
 
-if ($opt{fix}) { print "Fixed $found problem(s).\n"; exit 0 }
-print $found ? "\n$found problem(s) found. Run with --fix to repair.\n" : "No problems found.\n";
-exit($found ? 1 : 0);
+if ($opt{fix}) { print "Fixed $found problem(s).\n"; print "$smart typographic quote(s) need fixing by hand.\n" if $smart; exit($smart ? 1 : 0) }
+print $found ? "\n$found use-blank problem(s) found. Run with --fix to repair.\n" : ($smart ? '' : "No problems found.\n");
+print "$smart typographic quote(s) in code.\n" if $smart;
+exit(($found || $smart) ? 1 : 0);
