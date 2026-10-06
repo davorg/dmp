@@ -470,7 +470,7 @@ of HTML::TreeBuilder.
 
 * `$q->filter($selector)` Like `find`, but tests the elements in the current set themselves rather than their descendants.
 
-* `$q->each($coderef)` Calls `$coderef` once per matched element, passing the index as the argument and localizing `$_` to a Web::Query object wrapping that single element—so you can call `find`/`text`/`attr` straight off `$_`, much like jQuery's `$(this)`.
+* `$q->each($coderef)` Calls `$coderef` once per matched element, passing the index and the element as its two arguments and localizing `$_` to a Web::Query object wrapping that single element—so you can call `find`/`text`/`attr` straight off `$_`, much like jQuery's `$(this)`.
 
 * `$q->first`, `$q->last` Return a new object containing just the first or last matched element.
 

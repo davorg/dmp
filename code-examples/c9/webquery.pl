@@ -3,6 +3,6 @@ use Web::Query;
 
 wq('webquery.html')
   ->find('.cd')
-  ->each(sub ($i) {
+  ->each(sub ($i, $) {
       say $_->find('.artist')->text, ' - ', $_->find('.title')->text;
   });

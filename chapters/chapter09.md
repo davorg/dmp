@@ -612,7 +612,7 @@ And here's Web::Query pulling the artist and title out of each CD:
 
 	wq('webquery.html')
 	  ->find('.cd')
-	  ->each(sub ($i) {
+	  ->each(sub ($i, $) {
 	      say $_->find('.artist')->text, ' - ', $_->find('.title')->text;
 	  });
 
@@ -626,8 +626,10 @@ which prints:
 filename, a string of HTML, or a URL—it fetches the page for you if
 you give it one, using LWP::UserAgent internally. `find` takes a CSS
 selector, exactly like `document.querySelectorAll` in JavaScript or
-`$(...)` in jQuery, and `each` iterates the matches, setting `$_` to a
-Web::Query object wrapping the current element, so you can call
+`$(...)` in jQuery, and `each` iterates the matches, calling your
+subroutine with two arguments (the index and the element; we only want to
+ignore them here, hence `($i, $)`, because signatures insist on the right
+number of arguments) and setting `$_` to a Web::Query object wrapping the current element, so you can call
 `find`/`text`/`attr` straight off it—jQuery's `$(this)` pattern
 translated into Perl.
 
