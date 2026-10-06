@@ -145,7 +145,6 @@ c9/linkextor2.pl
 c9/tokeparser.pl  args=tokeparser.html  expect-stderr=1
 c9/tokeparser2.pl  args=tokeparser.html
 c9/treebuilder.pl  args=tokeparser.html
-c9/weather.pl  needs=net  known="Yahoo UK weather page no longer exists (chapter says so); rewrite or keep as history?"
 c9/webquery.pl
 
 # ---- c10 ----

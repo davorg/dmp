@@ -9,7 +9,7 @@ What this chapter covers:
 
 *  Prebuilt HTML parsers
 
-*  Getting a weather forecast
+*  Why scraping is fragile (a cautionary tale)
 
 *  Web::Query, a modern jQuery-style alternative for scraping
 
@@ -295,14 +295,13 @@ displays only the a links within a file:
 
 	use HTML::LinkExtor;
 	my $file = shift;
-	my $p = HTML::LinkExtor->new(&check);
-	$p->parse_file($file);
 	my @links;
+	my $p = HTML::LinkExtor->new(\&check);
+	$p->parse_file($file);
 	foreach (@links) {
 	  print 'Type: ', shift @$_, "\n";
 	  while (my ($name, $val) = splice(@$_, 0, 2)) {
-	    print "
-	    $name -> $valn";
+	    print " $name -> $val\n";
 	  }
 	}
 	sub check(@args) {
@@ -493,82 +492,50 @@ Both [HTML::TreeBuilder](https://metacpan.org/pod/HTML::TreeBuilder)
 and [HTML::Element](https://metacpan.org/pod/HTML::Element) are part
 of the HTML-Tree bundle of modules which can be found on the CPAN.
 
-Extended example: getting weather forecasts
--------------------------------------------
+A cautionary tale about scraping
+--------------------------------
 
-To finish this section, here is an example demonstrating the
-extraction of useful data from web pages. We will get a weather
-forecast for the Central London area from Yahoo! The front page to
-Yahoo!’s U.K. weather service is at weather.yahoo.co.uk and by
-following a couple of links we can find that the address of the page
-containing the weather forecast for London is at
-*http://uk.weather.yahoo.com/1208/index_c.html* [*ed: this page is no longer active*]. In order to extract
-the relevant data from the file we need to examine the HTML source for
-the page. You can either use the "View Source" menu option of your
-browser or write a quick Perl script using [LWP](https://metacpan.org/pod/LWP) and `getstore` to store
-the page in a file.
+The first edition of this book finished its tour of HTML parsing with a
+worked example. It fetched Yahoo!'s U.K. weather page for London and used
+HTML::TokeParser to pick the forecast out of it: the outlook was in the first
+`<font>` tag after the sixth `<table>` tag, and the high and low temperatures
+were in the next two `<b>` tags. It was a good example of how to find the
+data you want in a web page, and it worked on the day I wrote it.
 
-Having retrieved a copy of the page we can examine it to find out
-where in the page we can find the data that we want. Looking at the
-Yahoo! page I found that the description of the weather outlook was
-within the first `<font>` tag after the sixth `<table>` tag. The high
-and low temperature measurements were within the following two `<b>`
-tags. Bear in mind that web pages change very frequently. By the time
-you read this, Yahoo! may well have changed the design of this page
-which will render this program useless.
+It didn't keep working. Over the following years the HTML of that page
+changed several times, and each time the forecast moved somewhere else, so
+the program needed rewriting. Then, at some point in the last twenty-five
+years, the page was removed altogether. There is nothing left for the
+program to fetch, so I've taken the example out of this edition rather than
+print code that can't possibly run.
 
-Armed with this knowledge, we can write a program which
-will extract the weather forecast and display it to the user. The
-program looks like this:
+That's not bad luck; it's what scraping is like. A web page is written for
+people, not for programs, and nobody has promised that its structure will
+stay the same. A scraper that relies on "the first `<font>` tag after the
+sixth `<table>`" is relying on an accident of the current design, and
+designs change. Worse, scrapers often fail quietly, carrying on happily
+and returning the wrong data instead of stopping with an error.
 
+So, before you write a scraper, ask whether you need to:
 
-	use HTML::TokeParser;
-	use LWP::Simple;
-	my $addr = 'http://uk.weather.yahoo.com/1208/index_c.html';
-	my $page = get $addr;
-	my $p = HTML::TokeParser->new($page)
-	  || die "Parse errorn";
-	$p->get_tag('table') || die "Not enough table tags!" foreach (1 .. 6);
-	$p->get_tag('font');
-	my $desc = $p->get_text, "n";
-	$p->get_tag('b');
-	my $high = $p->get_text;
-	$p->get_tag('b');
-	my $low = $p->get_text;
-	print "$descnHigh: $high, Low: $lown";
+*  **Look for an API.** Many sites that publish data also offer it in a
+   form meant for programs, usually JSON, with a documented format and
+   some promise that it won't change under you. Weather is a good example.
+   [Chapter 10](ch015.xhtml) gets the same London forecast from a weather
+   API, in less code than the scraper needed and without any HTML
+   archaeology.
 
-You will notice that I’ve used
-[HTML::TokeParser](https://metacpan.org/pod/HTML::TokeParser) in this
-example. I could have also chosen another
-[HTML::Parser](https://metacpan.org/pod/HTML::Parser) subclass or even
-written my own, but
-[HTML::TokeParser](https://metacpan.org/pod/HTML::TokeParser) is a
-good choice for this task as it is very easy to target specific
-elements, such as the sixth `<table>` tag, and then move to the next
-`<font>` tag.
+*  **Look for a feed or a download.** RSS and Atom feeds, CSV files and
+   data dumps are all easier to read, and more stable, than the web pages
+   they come from.
 
-In the program we use
-[LWP::Simple](https://metacpan.org/pod/LWP::Simple) to retrieve the
-required page from the web site and then parse it using
-[HTML::TokeParser](https://metacpan.org/pod/HTML::TokeParser). We then
-step through the parsed document looking for `<table>` tags, until we
-find the sixth one. At this point we find the next `<font>` tag and
-extract the text within it using the `get_text` method. This gives us
-the brief weather outlook. We then move in turn to each of the next
-two `<b>` tags and for each one extract the text from it. This gives
-us the forecast high and low temperatures. We can then format all of
-this information in a nice way and present it to the user.
-
-This has been a particularly simple example, but similar techniques
-can be used to extract just about any information that you can find on
-the World Wide Web.
-
-By the time you read this, in fact, the Yahoo! page has disappeared
-entirely -- which rather proves the point about scraping pages
-written for people rather than programs. If you need real weather
-data today, the modern equivalent is to call a weather API that
-returns JSON directly, with none of this HTML-archaeology required.
-[Chapter 10](ch015.xhtml) does exactly that.
+If there really is no alternative, then scrape defensively. Check the
+site's terms of use and its `robots.txt` first. Anchor your extraction on the
+most stable landmarks the page offers, such as `id` attributes, class names
+and meaningful element names, rather than on counting tags. Check that
+what you've found looks the way you expect, and stop with an error if it
+doesn't. Keep a saved copy of the page so that you can test your code
+without hitting the site, and expect to come back and fix it.
 
 Web::Query: a modern alternative
 ---------------------------------
@@ -667,5 +634,7 @@ Summary
 *  You can retrieve HTML documents from the Internet using the LWP bundle of modules from the CPAN.
 
 *  The main Perl module used for parsing HTML is [HTML::Parser](https://metacpan.org/pod/HTML::Parser), but you may well never need to use it, because subclasses like [HTML::LinkExtor](https://metacpan.org/pod/HTML::LinkExtor), [HTML::TokeParser](https://metacpan.org/pod/HTML::TokeParser), and [HTML::TreeBuilder](https://metacpan.org/pod/HTML::TreeBuilder) are often more useful for particular tasks.
+
+*  Scraping web pages is fragile, because pages are written for people and their structure changes without warning. Prefer an API or a feed if there is one, and scrape defensively if there isn't.
 
 *  [Web::Query](https://metacpan.org/pod/Web::Query) gives you a jQuery-style, CSS-selector interface for scraping, and is often quicker to reach for day to day than working with HTML::Parser directly.

@@ -2,11 +2,11 @@ use v5.36;
 use HTML::LinkExtor;
 
 my $file = shift;
-my $p = HTML::LinkExtor->new(\&check); 
+my @links;
+my $p = HTML::LinkExtor->new(\&check);
 
-$p->parse_file($file); 
+$p->parse_file($file);
 
-my @links; 
 foreach (@links) { 
   print 'Type: ', shift @$_, "\n";
   while (my ($name, $val) = splice(@$_, 0, 2)) {
