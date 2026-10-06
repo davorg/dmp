@@ -54,11 +54,14 @@ clean:
 
 # Quality checks on the code in the book. `make check` runs them all;
 # see the README for what each one does.
-.PHONY: check lint examples
-check: lint examples
+.PHONY: check lint listings examples
+check: lint listings examples
 
 lint:
 	bin/lint-examples
+
+listings:
+	bin/check-listings --strict
 
 examples:
 	bin/run-examples --offline

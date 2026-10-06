@@ -900,6 +900,8 @@ another program or a web page rather than to a Perl script—swap the
 `Data::Dumper` call for `JSON::MaybeXS`, and pull the per-CD
 hash-building out into a small subroutine using subroutine signatures:
 
+<!-- listing: c11/cds_json.pl fragment -->
+
     use v5.40;
 
     use Regexp::Grammars;

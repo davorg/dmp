@@ -1175,6 +1175,8 @@ are in the format `<forename> <surname>`. We’ll print them out as
 `<surname>, <forename>`, and sort them in surname order. Here’s the
 script:
 
+<!-- listing: c4/list_users.pl -->
+
 	  1: use strict;
 	  2:
 	  3: my $users = read_passwd();

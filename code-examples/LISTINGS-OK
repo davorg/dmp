@@ -1,3 +1,5 @@
 # Example files whose content intentionally differs from any single chapter
 # listing (see bin/check-listings). One "path  reason" per line.
 c3/simple_sorts.pl  collects several small listings from the "Simple sorts" section into one runnable file
+c3/complex_sorts.pl  collects several small listings from the "Complex sorts" section into one runnable file
+c3/dbi_setup.pl  helper that creates testdb.db for the chapter's DBI listing; not itself shown in the book

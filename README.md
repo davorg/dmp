@@ -21,3 +21,13 @@ It is driven by `code-examples/MANIFEST`: one line per program, saying what to f
 ## Style checks
 
 `bin/lint-examples` checks the example programs and the code listings in the chapters against the book's code style, and `--fix` repairs what it can. Currently it enforces one rule: the `use` statements at the top of a program form a block of their own, followed by a blank line. `make check` runs this and `bin/run-examples --offline` together.
+
+## Keeping the chapters and the examples in step
+
+The code listings in the chapters are copies of the programs in `code-examples/`, and copies drift. `bin/check-listings` compares them. A listing is tied to its file by a marker comment on the line before it in the chapter (invisible in the finished book):
+
+    <!-- listing: c6/cd2.pl -->
+
+    	the indented listing, as usual
+
+Add `fragment` after the file name if the listing deliberately shows only part of the file (and put `...` on a line of its own where code is left out). Whitespace, line breaks, comments, line numbers (`  7:`), and the `#!`, `use strict;`, `use warnings;` and `use v5.NN;` header lines that the book leaves out by convention are all ignored. `--verbose` lists what was checked, `--suggest` shows where unlinked examples might be in the book, and `--annotate` adds markers for the obvious matches. Files that deliberately don't match any single listing go in `code-examples/LISTINGS-OK`, with the reason. `make check` runs this along with the other checks.

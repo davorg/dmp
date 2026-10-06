@@ -14,7 +14,8 @@
 #
 #       the indented listing, as usual
 #
-# If the listing deliberately shows only part of the file, say so:
+# If the listing deliberately shows only part of the file, say so (a line
+# of just "..." in a listing means "code left out here"):
 #
 #   <!-- listing: c6/cd2.pl fragment -->
 #
@@ -91,6 +92,10 @@ for my $md (glob "$root/chapters/chapter*.md") {
       }
       pop @block while @block and $block[-1] =~ /^\s*$/;
       my @tokens = normalise_block(@block);
+      # "..." in a listing means "some code left out here"; it is not code
+      for (my $k = 0; $k + 2 < @tokens; ) {
+        if ($tokens[$k] eq '.' and $tokens[$k+1] eq '.' and $tokens[$k+2] eq '.') { splice @tokens, $k, 3 } else { $k++ }
+      }
       push @{ $listings{$num} }, {
         chapter => $num, start => $start + 1, tokens => \@tokens, bag => bag(\@tokens),
         link => $pending ? $pending->{file} : undef,

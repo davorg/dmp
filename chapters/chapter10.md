@@ -670,6 +670,8 @@ Here's `cities.yaml`:
 
 And the script that reads it:
 
+<!-- listing: c10/cities_weather.pl fragment -->
+
     use v5.40;
     use HTTP::Tiny;
     use JSON::MaybeXS;
