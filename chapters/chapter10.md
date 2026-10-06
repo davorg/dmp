@@ -544,8 +544,8 @@ Running it gives something like:
     Now: Partly cloudy, 19C
     Today: Partly cloudy, 14C to 22C
 
-`HTTP::Tiny` -- a core module, so nothing extra to install -- fetches
-the URL, and `decode_json` (exported by `JSON::MaybeXS`) turns the
+`HTTP::Tiny` -- a core module, so it's already installed (but see the
+note on HTTPS below) -- fetches the URL, and `decode_json` (exported by `JSON::MaybeXS`) turns the
 response body straight into a Perl data structure: `current` is a
 hash of conditions right now, and `daily` is a hash of arrays, one
 entry per forecast day, of which we only look at today (index `0`).
@@ -562,6 +562,75 @@ same shape as the Perl value it describes -- that's the main reason
 it's so much less code than the equivalent XML handling. The reverse
 operation, turning a data structure back into JSON text, is just as
 direct; we'll use it in the next example.
+
+### A closer look at the HTTP side
+
+The weather example is deliberately short, which means it skips a few
+things that a program you plan to leave running unattended shouldn't.
+Here's the same request again, built a bit more carefully:
+
+    my $http = HTTP::Tiny->new(
+        agent      => 'dmp-book-example/1.0',
+        timeout    => 10,
+        verify_SSL => 1,
+    );
+
+    my $params = $http->www_form_urlencode({
+        latitude  => $lat,
+        longitude => $lon,
+        current   => 'temperature_2m,weather_code',
+        timezone  => 'Europe/London',
+    });
+
+    my $res = $http->get("https://api.open-meteo.com/v1/forecast?$params");
+
+    unless ($res->{success}) {
+        my $why = $res->{status} == 599
+            ? $res->{content}
+            : "$res->{status} $res->{reason}";
+        die "Request failed: $why\n";
+    }
+
+Four things have changed. First, the query string is built by
+`www_form_urlencode`, which escapes every key and value properly (the
+`/` in `Europe/London` becomes `%2F`) and saves us gluing strings
+together by hand, which is how URLs with an unescaped `&` or space
+in them get built. Second, we've set a `timeout`, so a server that
+never answers can't hang the script forever, and an `agent` string,
+which is polite: it tells the service who is calling.
+
+Third, the error handling distinguishes two kinds of failure.
+`$res->{success}` is true only for a 2xx response. A server that
+answers with an error gives you its real status code and reason
+(`404 Not Found`, `429 Too Many Requests`, `503 Service Unavailable`).
+But if the request never got as far as a server at all -- a timeout,
+a refused connection, a DNS failure -- `HTTP::Tiny` reports status
+`599`, and puts the explanation in `$res->{content}` instead of a
+response body. Treating a `599` like any other response and passing
+its "content" to `decode_json` is a classic way to get a confusing
+error from entirely the wrong place.
+
+Fourth, `verify_SSL => 1` makes `HTTP::Tiny` check that the server's
+certificate is genuine. Versions from 0.083 (2023) onwards do this by
+default, but older Perls bundled older versions that didn't, and being
+explicit costs nothing.
+
+One caveat about "a core module, so nothing extra to install": that's
+true for plain `http`, but `HTTP::Tiny` can only speak `https` if the
+CPAN modules `IO::Socket::SSL` and `Net::SSLeay` are installed, and
+they aren't part of core Perl. Most Linux distributions and Strawberry
+Perl include them already; if yours doesn't, the request comes back as one of those `599`
+failures, with a message naming the missing module. You can also check
+ahead of time with `HTTP::Tiny->can_ssl`.
+
+Finally, a word on being a good citizen. Free APIs like Open-Meteo
+are free because people don't hammer them. Weather doesn't change
+every second, so if your program asks for the same forecast many times
+an hour, fetch it once, keep the answer for a while, and reuse it;
+and check the service's documentation for its rate limits. Some
+services return a `429` status (or a `Retry-After` header) when you've
+asked too often, and your code should stop and wait rather than
+retry immediately.
 
 Working with YAML
 -------
