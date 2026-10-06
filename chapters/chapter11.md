@@ -801,7 +801,10 @@ come straight from the corresponding parts of the tree.
 Notice the calls to `trim`, from Perl's `builtin` namespace: because
 the artist, title, and label fields are fixed-width, the text
 Regexp::Grammars hands us still has the padding spaces attached, and
-`trim` strips them off. This is a good example of a small but genuine
+`trim` strips them off. (The JSON version below starts with `use v5.40`, which
+imports `trim` along with the other stable `builtin` functions, so
+there it needs no `use builtin` line. Importing it twice gives a
+"masks earlier declaration" warning.) This is a good example of a small but genuine
 win from writing this code today rather than twenty-five years ago—the
 original Parse::RecDescent version of this program left that padding
 in the data, and you'd only have noticed it if you'd looked closely at
@@ -892,7 +895,6 @@ another program or a web page rather than to a Perl script—swap the
 hash-building out into a small subroutine using subroutine signatures:
 
     use v5.40;
-    use builtin qw(trim);
 
     use Regexp::Grammars;
     use JSON::MaybeXS;

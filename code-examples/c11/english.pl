@@ -1,7 +1,4 @@
 use v5.40;
-use builtin qw(trim);
-use feature 'signatures';
-no warnings 'experimental::signatures';
 
 use Regexp::Grammars;
 
