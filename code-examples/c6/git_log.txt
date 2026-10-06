@@ -1,0 +1,183 @@
+2026-10-06 14:28:01 +0100	Ch10: XML::RSS has no items() method; use $rss->{items}
+2026-10-06 14:21:37 +0100	TODO: log Ch9 scraping rewrite, drift-check idea
+2026-10-06 14:21:20 +0100	Ch9: replace dead Yahoo weather example with a cautionary note on scraping; remove weather.pl; fix corrupted LinkExtor listing
+2026-10-06 14:10:21 +0100	Fix example bugs found by run-examples: Customer, data_dumper, Number::Format option, Text::CSV, get.pl URL, RSS pubDate, read_rss listing; manifest args
+2026-10-06 14:05:25 +0100	Add bin/run-examples + MANIFEST; fix PNG signature typo, Latin-1 c7 scripts, missing sample data and use lines
+2026-10-06 12:24:19 +0100	TODO: log line-ending fix
+2026-10-06 12:24:18 +0100	Normalise code-examples to LF; add .gitattributes (eol=lf) so examples work under WSL/Linux; ignore *.db
+2026-10-06 12:19:23 +0100	TODO: log example-run pass
+2026-10-06 12:17:30 +0100	Ch3: make DBI example runnable on SQLite (add dbi_setup.pl, query a real table; replace stale MySQL dbi.pl)
+2026-10-06 12:13:12 +0100	Ch9: tidy Web::Query each() explanation
+2026-10-06 12:13:06 +0100	Ch9: Web::Query each() callback takes two args; fix signature
+2026-10-06 12:08:53 +0100	TODO: log Ch11 trim fix
+2026-10-06 12:06:51 +0100	Ch11: drop redundant use builtin/feature lines under use v5.40 (fixes 'masks earlier declaration' warning)
+2026-10-06 12:01:47 +0100	Ch3: runnable Test2::V0 example with real output
+2026-10-06 11:47:04 +0100	Ch5: fix number-matching regex captures ($1 grabbed only the fractional part); use named capture
+2026-10-06 11:33:55 +0100	Appendix B: soften 'nearly every module' wording; PLAN audit note
+2026-10-06 11:32:45 +0100	Core-vs-CPAN audit: add module install table to Appendix B; fix Test2::V0 distribution/core claim
+2026-10-06 11:30:25 +0100	Ch10: expand Open-Meteo HTTP section (error handling, 599, HTTPS deps, politeness); log stretch-goal decisions
+2026-10-06 11:29:05 +0100	Ch9/Appendix A: note HTTPS support via LWP::Protocol::https, point to HTTP::Tiny
+2026-10-06 11:24:51 +0100	Appendix B: add short 'Regular expressions' essentials section
+2026-10-06 11:19:12 +0100	Version-citation sweep: fix sort stability claim, Unicode::Normalize version, postfix deref wording, Unicode identifier claims, stale experimental::builtin suppression
+2026-10-02 17:48:47 +0100	Mark 2 Oct WIP release as done and promoted
+2026-09-28 17:58:17 +0100	Clarify release cadence: 2 Oct and 16 Oct firm, 30 Oct maybe-only (production takes over after 24 Oct text lock)
+2026-09-28 17:55:56 +0100	Record fortnightly LeanPub release cadence; next release Fri 2 Oct
+2026-09-28 17:51:24 +0100	Log open question: Appendix B has no regex coverage/pointer
+2026-09-28 17:48:46 +0100	Appendix A: add Regexp::Common reference section; note Appendix B has no regex pointer
+2026-09-28 17:44:49 +0100	Ch4: 25-years-later reality check — lookbehind, \K, fix /m vs /s, add /a, /xx, /r
+2026-09-28 17:32:58 +0100	Ch4: add named captures, non-greedy quantifiers, and \p{...} pointer; close out Ch4 audit
+2026-09-28 17:29:01 +0100	Ch4: add 'Transliterating characters with tr///' section
+2026-09-28 17:26:37 +0100	Ch4: explain use locale properly and point to Ch5's fc()/Unicode::Collate
+2026-09-28 17:19:58 +0100	Ch4: fix /etc/passwd section (real numbered list, fold footnotes into parentheticals, correct shadow-password framing)
+2026-09-28 17:05:16 +0100	Ch4: confirm Regexp::Common examples work against real module; update PLAN.md Week 5 status
+2026-09-28 16:47:06 +0100	Ch4: split Regexp::Common into its own section before 'Taking it to extremes'
+2026-09-28 16:24:11 +0100	Ch4: add Regexp::Common and the Email::Valid RFC822 regex
+2026-09-28 16:15:29 +0100	Ch4: add currency note to the Mastering Regular Expressions recommendation
+2026-09-28 16:09:38 +0100	Chapter 4: fix mechanical bugs found in review
+2026-09-28 12:51:43 +0100	Drop 10-2-json-bytes-vs-characters.svg
+2026-09-28 12:49:09 +0100	Remove the kink in forecast's middle branch
+2026-09-28 12:46:50 +0100	Align the three text-node leaves in 10-1-weather-xml-dom-tree.svg
+2026-09-28 12:43:44 +0100	Replace orphaned 10-1 with two new Chapter 10 diagrams
+2026-09-28 12:19:42 +0100	Shorten branch arms and fix arrowhead-to-box gaps in 11-3-ini-file-raw-parse-tree.svg
+2026-09-28 12:12:47 +0100	Uniform box width and balanced branching in 11-3-ini-file-raw-parse-tree.svg
+2026-09-28 12:00:33 +0100	Polish 11-3-ini-file-raw-parse-tree.svg per review
+2026-09-28 11:51:53 +0100	Replace orphaned 11-3-item-array.png with a Regexp::Grammars equivalent
+2026-09-28 11:40:47 +0100	Wire diagram key into the Preface, not the Foreword
+2026-09-28 11:30:41 +0100	Refresh CD collection example data
+2026-09-21 15:28:51 +0100	Chapter 12 modernity audit: refresh community/further-reading section
+2026-09-21 14:33:55 +0100	Mechanical fixes to Ch1/Ch2 and postfix dereference sweep
+2026-09-21 12:33:13 +0100	Rewrite Appendix B (Essential Perl) from scratch
+2026-09-21 11:57:48 +0100	Convert @_/shift argument unpacking to subroutine signatures
+2026-09-21 11:12:01 +0100	Rewrite Appendix A: drop superseded modules, add current ones
+2026-09-21 11:11:53 +0100	Add Web::Query section to Chapter 9
+2026-09-21 10:35:57 +0100	Fix book slug: data-munging-in-perl -> data-munging-with-perl
+2026-09-14 11:53:07 +0100	Update CLAUDE.md
+2026-09-14 11:52:18 +0100	Add a description of signatures
+2026-09-14 11:33:56 +0100	Ch8 audit: fix stale references, CD-data bug, Part III title
+2026-09-08 13:01:32 +0100	Executable
+2026-09-08 13:00:54 +0100	Add CLAUDE.md as a durable session-recovery backstop
+2026-09-08 12:45:52 +0100	Mark Week 2 (Ch3 audit + Ch5 heading reorg) done in TODO/PLAN
+2026-09-08 12:43:20 +0100	Ch5: promote Unicode to its own H2, tidy Data conversions
+2026-09-08 12:21:20 +0100	Ch3: add Testing section (Test::More + Test2), close out testing backlog item
+2026-09-08 12:11:04 +0100	Ch3: rewrite DBI section around SQLite, drop pre-DBI history; log CPAN-install gap in TODO
+2026-09-08 11:50:23 +0100	Ch3: restructure Benchmark section - modern numbers first, 2001 numbers as historical comparison
+2026-09-08 11:32:34 +0100	Ch3: fix code bugs (Benchmark subs/coderefs, missing semicolon), broken link, CD year inconsistency, and several typos
+2026-09-02 16:38:33 +0100	Ch7: 'ASCII string'->'text string' (x2), libpng URL to https, drop DOS from binmode note
+2026-09-02 16:34:28 +0100	Ch7 fig 7.1: fix hidden right border on the highlighted Data box (z-order)
+2026-09-02 16:26:15 +0100	Ch7: update fixed-width example dates 1999->2026, change 'check' to 'payment'
+2026-09-01 17:54:47 +0100	Ch7: add figure 7.1 (PNG file/chunk/IHDR-field byte layout)
+2026-09-01 17:40:15 +0100	Ch7: fix dead PNG spec link, missing color-type label, add pack/unpack modern additions
+2026-09-01 17:17:45 +0100	Ch7: drop ASCII-only framing and the GIF patent story
+2026-09-01 17:08:07 +0100	Ch7: replace MPEG::MP3Info example with Audio::Scan
+2026-09-01 16:46:38 +0100	Fix Part IV: rewrite Part III narrative, add real Part IV heading
+2026-09-01 16:21:42 +0100	Fix 'PART IV' reference in preface
+2026-08-28 15:22:05 +0100	Add PLAN.md: 8-week manuscript completion plan for LPW
+2026-08-26 16:21:12 +0100	Redraw book diagrams as hand-authored SVGs
+2026-08-26 11:11:52 +0100	TODO: note diagram redraw in progress, flag dated CD example years
+2026-08-22 11:34:21 +0100	TODO: note Ch5 heading structure needs a look (Unicode nested under 'Converting the character set')
+2026-08-22 11:28:07 +0100	Fix link
+2026-08-22 11:24:41 +0100	Makefile: force build/front-matter.md to always regenerate
+2026-08-22 11:18:35 +0100	Ch5: add ASCII-vs-UTF-8 byte encoding diagram
+2026-08-22 11:10:27 +0100	Ch10: add Unicode/UTF-8 coverage to JSON and YAML section
+2026-08-22 11:02:50 +0100	Ch3/Ch5: introduce Path::Tiny for file and path handling
+2026-08-22 10:52:56 +0100	Ch5: add fold case (fc) and Unicode::Collate section
+2026-08-21 18:00:02 +0100	Ch5: add Unicode regex properties and canonical normalization sections
+2026-08-21 17:46:24 +0100	Ch5: modernize Unicode coverage, drop EBCDIC, fix ASCII framing
+2026-08-21 16:44:02 +0100	Ch6: DateTime overload note, better Tolkien date, real example files
+2026-08-21 16:07:21 +0100	Ch6: add DateTime origin story and ecosystem tour
+2026-08-21 15:51:17 +0100	Rewrite Ch6 dates section: Date::Calc/Date::Manip -> Time::Piece/DateTime
+2026-08-06 14:57:36 +0100	TODO: log completion estimate, Appendix A drift, audit coverage gaps
+2026-08-06 14:13:11 +0100	Ch10: correct JSON claim -- JSON::PP has been core since 5.14
+2026-08-06 14:06:50 +0100	Update TODO after Ch10 JSON/YAML sprint
+2026-08-06 14:05:43 +0100	Ch10: add JSON and YAML sections, replacing the dead Ch9 weather scraper
+2026-08-06 13:53:38 +0100	Ch10: lowercase XML element/attribute names in the weather example
+2026-08-06 13:46:29 +0100	Remove stray vim swap file, gitignore .*.swp
+2026-08-06 13:46:11 +0100	Ch10: rename to 'Common Data Interchange Formats', rewrite intro
+2026-08-06 13:38:10 +0100	c10: promote weather_xpath.pl/weather_walk.pl, remove orphaned XML::Parser/XML::DOM examples
+2026-08-06 13:34:12 +0100	Update TODO after XML::LibXML rewrite
+2026-08-06 13:33:49 +0100	Ch10: replace XML::Parser/XML::DOM with XML::LibXML
+2026-08-06 13:26:09 +0100	Update TODO
+2026-08-06 13:18:44 +0100	Ch10: replace XML-only document-formats example with JSON/YAML/XML capstone
+2026-08-05 16:36:24 +0100	Switch PDF build to WeasyPrint, drop mobi, fix image paths
+2026-08-05 16:13:50 +0100	Rewrite Chapter 11 for Regexp::Grammars, fix EPUB build, add WIP version stamp
+2026-08-05 15:13:47 +0100	Add TODO
+2026-08-05 14:52:20 +0100	Add cover images
+2026-08-05 14:50:59 +0100	New code
+2026-08-05 14:39:17 +0100	Update a bunch of changes from the last two years :-/
+2024-06-03 10:18:13 +0100	Replace "-w" with "use warnings"
+2024-05-31 15:10:36 +0100	Fix two more tables
+2024-05-30 17:23:40 +0100	Fix another table
+2024-05-30 17:14:06 +0100	Another try
+2024-05-30 17:09:45 +0100	Fix another table
+2024-05-30 15:29:12 +0100	Attempt to fix formatting
+2024-05-30 15:21:24 +0100	Fix the rest of the image links
+2024-05-30 15:14:39 +0100	Fix(?) image link
+2021-10-16 13:19:52 -0400	Random improvements in formatting
+2021-10-16 13:19:36 -0400	Table formatting
+2021-10-16 13:18:55 -0400	Random Markdown cleanups
+2021-10-14 12:58:48 -0400	Minor things I noticed, and XXX for things I need to work on
+2021-10-14 12:58:26 -0400	Basic edit for Appendix A
+2021-10-13 11:38:07 -0400	Appendix B edited
+2021-10-13 11:01:00 -0400	Chapters 11 and 12 edited
+2021-07-04 23:47:40 -0400	Chapter 10
+2021-07-02 11:57:34 -0400	chapters 8-9
+2021-06-02 12:41:42 -0400	Add the local file to ePub filename mapping, for cross references
+2021-06-01 21:18:59 -0400	Chapters 4-6, and others for consistency
+2021-05-10 05:30:40 -0400	Fixing up Ch 1-3
+2021-05-05 07:32:56 -0400	Point to the code examples in the GitHub repo
+2021-05-05 07:22:16 -0400	Remove duplicated files
+2021-05-05 07:17:04 -0400	Add code downloads from the Manning site
+2021-05-05 04:20:33 -0400	The current link to Manning
+2021-05-05 04:20:22 -0400	Format some HTML in paras to avoid pandoc errors
+2021-05-05 04:19:24 -0400	Format some code
+2021-05-05 04:19:13 -0400	Deal with some markdown list oddness
+2021-05-05 04:18:35 -0400	Un-indent some paras
+2021-05-05 04:18:08 -0400	Internal links
+2021-05-05 04:17:43 -0400	Use a markdown table instead
+2021-05-05 04:17:31 -0400	The real internal links, if we don't move things around
+2021-05-05 04:15:33 -0400	Move original .md into the dir with the other originals
+2021-05-05 02:54:44 -0400	Remove PDF in clean
+2021-05-05 02:54:35 -0400	Mark targets as phony
+2021-05-05 02:54:15 -0400	expand book name
+2021-05-05 02:45:23 -0400	Move original export out of dir
+2021-05-05 02:44:39 -0400	Undo massive code escaping
+2021-05-05 02:44:28 -0400	Link a chapter
+2021-05-05 02:44:06 -0400	Link Jargon File extract
+2021-05-05 02:43:50 -0400	Link chapter refs to fake pages we'll change later
+2021-04-27 10:24:50 +0100	Merge pull request #6 from davorg/briandfoy/reformat
+2021-04-26 20:04:52 -0400	Edit final chapters
+2021-04-26 19:45:04 -0400	Basic makefile
+2021-04-26 19:44:43 -0400	Still finding formatting issues, like embedded, literal HTML
+2020-07-31 14:49:11 -0400	Don't try to interpret TeX in verbatim sections
+2020-07-31 14:48:56 -0400	Don't complain about cleaning missing files
+2020-07-30 22:57:24 -0400	More extensive editing
+2020-02-26 01:40:51 -0500	Coarse conversion of Appendix A
+2020-02-26 01:17:40 -0500	coarse conversion of Appendix B
+2020-02-26 00:40:32 -0500	Finish coarse conversion of Chapter 9
+2020-02-26 00:40:19 -0500	Fix up stray hyphenation artifacts
+2020-02-26 00:31:53 -0500	Coarse formatting for Chapter 6
+2020-02-25 17:09:36 -0500	Coarse formatting for Chapter 7
+2020-02-25 14:59:38 -0500	Coarse formatting of Chapter 8
+2020-02-25 14:35:33 -0500	Coarse formatting for Chapter 10
+2020-02-25 13:36:02 -0500	Coarse conversion of Chapter 11
+2020-02-25 13:35:46 -0500	Line up second level heading rules
+2020-02-24 19:28:12 -0500	Convert chapter 12
+2020-02-24 19:18:44 -0500	Lots of partial manual reformatting
+2020-03-22 14:39:47 +0000	Pandoc argument fix
+2018-04-05 14:02:38 +0100	Started on chapter 3
+2016-04-07 21:39:07 +0100	More markdowning
+2015-10-14 22:29:09 +0100	Fixing more markdown
+2015-10-14 19:58:29 +0100	Commit some old changes to dmp.txt
+2015-10-14 17:30:20 +0100	Progress on cleaning stuff up
+2015-10-14 14:03:45 +0100	Ignore the output
+2015-10-14 14:03:00 +0100	Added chapter files.
+2015-10-14 14:02:15 +0100	Fixed sub-lists
+2015-10-14 13:18:57 +0100	Add ebook scaffolding
+2015-10-14 13:16:58 +0100	Moving stuff around
+2015-10-14 12:35:08 +0100	Added a markdown version (which needs a lot of cleaning up)
+2014-07-07 21:27:56 +0100	Started to add images to odt
+2014-07-06 18:08:04 +0100	Added LibreOffice version (incomplete)
+2014-06-29 13:58:55 +0100	Moved images into a subdirectory
+2014-06-29 13:57:39 +0100	Added images
+2014-04-28 10:49:08 +0100	Create README.md
+2014-04-28 10:46:23 +0100	First commit

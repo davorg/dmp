@@ -107,7 +107,7 @@ c6/read_csv.pl  stdin=cd.txt
 c6/shire.pl
 c6/split_arr.pl  stdin=cd.txt
 c6/split_hash.pl  stdin=cd.txt
-c6/weblog.pl
+c6/git_hours.pl  stdin=git_log.txt
 c6/write_csv.pl  skip="fragment: uses $csv from another listing"
 c6/x_days1.pl
 c6/x_days2.pl

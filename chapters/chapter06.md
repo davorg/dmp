@@ -1606,158 +1606,162 @@ can do the job, use it. Reach for [DateTime](http://metacpan.org/pod/DateTime)
 (or one of the modules built on top of it) once you need the extra
 power.
 
-Extended example: web access logs
----------------------------------
+Extended example: when do you write code?
+-----------------------------------------
 
-One of the most common sources of line-oriented data is a web server
-access log. It seems that everyone needs to wring as much information
-as possible from these files in order to see if their web site is
-attracting a large enough audience to justify the huge sums of money
-spent on it.
+Much of the data that we process is a list of timestamped events, one per
+line: log files, audit trails, transaction exports, and so on. The classic
+example, and the one that this section used to be about in the first edition
+of this book, is a web server's access log. Analysing one of those used to
+be something that everybody needed to do, and the techniques that it taught
+us are as useful as ever. But the data that we all have to hand today is
+different, so let's use something that every reader of this book can try
+straight away: the history of a git repository.
 
-Most web servers write access logs in a standard format. Here is a
-sample of a real access log. This sample comes from a log written by
-an Apache web server. Apache is the Open Source web server which runs
-more web sites than any other server.
+Git can print its history in whatever format we like. This command prints
+one line for each commit, giving the date and the subject line, separated by
+a tab character:
 
-	158.152.136.193 - - [31/Dec/1999:21:27:27 -0800] "GET /index.html HTTP/1.1" 200 2987
-	158.152.136.193 - - [31/Dec/1999:21:27:27 -0800] "GET /head.gif HTTP/1.1" 200 4389
-	158.152.136.193 - - [31/Dec/1999:21:27:28 -0800] "GET /menu.gif HTTP/1.1" 200 7317
+	git log --date=iso --pretty=format:'%ad%x09%s'
 
-Each of these lines represents one access request that the server has
-received. Let’s look at the fields in one of these lines and see what
-each one represents.
+Here are three lines of the output from the repository that this book is
+written in (there is a complete sample, `git_log.txt`, in the code examples
+for this chapter):
 
-The first field is the IP address from which the request came. It is
-possible in most web servers to have these addresses resolved to
-hostnames before they are logged, but on a heavily used site this can
-seriously impact performance, so most webmasters leave this option
-turned off.
+	2026-10-06 12:24:19 +0100    TODO: log line-ending fix
+	2021-10-14 12:58:26 -0400    Basic edit for Appendix A
+	2015-10-14 17:30:20 +0100    Progress on cleaning stuff up
 
-The second and third fields (the two dash characters) denote which
-user made this request. These fields will contain interesting data
-only if the requested page is not public, so the user must go through
-some kind of authorization in order to see it.
+The date is in the "iso" style that git produces with `--date=iso`: the
+date, the time, and the offset from UTC (so these commits were made on
+machines in the UK, in summer time, and on the east coast of North America).
 
-The fourth field is the date and time of the access. It shows the
-local date and time together with the difference from UTC (so in this
-case the server is hosted in the Pacific time zone of the U.S.A.).
+What we want to know is when the work gets done. Which days of the week are
+busy, and at which times of day do the commits come in? A program to find out
+needs to read each line, turn the date into something we can ask questions
+of, and count. Here it is:
 
-The fifth field shows the actual HTTP request that was made. It is in
-three parts: the request type (in this case, `GET`), the URL that was
-requested, and the protocol used (HTTP/1.1).
+	use List::Util qw(max);
+	use Time::Piece;
 
-The final two fields contain the response code that was returned to
-the browser (`200` means that the request was successful and the
-contents of the URL have been sent) and the number of bytes returned.
+	my (%by_day, %by_hour);
 
-Armed with this knowledge we can look at the three lines and work out
-exactly what happened. At half past nine on New Year’s Eve someone at
-IP address `158.152.136.193` made three requests to the web site. The
-person requested index.html, head.gif, and menu.gif. Each of these
-requests was successful and we returned a total of 14,000 bytes to
-them.
+	while (my $line = <STDIN>) {
+	  chomp $line;
+	  next unless length $line;
+	  my ($date, $subject) = split /\t/, $line, 2;
 
-This kind of analysis is very useful and not very difficult, but a
-busy web site will have many thousands of hits every day. How are you
-supposed to get meaningful information from that amount of input
-data? Using Perl, of course.
+	  # git's "iso" dates look like 2026-10-06 14:28:01 +0100. Time::Piece reads
+	  # the offset (%z) and converts the time to UTC...
+	  my $when = eval { Time::Piece->strptime($date, '%Y-%m-%d %H:%M:%S %z') }
+	    or do { warn "Skipping odd date '$date'\n"; next };
 
-It wouldn’t be very difficult to write something to break apart a log
-line and analyze the data, but it’s not completely simple—some fields
-are separated by spaces, others have embedded spaces. Luckily this is
-such a common task that someone has already written a module to
-process web access logs. It is called [Logfile](http://metacpan.org/pod/Logfile) and you can find it on
-the CPAN.
+	  # ...so turn it back into a time on this machine's clock
+	  my $local = localtime($when->epoch);
 
-Using [Logfile](http://metacpan.org/pod/Logfile) is very simple. It consists of a number of submodules,
-each tuned to handle a particular type of web server log. They are
-all subclasses of the module [Logfile::Base](http://metacpan.org/pod/Logfile::Base). As our access log was
-generated by Apache we will use [Logfile::Apache](http://metacpan.org/pod/Logfile::Apache).
+	  $by_day{ $local->wdayname }++;
+	  $by_hour{ $local->hour }++;
+	}
 
-[Logfile](http://metacpan.org/pod/Logfile) is an object-oriented module, so all processing is carried
-out via a [Logfile](http://metacpan.org/pod/Logfile) object. The first thing we need to do is create a
-[Logfile](http://metacpan.org/pod/Logfile) object.
+	# Scale the bars so that a big repository doesn't run off the screen
+	sub bar($count, $biggest) {
+	  my $scale = $biggest > 50 ? $biggest / 50 : 1;
+	  return '#' x int($count / $scale + 0.5);
+	}
 
-	my $log = Logfile::Apache->new(File => 'access_log',
-	                               Group => [qw(Host Date File Bytes User)]);
+	say 'Commits by day of the week';
+	my $biggest = max(values %by_day);
+	for my $day (qw(Mon Tue Wed Thu Fri Sat Sun)) {
+	  my $n = $by_day{$day} // 0;
+	  printf "%s %4d %s\n", $day, $n, bar($n, $biggest);
+	}
 
-The named parameters to this function make it very easy to follow
-what is going on. The `File` parameter is the name of the access log
-that you want to analyze. `Group` is a reference to a list of indexes
-that you will want to use to produce reports. The five indexes listed
-in the code snippet correspond to sections of the Apache log record.
-In addition to these, the module understands a couple of others.
-`Domain` is the top level that the requesting host is in (e.g., .com,
-.uk, .org), which is calculated from the hostname. Hour is the hour
-of the day that the request took place. It is calculated from the
-date field.
+	say '';
+	say 'Commits by hour of the day';
+	$biggest = max(values %by_hour);
+	for my $hour (0 .. 23) {
+	  my $n = $by_hour{$hour} // 0;
+	  printf "%02d:00 %4d %s\n", $hour, $n, bar($n, $biggest);
+	}
 
-Having created the Logfile object you can then start to produce
-reports with it. To list our files in order of popularity we can
-simply do this:
+	say '';
+	say 'Busiest five hours';
+	my @busiest = (sort { $by_hour{$b} <=> $by_hour{$a} || $a <=> $b } keys %by_hour)[0 .. 4];
+	printf "%02d:00 %4d\n", $_, $by_hour{$_} for @busiest;
 
-	$log->report(Group => 'File');
+The program reads the lines from `STDIN`, so you can feed it a saved file or
+pipe the output of `git log` straight into it, with
+`git log --date=iso --pretty=format:'%ad%x09%s' | perl git_hours.pl`.
 
-which produces a report like this:
+For each line we split off the date from the subject, and then use
+`Time::Piece->strptime` to parse it. The pattern `%Y-%m-%d %H:%M:%S %z`
+describes the date format that git gave us, and the `%z` at the end is the
+offset from UTC. Notice that the parse is wrapped in an `eval`, because
+`strptime` dies if it is given something that doesn't match the pattern. A
+badly formed line is skipped with a warning, rather than stopping the whole
+run.
 
-	File                       Records
-	==================================
-	/                        11  2.53%
-	/examples                 1  0.23%
-	/examples/index.html      1  0.23%
-	/images/graph             1  0.23%
-	/images/pix               1  0.23%
-	/images/sidebar           1  0.23%
-	/images/thumbnail         5  1.15%
-	/index                    1  0.23%
-	.
-	.
-	.
-	[other lines snipped]
+The next two lines of the loop contain the part that is easy to get wrong.
+When `strptime` is given an offset, it uses it to convert the time to UTC. So
+a commit made at `14:28 +0100` becomes an object holding `13:28`, and asking
+that object for its `hour` would give us 13, which is not what the clock on
+the wall said when the commit was made. And, because git records the
+offset of whichever machine made each commit, a repository like this one is
+likely to contain a mixture of offsets. Converting everything to UTC makes
+the times consistent, and calling `localtime` with the object's `epoch`
+converts them back into the time on *your* machine's clock, with daylight
+saving time taken into account. That is the right answer to "when do I work?"
+for a repository with just you in it, and it is the reason why the same
+program will give different (but correct) answers on a computer in a
+different time zone.
 
-This is an alphabetized list of all of the files that were listed in
-the access log. We can make more sense if we sort the output by
-number of hits and perhaps just list the top ten files by changing
-the code like this:
+The rest of the program is counting and reporting. The two hashes count the
+commits for each day and for each hour; `wdayname` gives us the abbreviated
+day name, such as `Mon`. The `bar` subroutine turns a count into a row of `#`
+characters, scaled down if the biggest count is more than fifty so that a busy
+repository doesn't run off the side of the screen. We list the days in the
+order of the week, not alphabetically, by putting the names in a list; hashes
+are unordered, so we couldn't rely on getting them back in a sensible order.
+Finally, sorting the hours by their counts (with the hour itself as a
+tie-breaker, so that the results are always in the same order) gives us the
+busiest hours. If you've used `sort` with a custom comparison before then
+there is nothing new there.
 
-	$log->report(Group => 'File', Sort => 'Records', Top => 10);
+Run on the sample data (in the UK time zone) the program prints:
 
-We then get a more understandable report that looks like this:
+	Commits by day of the week
+	Mon   40 ########################################
+	Tue   46 ##############################################
+	Wed   49 #################################################
+	Thu   22 ######################
+	Fri   12 ############
+	Sat   10 ##########
+	Sun    4 ####
 
-	File                       Records
-	==================================
-	/new/images             129 29.72%
-	/new/music               80 18.43%
-	/new/personal            52 11.98%
-	/new/friends             47 10.83%
-	/splash/splashes         28  6.45%
-	/new/pics                26  5.99%
-	/new/stuff               21  4.84%
-	/                        11  2.53%
-	/new/splash               6  1.38%
-	/images/thumbnail         5  1.15%
+	Commits by hour of the day
+	00:00    4 ####
+	01:00    1 #
+	...
 
-Perhaps instead of wanting to know the most popular files, you are
-interested in the most popular times of the day that people visit
-your site. You can do this using the Hour index. The following:
+	Busiest five hours
+	11:00   25
+	12:00   25
+	17:00   23
+	14:00   18
+	16:00   17
 
-	$log->report(Group => 'Hour');
+So most of the work on this book happens on Mondays to Wednesdays, with a
+long lunchtime peak and another burst around five o'clock; very little is
+done at the weekend.
 
-will list all of the hours in chronological order and
-
-	$log->report(Group => 'Hour', Sort => 'Records');
-
-will order them by the number of hits in each hour. If you want to
-find the quietest time of the day, simply reverse the order of the
-sort
-
-	$log->report(Group => 'Hour', Sort => 'Records', Reverse => 1);
-
-There are a number of other types of reports that you can get using
-`Logfile`, but it would be impossible to cover them all here. Have a
-look at the examples in the *README* file and the test files to get
-some good ideas.
+Once you have the day and the hour as numbers the possibilities are endless.
+You could count commits per month, or per author (add `%an` to the format), or
+use `Time::Piece`'s arithmetic to find the longest gap between commits. The
+same techniques work on any data with timestamps in it. A web server's
+access log, for example, is just the same problem with a different format for
+the date, and a regular expression like the ones we met in
+[Chapter 4](ch007.xhtml) to take the line apart. Once the fields are
+extracted, you count them in hashes in exactly the same way.
 
 Further information
 -------------------
