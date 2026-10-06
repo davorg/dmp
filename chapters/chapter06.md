@@ -191,14 +191,15 @@ stored in the `$.` variable, the current line number in the filehandle
 that you read most recently. The value is reset when the filehandle is
 closed, which means that this works:
 
-	open FILE, 'input.txt' or die "Can't open input file: \$!\\n";
+<!-- listing: c6/count_rec.pl -->
 
-	while (<FILE>) {
+	open my $fh, '<', 'input.txt' or die "Can't open input file: $!\n";
+
+	while (<$fh>) {
 	  # do stuff
 	}
 
 	print "$. records processed.\n";
-	close FILE;
 
 but the following code is wrong as it will always print zero.
 
@@ -877,6 +878,8 @@ are the keys? In previous versions of the CD input routines we have
 always hard-coded the names of the data fields, but here we have been
 given them. Let’s use them to create the keys of our hash. This will
 hopefully become clearer when you see this code:
+
+<!-- listing: c6/cd3.pl -->
 
 	1: $/ = "\n%%\n";
 	2:

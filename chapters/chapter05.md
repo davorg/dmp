@@ -304,12 +304,14 @@ As a final example of producing text file statistics, let’s calculate
 the average word length in the files. Once again we will use the
 existing `read_text` function to read in our text.
 
+<!-- listing: c5/avg_wordlen.pl -->
+
 	my ($total_length, $num_words);
 	my $text = read_text();
 	my ($word, $line);
-	foreach $line (@{$text}) {
-	  $num_words += scalar @{$line};
-	  foreach $word (@{$line}) {
+	foreach $line (@$text) {
+	  $num_words += @$line;
+	  foreach $word (@$line) {
 	    $total_length += length $word;
 	  }
 	}
@@ -949,6 +951,8 @@ As these become rather complex, it might be a suitable time to
 consider using Perl’s precompiled regular expression feature and
 creating your number-matching regular expressions in advance. You can
 do something like this:
+
+<!-- listing: c5/numbers.pl -->
 
 	my $num_re = qr/(?<num>[-+]?(?=\d|\.\d)\d*(?:\.\d*)?(?:[eE][-+]?\d+)?)/;
 	my @nums;

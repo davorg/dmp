@@ -56,6 +56,17 @@ my @patterns = @ARGV;
 my $root = abs_path(dirname($0) . '/..');
 my $src  = "$root/code-examples";
 
+# ---- files known to differ on purpose -----------------------------------
+my %exempt;
+if (open my $okfh, '<', "$src/LISTINGS-OK") {
+  while (<$okfh>) {
+    s/^\s+|\s+$//g;
+    next if $_ eq '' or /^#/;
+    my ($f, $why) = split ' ', $_, 2;
+    $exempt{$f} = $why // '';
+  }
+}
+
 # ---- parse the chapters --------------------------------------------------
 my (%listings, %md_lines);    # chapter number => [ listing, ... ]
 for my $md (glob "$root/chapters/chapter*.md") {
@@ -122,7 +133,8 @@ for my $num (sort { $a <=> $b } keys %listings) {
     my @code = @{ $info->{tokens} };
     my @list = @{ $l->{tokens} };
     my $status;
-    if ("@code" eq "@list") { $status = 'OK' }
+    if (exists $exempt{$f}) { $status = 'OK' }
+    elsif ("@code" eq "@list") { $status = 'OK' }
     elsif ($l->{flags} =~ /\bfragment\b/ and lcs_length(\@code, \@list) == @list) { $status = 'OK' }
     else { $status = 'DRIFT' }
     $count{$status}++;
@@ -135,7 +147,7 @@ for my $num (sort { $a <=> $b } keys %listings) {
 }
 
 # ---- files nobody points at -------------------------------------------------
-my @unlinked = grep { !$linked{$_} and wanted($_) } sort { natural($a) cmp natural($b) } keys %file;
+my @unlinked = grep { !$linked{$_} and !exists $exempt{$_} and wanted($_) } sort { natural($a) cmp natural($b) } keys %file;
 $count{UNLINKED} = @unlinked;
 
 my %annotate;    # chapter number => { line (of the listing) => file }

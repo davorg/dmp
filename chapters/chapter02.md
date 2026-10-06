@@ -119,6 +119,8 @@ someone decides that, instead of having a list of the number of CDs released,
 they also need a list of the actual CDs. In this case, we will need to go
 back and rewrite our script completely to something like this:
 
+<!-- listing: c2/cd_sol2.pl -->
+
     my %years;
     while (<STDIN>) {
       chomp;
@@ -238,6 +240,8 @@ you want to count CDs by label or even by title).
 A complete program to produce counts of CDs by any attribute which is passed
 in on the command line would look like this:
 
+<!-- listing: c2/cd_full.pl -->
+
     #!/usr/bin/perl
     use strict;
     use warnings;
@@ -347,6 +351,8 @@ Assume that we want to model the three business rules mentioned at the start
 of this section. We will write a module called Customer\_Rules.pm that will
 contain the two functions `get_next_cust_no` and `save_cust_record` which we
 suggested above. The following example omits some of the lower level functions.
+
+<!-- listing: c2/Customer_Rules.pm -->
 
     package Customer_Rules;
 
@@ -718,6 +724,8 @@ this:
 Within the script we would open the files and read from the input, munge the
 data, and then write to the output file. In Perl, the program might look
 something like:
+
+<!-- listing: c2/data_munger.pl -->
 
     #!/usr/bin/perl
 

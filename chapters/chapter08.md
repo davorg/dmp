@@ -145,6 +145,8 @@ This file is more complicated to process than just about any other
 that we have seen. Here is one potential way to read the data into a
 data structure.
 
+<!-- listing: c8/cd_long.pl -->
+
 	1: my %data;
 	2:
 	3: chomp($data{title} = <STDIN>);

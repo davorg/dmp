@@ -254,6 +254,8 @@ Figure 3.4 shows what this array would look like.
 
 Let’s put those three stages together.
 
+<!-- listing: c3/schwartzian1.pl -->
+
     my @CD_and_year = map { [$_, $_->{year}] } @CDs;
     my @sorted_CD_and_year = sort { $a->[1] <=> $b->[1] } @CD_and_year;
     my @CDs_sorted_by_year = map { $_->[0] } @sorted_CD_and_year;
@@ -881,6 +883,8 @@ or, finally, use `sprintf`:
 
 In order to calculate which of these methods is the fastest, you would
 write a script like this
+
+<!-- listing: c3/benchmark.pl -->
 
 	#!/usr/bin/perl
 	use strict;

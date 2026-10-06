@@ -349,13 +349,15 @@ the text at the current position in the stream.
 For example, to extract all of the `<h1>` elements from an HTML file
 you could use code this way:
 
+<!-- listing: c9/tokeparser.pl -->
+
 	use HTML::TokeParser;
 
 	my $file = shift;
 
 	my $p = HTML::TokeParser->new($file);
-	while ( $p->get _tag('h1')) {
-	  print $p->get _text(), "\n";
+	while ( $p->get_tag('h1')) {
+	  print $p->get_text(), "\n";
 	}
 
 We will use the following HTML file to test this program:

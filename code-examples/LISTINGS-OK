@@ -1,0 +1,3 @@
+# Example files whose content intentionally differs from any single chapter
+# listing (see bin/check-listings). One "path  reason" per line.
+c3/simple_sorts.pl  collects several small listings from the "Simple sorts" section into one runnable file

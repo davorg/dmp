@@ -489,9 +489,11 @@ for example, that you have a text file containing email messages and
 you want to print out all of the lines containing “From” headers. You
 could do something like this:
 
-	open my $mail_fh, '<', 'mail.txt' or die "Can’t open mail.txt: $!";
+<!-- listing: c4/mail_head.pl -->
+
+	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
 	while (<$mail_fh>) {
-  	  print if m/^From:/;
+	  print if m/^From:/;
 	}
 
 The while loop reads in another line from the file each time around
@@ -509,6 +511,8 @@ and that is how you will see it in most scripts that you encounter.
 It is also possible to use delimiters other than the `/` character, but
 in this case the m becomes mandatory. To see why you might want to
 do this, look at this example:
+
+<!-- listing: c4/files.pl -->
 
 	open my $fh, '<', 'files.txt' or die "Can't open files.txt: $!";
 	while (<$fh>) {
@@ -1206,6 +1210,8 @@ Now suppose we want to get a report on the users that use the Bourne
 shell (*/bin/sh*). Maybe we want to email them to suggest that they use
 bash instead. We might write something like this:
 
+<!-- listing: c4/list_sh_users.pl -->
+
 	1: use strict;
 	2:
 	3: my $users = read_passwd();
@@ -1323,6 +1329,8 @@ code of the module. As an example of the use of the module, here is
 a script that performs all of the transformations in turn on a piece
 of text that is read from `STDIN`. Notice that the piece of text that
 is to be transformed is set using the charge function.
+
+<!-- listing: c4/bastardize.pl -->
 
 	#!/usr/bin/perl
 	use strict;
