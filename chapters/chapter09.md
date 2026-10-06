@@ -60,6 +60,26 @@ will print the page directly to `STDOUT` and
 
 will store the data in the (local) file index.html.
 
+A word about HTTPS. These examples use plain `http` URLs, but almost
+every site you'll want to fetch today insists on `https`. LWP can't
+do that on its own: HTTPS support was split out of libwww-perl (in
+version 6.02) into a separate module,
+[LWP::Protocol::https](https://metacpan.org/pod/LWP::Protocol::https).
+Install it and *every* LWP module, `LWP::Simple` and `LWP::UserAgent`
+included, can fetch `https` URLs with no changes to your code. It
+also pulls in the SSL libraries and certificate bundle that HTTPS
+needs.
+
+`LWP::Simple` is also deliberately minimal: `get` just returns
+`undef` if anything goes wrong, with no status code, no response
+headers, and no say over timeouts. When you need those, reach for
+`LWP::UserAgent` (from the same LWP bundle), or for
+[HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny), a small HTTP client
+that has shipped with Perl itself since 5.14. It's what we'll use for
+API calls in [Chapter 10](ch015.xhtml). Like LWP, it needs
+`IO::Socket::SSL` and `Net::SSLeay` installed before it will talk
+HTTPS.
+
 Parsing HTML
 ------------
 

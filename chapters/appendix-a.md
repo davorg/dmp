@@ -299,7 +299,11 @@ LWP::Simple
 In [Chapter 9](ch014.xhtml) we took a brief look at the LWP::Simple module. Here is
 a slightly less brief look at the functions that this module
 provides. For more information on using this module see the lwpcook
-manual page which comes with the LWP bundle of modules.
+manual page which comes with the LWP bundle of modules. To fetch `https`
+URLs you'll also need to install
+[LWP::Protocol::https](https://metacpan.org/pod/LWP::Protocol::https),
+which adds HTTPS support to all of LWP; for more control over requests
+and responses, see `LWP::UserAgent` or HTTP::Tiny (described later in this appendix).
 
 * `$page = get($url)` Returns the document which is found at the given URL. It returns only the document without any of the HTTP headers. Returns `undef` if the request fails.
 
