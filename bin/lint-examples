@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+#
+# Style checks for the code in the book: the example programs in
+# code-examples/ and the code listings in chapters/*.md.
+#
+#   bin/lint-examples [--fix] [--chapters-only | --examples-only] [file ...]
+#
+# Rules:
+#   use-blank   a column-0 "use ...;" or "no ...;" line must be followed by
+#               another use/no line or by a blank line, never directly by code
+#               or a comment. (So the use statements are a block of their own.)
+#
+# With --fix the violations are repaired in place by inserting a blank line.
+# Exit status is 1 if any violations were found (and not fixed).
+
+use strict;
+use warnings;
+use File::Basename qw(dirname);
+use Cwd qw(abs_path);
+use Getopt::Long;
+
+my %opt;
+GetOptions(\%opt, 'fix', 'chapters-only', 'examples-only')
+  or die "Usage: $0 [--fix] [--chapters-only|--examples-only] [file ...]\n";
+
+my $root = abs_path(dirname($0) . '/..');
+my @files = @ARGV;
+unless (@files) {
+  push @files, glob("$root/code-examples/*/*.pl $root/code-examples/*/*.pm")
+    unless $opt{'chapters-only'};
+  push @files, glob("$root/chapters/*.md")
+    unless $opt{'examples-only'};
+}
+
+my $found = 0;
+for my $file (@files) {
+  my $is_md = $file =~ /\.md$/;
+  open my $fh, '<:encoding(UTF-8)', $file or die "Can't open $file: $!\n";
+  my @lines = <$fh>;
+  close $fh;
+
+  my @out;
+  my $changed = 0;
+  for my $i (0 .. $#lines) {
+    push @out, $lines[$i];
+    next if $i == $#lines;
+
+    my ($this, $next) = @lines[$i, $i + 1];
+    if ($is_md) {
+      # only inside indented code blocks (tab or 4+ spaces), ignoring the
+      # "  7: " line-number prefix some listings have
+      next unless $this =~ /^(?:\t|    )/ and $next =~ /^(?:\t|    )/;
+      for ($this, $next) { s/^(?:\t|    )//; s/^\s*\d+:\s?// }
+    }
+
+    next unless is_use($this);
+    next if is_use($next) or $next =~ /^\s*$/;
+    # a use statement that carries on over several lines isn't finished yet
+    next unless $this =~ /;\s*(?:#.*)?$/;
+
+    $found++;
+    my $where = $is_md ? 'listing' : 'file';
+    printf "%s:%d: use statement not followed by a blank line\n",
+           $file =~ s{^\Q$root\E/}{}r, $i + 1 unless $opt{fix};
+    if ($opt{fix}) {
+      push @out, $is_md ? "\n" : "\n";
+      $changed++;
+    }
+  }
+
+  if ($changed) {
+    open my $oh, '>:encoding(UTF-8)', $file or die "Can't write $file: $!\n";
+    print $oh @out;
+    close $oh;
+    printf "fixed %d in %s\n", $changed, $file =~ s{^\Q$root\E/}{}r;
+  }
+}
+
+sub is_use { $_[0] =~ /^(?:use|no)\s+\S/ }
+
+if ($opt{fix}) { print "Fixed $found problem(s).\n"; exit 0 }
+print $found ? "\n$found problem(s) found. Run with --fix to repair.\n" : "No problems found.\n";
+exit($found ? 1 : 0);

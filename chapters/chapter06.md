@@ -604,6 +604,7 @@ our currency conversion script like this:
 
 	#!/usr/bin/perl –w
 	use Memoize;
+
 	memoize 'get_rate';
 
 	my $target_curr = shift;
@@ -722,6 +723,7 @@ The important functions in Text:CSV are therefore:
 <!-- end of list -->
 
 	use Text::CSV;
+
 	sub read_csv {
 	  my $csv = Text::CSV->new;
 
@@ -1230,6 +1232,7 @@ Table: POSIX::strftime character sequences
 Here is a simple script which uses strftime.
 
 	use POSIX qw(strftime);
+
 	foreach ('%c', '%A %d %B %Y', 'Day %j', '%I:%M:%S%p (%Z)') {
 	  print strftime($_, localtime), "\n";
 	}

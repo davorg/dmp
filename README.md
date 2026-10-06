@@ -17,3 +17,7 @@ I might even update it.
     bin/run-examples --verbose c11   # show full STDERR for anything that isn't OK
 
 It is driven by `code-examples/MANIFEST`: one line per program, saying what to feed it (`stdin=`, `args=`) and what to expect (`needs=net`, `skip="why"`, `known="why"`). Add a line there whenever you add an example. It needs only core Perl, and is most useful on a machine with a current Perl (5.40) and the book's CPAN modules installed.
+
+## Style checks
+
+`bin/lint-examples` checks the example programs and the code listings in the chapters against the book's code style, and `--fix` repairs what it can. Currently it enforces one rule: the `use` statements at the top of a program form a block of their own, followed by a blank line. `make check` runs this and `bin/run-examples --offline` together.

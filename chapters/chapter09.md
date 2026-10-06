@@ -42,6 +42,7 @@ This function takes a URL as an argument and returns the data that is
 returned when that URL is requested. For example:
 
 	use LWP::Simple;
+
 	my $page = get('http://example.com/');
 
 will put the contents of the requested page into the variable `$page`.
@@ -111,6 +112,7 @@ and attributes it finds in an HTML page.
 
 	use HTML::Parser;
 	use LWP::Simple;
+
 	sub start($tag, $attr, $attrseq) {
 	  print "Found $tag\n";
 	  foreach (@$attrseq) {
@@ -229,6 +231,7 @@ Here is a program which simply lists all of the links found in an
 HTML file.
 
 	use HTML::LinkExtor;
+
 	my $file = shift;
 	my $p = HTML::LinkExtor->new;
 	$p->parse_file($file);
@@ -294,6 +297,7 @@ of attributes which contain the actual links. Here is an example which
 displays only the a links within a file:
 
 	use HTML::LinkExtor;
+
 	my $file = shift;
 	my @links;
 	my $p = HTML::LinkExtor->new(\&check);
@@ -338,6 +342,7 @@ For example, to extract all of the `<h1>` elements from an HTML file
 you could use code this way:
 
 	use HTML::TokeParser;
+
 	my $file = shift;
 
 	my $p = HTML::TokeParser->new($file);
@@ -389,6 +394,7 @@ document, checking them to see which ones are headers and displaying
 the structure of the document using code like this:
 
 	use HTML::TokeParser;
+
 	my $file = shift;
 
 	my $p = HTML::TokeParser->new($file);
@@ -438,6 +444,7 @@ parse an HTML document.
 	use strict;
     use warnings;
 	use HTML::TreeBuilder;
+
 	my $h = HTML::TreeBuilder->new;
 	$h->parse_file(shift);
 	$h->dump;

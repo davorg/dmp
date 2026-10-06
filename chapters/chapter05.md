@@ -1125,6 +1125,7 @@ that contained numbers in different formats and we wanted to ensure
 that they were all in our standard format we could do it like this:
 
 	use Number::Format;
+
 	my $data;
 
 	{

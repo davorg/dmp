@@ -51,3 +51,14 @@ clean:
 	rm -f $(bookname).epub $(bookname).pdf
 	rm -rf build
 
+
+# Quality checks on the code in the book. `make check` runs them all;
+# see the README for what each one does.
+.PHONY: check lint examples
+check: lint examples
+
+lint:
+	bin/lint-examples
+
+examples:
+	bin/run-examples --offline

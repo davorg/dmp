@@ -551,6 +551,7 @@ we just need to add a use Data::Dumper statement and a call to the `Dumper`
 function like this:
 
 	use Data::Dumper;
+
 	my @CDs;
 	my @attrs = qw(artist title label year);
 	while ( <STDIN>) {
@@ -621,6 +622,7 @@ Replacing Data::Dumper with Data::Printer in our previous program looks
 like this:
 
     use Data::Printer;
+
     my @CDs;
     
     my @attrs = qw(artist title label year);

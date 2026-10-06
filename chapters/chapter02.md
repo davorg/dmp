@@ -925,6 +925,7 @@ A simple example of using it looks like this:
 
     # At the start of your program
     use Log::Log4perl qw(get_logger);
+
     Log::Log4perl->init('/path/to/log.conf');
 
     # And then later on
