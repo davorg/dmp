@@ -97,6 +97,35 @@ worth doing as soon as a project outgrows one or two dependencies — it
 turns "what does this need to run?" from a question you answer by
 reading the source into one you answer by reading a single file.
 
+### Which modules in this book need installing?
+
+Here's the full picture, chapter by chapter. The right-hand column is
+everything that ships with Perl itself; the middle column is
+everything you'll need to install from CPAN first. (The modules the
+book only mentions in passing, rather than uses, are left out.)
+
+| Chapter | Install from CPAN | Already part of Perl |
+|:--------|:------------------|:---------------------|
+| 2 | `Moo`, `Log::Log4perl` | `Carp`, `Exporter` |
+| 3 | `DBI` plus a driver such as `DBD::SQLite`, `Path::Tiny`, `Data::Printer`; `Test2::V0` before Perl 5.40 | `Data::Dumper`, `Memoize`, `Benchmark`, `Test::More`; `Test2::V0` from 5.40 |
+| 4 | `Regexp::Common`, `Text::Bastardize` | |
+| 5 | `Text::Unidecode`, `Number::Format`, `Convert::SciEng` | `Encode`, `Unicode::Normalize`, `Unicode::Collate` |
+| 6 | `Text::CSV_XS`, `DateTime` | `POSIX`, `Time::Local`, `Time::Piece` |
+| 7 | `Audio::Scan`, `Image::Info` | |
+| 9 | `LWP::Simple` (from the `libwww-perl` bundle), `LWP::Protocol::https`, the `HTML::*` parsers, `Web::Query` | `HTTP::Tiny`\* |
+| 10 | `XML::LibXML`, `XML::RSS`, `JSON::MaybeXS`, `YAML::PP` | `HTTP::Tiny`\*, `JSON::PP` |
+| 11 | `Regexp::Grammars` | |
+
+\* `HTTP::Tiny` can only fetch `https` URLs if `IO::Socket::SSL` and
+`Net::SSLeay` (both from CPAN) are installed as well.
+
+The pragmas used throughout — `strict`, `warnings`, `utf8`,
+`feature`, `builtin`, and so on — are all part of Perl. If you ever
+need to check whether a module is core, and since which release,
+`corelist` (installed with Perl) will tell you: `corelist Time::Piece`
+reports that it was first released with Perl 5.9.5, which in practice
+means 5.10.0, the first stable release to include it.
+
 The modern baseline
 -------------------
 

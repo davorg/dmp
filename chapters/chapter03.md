@@ -736,9 +736,11 @@ the module's own documentation lists the rest.
 Test::More has been the standard for so long that it's practically a
 byword for testing in Perl, but underneath, Perl's testing tools have
 moved on: Test::More is now itself built on top of a newer framework
-called Test2, and ships in the same distribution as Test2's own
-recommended interface, [Test2::V0](https://metacpan.org/pod/Test2::V0).
-Test2::V0 provides equivalents of `is`, `ok`, `like`, and
+called Test2. Test2's own recommended interface is
+[Test2::V0](https://metacpan.org/pod/Test2::V0), which lives in a
+separate distribution, Test2-Suite. That distribution has been bundled
+with Perl itself since 5.40; on an older Perl you'll need to install
+it from CPAN. Test2::V0 provides equivalents of `is`, `ok`, `like`, and
 `done_testing`—often as near drop-in replacements—along with a more
 capable comparison engine that's particularly good at telling you
 exactly what's different when two complex data structures don't match,
