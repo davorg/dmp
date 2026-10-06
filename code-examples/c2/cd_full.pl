@@ -4,10 +4,6 @@ use strict;
 use warnings;
 use v5.36;
 
-#!/usr/bin/perl
-use strict;
-use warnings;
-
 my @CDs;
 sub input {
   my @attrs = qw(artist title label year);

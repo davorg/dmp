@@ -2,10 +2,6 @@
 
 use strict;
 use warnings;
-
-#!/usr/bin/perl
-use strict;
-use warnings;
 use Benchmark qw(timethese cmpthese);
 
 my  $x = 'x' x 100;

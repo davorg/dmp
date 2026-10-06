@@ -20,7 +20,7 @@ c2/data_munger2.pl  skip="fragment: calls a sub defined in another listing"
 c2/data_munger3.pl  skip="fragment: calls a sub defined in another listing"
 
 # ---- c3 ----
-c3/benchmark.pl
+c3/benchmark.pl  timeout=240
 c3/complex_sorts.pl
 c3/data_dumper.pl  stdin=cd.txt
 c3/data_printer.pl  stdin=cd.txt  expect-stderr=1

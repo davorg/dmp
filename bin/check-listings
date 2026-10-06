@@ -83,7 +83,7 @@ for my $md (glob "$root/chapters/chapter*.md") {
       $pending = { file => $1, flags => $2 // '', line => $i + 1 };
       $i++;
     }
-    elsif ($lines[$i] =~ /^(?:\t|    )\S/) {
+    elsif ($lines[$i] =~ /^(?:\t|    )\s*\S/) {
       my $start = $i;
       my @block;
       while ($i < $n and ($lines[$i] =~ /^(?:\t|    )/ or $lines[$i] =~ /^\s*$/)) {

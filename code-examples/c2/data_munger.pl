@@ -3,11 +3,6 @@
 use strict;
 use warnings;
 
-#!/usr/bin/perl
-
-use strict;
-use warnings;
-
 my ($input, $output) = @ARGV;
 open(my $in_fh, '<', $input) or die "Can't open $input for reading: $!";
 open(my $out_fh, '>', $output) or die "Can't open $output for writing: $!";

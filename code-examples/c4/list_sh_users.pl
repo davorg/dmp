@@ -1,8 +1,6 @@
 use strict;
 use warnings;
 
-use strict;
-
 my $users = read_passwd();
 
 foreach (keys %{$users}) {

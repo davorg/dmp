@@ -3,10 +3,6 @@
 use strict;
 use warnings;
 
-#!/usr/bin/perl
-use strict;
-use warnings;
-
 use Text::Bastardize;
 
 my $text = Text::Bastardize->new;
