@@ -1,24 +1,21 @@
-#!/usr/local/bin/perl 
+#!/usr/bin/perl
 
-use strict; 
+use strict;
 use warnings;
-use feature 'say';
-use DBI; 
+use DBI;
 
-my $user = 'dave'; 
-my $pass = 'secret'; 
-my $dbh = DBI->connect('dbi:mysql:testdb', $user, $pass, 
-		       {RaiseError => 1}) 
+my $dbh = DBI->connect('dbi:SQLite:dbname=testdb.db', undef, undef,
+                       {RaiseError => 1})
   or die "Connect failed: $DBI::errstr";
 
-my $sth = $dbh->prepare('select col1, col2, col3 from my_table');
+my $sth = $dbh->prepare('select artist, title, year from cds order by artist, year');
 
 $sth->execute;
 
 my @row;
-while (@row = $sth->fetchrow_array) { 
-  say join "\t", @row;
-} 
+while (@row = $sth->fetchrow_array) {
+  print join("\t", @row), "\n";
+}
 
 $sth->finish;
 $dbh->disconnect;

@@ -385,9 +385,11 @@ from CPAN, separately from the main DBI module.
 ### Sample DBI program
 
 A sample DBI program to read data from a database would look like
-this:
+this (to try it yourself, run `dbi_setup.pl` from this chapter's code
+examples once first. It creates the database and a `cds` table, filled from
+the `cd.txt` file we've been using throughout):
 
-	  1: #!/usr/local/bin/perl
+	  1: #!/usr/bin/perl
 	  2:
 	  3: use strict;
 	  4: use warnings;
@@ -397,7 +399,7 @@ this:
 	  8:                        {RaiseError => 1})
 	  9:  or die "Connect failed: $DBI::errstr";
 	 10:
-	 11: my $sth = $dbh->prepare('select col1, col2, col3 from my_table');
+	 11: my $sth = $dbh->prepare('select artist, title, year from cds order by artist, year');
 	 12:
 	 13: $sth->execute;
 	 14:
