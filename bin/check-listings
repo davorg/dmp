@@ -1,0 +1,286 @@
+#!/usr/bin/perl
+#
+# Check that the code listings in the chapters match the example programs
+# in code-examples/. (The listings are copied into the Markdown by hand, and
+# copies drift: a bug is fixed in the file but not in the book, or a
+# backslash gets lost on the way into the chapter.)
+#
+#   bin/check-listings [options] [pattern ...]
+#
+# A listing is tied to its example file with a marker comment on the line
+# before it in the chapter (invisible in the finished book):
+#
+#   <!-- listing: c6/cd2.pl -->
+#
+#       the indented listing, as usual
+#
+# If the listing deliberately shows only part of the file, say so:
+#
+#   <!-- listing: c6/cd2.pl fragment -->
+#
+# Each marked listing is compared with its file. Whitespace, line breaks,
+# comments, line-number prefixes such as "  7:", and the shebang and
+# `use strict; use warnings; use v5.NN;` header that the book leaves out by
+# convention are ignored, so only real differences in the code count.
+#
+#   OK        the listing and the file are the same
+#   DRIFT     they differ (the differences are shown)
+#   UNLINKED  an example file that no listing points at (--verbose lists them)
+#
+# Options:
+#   --verbose    also list the OK and UNLINKED files
+#   --strict     UNLINKED files make the exit status non-zero too
+#   --suggest    for each UNLINKED file, show the best-matching listing
+#   --annotate   add markers for the unlinked files whose best-matching
+#                listing is the same, or a fragment of it
+#                (rewrites the chapters; review with git diff)
+#
+# Patterns (e.g. "c6" or "c6/cd2") restrict which files are checked.
+# Exit status is 1 if any listing has drifted.
+
+use strict;
+use warnings;
+use utf8;
+use Cwd qw(abs_path);
+use File::Basename qw(dirname);
+use Getopt::Long;
+
+binmode STDOUT, ':encoding(UTF-8)';
+binmode STDERR, ':encoding(UTF-8)';
+
+my %opt;
+GetOptions(\%opt, 'verbose', 'strict', 'suggest', 'annotate')
+  or die "Usage: $0 [--verbose] [--strict] [--suggest] [--annotate] [pattern ...]\n";
+my @patterns = @ARGV;
+
+my $root = abs_path(dirname($0) . '/..');
+my $src  = "$root/code-examples";
+
+# ---- parse the chapters --------------------------------------------------
+my (%listings, %md_lines);    # chapter number => [ listing, ... ]
+for my $md (glob "$root/chapters/chapter*.md") {
+  my ($num) = $md =~ /chapter0*(\d+)\.md$/ or next;
+  open my $fh, '<:encoding(UTF-8)', $md or die "Can't read $md: $!";
+  my @lines = <$fh>;
+  close $fh;
+  chomp @lines;
+  $md_lines{$num} = { path => $md, lines => \@lines };
+
+  my ($i, $n, $pending) = (0, scalar @lines, undef);
+  while ($i < $n) {
+    if ($lines[$i] =~ /^<!--\s*listing:\s*(\S+)(?:\s+(.*?))?\s*-->\s*$/) {
+      $pending = { file => $1, flags => $2 // '', line => $i + 1 };
+      $i++;
+    }
+    elsif ($lines[$i] =~ /^(?:\t|    )\S/) {
+      my $start = $i;
+      my @block;
+      while ($i < $n and ($lines[$i] =~ /^(?:\t|    )/ or $lines[$i] =~ /^\s*$/)) {
+        push @block, $lines[$i]; $i++;
+      }
+      pop @block while @block and $block[-1] =~ /^\s*$/;
+      my @tokens = normalise_block(@block);
+      push @{ $listings{$num} }, {
+        chapter => $num, start => $start + 1, tokens => \@tokens, bag => bag(\@tokens),
+        link => $pending ? $pending->{file} : undef,
+        flags => $pending ? $pending->{flags} : '',
+        marker_line => $pending ? $pending->{line} : undef,
+      };
+      $pending = undef;
+    }
+    else {
+      $pending = undef if $lines[$i] =~ /\S/ and defined $pending and $i > $pending->{line};
+      $i++;
+    }
+  }
+}
+
+# ---- the example files ----------------------------------------------------
+my %file;
+for my $path (glob("$src/c*/*.pl $src/c*/*.pm")) {
+  my $rel = $path =~ s{^\Q$src\E/}{}r;
+  open my $fh, '<:encoding(UTF-8)', $path or die "Can't read $path: $!";
+  my @raw = <$fh>;
+  chomp @raw;
+  $file{$rel} = { tokens => [ normalise_code(@raw) ] };
+}
+
+sub wanted { my $f = shift; return !@patterns || grep { index($f, $_) >= 0 } @patterns }
+
+# ---- check the marked listings ---------------------------------------------
+my (%count, %linked);
+for my $num (sort { $a <=> $b } keys %listings) {
+  for my $l (@{ $listings{$num} }) {
+    next unless defined $l->{link};
+    my $f = $l->{link};
+    $linked{$f} = 1;
+    next unless wanted($f);
+    my $where = sprintf 'chapter%02d.md:%d', $num, $l->{start};
+    my $info = $file{$f};
+    unless ($info) { $count{DRIFT}++; printf "DRIFT    %-26s %s: no such example file\n", $f, $where; next }
+
+    my @code = @{ $info->{tokens} };
+    my @list = @{ $l->{tokens} };
+    my $status;
+    if ("@code" eq "@list") { $status = 'OK' }
+    elsif ($l->{flags} =~ /\bfragment\b/ and lcs_length(\@code, \@list) == @list) { $status = 'OK' }
+    else { $status = 'DRIFT' }
+    $count{$status}++;
+    if ($status eq 'DRIFT') {
+      printf "DRIFT    %-26s %s%s\n", $f, $where, $l->{flags} =~ /fragment/ ? ' (fragment)' : '';
+      show_diff(\@code, \@list);
+    }
+    elsif ($opt{verbose}) { printf "OK       %-26s %s\n", $f, $where }
+  }
+}
+
+# ---- files nobody points at -------------------------------------------------
+my @unlinked = grep { !$linked{$_} and wanted($_) } sort { natural($a) cmp natural($b) } keys %file;
+$count{UNLINKED} = @unlinked;
+
+my %annotate;    # chapter number => { line (of the listing) => file }
+for my $f (@unlinked) {
+  next unless $opt{verbose} or $opt{suggest} or $opt{annotate};
+  my ($chap) = $f =~ m{^c(\d+)/};
+  my @code = @{ $file{$f}{tokens} };
+  my ($best, $best_score);
+  for my $l (@{ $listings{$chap} // [] }) {
+    next if defined $l->{link} or @{ $l->{tokens} } < 6;
+    my $score = bag_score(bag(\@code), scalar @code, $l->{bag}, scalar @{ $l->{tokens} });
+    ($best, $best_score) = ($l, $score) if !defined $best_score or $score >= $best_score;
+  }
+  my $how = 'none';
+  if ($best) {
+    my @l = @{ $best->{tokens} };
+    if ("@code" eq "@l") { $how = 'same' }
+    elsif (lcs_length(\@code, \@l) == @l) { $how = 'fragment' }
+  }
+  if ($opt{annotate} and $best and $how ne 'none') {
+    $annotate{$chap}{ $best->{start} } = [ $f, $how eq 'fragment' ? ' fragment' : '' ];
+    $best->{link} = $f;    # don't offer the same listing to another file
+  }
+  if ($opt{suggest}) {
+    printf "%-9s %-26s %s\n", 'UNLINKED', $f,
+      $best ? sprintf('best: chapter%02d.md:%d (%.0f%% of tokens in common; %s)', $chap, $best->{start}, 100 * $best_score, $how)
+            : 'no candidate listing';
+  }
+  elsif ($opt{verbose}) { printf "UNLINKED %-26s\n", $f }
+}
+
+if ($opt{annotate}) {
+  my $added = 0;
+  for my $num (keys %annotate) {
+    my $m = $md_lines{$num};
+    my @lines = @{ $m->{lines} };
+    for my $start (sort { $b <=> $a } keys %{ $annotate{$num} }) {   # bottom-up keeps line numbers valid
+      my ($f, $flag) = @{ $annotate{$num}{$start} };
+      splice @lines, $start - 1, 0, "<!-- listing: $f$flag -->", '';
+      $added++;
+    }
+    open my $oh, '>:encoding(UTF-8)', $m->{path} or die "Can't write $m->{path}: $!";
+    print $oh map { "$_\n" } @lines;
+    close $oh;
+  }
+  print "Added $added marker(s).\n";
+}
+
+print "\n", join('  ', map { "$_: " . ($count{$_} // 0) } qw(OK DRIFT UNLINKED)), "\n";
+print "(use --suggest to see where the unlinked examples might be in the book)\n"
+  if @unlinked and !$opt{verbose} and !$opt{suggest} and !$opt{annotate};
+exit(($count{DRIFT} || ($opt{strict} && @unlinked)) ? 1 : 0);
+
+# ----------------------------------------------------------------------
+sub natural { my $s = shift; $s =~ s/(\d+)/sprintf '%05d', $1/ge; $s }
+
+# header lines the book leaves out by convention
+sub is_noise {
+  my $l = shift;
+  return 1 if $l =~ m{^#!};
+  return 1 if $l =~ /^use v5\.\d+;$/;
+  return 1 if $l eq 'use strict;' or $l eq 'use warnings;';
+  return 0;
+}
+
+# lines -> tokens (words, or single punctuation characters)
+sub normalise_code {
+  my @tokens;
+  for my $l (@_) {
+    $l =~ s/\s+$//; $l =~ s/^\s+//;
+    next if $l eq '' or is_noise($l);
+    $l =~ s/(?:^|\s)#.*$//;          # comments
+    push @tokens, $l =~ /\w+|[^\w\s]/g;
+  }
+  return @tokens;
+}
+
+sub normalise_block {
+  my @b = @_;
+  s/^(?:\t|    )// for @b;
+  my $numbered = grep { /^\s*\d+:\s/ } @b;
+  if ($numbered >= 0.5 * grep { /\S/ } @b) { s/^\s*\d+:\s?// for @b }
+  return normalise_code(@b);
+}
+
+sub bag { my %b; $b{$_}++ for @{ $_[0] }; return \%b }
+
+sub bag_score {
+  my ($x, $nx, $y, $ny) = @_;
+  return 0 unless $nx + $ny;
+  my $common = 0;
+  for my $t (keys %$x) { next unless exists $y->{$t}; $common += $x->{$t} < $y->{$t} ? $x->{$t} : $y->{$t} }
+  return 2 * $common / ($nx + $ny);
+}
+
+sub lcs_length {
+  my ($a, $b) = @_;
+  my @prev = (0) x (@$b + 1);
+  for my $x (@$a) {
+    my @cur = (0);
+    for my $j (1 .. @$b) {
+      push @cur, $x eq $b->[$j - 1] ? $prev[$j - 1] + 1
+               : ($prev[$j] > $cur[$j - 1] ? $prev[$j] : $cur[$j - 1]);
+    }
+    @prev = @cur;
+  }
+  return $prev[-1];
+}
+
+# tokens back into something readable (a space only between two words)
+sub detok {
+  my $out = '';
+  my $prev = '';
+  for my $t (@_) {
+    $out .= ' ' if length $out and $prev =~ /\w$/ and $t =~ /^\w/;
+    $out .= $t; $prev = $t;
+  }
+  return $out;
+}
+
+# The differences as hunks, each with a few tokens of context. "file" is
+# what the example file has, "chapter" what the listing has.
+sub show_diff {
+  my ($a, $b) = @_;
+  my ($n, $m) = (scalar @$a, scalar @$b);
+  my @t = map { [ (0) x ($m + 1) ] } 0 .. $n;
+  for my $i (reverse 0 .. $n - 1) {
+    for my $j (reverse 0 .. $m - 1) {
+      $t[$i][$j] = $a->[$i] eq $b->[$j] ? $t[$i + 1][$j + 1] + 1
+                 : ($t[$i + 1][$j] >= $t[$i][$j + 1] ? $t[$i + 1][$j] : $t[$i][$j + 1]);
+    }
+  }
+  my ($i, $j) = (0, 0);
+  my (@ctx, @fa, @fb);
+  my $flush = sub {
+    return unless @fa or @fb;
+    my @c = @ctx[ ($#ctx > 4 ? $#ctx - 4 : 0) .. $#ctx ];
+    printf "           after \"%s\"\n               file:    %s\n               chapter: %s\n",
+      detok(@c), @fa ? detok(@fa) : '(nothing)', @fb ? detok(@fb) : '(nothing)';
+    @fa = @fb = ();
+  };
+  while ($i < $n or $j < $m) {
+    if ($i < $n and $j < $m and $a->[$i] eq $b->[$j]) { $flush->(); push @ctx, $a->[$i]; $i++; $j++ }
+    elsif ($j >= $m or ($i < $n and $t[$i + 1][$j] >= $t[$i][$j + 1])) { push @fa, $a->[$i]; $i++ }
+    else { push @fb, $b->[$j]; $j++ }
+  }
+  $flush->();
+}

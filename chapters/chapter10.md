@@ -163,6 +163,8 @@ picking out the parts of an XML document you actually care about.
 
 Here's `XML::LibXML` reading our sample weather document:
 
+<!-- listing: c10/weather_xpath.pl -->
+
     use v5.40;
     use XML::LibXML;
 
@@ -198,6 +200,8 @@ XPath is the right tool when you know what you're looking for. Some
 tasks, though -- writing a generic pretty-printer, say -- need to walk
 a document without knowing its structure in advance. `XML::LibXML`
 supports that too, using the same node-by-node model as the DOM:
+
+<!-- listing: c10/weather_walk.pl -->
 
     use v5.40;
     use XML::LibXML;
@@ -430,6 +434,8 @@ your RSS object generates.
 Interpreting an RSS file using [XML::RSS](https://metacpan.org/pod/XML::RSS) is just as simple. Here is a
 script which displays some of the more useful data from an RSS file.
 
+<!-- listing: c10/read_rss.pl -->
+
     use strict;
 
     use XML::RSS;
@@ -506,6 +512,8 @@ modern equivalent is to call a weather *API* -- a service that returns
 data, not a page designed for a browser. Here's the same job done
 properly, using [Open-Meteo](https://open-meteo.com/), a free weather
 API that needs no signup or API key:
+
+<!-- listing: c10/weather_api.pl -->
 
     use v5.40;
     use HTTP::Tiny;
@@ -725,6 +733,8 @@ already-UTF-8-encoded bytes through a decode call that isn't expecting
 bytes (or, equivalently, decode the same bytes twice), and every
 non-ASCII character comes out mangled:
 
+<!-- listing: c10/unicode_json.pl -->
+
 	use strict;
 	use warnings;
 	use utf8;
@@ -818,6 +828,8 @@ as an XML feed:
 
 We want to work with this data as JSON internally, and hand a copy to
 a colleague who prefers YAML. Here's the whole program:
+
+<!-- listing: c10/cds.pl -->
 
     use v5.40;
     use XML::LibXML;

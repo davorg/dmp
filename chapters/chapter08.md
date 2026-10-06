@@ -361,6 +361,8 @@ only the first tag that appears on each line. We can correct this by
 adding the g modifier to our text replacement operator so that the
 code looks like this:
 
+<!-- listing: c8/parse_html3.pl -->
+
 	# WARNING: This code works, but only on very simple HTML
 	use strict;
 

@@ -43,6 +43,8 @@ the given offset to the end. The offset of the first character in
 the source string is 0. If the offset is negative then it counts
 from the end of the string. Here are a few simple examples:
 
+<!-- listing: c4/substr.pl -->
+
 	my $string = 'Alas poor Yorick. I knew him Horatio.';
 	my $sub1 = substr($string, 0, 4);    # $sub1 contains 'Alas'
 	my $sub2 = substr($string, 10, 6);   # $sub2 contains 'Yorick'
@@ -53,6 +55,8 @@ Many programming languages have a function that produces substrings in
 a similar manner, but the clever thing about Perl’s `substr` function is
 that the result of the operation can act as an lvalue. That is, you
 can assign values to it, like this:
+
+<!-- listing: c4/substr_lval.pl -->
 
 	my $string = 'Alas poor Yorick. I knew him Horatio.';
 	substr($string, 10, 6) = 'Robert';
@@ -67,6 +71,8 @@ Notice the second assignment in this example which demonstrates that
 the substring and the text that you are replacing it with do not
 have to be the same length. Perl will take care of any necessary
 manipulation of the strings. You can even do something like this:
+
+<!-- listing: c4/substr_long.pl -->
 
 	my $short = 'Short string';
 	my $long = 'Very, very, very, very long';
@@ -84,6 +90,8 @@ finds the last occurrence. Both functions return an integer indicating
 the position in the source string where the given substring begins,
 and both take an optional third parameter which is the position where
 the search should start. Here are some simple examples:
+
+<!-- listing: c4/lindex.pl -->
 
 	my $string = 'To be or not to be.';
 	my $pos1 = index($string, 'be');
@@ -105,6 +113,8 @@ It is, of course, possible to use these three functions in
 combination to carry out more complex tasks. For example, if you had
 a string and wanted to extract the middle portion that was contained
 between square brackets (`[` and `]`), you could do something like this:
+
+<!-- listing: c4/extract.pl -->
 
 	my $string = 'Text with an [important bit] in brackets';
 	my $start = index($string, '[');
@@ -547,6 +557,8 @@ headers, we could do something like this (conveniently ignoring the
 fact that email headers can continue onto more than one  line and that
 an email body can contain the character “:”):
 
+<!-- listing: c4/mail_head2.pl -->
+
 	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
 	while (<$mail_fh>) {
 	  if (/^([^:]+): ?(.+)$/) {
@@ -560,6 +572,8 @@ we can print them out in the next line. If a match operation is
 evaluated in an array context, it returns the values of `$1`, `$2`, and
 so forth in a list. We could, therefore, rewrite the previous example
 as:
+
+<!-- listing: c4/mail_head3.pl -->
 
 	open my $mail_fh, '<', 'mail.txt' or die "Can't open mail.txt: $!";
 	my ($header, $value);
@@ -825,6 +839,8 @@ this modifier is used, the replacement string is treated as executable
 code and is passed to eval. The return value from the evaluation is
 then used as the replacement string. As an example, here is a fairly
 strange way to print out a table of squares:
+
+<!-- listing: c4/squares.pl -->
 
 	foreach (1 .. 12) {
 	  s/(\d+)/print "$1 squared is ", $1*$1, "\n"/e;
@@ -1092,6 +1108,8 @@ structures. This routine can then be used by any of the following
 examples. As always, for flexibility, we’ll assume that the data is
 coming in via `STDIN`.
 
+<!-- listing: c4/read_passwd.pl -->
+
 	sub read_passwd {
 	  my %users;
 	  my @fields = qw/name pword uid gid fullname home shell/;
@@ -1225,6 +1243,8 @@ forms Perl itself would recognize—plain integers, decimals, and
 scientific notation—so you don't have to work out all of those cases
 yourself:
 
+<!-- listing: c4/regexp_common_num.pl -->
+
 	use Regexp::Common;
 
 	for my $candidate ('3.14', '-42', 'hello', '1e10') {
@@ -1244,6 +1264,8 @@ which produces:
 
 `$RE{net}{IPv4}` is just as handy if you're validating configuration
 data or log files:
+
+<!-- listing: c4/regexp_common_ipv4.pl -->
 
 	use Regexp::Common;
 

@@ -147,6 +147,8 @@ out each calculation once. This is the basis of the *Orcish Manoeuvre* (a pun on
 cache”) devised by Joseph Hall. In this method, the results of previous calculations are
 stored in a hash. The basic code would look like this:
 
+<!-- listing: c3/orcish.pl -->
+
     my %key_cache;
 
     my @out = sort orcish @in;
@@ -262,6 +264,8 @@ maps and the sort take an array as input and return an array we can
 chain all of these transformations together in one statement and lose
 both of the intermediate arrays.
 
+<!-- listing: c3/schwartzian2.pl -->
+
     my @CDs_sorted_by_year = map { $_->[0] }
 	                         sort { $a->[1] <=> $b->[1] }
 	                         map { [$_, $_->{year}] } @CDs;
@@ -281,6 +285,8 @@ list of data structures by one of the data values contained within it,
 but that’s not all it can do. Here’s a three-line script that prints
 out our CD file (read in through `STDIN`), sorted by the recording
 label.
+
+<!-- listing: c3/schwartzian3.pl -->
 
     print map { $_->[0] }
 	      sort { $a->[1] cmp $b->[1] }
@@ -324,6 +330,8 @@ and finally the original data is extracted.
 
 Rewriting this to make it look more like the Schwartzian transform, we
 get this:
+
+<!-- listing: c3/packed_def.pl -->
 
 	my @sorted_IPs = map { substr($_, 4) }
 	                 sort
@@ -550,6 +558,8 @@ In order to use [Data::Dumper](https://metacpan.org/pod/Data::Dumper)
 we just need to add a use Data::Dumper statement and a call to the `Dumper`
 function like this:
 
+<!-- listing: c3/data_dumper.pl -->
+
 	use Data::Dumper;
 
 	my @CDs;
@@ -620,6 +630,8 @@ simpler and (on a correctly configured terminal) in colour.
 
 Replacing Data::Dumper with Data::Printer in our previous program looks
 like this:
+
+<!-- listing: c3/data_printer.pl -->
 
     use Data::Printer;
 
@@ -698,6 +710,8 @@ Anything Protocol) that a test runner can understand. Here's a simple
 example, testing a small function that trims whitespace from the ends
 of a string—a very typical data munging job:
 
+<!-- listing: c3/testing.pl -->
+
 	use strict;
 	use warnings;
 	use Test::More;
@@ -754,6 +768,8 @@ Here's the `trim` test again, rewritten for Test2::V0. The first four tests
 are unchanged apart from the `use` line, and there are two new ones that
 compare a whole data structure:
 
+<!-- listing: c3/testing_test2.pl -->
+
 	use v5.36;
 	use Test2::V0;
 
@@ -805,6 +821,8 @@ repeated exactly. You can ignore it.)
 
 The real payoff comes when a test fails. Suppose the `$cd` hash has the wrong
 label and no year:
+
+<!-- listing: c3/testing_test2_fail.pl fragment -->
 
 	my $cd = { artist => 'Bowie, David', title => 'Blackstar', label => 'EMI' };
 
@@ -1166,6 +1184,8 @@ into a `Path::Tiny` object:
 From there, reading and writing become one-liners. Here's the CD-file
 parsing code from the Data::Dumper section above, rewritten to use
 Path::Tiny instead of `open` and `while (<STDIN>)`:
+
+<!-- listing: c3/path_tiny.pl -->
 
 	use strict;
 	use warnings;

@@ -36,6 +36,8 @@ particularly simple records of the type we are discussing here. We
 have seen before the idiom where you can read a file a line at a time
 using a construct like
 
+<!-- listing: c6/read.pl fragment -->
+
 	while (<FILE>) {
 	  chomp; # remove newline
 	  # each line in turn is assigned to $_
@@ -256,6 +258,8 @@ fields are separated by the tab character. An obvious way to deal with
 this data is the one that we used before, *i.e.*, using split to
 separate the record into individual fields like this:
 
+<!-- listing: c6/split_arr.pl -->
+
 	my $record = <STDIN>;
 	chomp $record;
 	my @fields = split(/\t/, $record);
@@ -264,6 +268,8 @@ The fields will then be in the elements of `@fields`. Often, a more
 natural way to model a data record is by using a hash. For example,
 to build a `%cd` hash from a record in our CD file, we could do
 something like this:
+
+<!-- listing: c6/split_hash.pl -->
 
 	my $record = <STDIN>;
 	chomp $record;
@@ -321,6 +327,8 @@ newline character, then instead of writing code like this:
 	}
 
 you can do something like this:
+
+<!-- listing: c6/output.pl fragment -->
 
 	{
 	  local $\ = "\n";
@@ -409,6 +417,8 @@ have to set `$"` to a tab character (`\t`). In [Chapter 3](ch006.xhtml) when we 
 reading in the CD data file we stored the data in an array of hashes.
 An easy way to print out this data would be to use code like this:
 
+<!-- listing: c6/output2.pl fragment -->
+
 	my @fields = qw/name title label year/;
 
 	local $" = "\t";
@@ -445,6 +455,8 @@ a filehandle, it will replace the current default output filehandle
 with the new one. It returns the previously selected filehandle so
 that you can store it and reset it later. If you needed to write a lot
 of data to a particular file, you could use code like this:
+
+<!-- listing: c6/output3.pl fragment -->
 
 	open FILE, '>out.txt' or die "Can't open out.txt: $!";
 	my $old = select FILE;
@@ -536,6 +548,8 @@ then we would be wasting a lot of our time.
 The solution to our problem is to cache the exchange rates that we
 have already read from the database. Look at this script:
 
+<!-- listing: c6/fx.pl -->
+
 	#!/usr/bin/perl
 
     use strict;
@@ -601,6 +615,8 @@ which was written by Mark-Jason Dominus. This module includes a
 function called memoize which will automatically wrap caching
 functionality around any function in your program. We would use it in
 our currency conversion script like this:
+
+<!-- listing: c6/memoize.pl -->
 
 	#!/usr/bin/perl –w
 	use Memoize;
@@ -675,6 +691,8 @@ in with an example or two. Suppose that we had a CSV file which
 contained data like the previous example line. The code to extract and
 print the data fields would look like this:
 
+<!-- listing: c6/read_csv.pl -->
+
 	use Text::CSV;
 
 	my $csv = Text::CSV->new;
@@ -695,6 +713,8 @@ your data.
 
 As an example, let’s rebuild the same data line from the individual
 data fields.
+
+<!-- listing: c6/write_csv.pl -->
 
 	my @new_cols = ('Cross, Dave', '07/09/1962', 'M',
 	                'Field with "embedded" quotes');
@@ -721,6 +741,8 @@ The important functions in Text:CSV are therefore:
 *  `string` —Returns a string which is the last created CSV data record. With this in mind, it is simple to create generic CSV data reading and writing routines.
 
 <!-- end of list -->
+
+<!-- listing: c6/csv.pl fragment -->
 
 	use Text::CSV;
 
@@ -813,6 +835,8 @@ record separator. By setting this variable to an appropriate value we
 can get Perl to read the file one whole record at a time. In this case
 the appropriate value is `\n%%\n`. We can now read in records like this:
 
+<!-- listing: c6/cd.pl -->
+
 	local $/ = "\n%%\n";
 	while (<STDIN>) {
 	  chomp;
@@ -829,6 +853,8 @@ extracting the individual fields from within the records? This is
 relatively easy as we can go back to using [split](https://perldoc.perl.org/functions/split) to separate the
 fields. In this case the field separator is a newline character so
 that is what we need to split on.
+
+<!-- listing: c6/cd2.pl -->
 
 	local $/ = "\n%%\n";
 	while (<STDIN>) {
@@ -1051,6 +1077,8 @@ The correct way to produce a date using
 [localtime](https://perldoc.perl.org/functions/localtime) is to do
 something like this:
 
+<!-- listing: c6/print_date.pl -->
+
 	my @months = qw/January February March April May June July August
 	                September October November December/;
 	my @days = qw/Sunday Monday Tuesday Wednesday Thursday Friday Saturday/;
@@ -1111,6 +1139,8 @@ time you could have days of either 23 or 25 hours and this can affect
 your calculation. To counter this we move the time to noon before
 carrying out the calculation.
 
+<!-- listing: c6/x_days1.pl -->
+
 	use Time::Local;
 
 	my @now = localtime;                 # Get the current date and time
@@ -1135,6 +1165,8 @@ Again, this is pretty simple, with just one slightly complex
 calculation, which is explained in the comments. We work out the
 current day of the week and, therefore, can work out the number of
 days that we need to go back to get to Saturday.
+
+<!-- listing: c6/prev_sat1.pl -->
 
 	my @days = qw/Sunday Monday Tuesday Wednesday Thursday Friday
 	              Saturday/;
@@ -1169,6 +1201,8 @@ This is very similar in concept to the last example. We calculate the
 day of the week that January 1 fell on in the given year, and from
 that we can calculate the number of days that we have to move forward
 to get to the first Monday.
+
+<!-- listing: c6/first_monday1.pl -->
 
 	use Time::Local;
 
@@ -1231,6 +1265,8 @@ Table: POSIX::strftime character sequences
 
 Here is a simple script which uses strftime.
 
+<!-- listing: c6/posix_strftime.pl -->
+
 	use POSIX qw(strftime);
 
 	foreach ('%c', '%A %d %B %Y', 'Day %j', '%I:%M:%S%p (%Z)') {
@@ -1291,6 +1327,8 @@ Let's revisit our three standard problems.
 
 ##### Finding the date in x days time
 
+<!-- listing: c6/x_days2.pl fragment -->
+
 	use Time::Piece;
 	use Time::Seconds;
 
@@ -1311,6 +1349,8 @@ like the `POSIX::strftime` function we saw earlier.
 
 ##### Finding the date of the previous Saturday
 
+<!-- listing: c6/prev_sat2.pl fragment -->
+
 	use Time::Piece;
 	use Time::Seconds;
 
@@ -1325,6 +1365,8 @@ therefore day 6, so we add one to the current day number to work out
 how many days to go back.
 
 ##### Finding the date of the first Monday in a given year
+
+<!-- listing: c6/first_monday2.pl fragment -->
 
 	use Time::Piece;
 	use Time::Seconds;
@@ -1389,6 +1431,8 @@ Once more, let's look at our three standard problems.
 
 ##### Finding the date in x days time
 
+<!-- listing: c6/x_days3.pl fragment -->
+
 	use DateTime;
 
 	my $days = shift // 10;
@@ -1406,6 +1450,8 @@ chapter); as with [Time::Piece](http://metacpan.org/pod/Time::Piece), a
 
 ##### Finding the date of the previous Saturday
 
+<!-- listing: c6/prev_sat3.pl fragment -->
+
 	use DateTime;
 
 	my $now = DateTime->now;
@@ -1416,6 +1462,8 @@ Again, this is essentially the same logic as the [Time::Piece](http://metacpan.o
 version, translated into DateTime's method calls.
 
 ##### Finding the date of the first Monday in a given year
+
+<!-- listing: c6/first_monday3.pl fragment -->
 
 	use DateTime;
 
@@ -1464,6 +1512,8 @@ days" isn't always a well-defined question once months and years are
 involved. Here's a real example, using the release dates of Perl 1 and
 Perl 5:
 
+<!-- listing: c6/duration.pl fragment -->
+
 	use DateTime;
 
 	my $perl1 = DateTime->new(year => 1987, month => 12, day => 18);
@@ -1493,6 +1543,8 @@ understands the date format used in HTTP headers (among a few other
 common log and timestamp formats), and can format a
 [DateTime](http://metacpan.org/pod/DateTime) object back into one:
 
+<!-- listing: c6/http_date.pl fragment -->
+
 	use DateTime;
 	use DateTime::Format::HTTP;
 
@@ -1509,6 +1561,8 @@ Because every calendar module in the ecosystem knows how to convert to
 and from the same shared representation, you can take one
 [DateTime](http://metacpan.org/pod/DateTime) object and view it
 through entirely different calendar systems:
+
+<!-- listing: c6/calendars.pl -->
 
 	use DateTime;
 	use DateTime::Calendar::Hijri;
@@ -1544,6 +1598,8 @@ usually be a bit of an anticlimax—most days in the Shire calendar
 aren't in the story—so let's ask about a day that is: 25 Rethe, SR
 1419, the date of the downfall of Sauron:
 
+<!-- listing: c6/shire.pl fragment -->
+
 	use DateTime::Fiction::JRRTolkien::Shire;
 
 	my $shire = DateTime::Fiction::JRRTolkien::Shire->new(
@@ -1557,6 +1613,8 @@ aren't in the story—so let's ask about a day that is: 25 Rethe, SR
 And [DateTime::Format::Baby](http://metacpan.org/pod/DateTime::Format::Baby)
 formats a [DateTime](http://metacpan.org/pod/DateTime) object the way
 a small child might describe a clock face:
+
+<!-- listing: c6/baby.pl fragment -->
 
 	use DateTime;
 	use DateTime::Format::Baby;
@@ -1643,6 +1701,8 @@ What we want to know is when the work gets done. Which days of the week are
 busy, and at which times of day do the commits come in? A program to find out
 needs to read each line, turn the date into something we can ask questions
 of, and count. Here it is:
+
+<!-- listing: c6/git_hours.pl -->
 
 	use List::Util qw(max);
 	use Time::Piece;

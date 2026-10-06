@@ -78,6 +78,8 @@ Let’s write an input routine that will read an unstructured text file
 into an array of arrays. As always we will assume that the file is
 coming to us via `STDIN`.
 
+<!-- listing: c5/read_text.pl -->
+
 	1: sub read_text {
 	2:
 	3:   my @file;
@@ -193,6 +195,8 @@ into a scalar variable.
 For example, if we have a text file where we want to convert all
 instances of “Windows” to “Linux”, we can write a short script like
 this:
+
+<!-- listing: c5/win2lin.pl -->
 
 	my $file;
 	{
@@ -423,6 +427,8 @@ and out, and don't worry about encoding anywhere in between.
 Here's what that looks like reading a short file of artist names and
 printing them in upper case:
 
+<!-- listing: c5/borders.pl -->
+
 	use strict;
 	use warnings;
 
@@ -470,6 +476,8 @@ section back in [Chapter 3](ch006.xhtml), you'll be pleased to hear it
 patrols borders too. Its `slurp_utf8` and `spew_utf8` methods decode
 and encode UTF-8 for you, so the same artists example becomes:
 
+<!-- listing: c5/path_tiny_borders.pl -->
+
 	use strict;
 	use warnings;
 	use Path::Tiny;
@@ -492,6 +500,8 @@ Because [utf8](https://metacpan.org/pod/utf8) is about your source
 code rather than your data, it lets you do things that have nothing to
 do with file I/O—including using Unicode characters
 in identifiers:
+
+<!-- listing: c5/greek_pi.pl -->
 
 	use strict;
 	use warnings;
@@ -552,6 +562,8 @@ you want to embed a specific character without committing the rest of
 the file to being UTF-8, or when the character in question doesn't
 have an easy-to-type keyboard representation at all.
 
+<!-- listing: c5/char_escapes.pl -->
+
 	use strict;
 	use warnings;
 
@@ -575,6 +587,8 @@ doesn't.
 
 The property you'll reach for most often is `\p{L}`—any letter, in any
 script, and nothing else:
+
+<!-- listing: c5/properties.pl fragment -->
 
 	use strict;
 	use warnings;
@@ -661,6 +675,8 @@ representation before you compare it. The core module
 one you'll want most often is `NFC`, which composes characters
 together wherever possible:
 
+<!-- listing: c5/normalize.pl fragment -->
+
 	use strict;
 	use warnings;
 	use utf8;
@@ -698,6 +714,8 @@ has no uppercase form of its own—its uppercase equivalent is the
 two-letter sequence "SS". `lc` doesn't know this, so it fails to match
 things a human reader would consider the same word:
 
+<!-- listing: c5/fold_case.pl -->
+
 	use strict;
 	use warnings;
 	use utf8;
@@ -725,6 +743,8 @@ Sorting has a similar problem. Perl's default `sort` (and `cmp`)
 compares strings by code point, and accented characters generally
 have code points well outside the ASCII letters, so they end up in
 the wrong place:
+
+<!-- listing: c5/collate.pl -->
 
 	use strict;
 	use warnings;
@@ -762,6 +782,8 @@ sort key, or output for a system with no Unicode support at all. The
 CPAN module [Text::Unidecode](https://metacpan.org/pod/Text::Unidecode)
 does a rough-and-ready transliteration of Unicode text into plain
 ASCII:
+
+<!-- listing: c5/unidecode.pl -->
 
 	use strict;
 	use warnings;
@@ -863,6 +885,8 @@ when using Perl on a Windows system). But in this situation it masks
 the very problem that we’re trying to solve—so we have to go to a
 lower level representation of the characters.
 
+<!-- listing: c5/eol.pl -->
+
 	#!/usr/local/bin/perl
 	use strict;
     use warnings;
@@ -951,6 +975,8 @@ This will enable you to do things like fix the number of decimal
 places, pad the start of the number with spaces or zeroes, and right
 or left align the number within its field. Here is an example of the
 sort of things that you can do:
+
+<!-- listing: c5/sprintf.pl -->
 
 	my $number = 123.456789;
 
@@ -1048,6 +1074,8 @@ within [Number::Format](https://metacpan.org/pod/Number::Format).
 
 Here are some examples of using this module:
 
+<!-- listing: c5/number_format1.pl fragment -->
+
 	my $fmt = Number::Format->new; # use all defaults
 	my $number = 1234567.890;
 
@@ -1070,6 +1098,8 @@ This results in:
 	1000000
 
 Changing the formatting options slightly:
+
+<!-- listing: c5/number_format2.pl fragment -->
 
 	my $fmt = Number::Format->new(INT_CURR_SYMBOL => 'GBP',
 	                              DECIMAL_DIGITS => 1);
@@ -1094,6 +1124,8 @@ results in:
 If we were formatting numbers for a German system, we might try
 something like this:
 
+<!-- listing: c5/number_format3.pl fragment -->
+
 	my $de = Number::Format->new(INT_CURR_SYMBOL => 'DEM ',
 	                             THOUSANDS_SEP => '.',
 	                             DECIMAL_POINT => ',');
@@ -1111,6 +1143,8 @@ which would result in:
 And finally, if we were accountants, we might want to do something like
 this:
 
+<!-- listing: c5/number_format4.pl fragment -->
+
 	my $fmt = Number::Format->new(NEG_FORMAT=> '(x)');
 	my $debt = -12345678.90;
 	print $fmt->format_negative($debt);
@@ -1123,6 +1157,8 @@ It is, of course, possible to combine [Number::Format](https://metacpan.org/pod/
 other techniques that we were using earlier. If we had a text document
 that contained numbers in different formats and we wanted to ensure
 that they were all in our standard format we could do it like this:
+
+<!-- listing: c5/number_format5.pl -->
 
 	use Number::Format;
 

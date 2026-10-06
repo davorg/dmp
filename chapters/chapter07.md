@@ -76,6 +76,8 @@ Brothers in response to their invoice number 1234.
 So how do we go about extracting that information from the data?
 Here’s a first attempt using the substr function to do the work:
 
+<!-- listing: c7/fixed_wid1.pl -->
+
     my @cols = qw(5 25 33 39 40 48);
     while (<STDIN>) {
       my @rec;
@@ -135,6 +137,8 @@ according to a template that it is given. The template consists of a
 sequence of characters which define the type and size of the
 individual fields. A simple way to break apart our current data would
 be like this:
+
+<!-- listing: c7/unpack.pl -->
 
     my $template = 'a5a20a8a6aa8';
     while (<STDIN>) {
@@ -198,6 +202,8 @@ products, the Basic Widget (Product Code 0050) and the Cheap Widget
 
 A program to read a file such as the previous example might look like
 this:
+
+<!-- listing: c7/multi.pl -->
 
     my %templates = (ADD => 'a4A14a6a5a6', DEL => 'a4A14');
 
@@ -263,6 +269,8 @@ newlines, we could use code like this to read it (obviously we could
 use any of the previously discussed techniques to split the record up
 once we have read it):
 
+<!-- listing: c7/no_eol.pl -->
+
     my $template = 'A5A20A8A6AA8';
     my $data;
 
@@ -278,6 +286,8 @@ It is also possible to handle variable length, fixed-width records
 using a method similar to this. In this case we read 3 bytes first to
 get the record type and then use this to decide how many more bytes to
 read on a further pass.
+
+<!-- listing: c7/multi_no_eol.pl -->
 
     my %templates = (
       ADD => {len => 35, tem => 'a4A14a6a5a6'},
@@ -313,6 +323,8 @@ told how long each number is (probably two or three digits). You can
 unpack the record into an array of numbers. Each of these numbers is
 the width of one field. You can, therefore, build up an unpack format
 to use on the rest of the file.
+
+<!-- listing: c7/metadata1.pl -->
 
     my $line = <STDIN>;
 
@@ -358,6 +370,8 @@ following rows. In other words, our example file would look like this:
 To deal with this metadata, we can split the row on the marker
 character and use the length of the various elements to calculate the
 lengths of the fields:
+
+<!-- listing: c7/metadata2.pl -->
 
     my $line = <STDIN>; # The metadata line
     chomp $line;
@@ -412,6 +426,8 @@ Table: Meanings of A and a in pack and unpack templates
 Therefore, if we have a number of strings and wish to pack them into
 a fixed-width data record, we can do something like this:
 
+<!-- listing: c7/write.pl -->
+
     my @strings = qw(Here are a number of strings);
     my $template = 'A6A6A3A8A4A10';
 
@@ -446,6 +462,8 @@ is actually for a signed integer. If you need an unsigned value, use
 specifier `%5d`; and to prepad the field with zeroes, use `%05d`. Here
 is an example which demonstrates these options:
 
+<!-- listing: c7/printf_int.pl -->
+
     my @formats = qw(%d %5d %05d);
     my $num = 123;
 
@@ -465,6 +483,8 @@ this case you can control the total width of the field and also the
 number of characters after the decimal point by using notation such
 as `%6.2f` (for a 6 character field with two characters after the
 decimal point). Here is an example of this:
+
+<!-- listing: c7/printf_float.pl -->
 
     my @formats = qw(%f %6.2f %06.2f);
     my $num = 12.3;
@@ -488,6 +508,8 @@ when you are going to prepad the number with zeroes) but, as we’ve
 seen previously, text is often left justified and postpadded with
 spaces. In order to left justify the text we can prepend a minus sign
 to the size specifier. Here are some examples:
+
+<!-- listing: c7/printf_str.pl -->
 
     my @formats = qw(%s %10s %010s %-10s %-010s);
     my $str = 'Text';
@@ -515,6 +537,8 @@ be useful.
 Putting this all together, we can produce code which can output
 fixed-width financial transaction records like the ones we were
 reading earlier.
+
+<!-- listing: c7/sprintf_ex.pl -->
 
     my %rec1 = ( txnref => 374,
                  cust   => 'Bloggs & Co',
@@ -676,6 +700,8 @@ seven fields packed into the IHDR chunk's data.
 A complete program to extract this data from a PNG file (passed in via
 `STDIN`) looks like this:
 
+<!-- listing: c7/read_png.pl -->
+
     binmode STDIN;
     my $data;
 
@@ -822,6 +848,8 @@ Vorbis, FLAC, WMA, WAV, AIFF, and several other formats, all through
 the same handful of methods. Using the module is very simple. Here is
 a sample program which displays all of the metadata that it can find
 in a given MP3 file:
+
+<!-- listing: c7/audio_scan.pl -->
 
     use Audio::Scan;
 

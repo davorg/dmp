@@ -82,6 +82,8 @@ For example, if we go back to the example of simple English sentences
 which we used in [Chapter 8](ch013.xhtml), we could write code like
 this in order to check for valid sentences.
 
+<!-- listing: c11/english.pl -->
+
     use v5.40;
 
     use Regexp::Grammars;
@@ -398,6 +400,8 @@ Putting the whole thing together, and printing the result as JSON
 instead of with Data::Dumper, gives us a complete, modern replacement
 for the original Parse::RecDescent version:
 
+<!-- listing: c11/ini.pl -->
+
     use v5.40;
 
     use Regexp::Grammars;
@@ -658,6 +662,8 @@ parse tree for us automatically, so there's no need for the kind of
 per-rule action code that Parse::RecDescent requires. Here is the
 complete program for parsing the CD file, including the code that
 turns the raw parse tree into a tidier data structure:
+
+<!-- listing: c11/cds.pl -->
 
     use strict;
     use warnings;

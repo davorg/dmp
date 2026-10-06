@@ -92,6 +92,8 @@ for a separate data munging process, as all of the required munging will be
 carried out in the input routine. We might create a first draft script
 something like this:
 
+<!-- listing: c2/cd_sol1.pl fragment -->
+
     my %years;
     while (<STDIN>) {
       chomp;
@@ -454,6 +456,8 @@ overtake Moo or Moose at some point soon.
 Let's examine a cut-down customer object which is implemented in a module
 called *Customer.pm*.
 
+<!-- listing: c2/Customer.pm -->
+
     package Customer;
 
     use Moo;
@@ -562,6 +566,8 @@ than simply using the functions defined in our previous module.
 As an example of using this module, let's look at a simple script for
 creating a customer record. We'll prompt the user for the information that
 we require.
+
+<!-- listing: c2/Customer.pl -->
 
     use strict;
     use warnings;
@@ -752,6 +758,8 @@ If we had assumed that the program reads from `STDIN` and writes to `STDOUT`,
 the  program actually gets simpler and more flexible. The rewritten program
 looks like this:
 
+<!-- listing: c2/data_munger2.pl -->
+
     #!/usr/bin/perl
 
     use strict;
@@ -792,6 +800,8 @@ and everything will still work as expected.
 Rather than using the `STDIN` filehandle, Perl allows you to make your program
 even more flexible with no more work, by reading input from the null
 filehandle like this:
+
+<!-- listing: c2/data_munger3.pl -->
 
     #!/usr/bin/perl
 

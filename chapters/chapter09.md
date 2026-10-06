@@ -41,6 +41,8 @@ and handle the response. The simplest of these is the get function.
 This function takes a URL as an argument and returns the data that is
 returned when that URL is requested. For example:
 
+<!-- listing: c9/get.pl fragment -->
+
 	use LWP::Simple;
 
 	my $page = get('http://example.com/');
@@ -109,6 +111,8 @@ the new interface.
 
 Here is a very simple HTML parser that displays all of the HTML tags
 and attributes it finds in an HTML page.
+
+<!-- listing: c9/html_parser.pl -->
 
 	use HTML::Parser;
 	use LWP::Simple;
@@ -230,6 +234,8 @@ attribute. This should become a bit clearer with an example.
 Here is a program which simply lists all of the links found in an
 HTML file.
 
+<!-- listing: c9/linkextor.pl -->
+
 	use HTML::LinkExtor;
 
 	my $file = shift;
@@ -295,6 +301,8 @@ This function will be passed the name of the element containing the
 link together with pairs of parameters indicating the names and values
 of attributes which contain the actual links. Here is an example which
 displays only the a links within a file:
+
+<!-- listing: c9/linkextor2.pl -->
 
 	use HTML::LinkExtor;
 
@@ -393,6 +401,8 @@ original HTML text. We can therefore iterate over all of the tags in a
 document, checking them to see which ones are headers and displaying
 the structure of the document using code like this:
 
+<!-- listing: c9/tokeparser2.pl -->
+
 	use HTML::TokeParser;
 
 	my $file = shift;
@@ -439,6 +449,8 @@ that represents an HTML document. Each node in the tree is an
 Here is a simple script which uses
 [HTML::TreeBuilder](https://metacpan.org/pod/HTML::TreeBuilder) to
 parse an HTML document.
+
+<!-- listing: c9/treebuilder.pl -->
 
 	#!/usr/bin/perl
 	use strict;
@@ -580,6 +592,8 @@ Here's the CD collection again, this time as a fragment of HTML
 	</ul>
 
 And here's Web::Query pulling the artist and title out of each CD:
+
+<!-- listing: c9/webquery.pl -->
 
 	use v5.40;
 	use Web::Query;
