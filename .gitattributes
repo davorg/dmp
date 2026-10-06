@@ -1,0 +1,4 @@
+# Keep example code and data files LF everywhere, including Windows checkouts,
+# so they work unchanged under WSL/Linux/macOS (CRLF breaks shebangs and
+# leaves stray \r on every line read from a data file).
+code-examples/** text eol=lf

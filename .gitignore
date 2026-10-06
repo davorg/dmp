@@ -2,3 +2,4 @@
 *.pdf
 /build/
 .*.swp
+code-examples/**/*.db
