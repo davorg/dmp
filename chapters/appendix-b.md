@@ -719,6 +719,54 @@ Full details of everything in this section are in `perldoc perlref`;
 fast, and `perldoc perldsc` is a cookbook of common data-structure
 patterns, with plenty of worked examples of its own.
 
+Regular expressions
+-------------------
+
+Regular expressions are central to data munging, and
+[Chapter 4](ch007.xhtml) covers them properly. If you're new to them,
+this is just enough to follow the examples before you get there.
+
+A regular expression (or *regex*) describes a pattern of text. The
+match operator, `m//` (usually written as just `//`), tests a string
+against a pattern, and the binding operator `=~` says which string to
+test; without it, the match is made against `$_`:
+
+    print "A dance track\n" if $cd->{title} =~ /dance/i;
+
+The `i` after the closing slash is a *modifier* that makes the match
+case-insensitive. Most characters match themselves, but a few have
+special meanings: `.` matches any one character (apart from a
+newline), `^` and `$` match the start and end of the string, `\d`
+matches a digit, `\w` a "word" character, and `\s` white space.
+Following an item with `+` means "one or more", `*` means "zero or
+more" and `?` means "optional".
+
+Parentheses capture whatever they match. In list context, a match
+returns its captures, so you can pull a line apart in one statement:
+
+    my ($artist, $title) = $line =~ /^(.+?) - (.+)$/;
+
+(The `?` after `.+` makes it match as little as possible, so the
+split happens at the *first* " - ".) You can also name your captures,
+with `(?<artist>.+?)`, and read them back from the `%+` hash as
+`$+{artist}`. Add the `g` modifier to a match in list context and you
+get every match, not just the first:
+
+    my @years = $text =~ /\b(\d{4})\b/g;
+
+The substitution operator, `s///`, replaces whatever the pattern
+matched. It changes the string in place, unless you add the `r`
+modifier, which leaves the original alone and returns the changed
+copy instead:
+
+    $title =~ s/\s+$//;               # strip trailing white space
+    my $clean = $padded =~ s/\s+$//r; # same, but $padded is untouched
+
+Add `g` and it replaces every match, not just the first. Everything
+else — alternation, character classes, anchors, the other modifiers,
+`tr///`, and how to build and test patterns of your own — is in
+[Chapter 4](ch007.xhtml).
+
 A nod to object orientation
 ---------------------------
 

@@ -178,7 +178,7 @@ See `TODO.md` for the full detail behind every item below.
   (2026-10-06). Five real corrections (incl. a wrong sort-stability
   claim and a stale `experimental::builtin` warning suppression); see
   TODO.md.
-- Decide what, if anything, Appendix B should say about regular
+- [x] (Done 2026-10-06: short "regex essentials" section added.) Decide what, if anything, Appendix B should say about regular
   expressions — currently nothing, spotted 2026-09-28 during the Ch4
   reality check. Appendix B points to Chapter 2 for OO in one line;
   no equivalent exists for Chapter 4's regex coverage. See TODO.md.
