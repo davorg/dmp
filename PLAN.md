@@ -198,7 +198,7 @@ See `TODO.md` for the full detail behind every item below.
 
 - Front-to-back proofread; verify cross-references still make sense
   after everything's moved.
-- Eliminate American English from the text — spelling (`-ize`/`-or`
+- [x] (Done 2026-10-06 for spelling and word choice; quote-punctuation style still needs a human read.) Eliminate American English from the text — spelling (`-ize`/`-or`
   forms, etc.) and word choice, consistently through to British
   English. Added to the backlog 2026-09-28; see TODO.md for detail.
 - Confirm the completion estimate can genuinely go to 100%.
