@@ -191,3 +191,5 @@ You'd already drafted an 18-item modernization backlog in this file (with `gh`-b
 - Automation: GitHub Actions workflow to build on push, once the current Makefile has proven itself over a release or two (deferred for now).
 
 - [x] **Ch3 Test2 example (2026-10-06).** The Test2 section was prose-only. Added `code-examples/c3/testing_test2.pl` and `testing_test2_fail.pl`, plus the chapter walk-through; both run and output verified by Dave on Windows Perl 5.40 (Test2::V0 with nothing installed, which also confirms it's core in 5.40).
+
+- [x] **Ch11 `use v5.40` + `use builtin qw(trim)` warning (2026-10-06).** Found by Dave running `english.pl` on 5.40: the redundant import gave a "masks earlier declaration" warning. Removed from `english.pl`, `cds_json.pl` and the chapter listing; Dave confirmed clean in WSL and PowerShell.
