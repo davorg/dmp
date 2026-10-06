@@ -951,6 +951,8 @@ We’ll assume that each English word has just one American translation.
 We’ll also store our translations in a text file so it is easy to add
 to them. The program will look something like this:
 
+<!-- listing: c4/translate.pl -->
+
 	  1: #!/usr/bin/perl
 	  2: use strict;
 	  3: use warnings;

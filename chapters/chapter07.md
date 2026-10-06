@@ -101,6 +101,8 @@ in all, not the most maintainable piece of code.
 
 Perhaps we’d do better if we used regular expressions:
 
+<!-- listing: c7/fixed_wid2.pl -->
+
      my @widths = qw(5 20 8 6 1 8);
      my $regex;
      $regex .= "(.{$_})" foreach @widths;
@@ -915,6 +917,8 @@ roughly the right byte offset for a given point in the track.
 #### Array-valued tags
 
 It's not much effort to turn those into something printable:
+
+<!-- listing: c7/audio_scan2.pl fragment -->
 
     sub format_value($value) {
       return $value unless ref $value eq 'ARRAY';

@@ -180,6 +180,8 @@ our data. A good argument could be made for just about any other combination
 of arrays and hashes, but the representation that I have chosen seems more
 natural to me. Our input routine will therefore look like this:
 
+<!-- listing: c2/cd_sol3.pl fragment -->
+
     my @CDs;
     sub input {
       my @attrs = qw(artist title label year);

@@ -305,6 +305,8 @@ tags. I should reiterate here that all of this code is here to
 demonstrate the *wrong* way to do it, so you shouldn’t be using this
 code in your programs.
 
+<!-- listing: c8/parse_html1.pl -->
+
 	 # WARNING: This code doesn't work
 	 use strict;
 	 while (<STDIN>) {
@@ -335,6 +337,8 @@ and the last `>`, effectively removing the whole line.
 We can, of course, correct this by making our regular expression
 nongreedy. We do this by placing a `?` after the greedy part of the
 regular expression `(.*)`, meaning our code will now look like this:
+
+<!-- listing: c8/parse_html2.pl -->
 
 	 # WARNING: This code doesn't work either
 	 use strict;

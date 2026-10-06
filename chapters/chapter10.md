@@ -381,6 +381,8 @@ page of the site.
 also be used to create an RSS file. Here is the script that I used to
 create the file given above:
 
+<!-- listing: c10/create_rss.pl -->
+
      #!/usr/bin/perl
      use strict;
      use warnings;

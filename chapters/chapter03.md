@@ -399,6 +399,8 @@ this (to try it yourself, run `dbi_setup.pl` from this chapter's code
 examples once first. It creates the database and a `cds` table, filled from
 the `cd.txt` file we've been using throughout):
 
+<!-- listing: c3/dbi.pl -->
+
 	  1: #!/usr/bin/perl
 	  2:
 	  3: use strict;

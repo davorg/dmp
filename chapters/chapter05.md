@@ -232,6 +232,8 @@ text.
 
 	  1: # Variables to keep track of where we are in the file
  	  2: my ($line, $word);
+<!-- listing: c5/text_stats.pl fragment -->
+
 	  3:
 	  4: # Variables to store stats
 	  5: my ($num_lines, $num_words);
