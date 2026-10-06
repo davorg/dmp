@@ -1,0 +1,2 @@
+Sales were 1234567.891 units across 42 stores.
+Delta: -3500, margin 0.125

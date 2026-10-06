@@ -9,8 +9,8 @@ my $data;
 
 my $fmt = Number::Format->new; 
 
-my $num_re = qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/; 
+my $num_re = qr/(?<num>[-+]?(?=\d|\.\d)\d*(?:\.\d*)?(?:[eE][-+]?\d+)?)/; 
 
-$data =~ s/$num_re/$fmt->format_number($1)/ge; 
+$data =~ s/$num_re/$fmt->format_number($+{num})/ge; 
 
 print $data;

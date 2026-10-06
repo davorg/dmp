@@ -926,18 +926,20 @@ consider using Perl’s precompiled regular expression feature and
 creating your number-matching regular expressions in advance. You can
 do something like this:
 
-	my $num_re = qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
+	my $num_re = qr/(?<num>[-+]?(?=\d|\.\d)\d*(?:\.\d*)?(?:[eE][-+]?\d+)?)/;
 	my @nums;
 	while ($data =~ /$num_re/g) {
-	  push @nums, $1;
+	  push @nums, $+{num};
 	}
 
 to print out a list of all of the numbers in $data.
 
+(The whole number is wrapped in a named capture, `(?<num>...)`, so it's available as `$+{num}`. The inner groups are non-capturing, `(?:...)`, so that they don't get in the way. Using plain `$1` here would be a mistake, as it would pick up only a part of the number.)
+
 If you have a function, reformat, that will change the numbers into
 your preferred format then you can use code like this:
 
-	$data =~ s/$num_re/reformat($1)/ge;
+	$data =~ s/$num_re/reformat($+{num})/ge;
 
 which makes use, once more, of the `e` modifier to execute the
 replacement string before using it.
@@ -1131,8 +1133,8 @@ that they were all in our standard format we could do it like this:
 	}
 
 	my $fmt = Number::Format->new;
-	my $num_re = qr/[-+]?(?=\d|\.\d)\d*(\.\d*)?([eE]([-+]?\d+))?/;
-	$data =~ s/$num_re/$fmt->format_number($1)/ge;
+	my $num_re = qr/(?<num>[-+]?(?=\d|\.\d)\d*(?:\.\d*)?(?:[eE][-+]?\d+)?)/;
+	$data =~ s/$num_re/$fmt->format_number($+{num})/ge;
 	print $data;
 
 Further information
