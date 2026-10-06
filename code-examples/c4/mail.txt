@@ -1,0 +1,10 @@
+From: dave@davecross.co.uk
+To: editor@example.com
+Subject: Chapter 4 draft
+Date: Tue, 6 Oct 2026 12:00:00 +0100
+
+Hi,
+
+The regex chapter is attached.
+
+Dave

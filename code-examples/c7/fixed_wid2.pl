@@ -6,6 +6,6 @@ $regex .= "(.{$_})" foreach @widths;
 
 while (<STDIN>) { 
   my @rec = /$regex/; 
-  print join('¦', @rec); 
+  print join('Â¦', @rec); 
   print "\n"; 
 }

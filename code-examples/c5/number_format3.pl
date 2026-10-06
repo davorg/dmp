@@ -1,3 +1,5 @@
+use Number::Format;
+
 my $de = Number::Format->new(INT_CURR_SYMBOL => 'DEM ',
 			     THOUSANDS_SEP => '.', 
 			     DECIMAL_POINT => ','); 

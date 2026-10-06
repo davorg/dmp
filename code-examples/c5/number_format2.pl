@@ -1,3 +1,5 @@
+use Number::Format;
+
 my $fmt = Number::Format->new(INTL_CURRENCY_SYMBOL => 'GBP', 
 			      DECIMAL_DIGITS => 1); 
 

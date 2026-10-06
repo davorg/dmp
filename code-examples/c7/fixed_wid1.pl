@@ -9,7 +9,7 @@ while (<STDIN>) {
     $prev = $col; 
   } 
 
-  print join('¦', @rec); 
+  print join('Â¦', @rec); 
   print "\n"; 
 }
 

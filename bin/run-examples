@@ -1,0 +1,192 @@
+#!/usr/bin/perl
+#
+# Run every example program in code-examples/ and report problems.
+#
+#   bin/run-examples [options] [pattern ...]
+#
+# Options:
+#   --offline    skip examples tagged "needs=net"
+#   --verbose    show stderr for every non-OK example
+#   --keep       keep the scratch copy of code-examples/ (prints its path)
+#   --manifest F use manifest F (default: code-examples/MANIFEST)
+#   --perl PATH  run the examples with this perl (default: the perl running us)
+#   --list       list what would be run, and exit
+#
+# Any patterns (e.g. "c6" or "c3/dbi") restrict the run to matching scripts.
+#
+# The examples are run in a scratch COPY of code-examples/, so any files
+# they write (out.txt, testdb.db, ...) never touch the repository.
+#
+# Each example gets one result:
+#   OK     exit status 0 and nothing on STDERR
+#   WARN   exit status 0 but something was written to STDERR
+#   FAIL   non-zero exit status, killed by a signal, or timed out
+#   SKIP   not run (offline, "skip=" in the manifest) or a CPAN module isn't
+#          installed ("Can't locate Foo.pm"); that's an environment problem,
+#          not a bug in the book
+#   KNOWN  a FAIL/WARN the manifest says to expect ("known=reason"); shown
+#          so it isn't forgotten, but doesn't make the run fail
+#
+# Exit status is 1 if anything is FAIL or WARN (or a "known" example now
+# passes cleanly, so the manifest can be tidied), otherwise 0.
+
+use strict;
+use warnings;
+use Cwd qw(abs_path getcwd);
+use File::Basename qw(dirname);
+use File::Temp qw(tempdir);
+use Getopt::Long;
+use POSIX qw(WNOHANG);
+
+my %opt = (perl => $^X);
+GetOptions(\%opt, 'offline', 'verbose', 'keep', 'list', 'manifest=s', 'perl=s')
+  or die "Usage: $0 [--offline] [--verbose] [--keep] [--list] [--manifest F] [--perl P] [pattern ...]\n";
+my @patterns = @ARGV;
+
+my $root = abs_path(dirname($0) . '/..');
+my $src  = "$root/code-examples";
+my $manifest = $opt{manifest} // "$src/MANIFEST";
+
+# ---- read the manifest ------------------------------------------------
+# script  key=value ...   (values containing spaces: key="two words")
+my @entries;
+open my $mf, '<', $manifest or die "Can't open $manifest: $!\n";
+while (my $line = <$mf>) {
+  $line =~ s/^\s+|\s+$//g;
+  next if $line eq '' or $line =~ /^#/;
+  my ($script, $rest) = split ' ', $line, 2;
+  my %e = (script => $script, timeout => 30, expect_exit => 0);
+  while (defined $rest and $rest =~ /\G\s*(\w[\w-]*)=(?:"([^"]*)"|(\S*))/gc) {
+    $e{$1} = defined $2 ? $2 : $3;
+  }
+  push @entries, \%e;
+}
+close $mf;
+
+# every .pl in code-examples should be in the manifest
+my %listed = map { $_->{script} => 1 } @entries;
+my @unlisted = grep { !$listed{$_} } map { s{^\Q$src\E/}{}r } glob("$src/*/*.pl");
+if (@unlisted) {
+  warn "Not in the manifest (add them, or mark skip=...):\n",
+       map { "  $_\n" } @unlisted;
+}
+
+@entries = grep { my $s = $_->{script}; grep { index($s, $_) >= 0 } @patterns } @entries
+  if @patterns;
+
+if ($opt{list}) { print "$_->{script}\n" for @entries; exit 0 }
+
+# ---- scratch copy -----------------------------------------------------
+my $work = tempdir('dmp-examples-XXXXXX', TMPDIR => 1, CLEANUP => !$opt{keep});
+system('cp', '-R', "$src/.", $work) == 0 or die "Couldn't copy $src: $?\n";
+
+# ---- run each example -------------------------------------------------
+my (%count, @report);
+for my $e (@entries) {
+  my ($res, $why, $err, $out) = run_one($e);
+  $count{$res}++;
+  push @report, [$e, $res, $why, $err];
+  printf "%-6s %-28s %s\n", $res, $e->{script}, $why // '';
+  if ($opt{verbose} and $res ne 'OK' and length $err) {
+    print map { "         | $_\n" } split /\n/, $err;
+  }
+}
+
+print "\n", join('  ', map { "$_: " . ($count{$_} // 0) } qw(OK WARN FAIL KNOWN FIXED SKIP)), "\n";
+
+my @bad = grep { $_->[1] eq 'WARN' or $_->[1] eq 'FAIL' } @report;
+my @fixed = grep { $_->[1] eq 'FIXED' } @report;
+if (@bad) {
+  print "\nNeed attention:\n";
+  for my $r (@bad) {
+    print "  $r->[1] $r->[0]{script}: $r->[2]\n";
+    unless ($opt{verbose}) {
+      my @l = grep { length } split /\n/, $r->[3];
+      print "         | $_\n" for @l[0 .. ($#l > 2 ? 2 : $#l)];
+      print "         | ... (use --verbose to see more)\n" if @l > 3;
+    }
+  }
+}
+if ($opt{keep}) { print "\nScratch copy kept in $work\n" }
+exit(@bad || @fixed ? 1 : 0);
+
+# ----------------------------------------------------------------------
+sub run_one {
+  my ($e) = @_;
+  my $script = $e->{script};
+  my ($dir, $file) = $script =~ m{^(.*)/([^/]+)$} or die "bad script path $script";
+
+  return ('SKIP', $e->{skip}) if $e->{skip};
+  my %needs = map { $_ => 1 } split /,/, ($e->{needs} // '');
+  return ('SKIP', 'needs network (--offline)') if $opt{offline} and $needs{net};
+
+  my @args = split /,/, ($e->{args} // '');
+  my ($outf, $errf) = ("$work/.out.$$", "$work/.err.$$");
+
+  my $pid = fork;
+  die "fork: $!" unless defined $pid;
+  if (!$pid) {
+    chdir "$work/$dir" or die "chdir $work/$dir: $!";
+    my $in = defined $e->{stdin} ? $e->{stdin} : '/dev/null';
+    open STDIN,  '<', $in   or do { print STDERR "Can't open stdin file $in: $!\n"; exit 127 };
+    open STDOUT, '>', $outf or exit 127;
+    open STDERR, '>', $errf or exit 127;
+    $ENV{PERL5LIB} = "$work/$dir" . (defined $ENV{PERL5LIB} ? ":$ENV{PERL5LIB}" : '');
+    { no warnings 'exec'; exec $opt{perl}, $file, @args; }
+    print STDERR "exec failed: $!\n";
+    exit 127;
+  }
+
+  my ($status, $timed_out);
+  my $deadline = time + $e->{timeout};
+  while (1) {
+    my $k = waitpid($pid, WNOHANG);
+    if ($k == $pid) { $status = $?; last }
+    if (time >= $deadline) {
+      kill 'KILL', $pid; waitpid($pid, 0); $status = $?; $timed_out = 1; last;
+    }
+    select undef, undef, undef, 0.05;
+  }
+
+  my $err = slurp($errf); my $out = slurp($outf);
+  unlink $outf, $errf;
+
+  # Perl too old for this example: an environment problem, not a book bug.
+  if ($status != 0 and $err =~ /Perl (v[\d.]+) required--this is only/) {
+    return ('SKIP', "needs Perl $1", $err, $out);
+  }
+  if ($status != 0 and $err =~ /Feature "(\w+)" is not supported by Perl/) {
+    return ('SKIP', "needs a newer Perl (feature '$1')", $err, $out);
+  }
+
+  # Missing CPAN module: an environment problem, not a book bug.
+  if (($status != 0 or length $err) and $err =~ /Can't locate (\S+?)\.pm in \@INC/) {
+    (my $mod = $1) =~ s{/}{::}g;
+    return ('SKIP', "module not installed: $mod", $err, $out);
+  }
+
+  # ignore noise we can't do anything about
+  $err =~ s/^# Seeded srand with seed .*\n//mg;     # Test2::V0 chatter
+
+  my ($res, $why);
+  if ($timed_out)           { ($res, $why) = ('FAIL', "timed out after $e->{timeout}s") }
+  elsif ($status & 127)     { ($res, $why) = ('FAIL', 'killed by signal ' . ($status & 127)) }
+  elsif ($status >> 8 != $e->{expect_exit}) {
+    ($res, $why) = ('FAIL', 'exit status ' . ($status >> 8));
+  }
+  elsif (length $err and !exists $e->{'expect-stderr'}) { ($res, $why) = ('WARN', 'wrote to STDERR') }
+  else { ($res, $why) = ('OK', '') }
+
+  if (defined $e->{known}) {
+    if ($res eq 'OK') { return ('FIXED', "marked known=\"$e->{known}\" but now passes; remove the note", $err, $out) }
+    return ('KNOWN', "$res: $e->{known}", $err, $out);
+  }
+  return ($res, $why, $err, $out);
+}
+
+sub slurp {
+  my ($f) = @_;
+  open my $fh, '<:raw', $f or return '';
+  local $/; my $t = <$fh>; close $fh;
+  return defined $t ? $t : '';
+}

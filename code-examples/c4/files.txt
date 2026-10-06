@@ -1,0 +1,6 @@
+/home/davec/notes/todo.txt
+/home/davec/perl/dmp/chapter04.md
+/home/alice/work/report.txt
+/var/log/syslog
+/home/davec/music/cds.txt
+/home/bob/photos/holiday.jpg

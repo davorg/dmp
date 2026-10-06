@@ -5,6 +5,6 @@ while (<STDIN>) {
   my ($type, $data) = unpack('a3a*', $_); 
   my @rec = unpack($templates{$type}, $data); 
 
-  print "$type - ", join('¦', @rec); 
+  print "$type - ", join('Â¦', @rec); 
   print "\n"; 
 }

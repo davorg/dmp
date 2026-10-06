@@ -2,3 +2,5 @@
 # so they work unchanged under WSL/Linux/macOS (CRLF breaks shebangs and
 # leaves stray \r on every line read from a data file).
 code-examples/** text eol=lf
+code-examples/**/*.png binary
+code-examples/**/*.db binary

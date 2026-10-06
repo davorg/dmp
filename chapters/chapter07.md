@@ -644,12 +644,12 @@ identify the format of the file. This is so that applications that are
 reading the file can easily check that the file is in a format that
 they can understand. In the case of PNG files, the first 8 bytes
 always contain the hex value `0x89` followed by the string
-`PNG\cM\cJ\cZ\cM`. In order to check that a file is a valid PNG file,
+`PNG\cM\cJ\cZ\cJ`. In order to check that a file is a valid PNG file,
 you should do something like this:
 
     my $data;
     read(PNG, $data, 8);
-    die "Not a valid PNG\n" unless $data eq "\x89PNG\cM\cJ\cZ\cM";
+    die "Not a valid PNG\n" unless $data eq "\x89PNG\cM\cJ\cZ\cJ";
 
 Note that we use `\x89` to match the hex number `0x89` and `\cZ` to match
 Control-Z.
@@ -680,7 +680,7 @@ A complete program to extract this data from a PNG file (passed in via
     my $data;
 
     read(STDIN, $data, 8);
-    die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cM";
+    die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cJ";
 
     while (read(STDIN, $data, 8)) {
       my ($size, $type) = unpack('Na4', $data);

@@ -9,6 +9,6 @@ while (read STDIN, $type, 3) {
   read STDIN, $data, $templates{$type}->{len}; 
   my @rec = unpack($templates{$type}->{tem}, $data); 
 
-  print "$type - ", join('¦', @rec); 
+  print "$type - ", join('Â¦', @rec); 
   print "\n"; 
 }

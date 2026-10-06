@@ -1,0 +1,165 @@
+# Manifest for bin/run-examples. One line per example program, in run order.
+#
+#   script  [stdin=FILE] [args=a,b,c] [needs=net] [timeout=N] [skip="why"]
+#           [known="why"] [expect-stderr=1] [expect_exit=N]
+#
+# Paths in stdin= are relative to the script's own directory. Scripts run from
+# their own directory in a scratch copy, so files they write are discarded.
+#   skip=   don't run it at all (interactive, needs special hardware, ...)
+#   known=  a known problem; reported as KNOWN, and flagged FIXED once it passes
+#   needs=net  needs the Internet; skipped with --offline
+
+# ---- c2 ----
+c2/Customer.pl
+c2/cd_full.pl  stdin=cd.txt
+c2/cd_sol1.pl  stdin=cd.txt
+c2/cd_sol2.pl  stdin=cd.txt
+c2/cd_sol3.pl  stdin=cd.txt
+c2/data_munger.pl  skip="fragment: calls munge_data(), defined in another listing"
+c2/data_munger2.pl  skip="fragment: calls a sub defined in another listing"
+c2/data_munger3.pl  skip="fragment: calls a sub defined in another listing"
+
+# ---- c3 ----
+c3/benchmark.pl
+c3/complex_sorts.pl
+c3/data_dumper.pl  stdin=cd.txt
+c3/data_printer.pl  stdin=cd.txt
+c3/dbi_setup.pl
+c3/dbi.pl
+c3/orcish.pl
+c3/packed_def.pl
+c3/path_tiny.pl
+c3/schwartzian1.pl
+c3/schwartzian2.pl
+c3/schwartzian3.pl  stdin=cd.txt
+c3/simple_sorts.pl
+c3/testing.pl
+c3/testing_test2.pl
+c3/testing_test2_fail.pl
+
+# ---- c4 ----
+c4/bastardize.pl
+c4/extract.pl
+c4/files.pl
+c4/lindex.pl
+c4/list_sh_users.pl  skip="fragment: calls a sub defined in another listing"
+c4/list_users.pl  skip="fragment: calls a sub defined in another listing"
+c4/mail_head.pl
+c4/mail_head2.pl
+c4/mail_head3.pl
+c4/read_passwd.pl  stdin=/etc/passwd
+c4/regexp_common_ipv4.pl
+c4/regexp_common_num.pl
+c4/squares.pl
+c4/substr.pl
+c4/substr_long.pl
+c4/substr_lval.pl
+c4/translate.pl  stdin=in.txt
+
+# ---- c5 ----
+c5/avg_wordlen.pl  skip="fragment: calls a sub defined in another listing"
+c5/borders.pl
+c5/char_escapes.pl
+c5/collate.pl
+c5/eol.pl  args=CRLF,LF stdin=../c4/in.txt
+c5/fold_case.pl
+c5/greek_pi.pl
+c5/normalize.pl
+c5/number_format1.pl
+c5/number_format2.pl
+c5/number_format3.pl
+c5/number_format4.pl
+c5/number_format5.pl
+c5/numbers.pl
+c5/path_tiny_borders.pl
+c5/properties.pl
+c5/read_text.pl
+c5/sprintf.pl
+c5/text_stats.pl  skip="fragment: calls a sub defined in another listing"
+c5/unidecode.pl
+c5/win2lin.pl
+
+# ---- c6 ----
+c6/baby.pl
+c6/calendars.pl
+c6/cd.pl  stdin=cd.txt
+c6/cd2.pl  stdin=cd.txt
+c6/cd3.pl  stdin=cd.txt
+c6/count_rec.pl
+c6/csv.pl  stdin=cd.txt
+c6/duration.pl
+c6/first_monday1.pl
+c6/first_monday2.pl
+c6/first_monday3.pl
+c6/fx.pl  skip="fragment: calls a sub defined in another listing"
+c6/http_date.pl
+c6/memoize.pl  skip="fragment: calls a sub defined in another listing"
+c6/output.pl
+c6/output2.pl
+c6/output3.pl
+c6/posix_strftime.pl
+c6/prev_sat1.pl
+c6/prev_sat2.pl
+c6/prev_sat3.pl
+c6/print_date.pl
+c6/read.pl
+c6/read_csv.pl  stdin=cd.txt
+c6/shire.pl
+c6/split_arr.pl  stdin=cd.txt
+c6/split_hash.pl  stdin=cd.txt
+c6/weblog.pl
+c6/write_csv.pl  skip="fragment: uses $csv from another listing"
+c6/x_days1.pl
+c6/x_days2.pl
+c6/x_days3.pl
+
+# ---- c7 ----
+c7/audio_scan.pl
+c7/audio_scan2.pl
+c7/fixed_wid1.pl
+c7/fixed_wid2.pl
+c7/metadata1.pl
+c7/metadata2.pl
+c7/multi.pl
+c7/multi_no_eol.pl
+c7/no_eol.pl
+c7/printf_float.pl
+c7/printf_int.pl
+c7/printf_str.pl
+c7/read_png.pl  stdin=test.png
+c7/sprintf_ex.pl
+c7/unpack.pl
+c7/write.pl
+
+# ---- c8 ----
+c8/cd_long.pl  stdin=cd.txt
+c8/parse_html1.pl  stdin=cd.txt
+c8/parse_html2.pl  stdin=cd.txt
+c8/parse_html3.pl  stdin=cd.txt
+
+# ---- c9 ----
+c9/get.pl  needs=net
+c9/html_parser.pl  needs=net
+c9/linkextor.pl
+c9/linkextor2.pl
+c9/tokeparser.pl
+c9/tokeparser2.pl  args=tokeparser.html
+c9/treebuilder.pl  args=tokeparser.html
+c9/weather.pl  needs=net
+c9/webquery.pl
+
+# ---- c10 ----
+c10/cds.pl
+c10/cities_weather.pl  needs=net
+c10/create_rss.pl  needs=net
+c10/read_rss.pl
+c10/unicode_json.pl
+c10/weather_api.pl  needs=net
+c10/weather_walk.pl
+c10/weather_xpath.pl
+
+# ---- c11 ----
+c11/cds.pl
+c11/cds_json.pl
+c11/english.pl
+c11/ini.pl  stdin=files.ini

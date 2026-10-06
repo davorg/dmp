@@ -4,7 +4,7 @@ my $data;
 
 read(STDIN, $data, 8); 
 
-die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cM"; 
+die "Not a PNG file" unless $data eq "\x89PNG\cM\cJ\cZ\cJ"; 
 
 while (read(STDIN, $data, 8)) { 
   my ($size, $type) = unpack('Na4', $data); 
@@ -22,7 +22,7 @@ while (read(STDIN, $data, 8)) {
   Bit Depth: $bitdepth, Color Type: $coltype 
   Compression Type: $comptype, Filtering Type: $filtype 
   Interlace Scheme: $interlscheme 
-END 
+END
   } 
 
   read(STDIN, $data, 4); 

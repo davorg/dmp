@@ -1,3 +1,5 @@
+use Number::Format;
+
 my $fmt = Number::Format->new; # use all defaults 
 
 my $number = 1234567.890;

@@ -4,6 +4,6 @@ my $data;
 while (read STDIN, $data, 48) { 
   my @rec = unpack($template, $data);
 
-  print join('¦', @rec); 
+  print join('Â¦', @rec); 
   print "\n"; 
 }
