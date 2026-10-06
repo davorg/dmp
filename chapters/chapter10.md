@@ -446,7 +446,7 @@ script which displays some of the more useful data from an RSS file.
 
     print "Items:\n";
 
-    foreach ($rss->items->@*) {
+    foreach ($rss->{items}->@*) {
       print $_->{title}, "\n\t<", $_->{link}, ">\n";
     }
 
@@ -455,9 +455,11 @@ overrides from its parent [XML::Parser](https://metacpan.org/pod/XML::Parser)). 
 structures modeling the RSS file to the RSS parser object. This data
 can be accessed using various accessor methods. The `channel` method
 gives you access to the various parts of the `<channel>` element, and
-the items method returns a list of the items in the file. Each
-element in the items list is a reference to a hash containing the
-various attributes of one item from the file.
+the items are held in an array reference in `$rss->{items}`. (There is no
+`items` accessor method, so, unusually, you reach into the object's hash
+directly. That's how the module's documentation does it too.) Each
+element of that array is a reference to a hash containing the various
+attributes of one item from the file.
 
 If we run this script on our sample RSS file, here is the output that
 we get.
