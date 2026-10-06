@@ -63,9 +63,10 @@ Installing modules from CPAN
 
 Perl's standard library covers a lot of ground, but a great deal of
 what makes Perl good for data munging lives outside it, on CPAN — the
-Comprehensive Perl Archive Network. Nearly every module named in this
-book, from `Text::CSV` to `DBI` to `Moo` to `XML::LibXML`, has to be
-installed from there before you can use it.
+Comprehensive Perl Archive Network. Most of the modules named in this
+book, from `Text::CSV` to `DBI` to `Moo` to `XML::LibXML`, have to be
+installed from there before you can use it (the table below shows
+which ones).
 
 The easiest way to do that today is with `cpanm` (short for
 `App::cpanminus`), a small, dependency-free tool built specifically

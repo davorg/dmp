@@ -174,8 +174,8 @@ See `TODO.md` for the full detail behind every item below.
   (REST/HTTP-as-data-source, modern HTTP client note, core-vs-CPAN
   `use`-statement audit, CPAN-glossary appendix) as stretch goals.
   Decided 2026-10-06: keep the HTTP client note (done), a modest REST/HTTP
-  expansion in Ch10 (done) and the core-vs-CPAN audit; cut the glossary
-  appendix.
+  expansion in Ch10 (done) and the core-vs-CPAN audit (done 2026-10-06:
+  Appendix B module table, two factual fixes); cut the glossary appendix.
 - [x] Audit every "available/bundled since Perl 5.X.Y" claim in the book
   for citing a real stable release, not a development track — done
   (2026-10-06). Five real corrections (incl. a wrong sort-stability
